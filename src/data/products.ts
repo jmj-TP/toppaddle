@@ -37,66 +37,208 @@ export interface PreAssembledRacket {
 }
 
 // Blades Database
-export const blades: Blade[] = [
+export const blades: Blade[] = 
+
+[
   {
-    Blade_Name: "JOOLA Carbon Control Performance",
-    Blade_Speed: 75,
-    Blade_Control: 85,
-    Blade_Power: 70,
+    Blade_Name: "JOOLA BASEline All",
+    Blade_Speed: 60,
+    Blade_Control: 82,
+    Blade_Power: 65,
     Blade_Grip: "Flared",
-    Blade_Price: 69.99,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.amazon.com/Joola-Carbon-Control-Table-Tennis/dp/B010DB9WFY"
+    Blade_Price: 34.95,
+    Blade_Level: "Beginner",
+    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-all-table-tennis-blade"
   },
   {
-    Blade_Name: "JOOLA Rally TL Professional",
-    Blade_Speed: 80,
-    Blade_Control: 75,
-    Blade_Power: 78,
+    Blade_Name: "JOOLA BASEline OFF",
+    Blade_Speed: 70,
+    Blade_Control: 72,
+    Blade_Power: 75,
     Blade_Grip: "Flared",
-    Blade_Price: 44.95,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.amazon.com/JOOLA-Rally-TL-Professional-Assembly/dp/B0CNY4MXKS"
+    Blade_Price: 39.95,
+    Blade_Level: "Beginner",
+    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-off-table-tennis-blade"
   },
   {
-    Blade_Name: "JOOLA T-bat Carbon",
-    Blade_Speed: 85,
-    Blade_Control: 70,
+    Blade_Name: "JOOLA BASEline Carbon",
+    Blade_Speed: 78,
+    Blade_Control: 66,
     Blade_Power: 82,
     Blade_Grip: "Flared",
-    Blade_Price: 89.99,
-    Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://www.amazon.com/JOOLA-T-bat-Carbon-Table-Tennis/dp/B0C3RB3V3R"
+    Blade_Price: 49.95,
+    Blade_Level: "Intermediate",
+    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-carbon-table-tennis-blade"
   },
   {
-    Blade_Name: "Butterfly Timo Boll CAF",
-    Blade_Speed: 88,
-    Blade_Control: 72,
-    Blade_Power: 85,
+    Blade_Name: "JOOLA Challenger Off",
+    Blade_Speed: 72,
+    Blade_Control: 74,
+    Blade_Power: 78,
     Blade_Grip: "Flared",
-    Blade_Price: 129.99,
-    Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://www.amazon.com/Butterfly-Timo-Table-Tennis-Blade/dp/B088WBJXDH"
-  },
-  {
-    Blade_Name: "Butterfly B303FL Shakehand",
-    Blade_Speed: 65,
-    Blade_Control: 90,
-    Blade_Power: 60,
-    Blade_Grip: "Flared",
-    Blade_Price: 39.99,
+    Blade_Price: 34.95,
     Blade_Level: "Beginner",
-    Blade_Affiliate_Link: "https://www.amazon.com/Butterfly-B303FL-Shakehand-Tennis-Racket/dp/B0F4YZ6BYZ"
+    Blade_Affiliate_Link: "https://joola.com/products/joola-challenger-off-table-tennis-blade"
+  },
+  {
+    Blade_Name: "JOOLA Chen Weixing Defensive",
+    Blade_Speed: 55,
+    Blade_Control: 92,
+    Blade_Power: 58,
+    Blade_Grip: "Flared",
+    Blade_Price: 59.95,
+    Blade_Level: "Intermediate",
+    Blade_Affiliate_Link: "https://joola.com/products/joola-chen-weixing-table-tennis-blade"
+  },
+  {
+    Blade_Name: "JOOLA Xylo 7",
+    Blade_Speed: 80,
+    Blade_Control: 72,
+    Blade_Power: 84,
+    Blade_Grip: "Flared",
+    Blade_Price: 89.95,
+    Blade_Level: "Intermediate",
+    Blade_Affiliate_Link: "https://joola.com/products/joola-xylo-7-table-tennis-blade"
+  },
+  {
+    Blade_Name: "JOOLA Classic All",
+    Blade_Speed: 58,
+    Blade_Control: 88,
+    Blade_Power: 62,
+    Blade_Grip: "Flared",
+    Blade_Price: 34.95,
+    Blade_Level: "Beginner",
+    Blade_Affiliate_Link: "https://joola.com/products/joola-classic-all-table-tennis-blade"
+  },
+  {
+    Blade_Name: "JOOLA Rosskopf Emotion",
+    Blade_Speed: 82,
+    Blade_Control: 78,
+    Blade_Power: 83,
+    Blade_Grip: "Flared",
+    Blade_Price: 89.95,
+    Blade_Level: "Intermediate",
+    Blade_Affiliate_Link: "https://joola.com/products/joola-rosskopf-emotion-table-tennis-blade"
+  },
+  {
+    Blade_Name: "JOOLA BASEline Junior",
+    Blade_Speed: 56,
+    Blade_Control: 86,
+    Blade_Power: 60,
+    Blade_Grip: "Flared (Junior)",
+    Blade_Price: 29.95,
+    Blade_Level: "Beginner",
+    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-jr-table-tennis-blade"
+  },
+  {
+    Blade_Name: "ANDRO Treiber CO",
+    Blade_Speed: 86,
+    Blade_Control: 72,
+    Blade_Power: 88,
+    Blade_Grip: "Flared",
+    Blade_Price: 79.95,
+    Blade_Level: "Intermediate",
+    Blade_Affiliate_Link: "https://www.andro.de/en/treiber-co-off"
+  },
+  {
+    Blade_Name: "ANDRO Treiber FI",
+    Blade_Speed: 84,
+    Blade_Control: 74,
+    Blade_Power: 86,
+    Blade_Grip: "Flared",
+    Blade_Price: 84.95,
+    Blade_Level: "Intermediate",
+    Blade_Affiliate_Link: "https://www.andro.de/en/treiber-fi-off"
+  },
+  {
+    Blade_Name: "ANDRO Treiber FL",
+    Blade_Speed: 85,
+    Blade_Control: 72,
+    Blade_Power: 87,
+    Blade_Grip: "Flared",
+    Blade_Price: 84.95,
+    Blade_Level: "Intermediate",
+    Blade_Affiliate_Link: "https://www.andro.de/en/treiber-fl-off"
   },
   {
     Blade_Name: "ANDRO Timber 5 OFF",
-    Blade_Speed: 82,
+    Blade_Speed: 72,
     Blade_Control: 78,
-    Blade_Power: 80,
+    Blade_Power: 75,
     Blade_Grip: "Flared",
-    Blade_Price: 79.99,
+    Blade_Price: 69.95,
+    Blade_Level: "Beginner/Intermediate",
+    Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-off"
+  },
+  {
+    Blade_Name: "ANDRO Timber 5 ALL",
+    Blade_Speed: 66,
+    Blade_Control: 84,
+    Blade_Power: 64,
+    Blade_Grip: "Flared",
+    Blade_Price: 64.95,
+    Blade_Level: "Beginner/Intermediate",
+    Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-all"
+  },
+  {
+    Blade_Name: "ANDRO Timber 5 DEF",
+    Blade_Speed: 52,
+    Blade_Control: 92,
+    Blade_Power: 50,
+    Blade_Grip: "Flared",
+    Blade_Price: 69.95,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.amazon.com/stores/Andro/page/andro-blades"
+    Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-def"
+  },
+  {
+    Blade_Name: "ANDRO Kanter CO",
+    Blade_Speed: 90,
+    Blade_Control: 64,
+    Blade_Power: 92,
+    Blade_Grip: "Flared",
+    Blade_Price: 89.95,
+    Blade_Level: "Intermediate",
+    Blade_Affiliate_Link: "https://www.andro.de/en/kanter-co-off"
+  },
+  {
+    Blade_Name: "Butterfly TB5 Alpha",
+    Blade_Speed: 74,
+    Blade_Control: 80,
+    Blade_Power: 70,
+    Blade_Grip: "Flared",
+    Blade_Price: 64.99,
+    Blade_Level: "Beginner/Intermediate",
+    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/tb5-alpha-fl-blade"
+  },
+  {
+    Blade_Name: "Butterfly Boll Control",
+    Blade_Speed: 58,
+    Blade_Control: 88,
+    Blade_Power: 60,
+    Blade_Grip: "Flared",
+    Blade_Price: 59.99,
+    Blade_Level: "Beginner",
+    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/boll-control-blade"
+  },
+  {
+    Blade_Name: "Butterfly Boll Allround",
+    Blade_Speed: 62,
+    Blade_Control: 84,
+    Blade_Power: 65,
+    Blade_Grip: "Flared",
+    Blade_Price: 64.99,
+    Blade_Level: "Beginner/Intermediate",
+    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/boll-allround-blade"
+  },
+  {
+    Blade_Name: "Butterfly Primorac",
+    Blade_Speed: 74,
+    Blade_Control: 78,
+    Blade_Power: 72,
+    Blade_Grip: "Flared",
+    Blade_Price: 69.99,
+    Blade_Level: "Intermediate",
+    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/primorac-blade"
   }
 ];
 
