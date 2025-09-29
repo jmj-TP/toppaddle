@@ -25,13 +25,13 @@ export interface Recommendation {
   totalScore: number;
 }
 
-// Calculate compatibility score between user preferences and product attributes
+// Calculate compatibility score for general products (blades, pre-assembled rackets)
 function calculateScore(answers: QuizAnswers, product: any): number {
   let score = 0;
   let maxScore = 0;
 
-  // Level matching (20% weight)
-  const levelWeight = 20;
+  // Level matching (25% weight)
+  const levelWeight = 25;
   maxScore += levelWeight;
   if (answers.Level === product.Blade_Level || answers.Level === product.Racket_Level || answers.Level === product.Rubber_Level) {
     score += levelWeight;
@@ -63,8 +63,8 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += ((speed + control) / 200) * playstyleWeight;
   }
 
-  // Power preference matching (20% weight)
-  const powerWeight = 20;
+  // Power preference matching (25% weight)
+  const powerWeight = 25;
   maxScore += powerWeight;
   
   if (answers.Power.includes('A lot of power')) {
@@ -90,16 +90,68 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += gripWeight * 0.8; // Give benefit of doubt
   }
 
-  // Forehand/Backhand style matching (10% weight)
-  const styleWeight = 10;
+  return Math.min(100, (score / maxScore) * 100);
+}
+
+// Calculate compatibility score specifically for rubbers based on side preference (FH/BH)
+function calculateRubberScore(answers: QuizAnswers, rubber: Rubber, side: 'forehand' | 'backhand'): number {
+  let score = 0;
+  let maxScore = 0;
+
+  // Level matching (20% weight)
+  const levelWeight = 20;
+  maxScore += levelWeight;
+  if (answers.Level === rubber.Rubber_Level) {
+    score += levelWeight;
+  } else if (
+    (answers.Level === 'Beginner' && rubber.Rubber_Level === 'Intermediate') ||
+    (answers.Level === 'Intermediate' && rubber.Rubber_Level === 'Advanced')
+  ) {
+    score += levelWeight * 0.7;
+  }
+
+  // Side-specific style matching (60% weight - this is the key improvement)
+  const styleWeight = 60;
   maxScore += styleWeight;
   
-  if (answers.Forehand.includes('Fast & aggressive') || answers.Backhand.includes('Fast & aggressive')) {
-    score += (speed / 100) * styleWeight;
-  } else if (answers.Forehand.includes('Spin & topspin') || answers.Backhand.includes('Spin & topspin')) {
-    score += (spin / 100) * styleWeight;
-  } else if (answers.Forehand.includes('Calm & controlled') || answers.Backhand.includes('Calm & controlled')) {
-    score += (control / 100) * styleWeight;
+  const sidePreference = side === 'forehand' ? answers.Forehand : answers.Backhand;
+  const speed = rubber.Rubber_Speed || 0;
+  const control = rubber.Rubber_Control || 0;
+  const spin = rubber.Rubber_Spin || 0;
+
+  if (sidePreference.includes('Fast & aggressive')) {
+    // Prioritize speed for aggressive play
+    score += (speed / 100) * styleWeight * 0.7;
+    score += (spin / 100) * styleWeight * 0.3;
+  } else if (sidePreference.includes('Spin & topspin')) {
+    // Prioritize spin for topspin play
+    score += (spin / 100) * styleWeight * 0.8;
+    score += (speed / 100) * styleWeight * 0.2;
+  } else if (sidePreference.includes('Calm & controlled')) {
+    // Prioritize control for defensive play
+    score += (control / 100) * styleWeight * 0.8;
+    score += (speed / 100) * styleWeight * 0.2;
+  } else if (sidePreference.includes('Both sides the same') || sidePreference.includes('not sure')) {
+    // Use overall playstyle as fallback
+    if (answers.Playstyle.includes('Offensive')) {
+      score += ((speed + spin) / 200) * styleWeight;
+    } else if (answers.Playstyle.includes('Defensive')) {
+      score += (control / 100) * styleWeight;
+    } else {
+      score += ((speed + control + spin) / 300) * styleWeight;
+    }
+  }
+
+  // Power preference influence (20% weight)
+  const powerWeight = 20;
+  maxScore += powerWeight;
+  
+  if (answers.Power.includes('A lot of power')) {
+    score += (speed / 100) * powerWeight;
+  } else if (answers.Power.includes('Control is more important')) {
+    score += (control / 100) * powerWeight;
+  } else if (answers.Power.includes('Balanced')) {
+    score += ((speed + control) / 200) * powerWeight;
   }
 
   return Math.min(100, (score / maxScore) * 100);
@@ -140,7 +192,7 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
   return suitableRackets.length > 0 ? suitableRackets[0] : null;
 }
 
-// Find best custom setup
+// Find best custom setup with side-specific rubber scoring
 export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
   const budgetRange = getBudgetRange(answers.Budget);
   const bestCombinations: CustomSetup[] = [];
@@ -152,10 +204,10 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
         const totalPrice = blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price;
         
         if (totalPrice <= budgetRange.max) {
-          // Calculate combined score
+          // Calculate side-specific scores
           const bladeScore = calculateScore(answers, blade);
-          const fhScore = calculateScore(answers, fhRubber);
-          const bhScore = calculateScore(answers, bhRubber);
+          const fhScore = calculateRubberScore(answers, fhRubber, 'forehand');
+          const bhScore = calculateRubberScore(answers, bhRubber, 'backhand');
           
           // Weight: blade 50%, forehand rubber 30%, backhand rubber 20%
           const combinedScore = (bladeScore * 0.5) + (fhScore * 0.3) + (bhScore * 0.2);
