@@ -16,6 +16,7 @@ export interface Rubber {
   Rubber_Speed: number; // 1-100
   Rubber_Spin: number; // 1-100
   Rubber_Control: number; // 1-100
+  Rubber_Power: number; // 1-100
   Rubber_Price: number; // USD
   Rubber_Level: 'Beginner' | 'Intermediate' | 'Advanced';
   Rubber_Affiliate_Link: string;
@@ -239,82 +240,6 @@ export const blades: Blade[] =
     Blade_Price: 69.99,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.butterflyonline.com/product/primorac-blade"
-  }
-];
-
-// Rubbers Database
-export const rubbers: Rubber[] = [
-  {
-    Rubber_Name: "Butterfly Dignics 09C",
-    Rubber_Speed: 92,
-    Rubber_Spin: 96,
-    Rubber_Control: 72,
-    Rubber_Price: 89.99,
-    Rubber_Level: "Advanced",
-    Rubber_Affiliate_Link: "https://www.amazon.com/Butterfly-Dignics-Table-Tennis-Rubber/dp/B0C8JWBC4M"
-  },
-  {
-    Rubber_Name: "Butterfly Tenergy 05 Hard",
-    Rubber_Speed: 95,
-    Rubber_Spin: 98,
-    Rubber_Control: 65,
-    Rubber_Price: 79.99,
-    Rubber_Level: "Advanced",
-    Rubber_Affiliate_Link: "https://www.amazon.com/Butterfly-Tenergy-Table-Tennis-Rubber/dp/B07HN11T3N"
-  },
-  {
-    Rubber_Name: "JOOLA Omega Control",
-    Rubber_Speed: 78,
-    Rubber_Spin: 82,
-    Rubber_Control: 88,
-    Rubber_Price: 29.99,
-    Rubber_Level: "Beginner",
-    Rubber_Affiliate_Link: "https://www.amazon.com/JOOLA-Omega-Control-Tournament-Performance/dp/B0C539K1TF"
-  },
-  {
-    Rubber_Name: "JOOLA Rhyzm-P",
-    Rubber_Speed: 85,
-    Rubber_Spin: 88,
-    Rubber_Control: 85,
-    Rubber_Price: 39.99,
-    Rubber_Level: "Intermediate",
-    Rubber_Affiliate_Link: "https://www.amazon.com/stores/JOOLANorthAmerica/page/3CC4DD23-DA94-4B1C-A3C8-620F1C17C104"
-  },
-  {
-    Rubber_Name: "Butterfly Wakaba",
-    Rubber_Speed: 70,
-    Rubber_Spin: 75,
-    Rubber_Control: 92,
-    Rubber_Price: 19.99,
-    Rubber_Level: "Beginner",
-    Rubber_Affiliate_Link: "https://www.amazon.com/stores/Butterfly/page/5683577E-C949-4FAC-862C-4813F3104DC2"
-  },
-  {
-    Rubber_Name: "ANDRO Hexer Powergrip",
-    Rubber_Speed: 88,
-    Rubber_Spin: 90,
-    Rubber_Control: 75,
-    Rubber_Price: 49.99,
-    Rubber_Level: "Advanced",
-    Rubber_Affiliate_Link: "https://www.amazon.com/stores/Andro/rubber"
-  },
-  {
-    Rubber_Name: "ANDRO GTT 45",
-    Rubber_Speed: 80,
-    Rubber_Spin: 85,
-    Rubber_Control: 82,
-    Rubber_Price: 34.99,
-    Rubber_Level: "Intermediate",
-    Rubber_Affiliate_Link: "https://www.amazon.com/stores/Andro/page/andro-rubber"
-  },
-  {
-    Rubber_Name: "Butterfly Sriver",
-    Rubber_Speed: 75,
-    Rubber_Spin: 80,
-    Rubber_Control: 85,
-    Rubber_Price: 24.99,
-    Rubber_Level: "Beginner",
-    Rubber_Affiliate_Link: "https://www.amazon.com/stores/Butterfly/page/5683577E-C949-4FAC-862C-4813F3104DC2"
   },
   {
     Blade_Name: "Butterfly Viscaria",
@@ -353,7 +278,7 @@ export const rubbers: Rubber[] = [
     Blade_Power: 96,
     Blade_Grip: "Flared",
     Blade_Price: 242.99,
-    Blade_Level: "Advanced/Elite",
+    Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://tabletennisstore.us/products/butterfly-viscaria-super-alc-offensive-table-tennis-blade"
   },
   {
@@ -373,7 +298,7 @@ export const rubbers: Rubber[] = [
     Blade_Power: 95,
     Blade_Grip: "Flared",
     Blade_Price: 184.90,
-    Blade_Level: "Elite",
+    Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/fan-zhendong-alc.html"
   },
   {
@@ -383,7 +308,7 @@ export const rubbers: Rubber[] = [
     Blade_Power: 94,
     Blade_Grip: "Flared",
     Blade_Price: 184.90,
-    Blade_Level: "Elite",
+    Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/lin-gaoyuan-alc.html"
   },
   {
@@ -393,7 +318,7 @@ export const rubbers: Rubber[] = [
     Blade_Power: 93,
     Blade_Grip: "Flared",
     Blade_Price: 184.90,
-    Blade_Level: "Elite",
+    Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/harimoto-tomokazu-innerforce-alc.html"
   },
   {
@@ -403,7 +328,7 @@ export const rubbers: Rubber[] = [
     Blade_Power: 99,
     Blade_Grip: "Flared",
     Blade_Price: 379.90,
-    Blade_Level: "Elite",
+    Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/mizutani-jun-super-zlc.html"
   },
   {
@@ -413,8 +338,92 @@ export const rubbers: Rubber[] = [
     Blade_Power: 99,
     Blade_Grip: "Flared",
     Blade_Price: 379.90,
-    Blade_Level: "Elite",
+    Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-super-zlc.html"
+  }
+];
+
+// Rubbers Database
+export const rubbers: Rubber[] = [
+  {
+    Rubber_Name: "Butterfly Dignics 09C",
+    Rubber_Speed: 92,
+    Rubber_Spin: 96,
+    Rubber_Control: 72,
+    Rubber_Power: 90,
+    Rubber_Price: 89.99,
+    Rubber_Level: "Advanced",
+    Rubber_Affiliate_Link: "https://www.amazon.com/Butterfly-Dignics-Table-Tennis-Rubber/dp/B0C8JWBC4M"
+  },
+  {
+    Rubber_Name: "Butterfly Tenergy 05 Hard",
+    Rubber_Speed: 95,
+    Rubber_Spin: 98,
+    Rubber_Control: 65,
+    Rubber_Power: 93,
+    Rubber_Price: 79.99,
+    Rubber_Level: "Advanced",
+    Rubber_Affiliate_Link: "https://www.amazon.com/Butterfly-Tenergy-Table-Tennis-Rubber/dp/B07HN11T3N"
+  },
+  {
+    Rubber_Name: "JOOLA Omega Control",
+    Rubber_Speed: 78,
+    Rubber_Spin: 82,
+    Rubber_Control: 88,
+    Rubber_Power: 72,
+    Rubber_Price: 29.99,
+    Rubber_Level: "Beginner",
+    Rubber_Affiliate_Link: "https://www.amazon.com/JOOLA-Omega-Control-Tournament-Performance/dp/B0C539K1TF"
+  },
+  {
+    Rubber_Name: "JOOLA Rhyzm-P",
+    Rubber_Speed: 85,
+    Rubber_Spin: 88,
+    Rubber_Control: 85,
+    Rubber_Power: 82,
+    Rubber_Price: 39.99,
+    Rubber_Level: "Intermediate",
+    Rubber_Affiliate_Link: "https://www.amazon.com/stores/JOOLANorthAmerica/page/3CC4DD23-DA94-4B1C-A3C8-620F1C17C104"
+  },
+  {
+    Rubber_Name: "Butterfly Wakaba",
+    Rubber_Speed: 70,
+    Rubber_Spin: 75,
+    Rubber_Control: 92,
+    Rubber_Power: 68,
+    Rubber_Price: 19.99,
+    Rubber_Level: "Beginner",
+    Rubber_Affiliate_Link: "https://www.amazon.com/stores/Butterfly/page/5683577E-C949-4FAC-862C-4813F3104DC2"
+  },
+  {
+    Rubber_Name: "ANDRO Hexer Powergrip",
+    Rubber_Speed: 88,
+    Rubber_Spin: 90,
+    Rubber_Control: 75,
+    Rubber_Power: 86,
+    Rubber_Price: 49.99,
+    Rubber_Level: "Advanced",
+    Rubber_Affiliate_Link: "https://www.amazon.com/stores/Andro/rubber"
+  },
+  {
+    Rubber_Name: "ANDRO GTT 45",
+    Rubber_Speed: 80,
+    Rubber_Spin: 85,
+    Rubber_Control: 82,
+    Rubber_Power: 78,
+    Rubber_Price: 34.99,
+    Rubber_Level: "Intermediate",
+    Rubber_Affiliate_Link: "https://www.amazon.com/stores/Andro/page/andro-rubber"
+  },
+  {
+    Rubber_Name: "Butterfly Sriver",
+    Rubber_Speed: 75,
+    Rubber_Spin: 80,
+    Rubber_Control: 85,
+    Rubber_Power: 73,
+    Rubber_Price: 24.99,
+    Rubber_Level: "Beginner",
+    Rubber_Affiliate_Link: "https://www.amazon.com/stores/Butterfly/page/5683577E-C949-4FAC-862C-4813F3104DC2"
   }
   
 ];
