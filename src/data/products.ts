@@ -230,7 +230,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Control: 82,
     Racket_Power: 75,
     Racket_Grip: "Flared",
-    Racket_Price: 89.99,
+    Racket_Price: 25,
     Racket_Level: "Intermediate",
     Racket_Affiliate_Link: "https://www.amazon.com/Joola-Carbon-Control-Table-Tennis/dp/B010DB9WFY"
   },
