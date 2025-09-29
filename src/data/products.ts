@@ -452,7 +452,7 @@ export const rubbers: Rubber[] =
     "Rubber_Speed": 80,
     "Rubber_Spin": 85,
     "Rubber_Control": 90,
-    "Rubber_Power": 80,
+    "Rubber_Power": 82,
     "Rubber_Price": 50,
     "Rubber_Level": "Intermediate",
     "Rubber_Affiliate_Link" : "https://www.megaspin.net/store/default.asp?pid=andro-hexer-pg-sfx",
