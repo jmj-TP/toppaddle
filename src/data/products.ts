@@ -167,7 +167,7 @@ export const blades: Blade[] =
     Blade_Power: 75,
     Blade_Grip: "Flared",
     Blade_Price: 69.95,
-    Blade_Level: "Beginner/Intermediate",
+    Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-off"
   },
   {
@@ -177,7 +177,7 @@ export const blades: Blade[] =
     Blade_Power: 64,
     Blade_Grip: "Flared",
     Blade_Price: 64.95,
-    Blade_Level: "Beginner/Intermediate",
+    Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-all"
   },
   {
@@ -207,7 +207,7 @@ export const blades: Blade[] =
     Blade_Power: 70,
     Blade_Grip: "Flared",
     Blade_Price: 64.99,
-    Blade_Level: "Beginner/Intermediate",
+    Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.butterflyonline.com/product/tb5-alpha-fl-blade"
   },
   {
@@ -227,7 +227,7 @@ export const blades: Blade[] =
     Blade_Power: 65,
     Blade_Grip: "Flared",
     Blade_Price: 64.99,
-    Blade_Level: "Beginner/Intermediate",
+    Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.butterflyonline.com/product/boll-allround-blade"
   },
   {
