@@ -315,7 +315,108 @@ export const rubbers: Rubber[] = [
     Rubber_Price: 24.99,
     Rubber_Level: "Beginner",
     Rubber_Affiliate_Link: "https://www.amazon.com/stores/Butterfly/page/5683577E-C949-4FAC-862C-4813F3104DC2"
+  },
+  {
+    Blade_Name: "Butterfly Viscaria",
+    Blade_Speed: 92,
+    Blade_Control: 80,
+    Blade_Power: 94,
+    Blade_Grip: "Flared",
+    Blade_Price: 166.49,
+    Blade_Level: "Advanced",
+    Blade_Affiliate_Link: "https://tabletennisstore.us/products/butterfly-viscaria-offensive-table-tennis-blade"
+  },
+  {
+    Blade_Name: "Butterfly Timo Boll ALC",
+    Blade_Speed: 90,
+    Blade_Control: 82,
+    Blade_Power: 92,
+    Blade_Grip: "Flared",
+    Blade_Price: 179.90,
+    Blade_Level: "Advanced",
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/timo-boll-alc.html"
+  },
+  {
+    Blade_Name: "JOOLA Nobilis PBO-C",
+    Blade_Speed: 95,
+    Blade_Control: 78,
+    Blade_Power: 98,
+    Blade_Grip: "Flared",
+    Blade_Price: 199.00,
+    Blade_Level: "Advanced",
+    Blade_Affiliate_Link: "https://joola.it/products/joola-holz-nobilis-pbo-c"
+  },
+  {
+    Blade_Name: "Butterfly Viscaria Super ALC",
+    Blade_Speed: 94,
+    Blade_Control: 78,
+    Blade_Power: 96,
+    Blade_Grip: "Flared",
+    Blade_Price: 242.99,
+    Blade_Level: "Advanced/Elite",
+    Blade_Affiliate_Link: "https://tabletennisstore.us/products/butterfly-viscaria-super-alc-offensive-table-tennis-blade"
+  },
+  {
+    Blade_Name: "Butterfly Zhang Jike ALC",
+    Blade_Speed: 91,
+    Blade_Control: 80,
+    Blade_Power: 93,
+    Blade_Grip: "Flared",
+    Blade_Price: 179.90,
+    Blade_Level: "Advanced",
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-alc.html"
+  },
+  {
+    Blade_Name: "Butterfly Fan Zhendong ALC",
+    Blade_Speed: 94,
+    Blade_Control: 81,
+    Blade_Power: 95,
+    Blade_Grip: "Flared",
+    Blade_Price: 184.90,
+    Blade_Level: "Elite",
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/fan-zhendong-alc.html"
+  },
+  {
+    Blade_Name: "Butterfly Lin Gaoyuan ALC",
+    Blade_Speed: 93,
+    Blade_Control: 80,
+    Blade_Power: 94,
+    Blade_Grip: "Flared",
+    Blade_Price: 184.90,
+    Blade_Level: "Elite",
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/lin-gaoyuan-alc.html"
+  },
+  {
+    Blade_Name: "Butterfly Harimoto Tomokazu Innerforce ALC",
+    Blade_Speed: 92,
+    Blade_Control: 83,
+    Blade_Power: 93,
+    Blade_Grip: "Flared",
+    Blade_Price: 184.90,
+    Blade_Level: "Elite",
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/harimoto-tomokazu-innerforce-alc.html"
+  },
+  {
+    Blade_Name: "Butterfly Jun Mizutani Super ZLC",
+    Blade_Speed: 97,
+    Blade_Control: 76,
+    Blade_Power: 99,
+    Blade_Grip: "Flared",
+    Blade_Price: 379.90,
+    Blade_Level: "Elite",
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/mizutani-jun-super-zlc.html"
+  },
+  {
+    Blade_Name: "Butterfly Zhang Jike Super ZLC",
+    Blade_Speed: 98,
+    Blade_Control: 75,
+    Blade_Power: 99,
+    Blade_Grip: "Flared",
+    Blade_Price: 379.90,
+    Blade_Level: "Elite",
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-super-zlc.html"
   }
+  
 ];
 
 // Pre-Assembled Rackets Database
