@@ -30,8 +30,8 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   let score = 0;
   let maxScore = 0;
 
-  // Level matching (25% weight)
-  const levelWeight = 25;
+  // Level matching (20% weight)
+  const levelWeight = 20;
   maxScore += levelWeight;
   if (answers.Level === product.Blade_Level || answers.Level === product.Racket_Level || answers.Level === product.Rubber_Level) {
     score += levelWeight;
@@ -42,8 +42,8 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += levelWeight * 0.7; // Partial match for progression
   }
 
-  // Playstyle matching (30% weight)
-  const playstyleWeight = 30;
+  // Playstyle matching (35% weight)
+  const playstyleWeight = 35;
   maxScore += playstyleWeight;
   
   const speed = product.Blade_Speed || product.Racket_Speed || product.Rubber_Speed || 0;
