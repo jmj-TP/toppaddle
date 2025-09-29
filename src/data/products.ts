@@ -349,9 +349,9 @@ export const rubbers: Rubber[] =
   [
   {
     "Rubber_Name": "Andro Hexer Powergrip",
-    "Rubber_Speed": 93,
-    "Rubber_Spin": 94,
-    "Rubber_Control": 92,
+    "Rubber_Speed": 90,
+    "Rubber_Spin": 85,
+    "Rubber_Control": 80,
     "Rubber_Power": 90,
     "Rubber_Price": 47.45,
     "Rubber_Level": "Advanced",
