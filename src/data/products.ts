@@ -348,285 +348,115 @@ export const rubbers: Rubber[] =
   
   [
   {
-    "Rubber_Name": "ANDRO Rasanter R42",
-    "Rubber_Speed": 85,
-    "Rubber_Spin": 80,
-    "Rubber_Control": 75,
-    "Rubber_Power": 78,
-    "Rubber_Price": 35.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.andro.de/en/rasanter-r42"
-  },
-  {
-    "Rubber_Name": "ANDRO Rasanter R37",
-    "Rubber_Speed": 80,
-    "Rubber_Spin": 78,
-    "Rubber_Control": 78,
-    "Rubber_Power": 74,
-    "Rubber_Price": 32.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.andro.de/en/rasanter-r37"
-  },
-  {
-    "Rubber_Name": "ANDRO Rasanter C48",
-    "Rubber_Speed": 78,
-    "Rubber_Spin": 75,
-    "Rubber_Control": 80,
-    "Rubber_Power": 75,
-    "Rubber_Price": 30.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.andro.de/en/rasanter-c48"
-  },
-  {
-    "Rubber_Name": "ANDRO Rasanter F42",
-    "Rubber_Speed": 72,
-    "Rubber_Spin": 70,
-    "Rubber_Control": 85,
-    "Rubber_Power": 68,
-    "Rubber_Price": 28.00,
-    "Rubber_Level": "Beginner",
-    "Rubber_Affiliate_Link": "https://www.andro.de/en/rasanter-f42"
-  },
-  {
-    "Rubber_Name": "ANDRO Hexer Powergrip",
-    "Rubber_Speed": 70,
-    "Rubber_Spin": 72,
-    "Rubber_Control": 82,
-    "Rubber_Power": 65,
-    "Rubber_Price": 25.00,
-    "Rubber_Level": "Beginner",
-    "Rubber_Affiliate_Link": "https://www.andro.de/en/hexer-powergrip"
+    "Rubber_Name": "Andro Hexer Powergrip",
+    "Rubber_Speed": 93,
+    "Rubber_Spin": 94,
+    "Rubber_Control": 92,
+    "Rubber_Power": 90,
+    "Rubber_Price": 47.45,
+    "Rubber_Level": "Advanced",
+    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-hexer-powergrip"
   },
   {
     "Rubber_Name": "Butterfly Flextra",
     "Rubber_Speed": 70,
-    "Rubber_Spin": 72,
-    "Rubber_Control": 85,
-    "Rubber_Power": 60,
-    "Rubber_Price": 20.00,
-    "Rubber_Level": "Beginner",
-    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/butterfly-flextra"
-  },
-  {
-    "Rubber_Name": "Butterfly Sriver FX",
-    "Rubber_Speed": 75,
-    "Rubber_Spin": 78,
-    "Rubber_Control": 78,
-    "Rubber_Power": 70,
-    "Rubber_Price": 30.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/butterfly-sriver-fx"
-  },
-  {
-    "Rubber_Name": "Butterfly Sriver",
-    "Rubber_Speed": 73,
     "Rubber_Spin": 75,
-    "Rubber_Control": 80,
-    "Rubber_Power": 68,
-    "Rubber_Price": 28.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/butterfly-sriver"
-  },
-  {
-    "Rubber_Name": "Butterfly Tenergy 05 FX (Budget Sale)",
-    "Rubber_Speed": 82,
-    "Rubber_Spin": 86,
-    "Rubber_Control": 75,
-    "Rubber_Power": 78,
-    "Rubber_Price": 55.00,
-    "Rubber_Level": "Advanced",
-    "Rubber_Affiliate_Link": "https://www.amazon.com/Butterfly-Tenergy-05-FX/dp/B00FA2J2ZO"
-  },
-  {
-    "Rubber_Name": "Butterfly Sriver EL",
-    "Rubber_Speed": 68,
-    "Rubber_Spin": 70,
     "Rubber_Control": 85,
-    "Rubber_Power": 60,
-    "Rubber_Price": 22.00,
+    "Rubber_Power": 65,
+    "Rubber_Price": 17.99,
     "Rubber_Level": "Beginner",
-    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/butterfly-sriver-el"
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/flextra"
   },
   {
     "Rubber_Name": "JOOLA Rhyzer 48",
-    "Rubber_Speed": 78,
-    "Rubber_Spin": 78,
-    "Rubber_Control": 75,
-    "Rubber_Power": 74,
-    "Rubber_Price": 35.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.joola.com/products/rhyzer-48"
-  },
-  {
-    "Rubber_Name": "JOOLA Rhyzer 43",
-    "Rubber_Speed": 75,
-    "Rubber_Spin": 75,
-    "Rubber_Control": 78,
-    "Rubber_Power": 72,
-    "Rubber_Price": 32.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.joola.com/products/rhyzer-43"
-  },
-  {
-    "Rubber_Name": "JOOLA Rhyzer 39",
-    "Rubber_Speed": 72,
-    "Rubber_Spin": 70,
+    "Rubber_Speed": 90,
+    "Rubber_Spin": 85,
     "Rubber_Control": 80,
-    "Rubber_Power": 70,
-    "Rubber_Price": 30.00,
-    "Rubber_Level": "Beginner",
-    "Rubber_Affiliate_Link": "https://www.joola.com/products/rhyzer-39"
+    "Rubber_Power": 88,
+    "Rubber_Price": 54.95,
+    "Rubber_Level": "Advanced",
+    "Rubber_Affiliate_Link": "https://joola.com/collections/table-tennis-rubbers/products/rhyzer-48-table-tennis-rubber"
   },
   {
-    "Rubber_Name": "JOOLA Express",
-    "Rubber_Speed": 70,
-    "Rubber_Spin": 70,
-    "Rubber_Control": 82,
-    "Rubber_Power": 65,
-    "Rubber_Price": 25.00,
-    "Rubber_Level": "Beginner",
-    "Rubber_Affiliate_Link": "https://www.joola.com/products/express"
+    "Rubber_Name": "Andro Rasanter R42",
+    "Rubber_Speed": 85,
+    "Rubber_Spin": 90,
+    "Rubber_Control": 88,
+    "Rubber_Power": 85,
+    "Rubber_Price": 47.45,
+    "Rubber_Level": "Intermediate",
+    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-rasanter-r42"
+  },
+  {
+    "Rubber_Name": "Butterfly Sriver",
+    "Rubber_Speed": 80,
+    "Rubber_Spin": 85,
+    "Rubber_Control": 90,
+    "Rubber_Power": 80,
+    "Rubber_Price": 30.00,
+    "Rubber_Level": "Intermediate",
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/sriver"
   },
   {
     "Rubber_Name": "JOOLA Samba",
-    "Rubber_Speed": 68,
-    "Rubber_Spin": 68,
+    "Rubber_Speed": 70,
+    "Rubber_Spin": 80,
     "Rubber_Control": 85,
-    "Rubber_Power": 63,
-    "Rubber_Price": 22.00,
+    "Rubber_Power": 75,
+    "Rubber_Price": 24.99,
     "Rubber_Level": "Beginner",
     "Rubber_Affiliate_Link": "https://www.joola.com/products/samba"
   },
   {
-    "Rubber_Name": "ANDRO Rasanter F37",
-    "Rubber_Speed": 70,
-    "Rubber_Spin": 72,
-    "Rubber_Control": 80,
-    "Rubber_Power": 68,
-    "Rubber_Price": 28.00,
-    "Rubber_Level": "Beginner",
-    "Rubber_Affiliate_Link": "https://www.andro.de/en/rasanter-f37"
-  },
-  {
-    "Rubber_Name": "ANDRO Hexer Grip",
-    "Rubber_Speed": 68,
-    "Rubber_Spin": 70,
-    "Rubber_Control": 82,
-    "Rubber_Power": 65,
-    "Rubber_Price": 25.00,
-    "Rubber_Level": "Beginner",
-    "Rubber_Affiliate_Link": "https://www.andro.de/en/hexer-grip"
-  },
-  {
-    "Rubber_Name": "Butterfly Tenergy 05 FX Lite",
-    "Rubber_Speed": 80,
-    "Rubber_Spin": 84,
-    "Rubber_Control": 74,
-    "Rubber_Power": 76,
-    "Rubber_Price": 50.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.amazon.com/Butterfly-Tenergy-05-FX/dp/B00FA2J2ZO"
-  },
-  {
-    "Rubber_Name": "Butterfly Rozena",
-    "Rubber_Speed": 75,
-    "Rubber_Spin": 78,
+    "Rubber_Name": "Andro Hexer",
+    "Rubber_Speed": 85,
+    "Rubber_Spin": 80,
     "Rubber_Control": 75,
-    "Rubber_Power": 72,
-    "Rubber_Price": 35.00,
+    "Rubber_Power": 80,
+    "Rubber_Price": 45.00,
     "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.amazon.com/Butterfly-Rozena-Table-Tennis-Rubber/dp/B00K4U5I0E"
-  },
-  {
-    "Rubber_Name": "JOOLA Samba FX",
-    "Rubber_Speed": 70,
-    "Rubber_Spin": 72,
-    "Rubber_Control": 78,
-    "Rubber_Power": 65,
-    "Rubber_Price": 28.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.joola.com/products/samba-fx"
-  },
-  {
-    "Rubber_Name": "JOOLA Express FX",
-    "Rubber_Speed": 72,
-    "Rubber_Spin": 74,
-    "Rubber_Control": 76,
-    "Rubber_Power": 68,
-    "Rubber_Price": 30.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.joola.com/products/express-fx"
-  },
-  {
-    "Rubber_Name": "ANDRO Hexer Attack",
-    "Rubber_Speed": 75,
-    "Rubber_Spin": 75,
-    "Rubber_Control": 72,
-    "Rubber_Power": 74,
-    "Rubber_Price": 32.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.andro.de/en/hexer-attack"
-  },
-  {
-    "Rubber_Name": "ANDRO Rasanter R50",
-    "Rubber_Speed": 78,
-    "Rubber_Spin": 78,
-    "Rubber_Control": 72,
-    "Rubber_Power": 78,
-    "Rubber_Price": 38.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.andro.de/en/rasanter-r50"
-  },
-  {
-    "Rubber_Name": "Butterfly Sriver G3",
-    "Rubber_Speed": 70,
-    "Rubber_Spin": 72,
-    "Rubber_Control": 78,
-    "Rubber_Power": 65,
-    "Rubber_Price": 30.00,
-    "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/butterfly-sriver-g3"
+    "Rubber_Affiliate_Link": "https://www.andro.de/en/hexer"
   },
   {
     "Rubber_Name": "Butterfly Flextra FX",
-    "Rubber_Speed": 68,
-    "Rubber_Spin": 70,
-    "Rubber_Control": 82,
-    "Rubber_Power": 60,
-    "Rubber_Price": 25.00,
+    "Rubber_Speed": 70,
+    "Rubber_Spin": 75,
+    "Rubber_Control": 85,
+    "Rubber_Power": 70,
+    "Rubber_Price": 17.99,
     "Rubber_Level": "Beginner",
-    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/butterfly-flextra-fx"
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/flextra-fx"
   },
   {
-    "Rubber_Name": "JOOLA Samba EL",
-    "Rubber_Speed": 68,
-    "Rubber_Spin": 70,
-    "Rubber_Control": 82,
-    "Rubber_Power": 60,
-    "Rubber_Price": 25.00,
-    "Rubber_Level": "Beginner",
-    "Rubber_Affiliate_Link": "https://www.joola.com/products/samba-el"
-  },
-  {
-    "Rubber_Name": "JOOLA Rhyzer 35",
-    "Rubber_Speed": 72,
-    "Rubber_Spin": 74,
-    "Rubber_Control": 70,
-    "Rubber_Power": 68,
-    "Rubber_Price": 28.00,
+    "Rubber_Name": "JOOLA Rhyzer 45",
+    "Rubber_Speed": 80,
+    "Rubber_Spin": 85,
+    "Rubber_Control": 90,
+    "Rubber_Power": 80,
+    "Rubber_Price": 54.95,
     "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.joola.com/products/rhyzer-35"
+    "Rubber_Affiliate_Link": "https://joola.com/collections/table-tennis-rubbers/products/rhyzer-45-table-tennis-rubber"
   },
   {
-    "Rubber_Name": "ANDRO Hexer Light",
-    "Rubber_Speed": 72,
-    "Rubber_Spin": 74,
-    "Rubber_Control": 75,
-    "Rubber_Power": 68,
-    "Rubber_Price": 28.00,
+    "Rubber_Name": "Andro Hexer Duro",
+    "Rubber_Speed": 90,
+    "Rubber_Spin": 85,
+    "Rubber_Control": 80,
+    "Rubber_Power": 90,
+    "Rubber_Price": 47.45,
+    "Rubber_Level": "Advanced",
+    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-hexer-duro"
+  },
+  {
+    "Rubber_Name": "Andro Hexer PowerGrip SFX",
+    "Rubber_Speed": 80,
+    "Rubber_Spin": 85,
+    "Rubber_Control": 90,
+    "Rubber_Power": 80,
+    "Rubber_Price": 50,
     "Rubber_Level": "Intermediate",
-    "Rubber_Affiliate_Link": "https://www.andro.de/en/hexer-light"
-  }
+    "Rubber_Affiliate_Link" : "https://www.megaspin.net/store/default.asp?pid=andro-hexer-pg-sfx",
+    }
 ];
 
 // Pre-Assembled Rackets Database
