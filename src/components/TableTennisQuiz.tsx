@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import QuestionCard from "./QuestionCard";
 
 interface QuizAnswers {
+  Level: string;
   Playstyle: string;
   Forehand: string;
   Backhand: string;
@@ -17,6 +18,16 @@ interface QuizAnswers {
 const questions = [
   {
     id: 1,
+    question: "What is your current table tennis skill level?",
+    options: [
+      { value: "Beginner", label: "Beginner (just starting out or learning basics)" },
+      { value: "Intermediate", label: "Intermediate (comfortable with basic techniques)" },
+      { value: "Advanced", label: "Advanced (experienced player with refined skills)" }
+    ],
+    key: "Level" as keyof QuizAnswers
+  },
+  {
+    id: 2,
     question: "How would you describe your overall playstyle?",
     options: [
       { value: "Offensive player", label: "Offensive player (I love fast smashes and powerful topspin)" },
@@ -26,7 +37,7 @@ const questions = [
     key: "Playstyle" as keyof QuizAnswers
   },
   {
-    id: 2,
+    id: 3,
     question: "How do you usually play with your forehand?",
     options: [
       { value: "Fast & aggressive", label: "Fast & aggressive" },
@@ -37,7 +48,7 @@ const questions = [
     key: "Forehand" as keyof QuizAnswers
   },
   {
-    id: 3,
+    id: 4,
     question: "How do you usually play with your backhand?",
     options: [
       { value: "Fast & aggressive", label: "Fast & aggressive" },
@@ -48,7 +59,7 @@ const questions = [
     key: "Backhand" as keyof QuizAnswers
   },
   {
-    id: 4,
+    id: 5,
     question: "How much power do you want in your racket?",
     options: [
       { value: "A lot of power", label: "A lot of power (fast, strong shots)" },
@@ -59,7 +70,7 @@ const questions = [
     key: "Power" as keyof QuizAnswers
   },
   {
-    id: 5,
+    id: 6,
     question: "Which handle type do you prefer?",
     options: [
       { value: "Classic Shakehand", label: "Classic Shakehand (simple & universal)" },
@@ -71,7 +82,7 @@ const questions = [
     key: "Grip" as keyof QuizAnswers
   },
   {
-    id: 6,
+    id: 7,
     question: "What is your total budget for Blade + Rubbers or a Pre-Assembled Racket?",
     options: [
       { value: "Under 50 USD", label: "Under 50 USD" },
@@ -82,7 +93,7 @@ const questions = [
     key: "Budget" as keyof QuizAnswers
   },
   {
-    id: 7,
+    id: 8,
     question: "Do you want a ready-to-play racket (pre-assembled), or do you want a custom setup (blade + separate rubbers)?",
     options: [
       { value: "Ready-to-play racket", label: "Ready-to-play racket (perfect for beginners, no gluing needed)" },
