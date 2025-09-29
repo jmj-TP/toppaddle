@@ -42,19 +42,23 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += levelWeight * 0.7; // Partial match for progression
   }
 
-  // Playstyle matching (30% weight)
-  const playstyleWeight = 30;
+  // Playstyle matching (35% weight)
+  const playstyleWeight = 35;
   maxScore += playstyleWeight;
   
   const speed = product.Blade_Speed || product.Racket_Speed || product.Rubber_Speed || 0;
   const control = product.Blade_Control || product.Racket_Control || product.Rubber_Control || 0;
-  const power = product.Blade_Power || product.Racket_Power || 0;
+  const power = product.Blade_Power || product.Racket_Power || product.Rubber_Power || 0;
   const spin = product.Racket_Spin || product.Rubber_Spin || 0;
 
   if (answers.Playstyle.includes('Offensive')) {
-    // Prefer high speed and power
-    score += (speed / 100) * playstyleWeight * 0.6;
-    score += (power / 100) * playstyleWeight * 0.4;
+    // Heavily prefer high speed and power, penalize excessive control
+    score += (speed / 100) * playstyleWeight * 0.5;
+    score += (power / 100) * playstyleWeight * 0.5;
+    // Penalize overly control-focused rubbers for offensive play
+    if (control > 88) {
+      score -= playstyleWeight * 0.2;
+    }
   } else if (answers.Playstyle.includes('Defensive')) {
     // Prefer high control
     score += (control / 100) * playstyleWeight;
@@ -63,16 +67,17 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += ((speed + control) / 200) * playstyleWeight;
   }
 
-  // Power preference matching (20% weight)
-  const powerWeight = 20;
+  // Power preference matching (25% weight)
+  const powerWeight = 25;
   maxScore += powerWeight;
   
   if (answers.Power.includes('A lot of power')) {
-    score += (speed / 100) * powerWeight;
+    score += (speed / 100) * powerWeight * 0.6;
+    score += (power / 100) * powerWeight * 0.4;
   } else if (answers.Power.includes('Control is more important')) {
     score += (control / 100) * powerWeight;
   } else if (answers.Power.includes('Balanced')) {
-    score += ((speed + control) / 200) * powerWeight;
+    score += ((speed + control + power) / 300) * powerWeight;
   }
 
   // Grip matching (15% weight)
@@ -90,12 +95,13 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += gripWeight * 0.8; // Give benefit of doubt
   }
 
-  // Forehand/Backhand style matching (10% weight)
-  const styleWeight = 10;
+  // Forehand/Backhand style matching (15% weight)
+  const styleWeight = 15;
   maxScore += styleWeight;
   
   if (answers.Forehand.includes('Fast & aggressive') || answers.Backhand.includes('Fast & aggressive')) {
-    score += (speed / 100) * styleWeight;
+    score += (speed / 100) * styleWeight * 0.6;
+    score += (power / 100) * styleWeight * 0.4;
   } else if (answers.Forehand.includes('Spin & topspin') || answers.Backhand.includes('Spin & topspin')) {
     score += (spin / 100) * styleWeight;
   } else if (answers.Forehand.includes('Calm & controlled') || answers.Backhand.includes('Calm & controlled')) {
