@@ -145,7 +145,24 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
     }))
     .sort((a, b) => b.score - a.score);
 
-  return suitableRackets.length > 0 ? suitableRackets[0] : null;
+  // Normalize scores relative to budget range - best racket in budget gets high score
+  if (suitableRackets.length > 0) {
+    const maxScoreInBudget = suitableRackets[0].score;
+    const minScoreInBudget = suitableRackets[suitableRackets.length - 1].score;
+    const scoreRange = maxScoreInBudget - minScoreInBudget;
+    
+    // Normalize so the best racket in budget gets 85-95 match score
+    const normalizedRackets = suitableRackets.map(racket => ({
+      ...racket,
+      score: scoreRange > 0 
+        ? 85 + ((racket.score - minScoreInBudget) / scoreRange) * 10
+        : 90 // If all scores are the same, give 90
+    }));
+    
+    return normalizedRackets[0];
+  }
+
+  return null;
 }
 
 // Find best custom setup
@@ -187,7 +204,25 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
 
   // Sort by score and return best
   bestCombinations.sort((a, b) => b.score - a.score);
-  return bestCombinations.length > 0 ? bestCombinations[0] : null;
+  
+  // Normalize scores relative to budget range
+  if (bestCombinations.length > 0) {
+    const maxScoreInBudget = bestCombinations[0].score;
+    const minScoreInBudget = bestCombinations[bestCombinations.length - 1].score;
+    const scoreRange = maxScoreInBudget - minScoreInBudget;
+    
+    // Normalize so the best setup in budget gets 85-95 match score
+    const normalizedScore = scoreRange > 0 
+      ? 85 + ((maxScoreInBudget - minScoreInBudget) / scoreRange) * 10
+      : 90;
+    
+    return {
+      ...bestCombinations[0],
+      score: normalizedScore
+    };
+  }
+  
+  return null;
 }
 
 // Get complete recommendation
