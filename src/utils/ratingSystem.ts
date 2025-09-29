@@ -103,7 +103,9 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += (speed / 100) * styleWeight * 0.6;
     score += (power / 100) * styleWeight * 0.4;
   } else if (answers.Forehand.includes('Spin & topspin') || answers.Backhand.includes('Spin & topspin')) {
-    score += (spin / 100) * styleWeight;
+    // Spin players need good spin AND control
+    score += (spin / 100) * styleWeight * 0.6;
+    score += (control / 100) * styleWeight * 0.4;
   } else if (answers.Forehand.includes('Calm & controlled') || answers.Backhand.includes('Calm & controlled')) {
     score += (control / 100) * styleWeight;
   }
@@ -164,7 +166,12 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
           const bhScore = calculateScore(answers, bhRubber);
           
           // Weight: blade 50%, forehand rubber 30%, backhand rubber 20%
-          const combinedScore = (bladeScore * 0.5) + (fhScore * 0.3) + (bhScore * 0.2);
+          let combinedScore = (bladeScore * 0.5) + (fhScore * 0.3) + (bhScore * 0.2);
+          
+          // Add diversity bonus: prefer different rubbers for FH and BH
+          if (fhRubber.Rubber_Name !== bhRubber.Rubber_Name) {
+            combinedScore += 5; // 5 point bonus for variety
+          }
           
           bestCombinations.push({
             blade,
