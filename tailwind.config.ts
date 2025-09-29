@@ -47,6 +47,11 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Table Tennis Theme Colors
+        "table-green": "hsl(var(--table-green))",
+        "ball-orange": "hsl(var(--ball-orange))",
+        "net-white": "hsl(var(--net-white))",
+        "paddle-red": "hsl(var(--paddle-red))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
