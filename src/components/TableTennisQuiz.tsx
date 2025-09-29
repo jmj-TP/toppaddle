@@ -3,17 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import QuestionCard from "./QuestionCard";
-
-interface QuizAnswers {
-  Level: string;
-  Playstyle: string;
-  Forehand: string;
-  Backhand: string;
-  Power: string;
-  Grip: string;
-  Budget: string;
-  AssemblyPreference: string;
-}
+import RecommendationDisplay from "./RecommendationDisplay";
+import { getRecommendation, type QuizAnswers } from "@/utils/ratingSystem";
 
 const questions = [
   {
@@ -109,6 +100,7 @@ const TableTennisQuiz = () => {
   const [answers, setAnswers] = useState<Partial<QuizAnswers>>({});
   const [isComplete, setIsComplete] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [recommendation, setRecommendation] = useState<any>(null);
 
   const handleAnswer = (answer: string) => {
     const question = questions[currentQuestion];
@@ -118,6 +110,9 @@ const TableTennisQuiz = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
+      // Generate recommendation when quiz is complete
+      const rec = getRecommendation(newAnswers as QuizAnswers);
+      setRecommendation(rec);
       setIsComplete(true);
     }
   };
@@ -127,6 +122,7 @@ const TableTennisQuiz = () => {
     setAnswers({});
     setIsComplete(false);
     setHasStarted(false);
+    setRecommendation(null);
   };
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
@@ -165,37 +161,9 @@ const TableTennisQuiz = () => {
     );
   }
 
-  if (isComplete) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "var(--gradient-soft)" }}>
-        <Card className="w-full max-w-2xl p-8 shadow-lg border-2 border-accent/20">
-          <div className="text-center mb-6">
-            <div className="text-6xl mb-4">🎉</div>
-            <h2 className="text-3xl font-bold text-primary mb-4">Quiz Complete!</h2>
-            <p className="text-muted-foreground mb-6">
-              Here are your answers in JSON format:
-            </p>
-          </div>
-          
-          <div className="bg-muted/50 p-6 rounded-lg mb-6 overflow-auto">
-            <pre className="text-sm text-foreground whitespace-pre-wrap">
-              {JSON.stringify(answers, null, 2)}
-            </pre>
-          </div>
-          
-          <div className="flex justify-center">
-            <Button 
-              onClick={handleRestart}
-              variant="outline"
-              size="lg"
-              className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-            >
-              Take Quiz Again
-            </Button>
-          </div>
-        </Card>
-      </div>
-    );
+  // Quiz completion screen with recommendations
+  if (isComplete && recommendation) {
+    return <RecommendationDisplay recommendation={recommendation} onRestart={handleRestart} />;
   }
 
   return (
