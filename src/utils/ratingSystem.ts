@@ -7,6 +7,7 @@ export interface QuizAnswers {
   Backhand: string;
   Power: string;
   Grip: string;
+  WantsSpecialRubbers: string;
   ForehandRubberStyle: string;
   BackhandRubberStyle: string;
   Budget: string;

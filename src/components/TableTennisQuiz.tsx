@@ -74,24 +74,15 @@ const questions = [
   },
   {
     id: 7,
-    question: "What type of rubber do you prefer for your forehand?",
+    question: "Do you want to use special rubbers (pimples or anti-spin)?",
     options: [
-      { value: "Normal", label: "Normal (standard inverted rubber)" },
-      { value: "Special", label: "Special (pimples or anti-spin)" }
+      { value: "No", label: "No - Standard inverted rubbers are perfect for me" },
+      { value: "Yes", label: "Yes - I want to use special rubbers" }
     ],
-    key: "ForehandRubberStyle" as keyof QuizAnswers
+    key: "WantsSpecialRubbers" as keyof QuizAnswers
   },
   {
     id: 8,
-    question: "What type of rubber do you prefer for your backhand?",
-    options: [
-      { value: "Normal", label: "Normal (standard inverted rubber)" },
-      { value: "Special", label: "Special (pimples or anti-spin)" }
-    ],
-    key: "BackhandRubberStyle" as keyof QuizAnswers
-  },
-  {
-    id: 9,
     question: "What is your total budget for Blade + Rubbers or a Pre-Assembled Racket?",
     options: [
       { value: "<50$", label: "Under $50" },
@@ -102,7 +93,7 @@ const questions = [
     key: "Budget" as keyof QuizAnswers
   },
   {
-    id: 10,
+    id: 9,
     question: "Do you want a ready-to-play racket (pre-assembled), or do you want a custom setup (blade + separate rubbers)?",
     options: [
       { value: "Ready-to-play racket", label: "Ready-to-play racket (perfect for beginners, no gluing needed)" },
@@ -140,7 +131,7 @@ const TableTennisQuiz = () => {
   // Forehand special rubber follow-up question
   const forehandSpecialQuestion = {
     id: 7.5,
-    question: "Which special rubber type for your forehand?",
+    question: "Which rubber type for your forehand?",
     options: [
       { value: "Normal", label: "Normal (inverted rubber for standard play)" },
       { value: "Short Pimples", label: "Short Pimples (fast & direct, less spin)" },
@@ -152,8 +143,8 @@ const TableTennisQuiz = () => {
 
   // Backhand special rubber follow-up question
   const backhandSpecialQuestion = {
-    id: 8.5,
-    question: "Which special rubber type for your backhand?",
+    id: 7.6,
+    question: "Which rubber type for your backhand?",
     options: [
       { value: "Normal", label: "Normal (inverted rubber for standard play)" },
       { value: "Short Pimples", label: "Short Pimples (fast & direct, less spin)" },
@@ -165,16 +156,29 @@ const TableTennisQuiz = () => {
 
   const handleAnswer = (answer: string) => {
     const question = 
-      currentQuestion === 9.5 ? premiumBudgetQuestion : 
+      currentQuestion === 8.5 ? premiumBudgetQuestion : 
       currentQuestion === 7.5 ? forehandSpecialQuestion :
-      currentQuestion === 8.5 ? backhandSpecialQuestion :
+      currentQuestion === 7.6 ? backhandSpecialQuestion :
       questions[currentQuestion];
     
     const newAnswers = { ...answers, [question.key]: answer };
     setAnswers(newAnswers);
 
-    // Check if user selected "Special" on forehand rubber question
-    if (currentQuestion === 6 && answer === "Special") {
+    // Check if user wants special rubbers at all (question 7)
+    if (currentQuestion === 6 && answer === "No") {
+      // Set both to Normal and skip special rubber questions
+      const updatedAnswers = {
+        ...newAnswers,
+        ForehandRubberStyle: "Normal",
+        BackhandRubberStyle: "Normal"
+      };
+      setAnswers(updatedAnswers);
+      setCurrentQuestion(7); // Skip to budget question
+      return;
+    }
+
+    // If user wants special rubbers, show forehand selection
+    if (currentQuestion === 6 && answer === "Yes") {
       setShowForehandSpecial(true);
       setCurrentQuestion(7.5);
       return;
@@ -183,33 +187,29 @@ const TableTennisQuiz = () => {
     // Handle forehand special rubber follow-up
     if (currentQuestion === 7.5) {
       setShowForehandSpecial(false);
-      setCurrentQuestion(7);
-    }
-
-    // Check if user selected "Special" on backhand rubber question
-    if (currentQuestion === 7 && answer === "Special") {
       setShowBackhandSpecial(true);
-      setCurrentQuestion(8.5);
+      setCurrentQuestion(7.6);
       return;
     }
 
     // Handle backhand special rubber follow-up
-    if (currentQuestion === 8.5) {
+    if (currentQuestion === 7.6) {
       setShowBackhandSpecial(false);
-      setCurrentQuestion(8);
+      setCurrentQuestion(7);
+      return;
     }
 
-    // Check if user selected "161+" on budget question
-    if (currentQuestion === 8 && answer === "161+") {
+    // Check if user selected "161+" on budget question (now question 8)
+    if (currentQuestion === 7 && answer === "161+") {
       setShowPremiumBudget(true);
-      setCurrentQuestion(9.5);
+      setCurrentQuestion(8.5);
       return;
     }
 
     // Handle premium budget follow-up
-    if (currentQuestion === 9.5) {
+    if (currentQuestion === 8.5) {
       setShowPremiumBudget(false);
-      setCurrentQuestion(9);
+      setCurrentQuestion(8);
     }
 
     if (currentQuestion < questions.length - 1) {
@@ -240,9 +240,9 @@ const TableTennisQuiz = () => {
     (showBackhandSpecial ? 1 : 0);
   const totalQuestions = questions.length + totalExtraQuestions;
   const currentProgress = 
-    currentQuestion === 9.5 ? 9 : 
+    currentQuestion === 8.5 ? 8 : 
     currentQuestion === 7.5 ? 7 :
-    currentQuestion === 8.5 ? 8 :
+    currentQuestion === 7.6 ? 7 :
     currentQuestion;
   const progress = ((currentProgress + 1) / totalQuestions) * 100;
 
@@ -302,9 +302,9 @@ const TableTennisQuiz = () => {
         
         <QuestionCard
           question={
-            currentQuestion === 9.5 ? premiumBudgetQuestion : 
+            currentQuestion === 8.5 ? premiumBudgetQuestion : 
             currentQuestion === 7.5 ? forehandSpecialQuestion :
-            currentQuestion === 8.5 ? backhandSpecialQuestion :
+            currentQuestion === 7.6 ? backhandSpecialQuestion :
             questions[currentQuestion]
           }
           onAnswer={handleAnswer}
