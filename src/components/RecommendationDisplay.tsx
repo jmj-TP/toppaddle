@@ -20,9 +20,9 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
   const getScoreColor = (score: number) => {
-    if (score >= 85) return "text-green-600";
-    if (score >= 70) return "text-yellow-600";
-    return "text-red-600";
+    if (score >= 85) return "text-primary";
+    if (score >= 70) return "text-accent";
+    return "text-destructive";
   };
 
   const StatBar = ({ label, value, icon: Icon }: { label: string; value: number; icon: any }) => (
@@ -41,7 +41,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
   // Pre-assembled racket card component
   const PreAssembledCard = () => preAssembled ? (
-    <Card className="border-2 border-primary/20 shadow-lg">
+    <Card className="border-border" style={{ boxShadow: "var(--shadow-lg)" }}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -85,7 +85,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               </div>
               <div>
                 <span className="font-medium">Price:</span> 
-                <span className="text-lg font-bold text-green-600 ml-1">
+                <span className="text-lg font-bold text-primary ml-1">
                   {formatPrice(preAssembled.Racket_Price)}
                 </span>
               </div>
@@ -93,7 +93,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
             
             <Button 
               asChild 
-              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90"
+              variant="accent"
+              className="w-full"
             >
               <a 
                 href={preAssembled.Racket_Affiliate_Link} 
@@ -113,7 +114,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
   // Custom setup card component
   const CustomSetupCard = () => customSetup ? (
-    <Card className="border-2 border-accent/20 shadow-lg">
+    <Card className="border-border" style={{ boxShadow: "var(--shadow-lg)" }}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -181,7 +182,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                   <button className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full justify-start">
                     <Info className="w-4 h-4" />
                     <span>Recommended Sponge:</span>
-                    <span className="font-bold text-red-600 dark:text-red-400">{forehandThickness}</span>
+                    <span className="font-bold text-accent">{forehandThickness}</span>
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
@@ -232,7 +233,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                   <button className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full justify-start">
                     <Info className="w-4 h-4" />
                     <span>Recommended Sponge:</span>
-                    <span className="font-bold text-blue-600 dark:text-blue-400">{backhandThickness}</span>
+                    <span className="font-bold text-primary">{backhandThickness}</span>
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
@@ -269,8 +270,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         </div>
 
         {/* Total Price */}
-        <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4 text-center">
-          <div className="text-2xl font-bold text-green-600">
+        <div className="bg-secondary rounded-lg p-4 text-center">
+          <div className="text-2xl font-bold text-primary">
             💰 Total Price: {formatPrice(customSetup.totalPrice)}
           </div>
           <p className="text-sm text-muted-foreground mt-1">
@@ -284,7 +285,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   return (
     <div className="w-full max-w-4xl mx-auto p-6 space-y-6">
       <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+        <h2 className="text-3xl font-bold text-primary">
           ✨ Your Perfect Racket Setup! ✨
         </h2>
         <p className="text-muted-foreground">

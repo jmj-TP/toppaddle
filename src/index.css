@@ -8,56 +8,54 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Table Tennis Theme Colors */
+    /* 60-30-10 Professional Color System */
+    
+    /* 60% - Dominant Neutral Base (Soft whites and light grays) */
     --background: 0 0% 98%;
-    --foreground: 155 100% 8%;
-
+    --foreground: 210 15% 20%;
+    
     --card: 0 0% 100%;
-    --card-foreground: 155 100% 8%;
-
+    --card-foreground: 210 15% 20%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 155 100% 8%;
-
-    /* Primary: Deep Forest Green (table tennis table) */
-    --primary: 155 100% 20%;
-    --primary-foreground: 0 0% 98%;
-
-    /* Secondary: Soft Green */
-    --secondary: 155 25% 94%;
-    --secondary-foreground: 155 100% 8%;
-
-    --muted: 155 15% 96%;
-    --muted-foreground: 155 10% 45%;
-
-    /* Accent: Ping Pong Ball Orange */
-    --accent: 25 100% 60%;
+    --popover-foreground: 210 15% 20%;
+    
+    /* 30% - Secondary Brand Color (Professional Deep Green) */
+    --primary: 158 64% 28%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 158 30% 92%;
+    --secondary-foreground: 158 64% 28%;
+    
+    --muted: 210 10% 95%;
+    --muted-foreground: 210 10% 46%;
+    
+    /* 10% - Accent Highlight (Vibrant Orange for CTAs) */
+    --accent: 24 95% 53%;
     --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 155 20% 88%;
-    --input: 155 20% 88%;
-    --ring: 155 100% 20%;
-
-    /* Table Tennis Specific Colors */
-    --table-green: 155 100% 20%;
-    --ball-orange: 25 100% 60%;
-    --net-white: 0 0% 98%;
-    --paddle-red: 0 75% 55%;
-
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(155 100% 20%), hsl(155 80% 25%));
-    --gradient-accent: linear-gradient(135deg, hsl(25 100% 60%), hsl(35 100% 65%));
-    --gradient-soft: linear-gradient(135deg, hsl(155 25% 96%), hsl(155 15% 98%));
-
-    /* Shadows */
-    --shadow-soft: 0 4px 6px -1px hsl(155 100% 20% / 0.1);
-    --shadow-medium: 0 10px 15px -3px hsl(155 100% 20% / 0.1);
-    --shadow-strong: 0 20px 25px -5px hsl(155 100% 20% / 0.1);
-    --shadow-accent: 0 8px 30px -8px hsl(25 100% 60% / 0.3);
-
-    /* Animations */
+    
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 210 12% 90%;
+    --input: 210 12% 90%;
+    --ring: 158 64% 28%;
+    
+    /* Professional Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(158 64% 28%), hsl(158 64% 35%));
+    --gradient-secondary: linear-gradient(135deg, hsl(158 30% 92%), hsl(158 20% 96%));
+    --gradient-accent: linear-gradient(135deg, hsl(24 95% 53%), hsl(30 95% 58%));
+    --gradient-soft: linear-gradient(180deg, hsl(0 0% 98%), hsl(210 10% 96%));
+    --gradient-hero: linear-gradient(135deg, hsl(158 64% 28% / 0.95), hsl(158 64% 35% / 0.9));
+    
+    /* Professional Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(210 15% 20% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(210 15% 20% / 0.08), 0 2px 4px -1px hsl(210 15% 20% / 0.04);
+    --shadow-lg: 0 10px 15px -3px hsl(210 15% 20% / 0.1), 0 4px 6px -2px hsl(210 15% 20% / 0.05);
+    --shadow-xl: 0 20px 25px -5px hsl(210 15% 20% / 0.12), 0 10px 10px -5px hsl(210 15% 20% / 0.04);
+    --shadow-accent: 0 8px 20px -4px hsl(24 95% 53% / 0.25);
+    
+    /* Smooth Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 

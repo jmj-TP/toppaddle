@@ -303,7 +303,7 @@ const TableTennisQuiz = () => {
   if (!hasStarted) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "var(--gradient-soft)" }}>
-        <Card className="w-full max-w-2xl p-8 text-center shadow-lg border-2 border-primary/20">
+        <Card className="w-full max-w-2xl p-8 text-center border-border" style={{ boxShadow: "var(--shadow-xl)" }}>
           <div className="mb-6">
             <div className="text-6xl mb-4">🏓</div>
             <h1 className="text-4xl font-bold text-primary mb-4">
@@ -312,7 +312,7 @@ const TableTennisQuiz = () => {
             <p className="text-lg text-muted-foreground mb-6">
               Find your perfect table tennis racket with our interactive quiz!
             </p>
-            <div className="bg-secondary/50 p-6 rounded-lg mb-8">
+            <div className="bg-secondary p-6 rounded-lg mb-8">
               <h3 className="text-lg font-semibold text-primary mb-3">What you'll discover:</h3>
               <ul className="text-left space-y-2 text-muted-foreground">
                 <li>• Your ideal playstyle match</li>
@@ -325,7 +325,8 @@ const TableTennisQuiz = () => {
           <Button 
             onClick={() => setHasStarted(true)}
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-lg font-semibold transition-all duration-300 hover:scale-105"
+            variant="accent"
+            className="px-8 py-3 text-lg font-semibold"
           >
             Start Quiz
           </Button>
