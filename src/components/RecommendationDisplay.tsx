@@ -152,7 +152,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                 <span className="font-medium">Price:</span> 
                 <span className="font-bold ml-1">{formatPrice(customSetup.blade.Blade_Price)}</span>
               </div>
-              <Button size="sm" asChild variant="outline">
+              <Button size="sm" asChild variant="accent">
                 <a 
                   href={customSetup.blade.Blade_Affiliate_Link} 
                   target="_blank" 
@@ -203,7 +203,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                 <span className="font-medium">Price:</span> 
                 <span className="font-bold ml-1">{formatPrice(customSetup.forehandRubber.Rubber_Price)}</span>
               </div>
-              <Button size="sm" asChild variant="outline">
+              <Button size="sm" asChild variant="accent">
                 <a 
                   href={customSetup.forehandRubber.Rubber_Affiliate_Link} 
                   target="_blank" 
@@ -254,7 +254,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                 <span className="font-medium">Price:</span> 
                 <span className="font-bold ml-1">{formatPrice(customSetup.backhandRubber.Rubber_Price)}</span>
               </div>
-              <Button size="sm" asChild variant="outline">
+              <Button size="sm" asChild variant="accent">
                 <a 
                   href={customSetup.backhandRubber.Rubber_Affiliate_Link} 
                   target="_blank" 
