@@ -294,7 +294,7 @@ const TableTennisQuiz = () => {
 
   // Quiz completion screen with recommendations
   if (isComplete && recommendation) {
-    return <RecommendationDisplay recommendation={recommendation} onRestart={handleRestart} />;
+    return <RecommendationDisplay recommendation={recommendation} onRestart={handleRestart} assemblyPreference={answers.AssemblyPreference} />;
   }
 
   return (

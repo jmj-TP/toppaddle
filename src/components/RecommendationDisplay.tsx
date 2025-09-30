@@ -7,10 +7,14 @@ import type { Recommendation } from "@/utils/ratingSystem";
 interface RecommendationDisplayProps {
   recommendation: Recommendation;
   onRestart: () => void;
+  assemblyPreference?: string;
 }
 
-export default function RecommendationDisplay({ recommendation, onRestart }: RecommendationDisplayProps) {
+export default function RecommendationDisplay({ recommendation, onRestart, assemblyPreference }: RecommendationDisplayProps) {
   const { preAssembled, customSetup, totalScore, recommendedThickness, thicknessExplanation } = recommendation;
+  
+  // Determine which option to show first based on user preference
+  const showCustomFirst = assemblyPreference === "Custom setup";
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
@@ -33,6 +37,214 @@ export default function RecommendationDisplay({ recommendation, onRestart }: Rec
       <span className="text-sm font-semibold min-w-[30px]">{value}</span>
     </div>
   );
+
+  // Pre-assembled racket card component
+  const PreAssembledCard = () => preAssembled ? (
+    <Card className="border-2 border-primary/20 shadow-lg">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            🏓 <span>Ready-to-Play Racket</span>
+            <Badge variant="secondary">Beginner Friendly</Badge>
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Star className="w-4 h-4 text-yellow-500" />
+            <span className={`font-bold ${getScoreColor(preAssembled.score)}`}>
+              {preAssembled.score.toFixed(0)}% Match
+            </span>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <h3 className="font-semibold text-lg mb-2">{preAssembled.Racket_Name}</h3>
+            <p className="text-sm text-muted-foreground mb-3">
+              ✅ No assembly needed - perfect for beginners!
+            </p>
+            
+            <div className="space-y-2">
+              <StatBar label="Speed" value={preAssembled.Racket_Speed} icon={Gauge} />
+              <StatBar label="Spin" value={preAssembled.Racket_Spin} icon={Target} />
+              <StatBar label="Control" value={preAssembled.Racket_Control} icon={Shield} />
+              <StatBar label="Power" value={preAssembled.Racket_Power} icon={Star} />
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              <div>
+                <span className="font-medium">Weight:</span> ~180g
+              </div>
+              <div>
+                <span className="font-medium">Level:</span> {preAssembled.Racket_Level}
+              </div>
+              <div>
+                <span className="font-medium">Grip:</span> {preAssembled.Racket_Grip}
+              </div>
+              <div>
+                <span className="font-medium">Price:</span> 
+                <span className="text-lg font-bold text-green-600 ml-1">
+                  {formatPrice(preAssembled.Racket_Price)}
+                </span>
+              </div>
+            </div>
+            
+            <Button 
+              asChild 
+              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90"
+            >
+              <a 
+                href={preAssembled.Racket_Affiliate_Link} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Buy on Amazon
+              </a>
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  ) : null;
+
+  // Custom setup card component
+  const CustomSetupCard = () => customSetup ? (
+    <Card className="border-2 border-accent/20 shadow-lg">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            ⚡ <span>Custom Setup</span>
+            <Badge variant="outline">Advanced Choice</Badge>
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Star className="w-4 h-4 text-yellow-500" />
+            <span className={`font-bold ${getScoreColor(customSetup.score)}`}>
+              {customSetup.score.toFixed(0)}% Match
+            </span>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Blade */}
+        <div className="border rounded-lg p-4 bg-card">
+          <h3 className="font-semibold mb-3 flex items-center gap-2">
+            🏏 Blade: {customSetup.blade.Blade_Name}
+          </h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <StatBar label="Speed" value={customSetup.blade.Blade_Speed} icon={Gauge} />
+              <StatBar label="Control" value={customSetup.blade.Blade_Control} icon={Shield} />
+              <StatBar label="Power" value={customSetup.blade.Blade_Power} icon={Star} />
+            </div>
+            <div className="space-y-2">
+              <div className="text-sm">
+                <span className="font-medium">Level:</span> {customSetup.blade.Blade_Level}
+              </div>
+              <div className="text-sm">
+                <span className="font-medium">Grip:</span> {customSetup.blade.Blade_Grip}
+              </div>
+              <div className="text-sm">
+                <span className="font-medium">Price:</span> 
+                <span className="font-bold ml-1">{formatPrice(customSetup.blade.Blade_Price)}</span>
+              </div>
+              <Button size="sm" asChild variant="outline">
+                <a 
+                  href={customSetup.blade.Blade_Affiliate_Link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  Buy Blade
+                </a>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Forehand Rubber */}
+        <div className="border rounded-lg p-4 bg-card">
+          <h3 className="font-semibold mb-3 flex items-center gap-2">
+            🔴 Forehand Rubber: {customSetup.forehandRubber.Rubber_Name}
+          </h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <StatBar label="Speed" value={customSetup.forehandRubber.Rubber_Speed} icon={Gauge} />
+              <StatBar label="Spin" value={customSetup.forehandRubber.Rubber_Spin} icon={Target} />
+              <StatBar label="Control" value={customSetup.forehandRubber.Rubber_Control} icon={Shield} />
+            </div>
+            <div className="space-y-2">
+              <div className="text-sm">
+                <span className="font-medium">Level:</span> {customSetup.forehandRubber.Rubber_Level}
+              </div>
+              <div className="text-sm">
+                <span className="font-medium">Price:</span> 
+                <span className="font-bold ml-1">{formatPrice(customSetup.forehandRubber.Rubber_Price)}</span>
+              </div>
+              <Button size="sm" asChild variant="outline">
+                <a 
+                  href={customSetup.forehandRubber.Rubber_Affiliate_Link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  Buy FH Rubber
+                </a>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Backhand Rubber */}
+        <div className="border rounded-lg p-4 bg-card">
+          <h3 className="font-semibold mb-3 flex items-center gap-2">
+            🔵 Backhand Rubber: {customSetup.backhandRubber.Rubber_Name}
+          </h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <StatBar label="Speed" value={customSetup.backhandRubber.Rubber_Speed} icon={Gauge} />
+              <StatBar label="Spin" value={customSetup.backhandRubber.Rubber_Spin} icon={Target} />
+              <StatBar label="Control" value={customSetup.backhandRubber.Rubber_Control} icon={Shield} />
+            </div>
+            <div className="space-y-2">
+              <div className="text-sm">
+                <span className="font-medium">Level:</span> {customSetup.backhandRubber.Rubber_Level}
+              </div>
+              <div className="text-sm">
+                <span className="font-medium">Price:</span> 
+                <span className="font-bold ml-1">{formatPrice(customSetup.backhandRubber.Rubber_Price)}</span>
+              </div>
+              <Button size="sm" asChild variant="outline">
+                <a 
+                  href={customSetup.backhandRubber.Rubber_Affiliate_Link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  Buy BH Rubber
+                </a>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Total Price */}
+        <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4 text-center">
+          <div className="text-2xl font-bold text-green-600">
+            💰 Total Price: {formatPrice(customSetup.totalPrice)}
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">
+            ✅ Fits your budget perfectly!
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  ) : null;
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6 space-y-6">
@@ -59,212 +271,17 @@ export default function RecommendationDisplay({ recommendation, onRestart }: Rec
         </CardContent>
       </Card>
 
-      {/* Pre-Assembled Racket Option */}
-      {preAssembled && (
-        <Card className="border-2 border-primary/20 shadow-lg">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                🏓 <span>Ready-to-Play Racket</span>
-                <Badge variant="secondary">Beginner Friendly</Badge>
-              </CardTitle>
-              <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 text-yellow-500" />
-                <span className={`font-bold ${getScoreColor(preAssembled.score)}`}>
-                  {preAssembled.score.toFixed(0)}% Match
-                </span>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <h3 className="font-semibold text-lg mb-2">{preAssembled.Racket_Name}</h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  ✅ No assembly needed - perfect for beginners!
-                </p>
-                
-                <div className="space-y-2">
-                  <StatBar label="Speed" value={preAssembled.Racket_Speed} icon={Gauge} />
-                  <StatBar label="Spin" value={preAssembled.Racket_Spin} icon={Target} />
-                  <StatBar label="Control" value={preAssembled.Racket_Control} icon={Shield} />
-                  <StatBar label="Power" value={preAssembled.Racket_Power} icon={Star} />
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div>
-                    <span className="font-medium">Weight:</span> ~180g
-                  </div>
-                  <div>
-                    <span className="font-medium">Level:</span> {preAssembled.Racket_Level}
-                  </div>
-                  <div>
-                    <span className="font-medium">Grip:</span> {preAssembled.Racket_Grip}
-                  </div>
-                  <div>
-                    <span className="font-medium">Price:</span> 
-                    <span className="text-lg font-bold text-green-600 ml-1">
-                      {formatPrice(preAssembled.Racket_Price)}
-                    </span>
-                  </div>
-                </div>
-                
-                <Button 
-                  asChild 
-                  className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90"
-                >
-                  <a 
-                    href={preAssembled.Racket_Affiliate_Link} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Buy on Amazon
-                  </a>
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Custom Setup Option */}
-      {customSetup && (
-        <Card className="border-2 border-accent/20 shadow-lg">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                ⚡ <span>Custom Setup</span>
-                <Badge variant="outline">Advanced Choice</Badge>
-              </CardTitle>
-              <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 text-yellow-500" />
-                <span className={`font-bold ${getScoreColor(customSetup.score)}`}>
-                  {customSetup.score.toFixed(0)}% Match
-                </span>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Blade */}
-            <div className="border rounded-lg p-4 bg-card">
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
-                🏏 Blade: {customSetup.blade.Blade_Name}
-              </h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <StatBar label="Speed" value={customSetup.blade.Blade_Speed} icon={Gauge} />
-                  <StatBar label="Control" value={customSetup.blade.Blade_Control} icon={Shield} />
-                  <StatBar label="Power" value={customSetup.blade.Blade_Power} icon={Star} />
-                </div>
-                <div className="space-y-2">
-                  <div className="text-sm">
-                    <span className="font-medium">Level:</span> {customSetup.blade.Blade_Level}
-                  </div>
-                  <div className="text-sm">
-                    <span className="font-medium">Grip:</span> {customSetup.blade.Blade_Grip}
-                  </div>
-                  <div className="text-sm">
-                    <span className="font-medium">Price:</span> 
-                    <span className="font-bold ml-1">{formatPrice(customSetup.blade.Blade_Price)}</span>
-                  </div>
-                  <Button size="sm" asChild variant="outline">
-                    <a 
-                      href={customSetup.blade.Blade_Affiliate_Link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1"
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                      Buy Blade
-                    </a>
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Forehand Rubber */}
-            <div className="border rounded-lg p-4 bg-card">
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
-                🔴 Forehand Rubber: {customSetup.forehandRubber.Rubber_Name}
-              </h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <StatBar label="Speed" value={customSetup.forehandRubber.Rubber_Speed} icon={Gauge} />
-                  <StatBar label="Spin" value={customSetup.forehandRubber.Rubber_Spin} icon={Target} />
-                  <StatBar label="Control" value={customSetup.forehandRubber.Rubber_Control} icon={Shield} />
-                </div>
-                <div className="space-y-2">
-                  <div className="text-sm">
-                    <span className="font-medium">Level:</span> {customSetup.forehandRubber.Rubber_Level}
-                  </div>
-                  <div className="text-sm">
-                    <span className="font-medium">Price:</span> 
-                    <span className="font-bold ml-1">{formatPrice(customSetup.forehandRubber.Rubber_Price)}</span>
-                  </div>
-                  <Button size="sm" asChild variant="outline">
-                    <a 
-                      href={customSetup.forehandRubber.Rubber_Affiliate_Link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1"
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                      Buy FH Rubber
-                    </a>
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Backhand Rubber */}
-            <div className="border rounded-lg p-4 bg-card">
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
-                🔵 Backhand Rubber: {customSetup.backhandRubber.Rubber_Name}
-              </h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <StatBar label="Speed" value={customSetup.backhandRubber.Rubber_Speed} icon={Gauge} />
-                  <StatBar label="Spin" value={customSetup.backhandRubber.Rubber_Spin} icon={Target} />
-                  <StatBar label="Control" value={customSetup.backhandRubber.Rubber_Control} icon={Shield} />
-                </div>
-                <div className="space-y-2">
-                  <div className="text-sm">
-                    <span className="font-medium">Level:</span> {customSetup.backhandRubber.Rubber_Level}
-                  </div>
-                  <div className="text-sm">
-                    <span className="font-medium">Price:</span> 
-                    <span className="font-bold ml-1">{formatPrice(customSetup.backhandRubber.Rubber_Price)}</span>
-                  </div>
-                  <Button size="sm" asChild variant="outline">
-                    <a 
-                      href={customSetup.backhandRubber.Rubber_Affiliate_Link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1"
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                      Buy BH Rubber
-                    </a>
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Total Price */}
-            <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-green-600">
-                💰 Total Price: {formatPrice(customSetup.totalPrice)}
-              </div>
-              <p className="text-sm text-muted-foreground mt-1">
-                ✅ Fits your budget perfectly!
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Render recommendations in order based on preference */}
+      {showCustomFirst ? (
+        <>
+          <CustomSetupCard />
+          <PreAssembledCard />
+        </>
+      ) : (
+        <>
+          <PreAssembledCard />
+          <CustomSetupCard />
+        </>
       )}
 
       {/* Action Buttons */}
