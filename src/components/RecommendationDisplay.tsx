@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Star, Target, Gauge, Shield } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ExternalLink, Star, Target, Gauge, Shield, Info } from "lucide-react";
 import type { Recommendation } from "@/utils/ratingSystem";
 
 interface RecommendationDisplayProps {
@@ -175,6 +176,23 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               <StatBar label="Speed" value={customSetup.forehandRubber.Rubber_Speed} icon={Gauge} />
               <StatBar label="Spin" value={customSetup.forehandRubber.Rubber_Spin} icon={Target} />
               <StatBar label="Control" value={customSetup.forehandRubber.Rubber_Control} icon={Shield} />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full justify-start">
+                    <Info className="w-4 h-4" />
+                    <span>Recommended Sponge:</span>
+                    <span className="font-bold text-red-600 dark:text-red-400">{forehandThickness}</span>
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-sm">Forehand Sponge Thickness</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {forehandThicknessExplanation}
+                    </p>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="space-y-2">
               <div className="text-sm">
@@ -209,6 +227,23 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               <StatBar label="Speed" value={customSetup.backhandRubber.Rubber_Speed} icon={Gauge} />
               <StatBar label="Spin" value={customSetup.backhandRubber.Rubber_Spin} icon={Target} />
               <StatBar label="Control" value={customSetup.backhandRubber.Rubber_Control} icon={Shield} />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full justify-start">
+                    <Info className="w-4 h-4" />
+                    <span>Recommended Sponge:</span>
+                    <span className="font-bold text-blue-600 dark:text-blue-400">{backhandThickness}</span>
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-sm">Backhand Sponge Thickness</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {backhandThicknessExplanation}
+                    </p>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="space-y-2">
               <div className="text-sm">
@@ -257,34 +292,6 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         </p>
       </div>
 
-      {/* Sponge Thickness Recommendations */}
-      <div className="grid md:grid-cols-2 gap-4">
-        <Card className="border-2 border-red-500/30 bg-gradient-to-r from-red-50/50 to-orange-50/50 dark:from-red-950/20 dark:to-orange-950/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              🔴 Forehand Sponge: <span className="text-red-600 dark:text-red-400">{forehandThickness}</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {forehandThicknessExplanation}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-blue-500/30 bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              🔵 Backhand Sponge: <span className="text-blue-600 dark:text-blue-400">{backhandThickness}</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {backhandThicknessExplanation}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Render recommendations in order based on preference */}
       {showCustomFirst ? (
