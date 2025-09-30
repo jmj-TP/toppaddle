@@ -174,6 +174,11 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
   for (const blade of blades) {
     for (const fhRubber of rubbers) {
       for (const bhRubber of rubbers) {
+        // Constraint: no rubber should be more expensive than the blade
+        if (fhRubber.Rubber_Price > blade.Blade_Price || bhRubber.Rubber_Price > blade.Blade_Price) {
+          continue;
+        }
+        
         const totalPrice = blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price;
         
         if (totalPrice <= budgetRange.max) {
@@ -189,6 +194,17 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
           if (fhRubber.Rubber_Name !== bhRubber.Rubber_Name) {
             combinedScore += 5; // 5 point bonus for variety
           }
+          
+          // Budget split guidance bonus: prefer 40% blade, 60% rubbers (30% each)
+          // This is a soft constraint to guide toward balanced setups
+          const idealBladeRatio = 0.4;
+          const actualBladeRatio = blade.Blade_Price / totalPrice;
+          const ratioDeviation = Math.abs(actualBladeRatio - idealBladeRatio);
+          
+          // Add up to 3 bonus points for staying close to ideal ratio
+          // (0.0 deviation = +3 points, 0.3+ deviation = 0 points)
+          const ratioBonusPoints = Math.max(0, 3 * (1 - ratioDeviation / 0.3));
+          combinedScore += ratioBonusPoints;
           
           bestCombinations.push({
             blade,
