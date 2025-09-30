@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { ArrowLeft } from "lucide-react";
 import QuestionCard from "./QuestionCard";
 import RecommendationDisplay from "./RecommendationDisplay";
 import { getRecommendation, type QuizAnswers } from "@/utils/ratingSystem";
@@ -111,6 +112,7 @@ const TableTennisQuiz = () => {
   const [showForehandSpecial, setShowForehandSpecial] = useState(false);
   const [showBackhandSpecial, setShowBackhandSpecial] = useState(false);
   const [showHandleSpecial, setShowHandleSpecial] = useState(false);
+  const [questionHistory, setQuestionHistory] = useState<number[]>([]);
 
   // Premium budget follow-up question
   const premiumBudgetQuestion = {
@@ -176,6 +178,9 @@ const TableTennisQuiz = () => {
     
     const newAnswers = { ...answers, [question.key]: answer };
     setAnswers(newAnswers);
+
+    // Add current question to history before moving forward
+    setQuestionHistory([...questionHistory, currentQuestion]);
 
     // Check if forehand is "Both sides the same / not sure" (question 3)
     if (currentQuestion === 2 && answer === "Both sides the same / not sure") {
@@ -273,6 +278,27 @@ const TableTennisQuiz = () => {
     }
   };
 
+  const handleBack = () => {
+    if (questionHistory.length === 0) return;
+    
+    const newHistory = [...questionHistory];
+    const previousQuestion = newHistory.pop()!;
+    setQuestionHistory(newHistory);
+    
+    // Reset conditional states based on where we're going back
+    if (currentQuestion === 8.5) {
+      setShowPremiumBudget(false);
+    } else if (currentQuestion === 7.5) {
+      setShowForehandSpecial(false);
+    } else if (currentQuestion === 7.6) {
+      setShowBackhandSpecial(false);
+    } else if (currentQuestion === 6.5) {
+      setShowHandleSpecial(false);
+    }
+    
+    setCurrentQuestion(previousQuestion);
+  };
+
   const handleRestart = () => {
     setCurrentQuestion(0);
     setAnswers({});
@@ -283,6 +309,7 @@ const TableTennisQuiz = () => {
     setShowForehandSpecial(false);
     setShowBackhandSpecial(false);
     setShowHandleSpecial(false);
+    setQuestionHistory([]);
   };
 
   // Calculate progress considering all potential follow-up questions
@@ -354,6 +381,18 @@ const TableTennisQuiz = () => {
           </div>
           <Progress value={progress} className="h-3" />
         </div>
+
+        {questionHistory.length > 0 && (
+          <Button
+            onClick={handleBack}
+            variant="ghost"
+            size="sm"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
+        )}
         
         <QuestionCard
           question={
