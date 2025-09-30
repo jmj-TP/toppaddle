@@ -20,18 +20,18 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 210 15% 20%;
     
-    /* 30% - Secondary Brand Color (Professional Deep Green) */
-    --primary: 158 64% 28%;
+    /* 30% - Secondary Brand Color (Dark Navy) */
+    --primary: 220 30% 22%;
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 158 30% 92%;
-    --secondary-foreground: 158 64% 28%;
+    --secondary: 220 15% 95%;
+    --secondary-foreground: 220 30% 22%;
     
     --muted: 210 10% 95%;
     --muted-foreground: 210 10% 46%;
     
-    /* 10% - Accent Highlight (Vibrant Orange for CTAs) */
-    --accent: 24 95% 53%;
+    /* 10% - Accent Highlight (Bright Green for CTAs) */
+    --accent: 142 76% 36%;
     --accent-foreground: 0 0% 100%;
     
     --destructive: 0 72% 51%;
@@ -39,21 +39,21 @@ All colors MUST be HSL.
     
     --border: 210 12% 90%;
     --input: 210 12% 90%;
-    --ring: 158 64% 28%;
+    --ring: 220 30% 22%;
     
     /* Professional Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(158 64% 28%), hsl(158 64% 35%));
-    --gradient-secondary: linear-gradient(135deg, hsl(158 30% 92%), hsl(158 20% 96%));
-    --gradient-accent: linear-gradient(135deg, hsl(24 95% 53%), hsl(30 95% 58%));
+    --gradient-primary: linear-gradient(135deg, hsl(220 30% 22%), hsl(220 30% 28%));
+    --gradient-secondary: linear-gradient(135deg, hsl(220 15% 95%), hsl(220 10% 98%));
+    --gradient-accent: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 42%));
     --gradient-soft: linear-gradient(180deg, hsl(0 0% 98%), hsl(210 10% 96%));
-    --gradient-hero: linear-gradient(135deg, hsl(158 64% 28% / 0.95), hsl(158 64% 35% / 0.9));
+    --gradient-hero: linear-gradient(135deg, hsl(220 30% 22% / 0.95), hsl(220 30% 28% / 0.9));
     
     /* Professional Shadows */
     --shadow-sm: 0 1px 2px 0 hsl(210 15% 20% / 0.05);
     --shadow-md: 0 4px 6px -1px hsl(210 15% 20% / 0.08), 0 2px 4px -1px hsl(210 15% 20% / 0.04);
     --shadow-lg: 0 10px 15px -3px hsl(210 15% 20% / 0.1), 0 4px 6px -2px hsl(210 15% 20% / 0.05);
     --shadow-xl: 0 20px 25px -5px hsl(210 15% 20% / 0.12), 0 10px 10px -5px hsl(210 15% 20% / 0.04);
-    --shadow-accent: 0 8px 20px -4px hsl(24 95% 53% / 0.25);
+    --shadow-accent: 0 8px 20px -4px hsl(142 76% 36% / 0.3);
     
     /* Smooth Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
