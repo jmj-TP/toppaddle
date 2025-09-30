@@ -421,7 +421,10 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
   // Determine which option to prioritize
   let totalScore = 0;
   
-  if (answers.AssemblyPreference.includes('Ready-to-play') && preAssembled) {
+  // Safe check for AssemblyPreference
+  const assemblyPref = answers.AssemblyPreference || '';
+  
+  if (assemblyPref.includes('Ready-to-play') && preAssembled) {
     // Prefer pre-assembled for beginners
     totalScore = preAssembled.score || 0;
     return { 
@@ -433,7 +436,7 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       backhandThickness,
       backhandThicknessExplanation: backhandExplanation
     };
-  } else if (answers.AssemblyPreference.includes('Custom setup') && customSetup) {
+  } else if (assemblyPref.includes('Custom setup') && customSetup) {
     // Prefer custom setup for advanced users
     totalScore = customSetup.score;
     return { 

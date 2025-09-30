@@ -105,6 +105,7 @@ const questions = [
 const TableTennisQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Partial<QuizAnswers>>({});
+  const [completeAnswers, setCompleteAnswers] = useState<QuizAnswers | null>(null);
   const [isComplete, setIsComplete] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [recommendation, setRecommendation] = useState<any>(null);
@@ -272,7 +273,9 @@ const TableTennisQuiz = () => {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       // Generate recommendation when quiz is complete
-      const rec = getRecommendation(newAnswers as QuizAnswers);
+      const completeQuizAnswers = newAnswers as QuizAnswers;
+      setCompleteAnswers(completeQuizAnswers);
+      const rec = getRecommendation(completeQuizAnswers);
       setRecommendation(rec);
       setIsComplete(true);
     }
@@ -302,6 +305,7 @@ const TableTennisQuiz = () => {
   const handleRestart = () => {
     setCurrentQuestion(0);
     setAnswers({});
+    setCompleteAnswers(null);
     setIsComplete(false);
     setHasStarted(false);
     setRecommendation(null);
@@ -363,14 +367,17 @@ const TableTennisQuiz = () => {
   }
 
   const handleWeightChange = (weightRange: { min: number; max: number }) => {
-    // Update answers with weight preference and regenerate recommendation
-    const updatedAnswers = {
-      ...answers,
+    // Use the stored complete answers and add weight preference
+    if (!completeAnswers) return;
+    
+    const updatedAnswers: QuizAnswers = {
+      ...completeAnswers,
       WeightRange: weightRange
-    } as QuizAnswers;
+    };
     
     const newRecommendation = getRecommendation(updatedAnswers);
     setRecommendation(newRecommendation);
+    setCompleteAnswers(updatedAnswers);
   };
 
   // Quiz completion screen with recommendations
