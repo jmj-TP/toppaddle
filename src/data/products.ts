@@ -470,7 +470,216 @@ export const rubbers: Rubber[] =
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link" : "https://www.megaspin.net/store/default.asp?pid=andro-hexer-pg-sfx",
-    }
+  },
+  {
+    "Rubber_Name": "Butterfly Dignics 09C",
+    "Rubber_Speed": 86,
+    "Rubber_Spin": 95,
+    "Rubber_Control": 78,
+    "Rubber_Power": 88,
+    "Rubber_Price": 89.99,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/dignics-09C-dig09Cp"
+  },
+  {
+    "Rubber_Name": "Butterfly Dignics 05",
+    "Rubber_Speed": 86,
+    "Rubber_Spin": 85,
+    "Rubber_Control": 80,
+    "Rubber_Power": 85,
+    "Rubber_Price": 89.99,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://www.butterfly-global.com/en/products/detail/06040.html"
+  },
+  {
+    "Rubber_Name": "Butterfly Tenergy 05",
+    "Rubber_Speed": 88,
+    "Rubber_Spin": 92,
+    "Rubber_Control": 80,
+    "Rubber_Power": 90,
+    "Rubber_Price": 79.99,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://www.butterfly-global.com/en/products/detail/05800.html"
+  },
+  {
+    "Rubber_Name": "ANDRO Rasanter R47",
+    "Rubber_Speed": 90,
+    "Rubber_Spin": 93,
+    "Rubber_Control": 78,
+    "Rubber_Power": 92,
+    "Rubber_Price": 47.45,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/andro-rasanter-r47-table-tennis-rubber"
+  },
+  {
+    "Rubber_Name": "ANDRO Rasanter R53",
+    "Rubber_Speed": 92,
+    "Rubber_Spin": 95,
+    "Rubber_Control": 75,
+    "Rubber_Power": 94,
+    "Rubber_Price": 50.30,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-rasanter-r53"
+  },
+  {
+    "Rubber_Name": "ANDRO Rasanter R50",
+    "Rubber_Speed": 91,
+    "Rubber_Spin": 94,
+    "Rubber_Control": 77,
+    "Rubber_Power": 93,
+    "Rubber_Price": 59.95,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/andro-rasanter-r50-table-tennis-rubber"
+  },
+  {
+    "Rubber_Name": "ANDRO Rasanter R42 Advanced",
+    "Rubber_Speed": 82,
+    "Rubber_Spin": 88,
+    "Rubber_Control": 83,
+    "Rubber_Power": 84,
+    "Rubber_Price": 47.45,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://racketinsight.com/table-tennis/andro-rasanter-r42-review/"
+  },
+  {
+    "Rubber_Name": "Butterfly Feint Long II",
+    "Rubber_Speed": 40,
+    "Rubber_Spin": 70,
+    "Rubber_Control": 95,
+    "Rubber_Power": 35,
+    "Rubber_Price": 52.00,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Long Pimples",
+    "Rubber_Affiliate_Link": "https://sb-beta.butterflyonline.com/feint-long-ii"
+  },
+  {
+    "Rubber_Name": "Butterfly Feint Long III",
+    "Rubber_Speed": 35,
+    "Rubber_Spin": 65,
+    "Rubber_Control": 97,
+    "Rubber_Power": 30,
+    "Rubber_Price": 53.95,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Long Pimples",
+    "Rubber_Affiliate_Link": "https://sb-beta.butterflyonline.com/feint-long-iii"
+  },
+  {
+    "Rubber_Name": "Butterfly Ilius B",
+    "Rubber_Speed": 45,
+    "Rubber_Spin": 60,
+    "Rubber_Control": 92,
+    "Rubber_Power": 40,
+    "Rubber_Price": 34.19,
+    "Rubber_Level": "Intermediate",
+    "Rubber_Style": "Long Pimples",
+    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/butterfly-ilius-b-long-pips-table-tennis-rubber"
+  },
+  {
+    "Rubber_Name": "JOOLA CWX Long-Pips",
+    "Rubber_Speed": 30,
+    "Rubber_Spin": 60,
+    "Rubber_Control": 98,
+    "Rubber_Power": 25,
+    "Rubber_Price": 55.00,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Long Pimples",
+    "Rubber_Affiliate_Link": "https://joola.com.au/product/joola-cwx-long-pips-table-tennis-rubber"
+  },
+  {
+    "Rubber_Name": "JOOLA Express Ultra Short-Pips",
+    "Rubber_Speed": 88,
+    "Rubber_Spin": 65,
+    "Rubber_Control": 90,
+    "Rubber_Power": 85,
+    "Rubber_Price": 49.95,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Short Pimples",
+    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/joola-express-ultra-short-pips-table-tennis-rubber"
+  },
+  {
+    "Rubber_Name": "Butterfly Bryce Highspeed",
+    "Rubber_Speed": 88,
+    "Rubber_Spin": 85,
+    "Rubber_Control": 78,
+    "Rubber_Power": 90,
+    "Rubber_Price": 89.99,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/bryce-highspeed"
+  },
+  {
+    "Rubber_Name": "Butterfly Bryce Highspin",
+    "Rubber_Speed": 82,
+    "Rubber_Spin": 90,
+    "Rubber_Control": 80,
+    "Rubber_Power": 88,
+    "Rubber_Price": 89.99,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/bryce-highspin"
+  },
+  {
+    "Rubber_Name": "Butterfly Tenergy 64",
+    "Rubber_Speed": 92,
+    "Rubber_Spin": 88,
+    "Rubber_Control": 75,
+    "Rubber_Power": 93,
+    "Rubber_Price": 79.99,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/tenergy-64"
+  },
+  {
+    "Rubber_Name": "Butterfly Dignics 80",
+    "Rubber_Speed": 90,
+    "Rubber_Spin": 90,
+    "Rubber_Control": 79,
+    "Rubber_Power": 91,
+    "Rubber_Price": 89.99,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/dignics-80"
+  },
+  {
+    "Rubber_Name": "ANDRO Rasanter V47",
+    "Rubber_Speed": 95,
+    "Rubber_Spin": 85,
+    "Rubber_Control": 76,
+    "Rubber_Power": 93,
+    "Rubber_Price": 59.95,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/andro-rasanter-v47"
+  },
+  {
+    "Rubber_Name": "ANDRO Rasanter C53",
+    "Rubber_Speed": 88,
+    "Rubber_Spin": 90,
+    "Rubber_Control": 82,
+    "Rubber_Power": 89,
+    "Rubber_Price": 64.95,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://www.andro.de/en/rubbers"
+  },
+  {
+    "Rubber_Name": "JOOLA Rhyzer 55",
+    "Rubber_Speed": 94,
+    "Rubber_Spin": 92,
+    "Rubber_Control": 77,
+    "Rubber_Power": 93,
+    "Rubber_Price": 69.95,
+    "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
+    "Rubber_Affiliate_Link": "https://www.joola.com/products/rhyzer-55"
+  }
 ];
 
 // Pre-Assembled Rackets Database
