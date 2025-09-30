@@ -81,17 +81,6 @@ const questions = [
   },
   {
     id: 8,
-    question: "What racket weight do you prefer?",
-    options: [
-      { value: "I don't care", label: "I don't care - any weight is fine" },
-      { value: "Light (150-170g)", label: "Light (150-170g) - easier to maneuver" },
-      { value: "Medium (170-190g)", label: "Medium (170-190g) - balanced feel" },
-      { value: "Heavy (190-210g)", label: "Heavy (190-210g) - more power & stability" }
-    ],
-    key: "WeightPreference" as keyof QuizAnswers
-  },
-  {
-    id: 9,
     question: "What is your total budget for Blade + Rubbers or a Pre-Assembled Racket?",
     options: [
       { value: "<50$", label: "Under $50" },
@@ -102,7 +91,7 @@ const questions = [
     key: "Budget" as keyof QuizAnswers
   },
   {
-    id: 10,
+    id: 9,
     question: "Do you want a ready-to-play racket (pre-assembled), or do you want a custom setup (blade + separate rubbers)?",
     options: [
       { value: "Ready-to-play racket", label: "Ready-to-play racket (perfect for beginners, no gluing needed)" },
@@ -267,8 +256,8 @@ const TableTennisQuiz = () => {
       return;
     }
 
-    // Check if user selected "161+" on budget question (now question 9)
-    if (currentQuestion === 8 && answer === "161+") {
+    // Check if user selected "161+" on budget question (now question 8)
+    if (currentQuestion === 7 && answer === "161+") {
       setShowPremiumBudget(true);
       setCurrentQuestion(9.5);
       return;
@@ -277,7 +266,7 @@ const TableTennisQuiz = () => {
     // Handle premium budget follow-up
     if (currentQuestion === 9.5) {
       setShowPremiumBudget(false);
-      setCurrentQuestion(9);
+      setCurrentQuestion(8);
     }
 
     if (currentQuestion < questions.length - 1) {

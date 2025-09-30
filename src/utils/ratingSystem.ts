@@ -12,9 +12,7 @@ export interface QuizAnswers {
   ForehandRubberStyle: string;
   BackhandRubberStyle: string;
   Budget: string;
-  WeightPreference: string;
   AssemblyPreference: string;
-  WeightRange?: { min: number; max: number };
 }
 
 export interface CustomSetup {
@@ -36,7 +34,7 @@ export interface Recommendation {
 }
 
 // Calculate compatibility score between user preferences and product attributes
-function calculateScore(answers: QuizAnswers, product: any, productWeight?: number): number {
+function calculateScore(answers: QuizAnswers, product: any): number {
   let score = 0;
   let maxScore = 0;
 
@@ -52,8 +50,8 @@ function calculateScore(answers: QuizAnswers, product: any, productWeight?: numb
     score += levelWeight * 0.7; // Partial match for progression
   }
 
-  // Playstyle matching (30% weight - reduced from 35%)
-  const playstyleWeight = 30;
+  // Playstyle matching (35% weight)
+  const playstyleWeight = 35;
   maxScore += playstyleWeight;
   
   const speed = product.Blade_Speed || product.Racket_Speed || product.Rubber_Speed || 0;
@@ -77,8 +75,8 @@ function calculateScore(answers: QuizAnswers, product: any, productWeight?: numb
     score += ((speed + control) / 200) * playstyleWeight;
   }
 
-  // Power preference matching (20% weight - reduced from 25%)
-  const powerWeight = 20;
+  // Power preference matching (25% weight)
+  const powerWeight = 25;
   maxScore += powerWeight;
   
   if (answers.Power.includes('A lot of power')) {
@@ -120,45 +118,7 @@ function calculateScore(answers: QuizAnswers, product: any, productWeight?: numb
     score += (control / 100) * styleWeight;
   }
 
-  // Weight matching (20% weight - NEW)
-  if (productWeight && answers.WeightRange) {
-    const weightMatchWeight = 20;
-    maxScore += weightMatchWeight;
-    
-    const { min, max } = answers.WeightRange;
-    const midpoint = (min + max) / 2;
-    const range = max - min;
-    
-    // Calculate how close the product weight is to the preferred range
-    if (productWeight >= min && productWeight <= max) {
-      // Perfect match - inside the range
-      const distanceFromMidpoint = Math.abs(productWeight - midpoint);
-      const normalizedDistance = distanceFromMidpoint / (range / 2);
-      score += weightMatchWeight * (1 - normalizedDistance * 0.2); // 80-100% of points
-    } else {
-      // Outside range - penalize based on distance
-      const distanceFromRange = productWeight < min ? min - productWeight : productWeight - max;
-      const penalty = Math.min(1, distanceFromRange / 30); // Max penalty at 30g away
-      score += weightMatchWeight * (1 - penalty);
-    }
-  }
-
   return Math.min(100, (score / maxScore) * 100);
-}
-
-// Parse weight preference into range
-function getWeightRangeFromPreference(preference: string): { min: number; max: number } | undefined {
-  switch (preference) {
-    case 'Light (150-170g)':
-      return { min: 150, max: 170 };
-    case 'Medium (170-190g)':
-      return { min: 170, max: 190 };
-    case 'Heavy (190-210g)':
-      return { min: 190, max: 210 };
-    case "I don't care":
-    default:
-      return undefined;
-  }
 }
 
 // Get budget range
@@ -296,10 +256,6 @@ function calculateSpongeThickness(answers: QuizAnswers): {
 
 // Find best pre-assembled racket
 export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledRacket & { score: number }) | null {
-  // Parse weight range from preference
-  const weightRange = getWeightRangeFromPreference(answers.WeightPreference);
-  const answersWithWeight = { ...answers, WeightRange: weightRange };
-  
   const suitableRackets = preAssembledRackets
     .filter(racket => {
       // Budget filter
@@ -311,13 +267,10 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
       
       return true;
     })
-    .map(racket => {
-      const racketWeight = 180; // Standard weight for pre-assembled
-      return {
-        ...racket,
-        score: calculateScore(answersWithWeight, racket, racketWeight)
-      };
-    })
+    .map(racket => ({
+      ...racket,
+      score: calculateScore(answers, racket)
+    }))
     .sort((a, b) => b.score - a.score);
 
   // Normalize scores relative to budget range - best racket in budget gets high score
@@ -344,10 +297,6 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
 export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
   const budgetRange = getBudgetRange(answers.Budget);
   const bestCombinations: CustomSetup[] = [];
-  
-  // Parse weight range from preference
-  const weightRange = getWeightRangeFromPreference(answers.WeightPreference);
-  const answersWithWeight = { ...answers, WeightRange: weightRange };
 
   // Filter rubbers by style preference for each side
   const forehandRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.ForehandRubberStyle);
@@ -368,19 +317,13 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
           continue;
         }
         
-        // Calculate total weight
-        const bladeWeight = blade.Blade_Weight || 85;
-        const fhWeight = fhRubber.Rubber_Weight || 45;
-        const bhWeight = bhRubber.Rubber_Weight || 45;
-        const totalWeight = bladeWeight + fhWeight + bhWeight;
-        
         const totalPrice = blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price;
         
         if (totalPrice <= budgetRange.max) {
-          // Calculate combined score with weight
-          const bladeScore = calculateScore(answersWithWeight, blade, totalWeight);
-          const fhScore = calculateScore(answersWithWeight, fhRubber, totalWeight);
-          const bhScore = calculateScore(answersWithWeight, bhRubber, totalWeight);
+          // Calculate combined score
+          const bladeScore = calculateScore(answers, blade);
+          const fhScore = calculateScore(answers, fhRubber);
+          const bhScore = calculateScore(answers, bhRubber);
           
           // Weight: blade 50%, forehand rubber 30%, backhand rubber 20%
           let combinedScore = (bladeScore * 0.5) + (fhScore * 0.3) + (bhScore * 0.2);
