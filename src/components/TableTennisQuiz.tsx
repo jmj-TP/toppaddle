@@ -112,7 +112,11 @@ const questions = [
   }
 ];
 
-const TableTennisQuiz = () => {
+interface TableTennisQuizProps {
+  onQuizStatusChange: (isActive: boolean) => void;
+}
+
+const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Partial<QuizAnswers>>({});
   const [completeAnswers, setCompleteAnswers] = useState<QuizAnswers | null>(null);
@@ -366,6 +370,7 @@ const TableTennisQuiz = () => {
     setShowHandleSpecial(false);
     setShowWeightQuestion(false);
     setQuestionHistory([]);
+    onQuizStatusChange(false);
   };
 
   // Calculate progress considering all potential follow-up questions
@@ -410,7 +415,10 @@ const TableTennisQuiz = () => {
             </div>
           </div>
           <Button 
-            onClick={() => setHasStarted(true)}
+            onClick={() => {
+              setHasStarted(true);
+              onQuizStatusChange(true);
+            }}
             size="lg"
             variant="accent"
             className="px-8 py-3 text-lg font-semibold"
