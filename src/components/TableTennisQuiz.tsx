@@ -298,7 +298,7 @@ const TableTennisQuiz = () => {
     currentQuestion === 7.6 ? 7 :
     currentQuestion === 6.5 ? 6 :
     currentQuestion;
-  const progress = ((currentProgress + 1) / totalQuestions) * 100;
+  const progress = (currentProgress / totalQuestions) * 100;
 
   if (!hasStarted) {
     return (
