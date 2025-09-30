@@ -98,10 +98,10 @@ const questions = [
     id: 9,
     question: "What is your total budget for Blade + Rubbers or a Pre-Assembled Racket?",
     options: [
-      { value: "Under 50 USD", label: "Under 50 USD" },
-      { value: "50–100 USD", label: "50–100 USD" },
-      { value: "100–150 USD", label: "100–150 USD" },
-      { value: "Over 150 USD", label: "Over 150 USD" }
+      { value: "<50$", label: "Under $50" },
+      { value: "<100$", label: "Under $100" },
+      { value: "<160$", label: "Under $160" },
+      { value: "161+", label: "$161+" }
     ],
     key: "Budget" as keyof QuizAnswers
   },
@@ -123,11 +123,39 @@ const TableTennisQuiz = () => {
   const [isComplete, setIsComplete] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [recommendation, setRecommendation] = useState<any>(null);
+  const [showPremiumBudget, setShowPremiumBudget] = useState(false);
+
+  // Premium budget follow-up question
+  const premiumBudgetQuestion = {
+    id: 9.5,
+    question: "Please select your exact budget range:",
+    options: [
+      { value: "<200$", label: "Under $200" },
+      { value: "<250$", label: "Under $250" },
+      { value: "<300$", label: "Under $300" },
+      { value: "<360$", label: "Under $360" },
+      { value: "No limit", label: "No limit" }
+    ],
+    key: "Budget" as keyof QuizAnswers
+  };
 
   const handleAnswer = (answer: string) => {
-    const question = questions[currentQuestion];
+    const question = currentQuestion === 9.5 ? premiumBudgetQuestion : questions[currentQuestion];
     const newAnswers = { ...answers, [question.key]: answer };
     setAnswers(newAnswers);
+
+    // Check if user selected "161+" on budget question
+    if (currentQuestion === 8 && answer === "161+") {
+      setShowPremiumBudget(true);
+      setCurrentQuestion(9.5);
+      return;
+    }
+
+    // Handle premium budget follow-up
+    if (currentQuestion === 9.5) {
+      setShowPremiumBudget(false);
+      setCurrentQuestion(9);
+    }
 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
@@ -145,9 +173,13 @@ const TableTennisQuiz = () => {
     setIsComplete(false);
     setHasStarted(false);
     setRecommendation(null);
+    setShowPremiumBudget(false);
   };
 
-  const progress = ((currentQuestion + 1) / questions.length) * 100;
+  // Calculate progress considering premium budget question
+  const totalQuestions = showPremiumBudget ? questions.length + 1 : questions.length;
+  const currentProgress = currentQuestion === 9.5 ? 9 : currentQuestion;
+  const progress = ((currentProgress + 1) / totalQuestions) * 100;
 
   if (!hasStarted) {
     return (
@@ -194,7 +226,7 @@ const TableTennisQuiz = () => {
         <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-medium text-muted-foreground">
-              Question {currentQuestion + 1} of {questions.length}
+              Question {currentProgress + 1} of {totalQuestions}
             </span>
             <span className="text-sm font-medium text-primary">
               {Math.round(progress)}% Complete
@@ -204,7 +236,7 @@ const TableTennisQuiz = () => {
         </div>
         
         <QuestionCard
-          question={questions[currentQuestion]}
+          question={currentQuestion === 9.5 ? premiumBudgetQuestion : questions[currentQuestion]}
           onAnswer={handleAnswer}
         />
       </div>

@@ -120,16 +120,24 @@ function calculateScore(answers: QuizAnswers, product: any): number {
 // Get budget range
 function getBudgetRange(budget: string): { min: number; max: number } {
   switch (budget) {
-    case 'Under 50 USD':
+    case '<50$':
       return { min: 0, max: 50 };
-    case '50–100 USD':
-      return { min: 50, max: 100 };
-    case '100–150 USD':
-      return { min: 100, max: 150 };
-    case 'Over 150 USD':
-      return { min: 150, max: 1000 };
+    case '<100$':
+      return { min: 0, max: 100 };
+    case '<160$':
+      return { min: 0, max: 160 };
+    case '<200$':
+      return { min: 0, max: 200 };
+    case '<250$':
+      return { min: 0, max: 250 };
+    case '<300$':
+      return { min: 0, max: 300 };
+    case '<360$':
+      return { min: 0, max: 360 };
+    case 'No limit':
+      return { min: 0, max: 10000 };
     default:
-      return { min: 0, max: 1000 };
+      return { min: 0, max: 10000 };
   }
 }
 
