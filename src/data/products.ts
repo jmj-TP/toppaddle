@@ -8,7 +8,27 @@ export interface Blade {
   Blade_Grip: string;
   Blade_Price: number; // USD
   Blade_Level: 'Beginner' | 'Intermediate' | 'Advanced';
+  Blade_Weight?: number; // grams (optional - will be estimated if not provided)
   Blade_Affiliate_Link: string;
+}
+
+// Estimate blade weight based on characteristics
+export function estimateBladeWeight(blade: Blade): number {
+  if (blade.Blade_Weight) return blade.Blade_Weight;
+  
+  // Base weight ranges by level and style
+  let baseWeight = 88;
+  
+  // Level adjustment
+  if (blade.Blade_Level === 'Beginner') baseWeight = 86;
+  else if (blade.Blade_Level === 'Advanced') baseWeight = 91;
+  
+  // Speed/Power adjustment (fast offensive blades are heavier)
+  const offensiveScore = (blade.Blade_Speed + blade.Blade_Power) / 2;
+  if (offensiveScore > 85) baseWeight += 3;
+  else if (offensiveScore < 60) baseWeight -= 4; // Defensive blades lighter
+  
+  return Math.round(baseWeight);
 }
 
 export interface Rubber {
@@ -20,7 +40,29 @@ export interface Rubber {
   Rubber_Price: number; // USD
   Rubber_Level: 'Beginner' | 'Intermediate' | 'Advanced';
   Rubber_Style: 'Normal' | 'Short Pimples' | 'Long Pimples' | 'Anti';
+  Rubber_Weight?: number; // grams (when applied to blade - optional, will be estimated)
   Rubber_Affiliate_Link: string;
+}
+
+// Estimate rubber weight when applied to blade
+export function estimateRubberWeight(rubber: Rubber): number {
+  if (rubber.Rubber_Weight) return rubber.Rubber_Weight;
+  
+  // Weight varies by rubber style
+  switch (rubber.Rubber_Style) {
+    case 'Normal':
+      // Thicker, power rubbers are heavier
+      const powerScore = (rubber.Rubber_Speed + rubber.Rubber_Power) / 2;
+      return Math.round(48 + (powerScore / 100) * 5); // 48-53g
+    case 'Short Pimples':
+      return 46;
+    case 'Long Pimples':
+      return 43;
+    case 'Anti':
+      return 41;
+    default:
+      return 50;
+  }
 }
 
 export interface PreAssembledRacket {
@@ -52,6 +94,7 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 34.95,
     Blade_Level: "Beginner",
+    Blade_Weight: 86,
     Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-all-table-tennis-blade"
   },
   {
@@ -62,6 +105,7 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 39.95,
     Blade_Level: "Beginner",
+    Blade_Weight: 88,
     Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-off-table-tennis-blade"
   },
   {
@@ -72,6 +116,7 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 49.95,
     Blade_Level: "Intermediate",
+    Blade_Weight: 90,
     Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-carbon-table-tennis-blade"
   },
   {
@@ -82,6 +127,7 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 34.95,
     Blade_Level: "Beginner",
+    Blade_Weight: 87,
     Blade_Affiliate_Link: "https://joola.com/products/joola-challenger-off-table-tennis-blade"
   },
   {

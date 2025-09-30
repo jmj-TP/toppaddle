@@ -2,8 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ExternalLink, Star, Target, Gauge, Shield, Info } from "lucide-react";
+import { ExternalLink, Star, Target, Gauge, Shield, Info, Weight } from "lucide-react";
 import type { Recommendation } from "@/utils/ratingSystem";
+import { estimateBladeWeight, estimateRubberWeight } from "@/data/products";
 
 interface RecommendationDisplayProps {
   recommendation: Recommendation;
@@ -269,14 +270,31 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           </div>
         </div>
 
-        {/* Total Price */}
-        <div className="bg-secondary rounded-lg p-4 text-center">
-          <div className="text-2xl font-bold text-primary">
-            💰 Total Price: {formatPrice(customSetup.totalPrice)}
+        {/* Total Price and Weight */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-secondary rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-primary">
+              💰 Total Price: {formatPrice(customSetup.totalPrice)}
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              ✅ Fits your budget perfectly!
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            ✅ Fits your budget perfectly!
-          </p>
+          <div className="bg-secondary rounded-lg p-4 text-center">
+            <div className="flex items-center justify-center gap-2 text-2xl font-bold text-primary">
+              <Weight className="w-6 h-6" />
+              {(() => {
+                const bladeWeight = estimateBladeWeight(customSetup.blade);
+                const fhWeight = estimateRubberWeight(customSetup.forehandRubber);
+                const bhWeight = estimateRubberWeight(customSetup.backhandRubber);
+                const totalWeight = bladeWeight + fhWeight + bhWeight;
+                return `${totalWeight}g`;
+              })()}
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              Total racket weight
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>
