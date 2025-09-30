@@ -140,7 +140,11 @@ function isWithinBudget(price: number, budget: string): boolean {
 // Find best pre-assembled racket
 export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledRacket & { score: number }) | null {
   const suitableRackets = preAssembledRackets
-    .filter(racket => isWithinBudget(racket.Racket_Price, answers.Budget))
+    .filter(racket => 
+      isWithinBudget(racket.Racket_Price, answers.Budget) &&
+      racket.Racket_FH_Rubber_Style === answers.ForehandRubberStyle &&
+      racket.Racket_BH_Rubber_Style === answers.BackhandRubberStyle
+    )
     .map(racket => ({
       ...racket,
       score: calculateScore(answers, racket)
