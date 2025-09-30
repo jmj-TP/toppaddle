@@ -12,9 +12,9 @@ const questions = [
     id: 1,
     question: "What is your current table tennis skill level?",
     options: [
-      { value: "Beginner", label: "Beginner (just starting out or learning basics)" },
-      { value: "Intermediate", label: "Intermediate (comfortable with basic techniques)" },
-      { value: "Advanced", label: "Advanced (experienced player with refined skills)" }
+      { value: "Beginner", label: "Beginner" },
+      { value: "Intermediate", label: "Intermediate" },
+      { value: "Advanced", label: "Advanced" }
     ],
     key: "Level" as keyof QuizAnswers
   },
@@ -22,9 +22,9 @@ const questions = [
     id: 2,
     question: "How would you describe your overall playstyle?",
     options: [
-      { value: "Offensive player", label: "Offensive player (I love fast smashes and powerful topspin)" },
-      { value: "Allround player", label: "Allround player (I mix attack and control)" },
-      { value: "Defensive player", label: "Defensive player (I focus on control and placement)" }
+      { value: "Offensive player", label: "Offensive" },
+      { value: "Allround player", label: "All-Round" },
+      { value: "Defensive player", label: "Defensive" }
     ],
     key: "Playstyle" as keyof QuizAnswers
   },
@@ -32,10 +32,10 @@ const questions = [
     id: 3,
     question: "How do you usually play with your forehand?",
     options: [
-      { value: "Fast & aggressive", label: "Fast & aggressive" },
-      { value: "Spin & topspin", label: "Spin & topspin" },
-      { value: "Calm & controlled", label: "Calm & controlled" },
-      { value: "Both sides the same / not sure", label: "Both sides the same / not sure" }
+      { value: "Fast & aggressive", label: "Fast & Aggressive" },
+      { value: "Spin & topspin", label: "Spin & Topspin" },
+      { value: "Calm & controlled", label: "Calm & Controlled" },
+      { value: "Both sides the same / not sure", label: "Same as Backhand" }
     ],
     key: "Forehand" as keyof QuizAnswers
   },
@@ -43,10 +43,10 @@ const questions = [
     id: 4,
     question: "How do you usually play with your backhand?",
     options: [
-      { value: "Fast & aggressive", label: "Fast & aggressive" },
-      { value: "Spin & topspin", label: "Spin & topspin" },
-      { value: "Calm & controlled", label: "Calm & controlled" },
-      { value: "Both sides the same / not sure", label: "Both sides the same / not sure" }
+      { value: "Fast & aggressive", label: "Fast & Aggressive" },
+      { value: "Spin & topspin", label: "Spin & Topspin" },
+      { value: "Calm & controlled", label: "Calm & Controlled" },
+      { value: "Both sides the same / not sure", label: "Same as Forehand" }
     ],
     key: "Backhand" as keyof QuizAnswers
   },
@@ -54,10 +54,10 @@ const questions = [
     id: 5,
     question: "How much power do you want in your racket?",
     options: [
-      { value: "A lot of power", label: "A lot of power (fast, strong shots)" },
-      { value: "Balanced", label: "Balanced (a mix of speed and control)" },
-      { value: "Control is more important", label: "Control is more important than power" },
-      { value: "I don't know", label: "I don't know / doesn't matter" }
+      { value: "A lot of power", label: "Maximum Power" },
+      { value: "Balanced", label: "Balanced" },
+      { value: "Control is more important", label: "Control Focus" },
+      { value: "I don't know", label: "Not Sure" }
     ],
     key: "Power" as keyof QuizAnswers
   },
@@ -65,8 +65,8 @@ const questions = [
     id: 6,
     question: "Which handle type do you prefer?",
     options: [
-      { value: "Normal", label: "Normal / not sure (standard handle)" },
-      { value: "Special", label: "Special (I want specific handle type)" }
+      { value: "Normal", label: "Standard Handle" },
+      { value: "Special", label: "Specific Handle Type" }
     ],
     key: "HandlePreference" as keyof QuizAnswers
   },
@@ -74,8 +74,8 @@ const questions = [
     id: 7,
     question: "Do you want to use special rubbers (pimples or anti-spin)?",
     options: [
-      { value: "No", label: "No - Standard inverted rubbers are perfect for me" },
-      { value: "Yes", label: "Yes - I want to use special rubbers" }
+      { value: "No", label: "No - Standard Rubbers" },
+      { value: "Yes", label: "Yes - Special Rubbers" }
     ],
     key: "WantsSpecialRubbers" as keyof QuizAnswers
   },
@@ -94,9 +94,9 @@ const questions = [
     id: 9,
     question: "What is your racket weight preference?",
     options: [
-      { value: "Lightweight", label: "Lightweight (easier to maneuver, faster strokes)" },
-      { value: "Medium", label: "Medium (balanced feel)" },
-      { value: "Heavy", label: "Heavy (more power and stability)" }
+      { value: "Lightweight", label: "Lightweight" },
+      { value: "Medium", label: "Medium" },
+      { value: "Heavy", label: "Heavy" }
     ],
     key: "WeightPreference" as keyof QuizAnswers
   },
@@ -104,9 +104,9 @@ const questions = [
     id: 10,
     question: "Do you want a ready-to-play racket (pre-assembled), or do you want a custom setup (blade + separate rubbers)?",
     options: [
-      { value: "Ready-to-play racket", label: "Ready-to-play racket (perfect for beginners, no gluing needed)" },
-      { value: "Custom setup", label: "Custom setup (separate blade and rubbers)" },
-      { value: "Not sure", label: "Not sure → default to ready-to-play racket" }
+      { value: "Ready-to-play racket", label: "Ready-to-Play" },
+      { value: "Custom setup", label: "Custom Setup" },
+      { value: "Not sure", label: "Not Sure" }
     ],
     key: "AssemblyPreference" as keyof QuizAnswers
   }
@@ -135,7 +135,7 @@ const TableTennisQuiz = () => {
       { value: "<250$", label: "Under $250" },
       { value: "<300$", label: "Under $300" },
       { value: "<360$", label: "Under $360" },
-      { value: "No limit", label: "No limit" }
+      { value: "No limit", label: "No Limit" }
     ],
     key: "Budget" as keyof QuizAnswers
   };
@@ -145,10 +145,10 @@ const TableTennisQuiz = () => {
     id: 7.5,
     question: "Which rubber type for your forehand?",
     options: [
-      { value: "Normal", label: "Normal (inverted rubber for standard play)" },
-      { value: "Short Pimples", label: "Short Pimples (fast & direct, less spin)" },
-      { value: "Long Pimples", label: "Long Pimples (disruptive, reverses spin)" },
-      { value: "Anti", label: "Anti (no spin, blocks opponent's spin)" }
+      { value: "Normal", label: "Normal Inverted" },
+      { value: "Short Pimples", label: "Short Pimples" },
+      { value: "Long Pimples", label: "Long Pimples" },
+      { value: "Anti", label: "Anti-Spin" }
     ],
     key: "ForehandRubberStyle" as keyof QuizAnswers
   };
@@ -158,10 +158,10 @@ const TableTennisQuiz = () => {
     id: 7.6,
     question: "Which rubber type for your backhand?",
     options: [
-      { value: "Normal", label: "Normal (inverted rubber for standard play)" },
-      { value: "Short Pimples", label: "Short Pimples (fast & direct, less spin)" },
-      { value: "Long Pimples", label: "Long Pimples (disruptive, reverses spin)" },
-      { value: "Anti", label: "Anti (no spin, blocks opponent's spin)" }
+      { value: "Normal", label: "Normal Inverted" },
+      { value: "Short Pimples", label: "Short Pimples" },
+      { value: "Long Pimples", label: "Long Pimples" },
+      { value: "Anti", label: "Anti-Spin" }
     ],
     key: "BackhandRubberStyle" as keyof QuizAnswers
   };
@@ -171,11 +171,11 @@ const TableTennisQuiz = () => {
     id: 6.5,
     question: "Which specific handle type do you prefer?",
     options: [
-      { value: "Not sure", label: "Normal / not sure (whatever is comfortable)" },
-      { value: "Classic Shakehand", label: "Classic Shakehand (simple & universal)" },
-      { value: "Shakehand Flared", label: "Shakehand Flared (more grip, very popular)" },
-      { value: "Shakehand Straight", label: "Shakehand Straight (precise control)" },
-      { value: "Penhold", label: "Penhold (like holding a pen, offensive style)" }
+      { value: "Not sure", label: "Not Sure" },
+      { value: "Classic Shakehand", label: "Classic Shakehand" },
+      { value: "Shakehand Flared", label: "Shakehand Flared" },
+      { value: "Shakehand Straight", label: "Shakehand Straight" },
+      { value: "Penhold", label: "Penhold" }
     ],
     key: "Grip" as keyof QuizAnswers
   };
