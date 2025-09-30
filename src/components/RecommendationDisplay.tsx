@@ -10,7 +10,7 @@ interface RecommendationDisplayProps {
 }
 
 export default function RecommendationDisplay({ recommendation, onRestart }: RecommendationDisplayProps) {
-  const { preAssembled, customSetup, totalScore } = recommendation;
+  const { preAssembled, customSetup, totalScore, recommendedThickness, thicknessExplanation } = recommendation;
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
@@ -44,6 +44,20 @@ export default function RecommendationDisplay({ recommendation, onRestart }: Rec
           Based on your preferences, here are our top recommendations
         </p>
       </div>
+
+      {/* Sponge Thickness Recommendation */}
+      <Card className="border-2 border-yellow-500/30 bg-gradient-to-r from-yellow-50/50 to-orange-50/50 dark:from-yellow-950/20 dark:to-orange-950/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            📏 Recommended Sponge Thickness: <span className="text-yellow-600 dark:text-yellow-400">{recommendedThickness}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {thicknessExplanation}
+          </p>
+        </CardContent>
+      </Card>
 
       {/* Pre-Assembled Racket Option */}
       {preAssembled && (

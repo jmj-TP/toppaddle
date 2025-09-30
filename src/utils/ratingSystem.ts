@@ -25,6 +25,8 @@ export interface Recommendation {
   preAssembled?: PreAssembledRacket & { score: number };
   customSetup?: CustomSetup;
   totalScore: number;
+  recommendedThickness: string;
+  thicknessExplanation: string;
 }
 
 // Calculate compatibility score between user preferences and product attributes
@@ -135,6 +137,57 @@ function getBudgetRange(budget: string): { min: number; max: number } {
 function isWithinBudget(price: number, budget: string): boolean {
   const range = getBudgetRange(budget);
   return price >= range.min && price <= range.max;
+}
+
+// Calculate recommended sponge thickness based on player level and style
+function calculateSpongeThickness(answers: QuizAnswers): { thickness: string; explanation: string } {
+  const { Level, Playstyle } = answers;
+  
+  // Beginner → 1.7 mm
+  if (Level === 'Beginner') {
+    return {
+      thickness: '1.7 mm',
+      explanation: `Since you're starting out, we recommend a 1.7 mm sponge. This provides balanced control and prevents bottoming out, making it easier to develop proper technique. Thicker sponges = more spin/speed, thinner = more control. Just pick this thickness in the shop and you're good to go!`
+    };
+  }
+  
+  // Defensive → 1.5 mm
+  if (Playstyle.includes('Defensive')) {
+    return {
+      thickness: '1.5 mm',
+      explanation: `Since you play defensively, we recommend a 1.5 mm sponge. This gives maximum control for chopping and blocking. Thinner sponges = more control and safer defensive play. Just pick this thickness in the shop and you're good to go!`
+    };
+  }
+  
+  // Allround → 1.8–2.0 mm
+  if (Playstyle.includes('Allround')) {
+    return {
+      thickness: '1.8–2.0 mm',
+      explanation: `Since you play an all-around style, we recommend a 1.8–2.0 mm sponge. This provides the perfect balance between spin, control, and versatility. Just pick this thickness in the shop and you're good to go!`
+    };
+  }
+  
+  // Offensive Advanced → 2.1–2.3 mm
+  if (Playstyle.includes('Offensive') && Level === 'Advanced') {
+    return {
+      thickness: '2.1–2.3 mm',
+      explanation: `Since you play offensively at an advanced level, we recommend a 2.1–2.3 mm sponge. This gives maximum spin and speed for aggressive play. Thicker sponges = more offense, thinner = more control. Just pick this thickness in the shop and you're good to go!`
+    };
+  }
+  
+  // Offensive Intermediate (or Beginner who chose Offensive) → 2.0 mm
+  if (Playstyle.includes('Offensive')) {
+    return {
+      thickness: '2.0 mm',
+      explanation: `Since you play offensively at an intermediate level, we recommend a 2.0 mm sponge. This provides great speed and spin while maintaining good control. Just pick this thickness in the shop and you're good to go!`
+    };
+  }
+  
+  // Default fallback
+  return {
+    thickness: '1.8–2.0 mm',
+    explanation: `Based on your playstyle, we recommend a 1.8–2.0 mm sponge for balanced performance. This thickness works well for most playing styles. Just pick this thickness in the shop and you're good to go!`
+  };
 }
 
 // Find best pre-assembled racket
@@ -255,6 +308,7 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
 export function getRecommendation(answers: QuizAnswers): Recommendation {
   const preAssembled = findBestPreAssembledRacket(answers);
   const customSetup = findBestCustomSetup(answers);
+  const { thickness, explanation } = calculateSpongeThickness(answers);
 
   // Determine which option to prioritize
   let totalScore = 0;
@@ -262,16 +316,34 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
   if (answers.AssemblyPreference.includes('Ready-to-play') && preAssembled) {
     // Prefer pre-assembled for beginners
     totalScore = preAssembled.score || 0;
-    return { preAssembled, customSetup, totalScore };
+    return { 
+      preAssembled, 
+      customSetup, 
+      totalScore,
+      recommendedThickness: thickness,
+      thicknessExplanation: explanation
+    };
   } else if (answers.AssemblyPreference.includes('Custom setup') && customSetup) {
     // Prefer custom setup for advanced users
     totalScore = customSetup.score;
-    return { preAssembled, customSetup, totalScore };
+    return { 
+      preAssembled, 
+      customSetup, 
+      totalScore,
+      recommendedThickness: thickness,
+      thicknessExplanation: explanation
+    };
   } else {
     // Return both options, prioritize based on scores
     const preScore = preAssembled?.score || 0;
     const customScore = customSetup?.score || 0;
     totalScore = Math.max(preScore, customScore);
-    return { preAssembled, customSetup, totalScore };
+    return { 
+      preAssembled, 
+      customSetup, 
+      totalScore,
+      recommendedThickness: thickness,
+      thicknessExplanation: explanation
+    };
   }
 }
