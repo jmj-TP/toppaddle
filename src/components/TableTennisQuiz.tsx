@@ -246,8 +246,6 @@ const TableTennisQuiz = () => {
     currentQuestion;
   const progress = ((currentProgress + 1) / totalQuestions) * 100;
 
-  console.log("TableTennisQuiz render - hasStarted:", hasStarted, "isComplete:", isComplete);
-  
   if (!hasStarted) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "var(--gradient-soft)" }}>

@@ -37,7 +37,7 @@ export default function RecommendationDisplay({ recommendation, onRestart }: Rec
   return (
     <div className="w-full max-w-4xl mx-auto p-6 space-y-6">
       <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-tt-primary to-tt-secondary bg-clip-text text-transparent">
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
           ✨ Your Perfect Racket Setup! ✨
         </h2>
         <p className="text-muted-foreground">
@@ -61,7 +61,7 @@ export default function RecommendationDisplay({ recommendation, onRestart }: Rec
 
       {/* Pre-Assembled Racket Option */}
       {preAssembled && (
-        <Card className="border-2 border-tt-primary/20 shadow-lg">
+        <Card className="border-2 border-primary/20 shadow-lg">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
@@ -113,7 +113,7 @@ export default function RecommendationDisplay({ recommendation, onRestart }: Rec
                 
                 <Button 
                   asChild 
-                  className="w-full bg-gradient-to-r from-tt-primary to-tt-secondary hover:opacity-90"
+                  className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90"
                 >
                   <a 
                     href={preAssembled.Racket_Affiliate_Link} 
@@ -133,7 +133,7 @@ export default function RecommendationDisplay({ recommendation, onRestart }: Rec
 
       {/* Custom Setup Option */}
       {customSetup && (
-        <Card className="border-2 border-tt-secondary/20 shadow-lg">
+        <Card className="border-2 border-accent/20 shadow-lg">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
@@ -255,7 +255,7 @@ export default function RecommendationDisplay({ recommendation, onRestart }: Rec
             </div>
 
             {/* Total Price */}
-            <div className="bg-gradient-to-r from-tt-primary/10 to-tt-secondary/10 rounded-lg p-4 text-center">
+            <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-green-600">
                 💰 Total Price: {formatPrice(customSetup.totalPrice)}
               </div>
