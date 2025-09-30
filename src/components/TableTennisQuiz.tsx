@@ -164,6 +164,18 @@ const TableTennisQuiz = () => {
     const newAnswers = { ...answers, [question.key]: answer };
     setAnswers(newAnswers);
 
+    // Check if forehand is "Both sides the same / not sure" (question 3)
+    if (currentQuestion === 2 && answer === "Both sides the same / not sure") {
+      // Set backhand to same answer and skip question 4
+      const updatedAnswers = {
+        ...newAnswers,
+        Backhand: answer
+      };
+      setAnswers(updatedAnswers);
+      setCurrentQuestion(4); // Skip to question 5 (power question)
+      return;
+    }
+
     // Check if user wants special rubbers at all (question 7)
     if (currentQuestion === 6 && answer === "No") {
       // Set both to Normal and skip special rubber questions
