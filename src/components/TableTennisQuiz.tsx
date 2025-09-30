@@ -121,7 +121,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const [answers, setAnswers] = useState<Partial<QuizAnswers>>({});
   const [completeAnswers, setCompleteAnswers] = useState<QuizAnswers | null>(null);
   const [isComplete, setIsComplete] = useState(false);
-  const [hasStarted, setHasStarted] = useState(false);
   const [recommendation, setRecommendation] = useState<any>(null);
   const [showPremiumBudget, setShowPremiumBudget] = useState(false);
   const [showForehandSpecial, setShowForehandSpecial] = useState(false);
@@ -362,7 +361,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     setAnswers({});
     setCompleteAnswers(null);
     setIsComplete(false);
-    setHasStarted(false);
     setRecommendation(null);
     setShowPremiumBudget(false);
     setShowForehandSpecial(false);
@@ -391,44 +389,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     currentQuestion >= 9 && !showWeightQuestion ? currentQuestion - 1 :
     currentQuestion;
   const progress = (currentProgress / totalQuestions) * 100;
-
-  if (!hasStarted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "var(--gradient-soft)" }}>
-        <Card className="w-full max-w-2xl p-8 text-center border-border" style={{ boxShadow: "var(--shadow-xl)" }}>
-          <div className="mb-6">
-            <div className="text-6xl mb-4">🏓</div>
-            <h1 className="text-4xl font-bold text-primary mb-4">
-              Table Tennis Quiz Assistant
-            </h1>
-            <p className="text-lg text-muted-foreground mb-6">
-              Find your perfect table tennis racket with our interactive quiz!
-            </p>
-            <div className="bg-secondary p-6 rounded-lg mb-8">
-              <h3 className="text-lg font-semibold text-primary mb-3">What you'll discover:</h3>
-              <ul className="text-left space-y-2 text-muted-foreground">
-                <li>• Your ideal playstyle match</li>
-                <li>• Perfect grip and power level</li>
-                <li>• Budget-friendly recommendations</li>
-                <li>• Custom vs ready-to-play options</li>
-              </ul>
-            </div>
-          </div>
-          <Button 
-            onClick={() => {
-              setHasStarted(true);
-              onQuizStatusChange(true);
-            }}
-            size="lg"
-            variant="accent"
-            className="px-8 py-3 text-lg font-semibold"
-          >
-            Start Quiz
-          </Button>
-        </Card>
-      </div>
-    );
-  }
 
   // Quiz completion screen with recommendations
   if (isComplete && recommendation) {

@@ -1,4 +1,4 @@
-import { Award, Users, Heart } from "lucide-react";
+import { Award, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const TrustSection = () => {
@@ -14,7 +14,7 @@ const TrustSection = () => {
             we're passionate about matching you with gear that truly enhances your game.
           </p>
 
-          <div className="grid gap-6 md:grid-cols-3 mb-12">
+          <div className="grid gap-6 md:grid-cols-2 mb-12 max-w-2xl mx-auto">
             <Card className="border-0 shadow-md">
               <CardContent className="p-6 text-center">
                 <div className="inline-flex p-3 rounded-full bg-accent/10 mb-4">
@@ -22,16 +22,6 @@ const TrustSection = () => {
                 </div>
                 <h3 className="font-headline text-2xl font-bold text-foreground mb-2">8+ Years</h3>
                 <p className="font-body text-sm text-muted-foreground">Experience in Table Tennis</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-md">
-              <CardContent className="p-6 text-center">
-                <div className="inline-flex p-3 rounded-full bg-accent/10 mb-4">
-                  <Users className="h-8 w-8 text-accent" />
-                </div>
-                <h3 className="font-headline text-2xl font-bold text-foreground mb-2">1000+</h3>
-                <p className="font-body text-sm text-muted-foreground">Players Helped</p>
               </CardContent>
             </Card>
 

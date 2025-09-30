@@ -36,10 +36,6 @@ const HeroSection = ({ onStartQuiz }: HeroSectionProps) => {
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
 
-          {/* Trust Badge */}
-          <p className="font-body text-sm text-muted-foreground mt-8 animate-fade-in">
-            ✓ Trusted by thousands of players since 2017
-          </p>
         </div>
       </div>
 
