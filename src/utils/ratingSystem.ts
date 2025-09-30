@@ -304,8 +304,20 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
       ? 85 + ((maxScoreInBudget - minScoreInBudget) / scoreRange) * 10
       : 90;
     
+    const bestSetup = bestCombinations[0];
+    
+    // If both rubbers are Normal and prices differ, ensure more expensive one is on forehand
+    if (answers.ForehandRubberStyle === "Normal" && 
+        answers.BackhandRubberStyle === "Normal" &&
+        bestSetup.backhandRubber.Rubber_Price > bestSetup.forehandRubber.Rubber_Price) {
+      // Swap the rubbers
+      const temp = bestSetup.forehandRubber;
+      bestSetup.forehandRubber = bestSetup.backhandRubber;
+      bestSetup.backhandRubber = temp;
+    }
+    
     return {
-      ...bestCombinations[0],
+      ...bestSetup,
       score: normalizedScore
     };
   }
