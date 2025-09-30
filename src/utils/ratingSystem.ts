@@ -111,15 +111,6 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += (control / 100) * styleWeight;
   }
 
-  // Rubber style matching (10% weight) - only for rubbers
-  const rubberStyleWeight = 10;
-  if (product.Rubber_Style) {
-    maxScore += rubberStyleWeight;
-    if (answers.RubberStyle === product.Rubber_Style) {
-      score += rubberStyleWeight;
-    }
-  }
-
   return Math.min(100, (score / maxScore) * 100);
 }
 
@@ -180,10 +171,13 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
   const budgetRange = getBudgetRange(answers.Budget);
   const bestCombinations: CustomSetup[] = [];
 
+  // Filter rubbers by style preference
+  const filteredRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.RubberStyle);
+
   // Try all combinations of blade + 2 rubbers
   for (const blade of blades) {
-    for (const fhRubber of rubbers) {
-      for (const bhRubber of rubbers) {
+    for (const fhRubber of filteredRubbers) {
+      for (const bhRubber of filteredRubbers) {
         // Constraint: no rubber should be more expensive than the blade
         if (fhRubber.Rubber_Price > blade.Blade_Price || bhRubber.Rubber_Price > blade.Blade_Price) {
           continue;
