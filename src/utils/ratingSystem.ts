@@ -13,6 +13,7 @@ export interface QuizAnswers {
   BackhandRubberStyle: string;
   Budget: string;
   AssemblyPreference: string;
+  WeightRange?: { min: number; max: number };
 }
 
 export interface CustomSetup {
@@ -257,11 +258,24 @@ function calculateSpongeThickness(answers: QuizAnswers): {
 // Find best pre-assembled racket
 export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledRacket & { score: number }) | null {
   const suitableRackets = preAssembledRackets
-    .filter(racket => 
-      isWithinBudget(racket.Racket_Price, answers.Budget) &&
-      racket.Racket_FH_Rubber_Style === answers.ForehandRubberStyle &&
-      racket.Racket_BH_Rubber_Style === answers.BackhandRubberStyle
-    )
+    .filter(racket => {
+      // Budget filter
+      if (!isWithinBudget(racket.Racket_Price, answers.Budget)) return false;
+      
+      // Rubber style filter
+      if (racket.Racket_FH_Rubber_Style !== answers.ForehandRubberStyle) return false;
+      if (racket.Racket_BH_Rubber_Style !== answers.BackhandRubberStyle) return false;
+      
+      // Weight filter (pre-assembled rackets are typically ~180g)
+      if (answers.WeightRange) {
+        const racketWeight = 180; // Standard weight for pre-assembled
+        if (racketWeight < answers.WeightRange.min || racketWeight > answers.WeightRange.max) {
+          return false;
+        }
+      }
+      
+      return true;
+    })
     .map(racket => ({
       ...racket,
       score: calculateScore(answers, racket)
@@ -310,6 +324,18 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
         const cheapestRubber = Math.min(fhRubber.Rubber_Price, bhRubber.Rubber_Price);
         if (cheapestRubber < blade.Blade_Price / 4) {
           continue;
+        }
+        
+        // Weight filter - calculate total weight of setup
+        if (answers.WeightRange) {
+          const bladeWeight = blade.Blade_Weight || 85;
+          const fhWeight = fhRubber.Rubber_Weight || 45;
+          const bhWeight = bhRubber.Rubber_Weight || 45;
+          const totalWeight = bladeWeight + fhWeight + bhWeight;
+          
+          if (totalWeight < answers.WeightRange.min || totalWeight > answers.WeightRange.max) {
+            continue;
+          }
         }
         
         const totalPrice = blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price;

@@ -362,9 +362,27 @@ const TableTennisQuiz = () => {
     );
   }
 
+  const handleWeightChange = (weightRange: { min: number; max: number }) => {
+    // Update answers with weight preference and regenerate recommendation
+    const updatedAnswers = {
+      ...answers,
+      WeightRange: weightRange
+    } as QuizAnswers;
+    
+    const newRecommendation = getRecommendation(updatedAnswers);
+    setRecommendation(newRecommendation);
+  };
+
   // Quiz completion screen with recommendations
   if (isComplete && recommendation) {
-    return <RecommendationDisplay recommendation={recommendation} onRestart={handleRestart} assemblyPreference={answers.AssemblyPreference} />;
+    return (
+      <RecommendationDisplay 
+        recommendation={recommendation} 
+        onRestart={handleRestart} 
+        assemblyPreference={answers.AssemblyPreference}
+        onWeightChange={handleWeightChange}
+      />
+    );
   }
 
   return (

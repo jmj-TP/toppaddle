@@ -2,21 +2,40 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ExternalLink, Star, Target, Gauge, Shield, Info, Weight } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import { ExternalLink, Star, Target, Gauge, Shield, Info, Weight, Settings } from "lucide-react";
 import type { Recommendation } from "@/utils/ratingSystem";
 import { estimateBladeWeight, estimateRubberWeight } from "@/data/products";
+import { useState } from "react";
 
 interface RecommendationDisplayProps {
   recommendation: Recommendation;
   onRestart: () => void;
   assemblyPreference?: string;
+  onWeightChange?: (weightRange: { min: number; max: number }) => void;
 }
 
-export default function RecommendationDisplay({ recommendation, onRestart, assemblyPreference }: RecommendationDisplayProps) {
+export default function RecommendationDisplay({ recommendation, onRestart, assemblyPreference, onWeightChange }: RecommendationDisplayProps) {
   const { preAssembled, customSetup, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation } = recommendation;
   
   // Determine which option to show first based on user preference
   const showCustomFirst = assemblyPreference === "Custom setup";
+  
+  // Weight customization state
+  const [weightRange, setWeightRange] = useState([150, 200]);
+  const [showWeightCustomizer, setShowWeightCustomizer] = useState(false);
+  
+  // Calculate current weight
+  const currentWeight = customSetup 
+    ? estimateBladeWeight(customSetup.blade) + estimateRubberWeight(customSetup.forehandRubber) + estimateRubberWeight(customSetup.backhandRubber)
+    : 180;
+  
+  const handleWeightApply = () => {
+    if (onWeightChange) {
+      onWeightChange({ min: weightRange[0], max: weightRange[1] });
+      setShowWeightCustomizer(false);
+    }
+  };
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
@@ -280,21 +299,61 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               ✅ Fits your budget perfectly!
             </p>
           </div>
-          <div className="bg-secondary rounded-lg p-4 text-center">
-            <div className="flex items-center justify-center gap-2 text-2xl font-bold text-primary">
-              <Weight className="w-6 h-6" />
-              {(() => {
-                const bladeWeight = estimateBladeWeight(customSetup.blade);
-                const fhWeight = estimateRubberWeight(customSetup.forehandRubber);
-                const bhWeight = estimateRubberWeight(customSetup.backhandRubber);
-                const totalWeight = bladeWeight + fhWeight + bhWeight;
-                return `${totalWeight}g`;
-              })()}
-            </div>
-            <p className="text-sm text-muted-foreground mt-1">
-              Total racket weight
-            </p>
-          </div>
+          <Popover open={showWeightCustomizer} onOpenChange={setShowWeightCustomizer}>
+            <PopoverTrigger asChild>
+              <button className="bg-secondary rounded-lg p-4 text-center hover:bg-secondary/80 transition-colors cursor-pointer">
+                <div className="flex items-center justify-center gap-2 text-2xl font-bold text-primary">
+                  <Weight className="w-6 h-6" />
+                  {(() => {
+                    const bladeWeight = estimateBladeWeight(customSetup.blade);
+                    const fhWeight = estimateRubberWeight(customSetup.forehandRubber);
+                    const bhWeight = estimateRubberWeight(customSetup.backhandRubber);
+                    const totalWeight = bladeWeight + fhWeight + bhWeight;
+                    return `${totalWeight}g`;
+                  })()}
+                  <Settings className="w-5 h-5 ml-1 text-muted-foreground" />
+                </div>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Click to adjust weight preference
+                </p>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-sm mb-2">Customize Weight Range</h4>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    Adjust to find rackets in your preferred weight range. Your playing style stays the same.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium">Weight Range:</span>
+                    <span className="text-primary font-bold">{weightRange[0]}g - {weightRange[1]}g</span>
+                  </div>
+                  <Slider
+                    min={140}
+                    max={210}
+                    step={5}
+                    value={weightRange}
+                    onValueChange={setWeightRange}
+                    className="py-4"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>140g (Light)</span>
+                    <span>210g (Heavy)</span>
+                  </div>
+                </div>
+                <Button 
+                  onClick={handleWeightApply}
+                  className="w-full"
+                  variant="accent"
+                >
+                  Find New Recommendations
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </CardContent>
     </Card>
