@@ -277,32 +277,44 @@ const TableTennisQuiz = () => {
     // Handle premium budget follow-up
     if (currentQuestion === 9.5) {
       setShowPremiumBudget(false);
-      setCurrentQuestion(8);
+      // After premium budget, check if Advanced to show weight question
+      if (answers.Level === "Advanced") {
+        setShowWeightQuestion(true);
+        setCurrentQuestion(8); // Show weight question (index 8)
+      } else {
+        // Skip weight question for non-advanced players
+        const updatedAnswers = {
+          ...newAnswers,
+          WeightPreference: "Medium"
+        };
+        setAnswers(updatedAnswers);
+        setCurrentQuestion(9); // Go to assembly preference (index 9)
+      }
       return;
     }
 
-    // Check if user is Advanced after budget question - show weight question
-    if (currentQuestion === 8 && answers.Level === "Advanced") {
+    // Check if user is Advanced after budget question (no premium follow-up) - show weight question
+    if (currentQuestion === 7 && answer !== "161+" && answers.Level === "Advanced") {
       setShowWeightQuestion(true);
-      setCurrentQuestion(9);
+      setCurrentQuestion(8); // Show weight question (index 8)
       return;
     }
 
-    // If not advanced, skip weight question and set default
-    if (currentQuestion === 8 && answers.Level !== "Advanced") {
+    // If not advanced and just answered budget, skip weight question and set default
+    if (currentQuestion === 7 && answer !== "161+" && answers.Level !== "Advanced") {
       const updatedAnswers = {
         ...newAnswers,
         WeightPreference: "Medium"
       };
       setAnswers(updatedAnswers);
-      setCurrentQuestion(10); // Skip to assembly preference
+      setCurrentQuestion(9); // Skip to assembly preference (index 9)
       return;
     }
 
-    // Handle weight question (only for advanced)
-    if (currentQuestion === 9) {
+    // Handle weight question (only for advanced) - move to assembly preference
+    if (currentQuestion === 8 && showWeightQuestion) {
       setShowWeightQuestion(false);
-      setCurrentQuestion(10);
+      setCurrentQuestion(9); // Go to assembly preference (index 9)
       return;
     }
 
