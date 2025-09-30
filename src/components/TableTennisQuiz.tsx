@@ -81,6 +81,17 @@ const questions = [
   },
   {
     id: 8,
+    question: "What racket weight do you prefer?",
+    options: [
+      { value: "I don't care", label: "I don't care - any weight is fine" },
+      { value: "Light (150-170g)", label: "Light (150-170g) - easier to maneuver" },
+      { value: "Medium (170-190g)", label: "Medium (170-190g) - balanced feel" },
+      { value: "Heavy (190-210g)", label: "Heavy (190-210g) - more power & stability" }
+    ],
+    key: "WeightPreference" as keyof QuizAnswers
+  },
+  {
+    id: 9,
     question: "What is your total budget for Blade + Rubbers or a Pre-Assembled Racket?",
     options: [
       { value: "<50$", label: "Under $50" },
@@ -91,7 +102,7 @@ const questions = [
     key: "Budget" as keyof QuizAnswers
   },
   {
-    id: 9,
+    id: 10,
     question: "Do you want a ready-to-play racket (pre-assembled), or do you want a custom setup (blade + separate rubbers)?",
     options: [
       { value: "Ready-to-play racket", label: "Ready-to-play racket (perfect for beginners, no gluing needed)" },
@@ -171,7 +182,7 @@ const TableTennisQuiz = () => {
 
   const handleAnswer = (answer: string) => {
     const question = 
-      currentQuestion === 8.5 ? premiumBudgetQuestion : 
+      currentQuestion === 9.5 ? premiumBudgetQuestion : 
       currentQuestion === 7.5 ? forehandSpecialQuestion :
       currentQuestion === 7.6 ? backhandSpecialQuestion :
       currentQuestion === 6.5 ? handleSpecialQuestion :
@@ -256,17 +267,17 @@ const TableTennisQuiz = () => {
       return;
     }
 
-    // Check if user selected "161+" on budget question (now question 8)
-    if (currentQuestion === 7 && answer === "161+") {
+    // Check if user selected "161+" on budget question (now question 9)
+    if (currentQuestion === 8 && answer === "161+") {
       setShowPremiumBudget(true);
-      setCurrentQuestion(8.5);
+      setCurrentQuestion(9.5);
       return;
     }
 
     // Handle premium budget follow-up
-    if (currentQuestion === 8.5) {
+    if (currentQuestion === 9.5) {
       setShowPremiumBudget(false);
-      setCurrentQuestion(8);
+      setCurrentQuestion(9);
     }
 
     if (currentQuestion < questions.length - 1) {
@@ -289,7 +300,7 @@ const TableTennisQuiz = () => {
     setQuestionHistory(newHistory);
     
     // Reset conditional states based on where we're going back
-    if (currentQuestion === 8.5) {
+    if (currentQuestion === 9.5) {
       setShowPremiumBudget(false);
     } else if (currentQuestion === 7.5) {
       setShowForehandSpecial(false);
@@ -324,7 +335,7 @@ const TableTennisQuiz = () => {
     (showHandleSpecial ? 1 : 0);
   const totalQuestions = questions.length + totalExtraQuestions;
   const currentProgress = 
-    currentQuestion === 8.5 ? 8 : 
+    currentQuestion === 9.5 ? 9 : 
     currentQuestion === 7.5 ? 7 :
     currentQuestion === 7.6 ? 7 :
     currentQuestion === 6.5 ? 6 :
@@ -366,20 +377,6 @@ const TableTennisQuiz = () => {
     );
   }
 
-  const handleWeightChange = (weightRange: { min: number; max: number }) => {
-    // Use the stored complete answers and add weight preference
-    if (!completeAnswers) return;
-    
-    const updatedAnswers: QuizAnswers = {
-      ...completeAnswers,
-      WeightRange: weightRange
-    };
-    
-    const newRecommendation = getRecommendation(updatedAnswers);
-    setRecommendation(newRecommendation);
-    setCompleteAnswers(updatedAnswers);
-  };
-
   // Quiz completion screen with recommendations
   if (isComplete && recommendation) {
     return (
@@ -387,7 +384,6 @@ const TableTennisQuiz = () => {
         recommendation={recommendation} 
         onRestart={handleRestart} 
         assemblyPreference={answers.AssemblyPreference}
-        onWeightChange={handleWeightChange}
       />
     );
   }
@@ -421,7 +417,7 @@ const TableTennisQuiz = () => {
         
         <QuestionCard
           question={
-            currentQuestion === 8.5 ? premiumBudgetQuestion : 
+            currentQuestion === 9.5 ? premiumBudgetQuestion : 
             currentQuestion === 7.5 ? forehandSpecialQuestion :
             currentQuestion === 7.6 ? backhandSpecialQuestion :
             currentQuestion === 6.5 ? handleSpecialQuestion :
