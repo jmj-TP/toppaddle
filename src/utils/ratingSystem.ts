@@ -306,6 +306,12 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
           continue;
         }
         
+        // Constraint: cheapest rubber should be at least 1/4 of blade price
+        const cheapestRubber = Math.min(fhRubber.Rubber_Price, bhRubber.Rubber_Price);
+        if (cheapestRubber < blade.Blade_Price / 4) {
+          continue;
+        }
+        
         const totalPrice = blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price;
         
         if (totalPrice <= budgetRange.max) {
