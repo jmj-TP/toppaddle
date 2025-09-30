@@ -7,7 +7,8 @@ export interface QuizAnswers {
   Backhand: string;
   Power: string;
   Grip: string;
-  RubberStyle: string;
+  ForehandRubberStyle: string;
+  BackhandRubberStyle: string;
   Budget: string;
   AssemblyPreference: string;
 }
@@ -171,13 +172,14 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
   const budgetRange = getBudgetRange(answers.Budget);
   const bestCombinations: CustomSetup[] = [];
 
-  // Filter rubbers by style preference
-  const filteredRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.RubberStyle);
+  // Filter rubbers by style preference for each side
+  const forehandRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.ForehandRubberStyle);
+  const backhandRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.BackhandRubberStyle);
 
   // Try all combinations of blade + 2 rubbers
   for (const blade of blades) {
-    for (const fhRubber of filteredRubbers) {
-      for (const bhRubber of filteredRubbers) {
+    for (const fhRubber of forehandRubbers) {
+      for (const bhRubber of backhandRubbers) {
         // Constraint: no rubber should be more expensive than the blade
         if (fhRubber.Rubber_Price > blade.Blade_Price || bhRubber.Rubber_Price > blade.Blade_Price) {
           continue;
