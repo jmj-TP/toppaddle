@@ -92,6 +92,16 @@ const questions = [
   },
   {
     id: 9,
+    question: "What is your racket weight preference?",
+    options: [
+      { value: "Lightweight", label: "Lightweight (easier to maneuver, faster strokes)" },
+      { value: "Medium", label: "Medium (balanced feel)" },
+      { value: "Heavy", label: "Heavy (more power and stability)" }
+    ],
+    key: "WeightPreference" as keyof QuizAnswers
+  },
+  {
+    id: 10,
     question: "Do you want a ready-to-play racket (pre-assembled), or do you want a custom setup (blade + separate rubbers)?",
     options: [
       { value: "Ready-to-play racket", label: "Ready-to-play racket (perfect for beginners, no gluing needed)" },
@@ -113,6 +123,7 @@ const TableTennisQuiz = () => {
   const [showForehandSpecial, setShowForehandSpecial] = useState(false);
   const [showBackhandSpecial, setShowBackhandSpecial] = useState(false);
   const [showHandleSpecial, setShowHandleSpecial] = useState(false);
+  const [showWeightQuestion, setShowWeightQuestion] = useState(false);
   const [questionHistory, setQuestionHistory] = useState<number[]>([]);
 
   // Premium budget follow-up question
@@ -267,6 +278,32 @@ const TableTennisQuiz = () => {
     if (currentQuestion === 9.5) {
       setShowPremiumBudget(false);
       setCurrentQuestion(8);
+      return;
+    }
+
+    // Check if user is Advanced after budget question - show weight question
+    if (currentQuestion === 8 && answers.Level === "Advanced") {
+      setShowWeightQuestion(true);
+      setCurrentQuestion(9);
+      return;
+    }
+
+    // If not advanced, skip weight question and set default
+    if (currentQuestion === 8 && answers.Level !== "Advanced") {
+      const updatedAnswers = {
+        ...newAnswers,
+        WeightPreference: "Medium"
+      };
+      setAnswers(updatedAnswers);
+      setCurrentQuestion(10); // Skip to assembly preference
+      return;
+    }
+
+    // Handle weight question (only for advanced)
+    if (currentQuestion === 9) {
+      setShowWeightQuestion(false);
+      setCurrentQuestion(10);
+      return;
     }
 
     if (currentQuestion < questions.length - 1) {
@@ -291,6 +328,8 @@ const TableTennisQuiz = () => {
     // Reset conditional states based on where we're going back
     if (currentQuestion === 9.5) {
       setShowPremiumBudget(false);
+    } else if (currentQuestion === 9) {
+      setShowWeightQuestion(false);
     } else if (currentQuestion === 7.5) {
       setShowForehandSpecial(false);
     } else if (currentQuestion === 7.6) {
@@ -313,6 +352,7 @@ const TableTennisQuiz = () => {
     setShowForehandSpecial(false);
     setShowBackhandSpecial(false);
     setShowHandleSpecial(false);
+    setShowWeightQuestion(false);
     setQuestionHistory([]);
   };
 
@@ -321,13 +361,17 @@ const TableTennisQuiz = () => {
     (showPremiumBudget ? 1 : 0) + 
     (showForehandSpecial ? 1 : 0) + 
     (showBackhandSpecial ? 1 : 0) +
-    (showHandleSpecial ? 1 : 0);
-  const totalQuestions = questions.length + totalExtraQuestions;
+    (showHandleSpecial ? 1 : 0) +
+    (showWeightQuestion ? 1 : 0);
+  // Subtract 1 from base length since weight is conditional
+  const baseQuestions = showWeightQuestion ? questions.length : questions.length - 1;
+  const totalQuestions = baseQuestions + totalExtraQuestions;
   const currentProgress = 
     currentQuestion === 9.5 ? 9 : 
     currentQuestion === 7.5 ? 7 :
     currentQuestion === 7.6 ? 7 :
     currentQuestion === 6.5 ? 6 :
+    currentQuestion >= 9 && !showWeightQuestion ? currentQuestion - 1 :
     currentQuestion;
   const progress = (currentProgress / totalQuestions) * 100;
 

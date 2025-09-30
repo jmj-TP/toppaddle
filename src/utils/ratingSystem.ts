@@ -12,6 +12,7 @@ export interface QuizAnswers {
   ForehandRubberStyle: string;
   BackhandRubberStyle: string;
   Budget: string;
+  WeightPreference?: string;
   AssemblyPreference: string;
 }
 
@@ -116,6 +117,27 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += (control / 100) * styleWeight * 0.4;
   } else if (answers.Forehand.includes('Calm & controlled') || answers.Backhand.includes('Calm & controlled')) {
     score += (control / 100) * styleWeight;
+  }
+
+  // Weight matching (10% weight) - only for advanced players
+  if (answers.WeightPreference && answers.Level === 'Advanced') {
+    const weightMatchWeight = 10;
+    maxScore += weightMatchWeight;
+    
+    const productWeight = product.Blade_Weight || product.Racket_Weight || 0;
+    
+    if (productWeight > 0) {
+      if (answers.WeightPreference === 'Lightweight' && productWeight < 85) {
+        score += weightMatchWeight;
+      } else if (answers.WeightPreference === 'Medium' && productWeight >= 85 && productWeight <= 95) {
+        score += weightMatchWeight;
+      } else if (answers.WeightPreference === 'Heavy' && productWeight > 95) {
+        score += weightMatchWeight;
+      } else {
+        // Partial score for close matches
+        score += weightMatchWeight * 0.5;
+      }
+    }
   }
 
   return Math.min(100, (score / maxScore) * 100);
