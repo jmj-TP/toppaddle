@@ -19,6 +19,7 @@ export interface Rubber {
   Rubber_Power: number; // 1-100
   Rubber_Price: number; // USD
   Rubber_Level: 'Beginner' | 'Intermediate' | 'Advanced';
+  Rubber_Style: 'Normal' | 'Short Pimples' | 'Long Pimples' | 'Anti';
   Rubber_Affiliate_Link: string;
 }
 
@@ -355,6 +356,7 @@ export const rubbers: Rubber[] =
     "Rubber_Power": 90,
     "Rubber_Price": 47.45,
     "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-hexer-powergrip"
   },
   {
@@ -365,6 +367,7 @@ export const rubbers: Rubber[] =
     "Rubber_Power": 65,
     "Rubber_Price": 17.99,
     "Rubber_Level": "Beginner",
+    "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/flextra"
   },
   {
@@ -375,6 +378,7 @@ export const rubbers: Rubber[] =
     "Rubber_Power": 88,
     "Rubber_Price": 54.95,
     "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link": "https://joola.com/collections/table-tennis-rubbers/products/rhyzer-48-table-tennis-rubber"
   },
   {
@@ -385,6 +389,7 @@ export const rubbers: Rubber[] =
     "Rubber_Power": 85,
     "Rubber_Price": 47.45,
     "Rubber_Level": "Intermediate",
+    "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-rasanter-r42"
   },
   {
@@ -395,6 +400,7 @@ export const rubbers: Rubber[] =
     "Rubber_Power": 80,
     "Rubber_Price": 30.00,
     "Rubber_Level": "Intermediate",
+    "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/sriver"
   },
   {
@@ -405,6 +411,7 @@ export const rubbers: Rubber[] =
     "Rubber_Power": 75,
     "Rubber_Price": 24.99,
     "Rubber_Level": "Beginner",
+    "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link": "https://www.joola.com/products/samba"
   },
   {
@@ -415,6 +422,7 @@ export const rubbers: Rubber[] =
     "Rubber_Power": 80,
     "Rubber_Price": 45.00,
     "Rubber_Level": "Intermediate",
+    "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link": "https://www.andro.de/en/hexer"
   },
   {
@@ -425,6 +433,7 @@ export const rubbers: Rubber[] =
     "Rubber_Power": 70,
     "Rubber_Price": 17.99,
     "Rubber_Level": "Beginner",
+    "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/flextra-fx"
   },
   {
@@ -435,6 +444,7 @@ export const rubbers: Rubber[] =
     "Rubber_Power": 80,
     "Rubber_Price": 54.95,
     "Rubber_Level": "Intermediate",
+    "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link": "https://joola.com/collections/table-tennis-rubbers/products/rhyzer-45-table-tennis-rubber"
   },
   {
@@ -445,6 +455,7 @@ export const rubbers: Rubber[] =
     "Rubber_Power": 90,
     "Rubber_Price": 47.45,
     "Rubber_Level": "Advanced",
+    "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-hexer-duro"
   },
   {
@@ -455,6 +466,7 @@ export const rubbers: Rubber[] =
     "Rubber_Power": 82,
     "Rubber_Price": 50,
     "Rubber_Level": "Intermediate",
+    "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link" : "https://www.megaspin.net/store/default.asp?pid=andro-hexer-pg-sfx",
     }
 ];

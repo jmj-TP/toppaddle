@@ -7,6 +7,7 @@ export interface QuizAnswers {
   Backhand: string;
   Power: string;
   Grip: string;
+  RubberStyle: string;
   Budget: string;
   AssemblyPreference: string;
 }
@@ -108,6 +109,15 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += (control / 100) * styleWeight * 0.4;
   } else if (answers.Forehand.includes('Calm & controlled') || answers.Backhand.includes('Calm & controlled')) {
     score += (control / 100) * styleWeight;
+  }
+
+  // Rubber style matching (10% weight) - only for rubbers
+  const rubberStyleWeight = 10;
+  if (product.Rubber_Style) {
+    maxScore += rubberStyleWeight;
+    if (answers.RubberStyle === product.Rubber_Style) {
+      score += rubberStyleWeight;
+    }
   }
 
   return Math.min(100, (score / maxScore) * 100);

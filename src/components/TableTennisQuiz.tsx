@@ -74,6 +74,17 @@ const questions = [
   },
   {
     id: 7,
+    question: "What rubber style do you prefer?",
+    options: [
+      { value: "Normal", label: "Normal (inverted rubber for standard play)" },
+      { value: "Short Pimples", label: "Short Pimples (fast & direct, less spin)" },
+      { value: "Long Pimples", label: "Long Pimples (disruptive, reverses spin)" },
+      { value: "Anti", label: "Anti (no spin, blocks opponent's spin)" }
+    ],
+    key: "RubberStyle" as keyof QuizAnswers
+  },
+  {
+    id: 8,
     question: "What is your total budget for Blade + Rubbers or a Pre-Assembled Racket?",
     options: [
       { value: "Under 50 USD", label: "Under 50 USD" },
@@ -84,7 +95,7 @@ const questions = [
     key: "Budget" as keyof QuizAnswers
   },
   {
-    id: 8,
+    id: 9,
     question: "Do you want a ready-to-play racket (pre-assembled), or do you want a custom setup (blade + separate rubbers)?",
     options: [
       { value: "Ready-to-play racket", label: "Ready-to-play racket (perfect for beginners, no gluing needed)" },
