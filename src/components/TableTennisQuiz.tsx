@@ -64,13 +64,10 @@ const questions = [
     id: 6,
     question: "Which handle type do you prefer?",
     options: [
-      { value: "Classic Shakehand", label: "Classic Shakehand (simple & universal)" },
-      { value: "Shakehand Flared", label: "Shakehand Flared (more grip, very popular)" },
-      { value: "Shakehand Straight", label: "Shakehand Straight (precise control)" },
-      { value: "Penhold", label: "Penhold (like holding a pen, offensive style)" },
-      { value: "Not sure", label: "Not sure / whatever is comfortable" }
+      { value: "Normal", label: "Normal / not sure (standard handle)" },
+      { value: "Special", label: "Special (I want specific handle type)" }
     ],
-    key: "Grip" as keyof QuizAnswers
+    key: "HandlePreference" as keyof QuizAnswers
   },
   {
     id: 7,
@@ -113,6 +110,7 @@ const TableTennisQuiz = () => {
   const [showPremiumBudget, setShowPremiumBudget] = useState(false);
   const [showForehandSpecial, setShowForehandSpecial] = useState(false);
   const [showBackhandSpecial, setShowBackhandSpecial] = useState(false);
+  const [showHandleSpecial, setShowHandleSpecial] = useState(false);
 
   // Premium budget follow-up question
   const premiumBudgetQuestion = {
@@ -154,11 +152,26 @@ const TableTennisQuiz = () => {
     key: "BackhandRubberStyle" as keyof QuizAnswers
   };
 
+  // Handle type follow-up question
+  const handleSpecialQuestion = {
+    id: 6.5,
+    question: "Which specific handle type do you prefer?",
+    options: [
+      { value: "Not sure", label: "Normal / not sure (whatever is comfortable)" },
+      { value: "Classic Shakehand", label: "Classic Shakehand (simple & universal)" },
+      { value: "Shakehand Flared", label: "Shakehand Flared (more grip, very popular)" },
+      { value: "Shakehand Straight", label: "Shakehand Straight (precise control)" },
+      { value: "Penhold", label: "Penhold (like holding a pen, offensive style)" }
+    ],
+    key: "Grip" as keyof QuizAnswers
+  };
+
   const handleAnswer = (answer: string) => {
     const question = 
       currentQuestion === 8.5 ? premiumBudgetQuestion : 
       currentQuestion === 7.5 ? forehandSpecialQuestion :
       currentQuestion === 7.6 ? backhandSpecialQuestion :
+      currentQuestion === 6.5 ? handleSpecialQuestion :
       questions[currentQuestion];
     
     const newAnswers = { ...answers, [question.key]: answer };
@@ -173,6 +186,32 @@ const TableTennisQuiz = () => {
       };
       setAnswers(updatedAnswers);
       setCurrentQuestion(4); // Skip to question 5 (power question)
+      return;
+    }
+
+    // Check if user wants normal handle (question 6)
+    if (currentQuestion === 5 && answer === "Normal") {
+      // Set grip to "Not sure" and skip handle detail question
+      const updatedAnswers = {
+        ...newAnswers,
+        Grip: "Not sure"
+      };
+      setAnswers(updatedAnswers);
+      setCurrentQuestion(6); // Skip to special rubbers question
+      return;
+    }
+
+    // If user wants special handle, show handle selection
+    if (currentQuestion === 5 && answer === "Special") {
+      setShowHandleSpecial(true);
+      setCurrentQuestion(6.5);
+      return;
+    }
+
+    // Handle special handle follow-up
+    if (currentQuestion === 6.5) {
+      setShowHandleSpecial(false);
+      setCurrentQuestion(6);
       return;
     }
 
@@ -243,18 +282,21 @@ const TableTennisQuiz = () => {
     setShowPremiumBudget(false);
     setShowForehandSpecial(false);
     setShowBackhandSpecial(false);
+    setShowHandleSpecial(false);
   };
 
   // Calculate progress considering all potential follow-up questions
   const totalExtraQuestions = 
     (showPremiumBudget ? 1 : 0) + 
     (showForehandSpecial ? 1 : 0) + 
-    (showBackhandSpecial ? 1 : 0);
+    (showBackhandSpecial ? 1 : 0) +
+    (showHandleSpecial ? 1 : 0);
   const totalQuestions = questions.length + totalExtraQuestions;
   const currentProgress = 
     currentQuestion === 8.5 ? 8 : 
     currentQuestion === 7.5 ? 7 :
     currentQuestion === 7.6 ? 7 :
+    currentQuestion === 6.5 ? 6 :
     currentQuestion;
   const progress = ((currentProgress + 1) / totalQuestions) * 100;
 
@@ -317,6 +359,7 @@ const TableTennisQuiz = () => {
             currentQuestion === 8.5 ? premiumBudgetQuestion : 
             currentQuestion === 7.5 ? forehandSpecialQuestion :
             currentQuestion === 7.6 ? backhandSpecialQuestion :
+            currentQuestion === 6.5 ? handleSpecialQuestion :
             questions[currentQuestion]
           }
           onAnswer={handleAnswer}
