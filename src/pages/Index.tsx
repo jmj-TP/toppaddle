@@ -33,9 +33,11 @@ const Index = () => {
             <BlogPreview />
           </>
         )}
-        <div ref={quizRef}>
-          <TableTennisQuiz onQuizStatusChange={setIsQuizActive} />
-        </div>
+        {isQuizActive && (
+          <div ref={quizRef}>
+            <TableTennisQuiz onQuizStatusChange={setIsQuizActive} />
+          </div>
+        )}
       </main>
       <Footer />
     </div>
