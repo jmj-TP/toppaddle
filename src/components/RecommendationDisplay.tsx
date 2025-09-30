@@ -11,7 +11,7 @@ interface RecommendationDisplayProps {
 }
 
 export default function RecommendationDisplay({ recommendation, onRestart, assemblyPreference }: RecommendationDisplayProps) {
-  const { preAssembled, customSetup, totalScore, recommendedThickness, thicknessExplanation } = recommendation;
+  const { preAssembled, customSetup, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation } = recommendation;
   
   // Determine which option to show first based on user preference
   const showCustomFirst = assemblyPreference === "Custom setup";
@@ -257,19 +257,34 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         </p>
       </div>
 
-      {/* Sponge Thickness Recommendation */}
-      <Card className="border-2 border-yellow-500/30 bg-gradient-to-r from-yellow-50/50 to-orange-50/50 dark:from-yellow-950/20 dark:to-orange-950/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            📏 Recommended Sponge Thickness: <span className="text-yellow-600 dark:text-yellow-400">{recommendedThickness}</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {thicknessExplanation}
-          </p>
-        </CardContent>
-      </Card>
+      {/* Sponge Thickness Recommendations */}
+      <div className="grid md:grid-cols-2 gap-4">
+        <Card className="border-2 border-red-500/30 bg-gradient-to-r from-red-50/50 to-orange-50/50 dark:from-red-950/20 dark:to-orange-950/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              🔴 Forehand Sponge: <span className="text-red-600 dark:text-red-400">{forehandThickness}</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {forehandThicknessExplanation}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-2 border-blue-500/30 bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              🔵 Backhand Sponge: <span className="text-blue-600 dark:text-blue-400">{backhandThickness}</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {backhandThicknessExplanation}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Render recommendations in order based on preference */}
       {showCustomFirst ? (

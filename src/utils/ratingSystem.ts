@@ -26,8 +26,10 @@ export interface Recommendation {
   preAssembled?: PreAssembledRacket & { score: number };
   customSetup?: CustomSetup;
   totalScore: number;
-  recommendedThickness: string;
-  thicknessExplanation: string;
+  forehandThickness: string;
+  forehandThicknessExplanation: string;
+  backhandThickness: string;
+  backhandThicknessExplanation: string;
 }
 
 // Calculate compatibility score between user preferences and product attributes
@@ -149,53 +151,105 @@ function isWithinBudget(price: number, budget: string): boolean {
 }
 
 // Calculate recommended sponge thickness based on player level and style
-function calculateSpongeThickness(answers: QuizAnswers): { thickness: string; explanation: string } {
-  const { Level, Playstyle } = answers;
+function calculateSpongeThickness(answers: QuizAnswers): { 
+  forehandThickness: string; 
+  forehandExplanation: string;
+  backhandThickness: string;
+  backhandExplanation: string;
+} {
+  const { Level, Forehand, Backhand, ForehandRubberStyle, BackhandRubberStyle } = answers;
   
-  // Beginner → 1.7 mm
-  if (Level === 'Beginner') {
+  // Helper function to determine thickness for a side
+  const getThicknessForSide = (side: 'forehand' | 'backhand') => {
+    const playStyle = side === 'forehand' ? Forehand : Backhand;
+    const rubberStyle = side === 'forehand' ? ForehandRubberStyle : BackhandRubberStyle;
+    const sideName = side === 'forehand' ? 'Forehand' : 'Backhand';
+    
+    // Special rubber types need specific thicknesses
+    if (rubberStyle === "Long Pimples" || rubberStyle === "Anti") {
+      return {
+        thickness: "0.5-1.0 mm (OX or thin)",
+        explanation: `For ${sideName} with ${rubberStyle}, use a very thin sponge (0.5-1.0 mm) or OX (no sponge). This maximizes the disruptive effect and gives you better control of the special rubber.`
+      };
+    }
+    
+    if (rubberStyle === "Short Pimples") {
+      return {
+        thickness: "1.5-1.8 mm",
+        explanation: `For ${sideName} with Short Pimples, use 1.5-1.8 mm sponge. This provides good speed while maintaining the direct, no-nonsense hitting style of short pimples.`
+      };
+    }
+    
+    // For normal rubbers, consider play style and level
+    // Beginner level
+    if (Level === 'Beginner') {
+      return {
+        thickness: '1.7 mm',
+        explanation: `For ${sideName}: Since you're starting out, 1.7 mm provides balanced control and prevents bottoming out, making it easier to develop proper technique.`
+      };
+    }
+    
+    // Calm & controlled style
+    if (playStyle.includes('Calm & controlled')) {
+      return {
+        thickness: '1.5-1.7 mm',
+        explanation: `For ${sideName}: Since you play calmly and controlled, 1.5-1.7 mm gives maximum control for precise placement and consistent play.`
+      };
+    }
+    
+    // Fast & aggressive style with Advanced level
+    if (playStyle.includes('Fast & aggressive') && Level === 'Advanced') {
+      return {
+        thickness: '2.1-2.3 mm',
+        explanation: `For ${sideName}: Since you play fast and aggressive at an advanced level, 2.1-2.3 mm gives maximum spin and speed for powerful attacks.`
+      };
+    }
+    
+    // Fast & aggressive style (intermediate)
+    if (playStyle.includes('Fast & aggressive')) {
+      return {
+        thickness: '2.0 mm',
+        explanation: `For ${sideName}: Since you play fast and aggressively, 2.0 mm provides great speed and spin while maintaining good control.`
+      };
+    }
+    
+    // Spin & topspin style
+    if (playStyle.includes('Spin & topspin')) {
+      if (Level === 'Advanced') {
+        return {
+          thickness: '2.1-2.3 mm',
+          explanation: `For ${sideName}: Since you focus on spin and topspin at an advanced level, 2.1-2.3 mm maximizes your spin generation and loop power.`
+        };
+      }
+      return {
+        thickness: '1.8-2.0 mm',
+        explanation: `For ${sideName}: Since you focus on spin and topspin, 1.8-2.0 mm provides excellent spin potential with good control.`
+      };
+    }
+    
+    // Both sides the same / not sure
+    if (playStyle.includes('Both sides the same')) {
+      return {
+        thickness: '1.8-2.0 mm',
+        explanation: `For ${sideName}: Since you play similarly on both sides, 1.8-2.0 mm provides versatile performance for various playing styles.`
+      };
+    }
+    
+    // Default fallback
     return {
-      thickness: '1.7 mm',
-      explanation: `Since you're starting out, we recommend a 1.7 mm sponge. This provides balanced control and prevents bottoming out, making it easier to develop proper technique. Thicker sponges = more spin/speed, thinner = more control. Just pick this thickness in the shop and you're good to go!`
+      thickness: '1.8-2.0 mm',
+      explanation: `For ${sideName}: Based on your style, 1.8-2.0 mm provides balanced performance suitable for most situations.`
     };
-  }
+  };
   
-  // Defensive → 1.5 mm
-  if (Playstyle.includes('Defensive')) {
-    return {
-      thickness: '1.5 mm',
-      explanation: `Since you play defensively, we recommend a 1.5 mm sponge. This gives maximum control for chopping and blocking. Thinner sponges = more control and safer defensive play. Just pick this thickness in the shop and you're good to go!`
-    };
-  }
+  const forehand = getThicknessForSide('forehand');
+  const backhand = getThicknessForSide('backhand');
   
-  // Allround → 1.8–2.0 mm
-  if (Playstyle.includes('Allround')) {
-    return {
-      thickness: '1.8–2.0 mm',
-      explanation: `Since you play an all-around style, we recommend a 1.8–2.0 mm sponge. This provides the perfect balance between spin, control, and versatility. Just pick this thickness in the shop and you're good to go!`
-    };
-  }
-  
-  // Offensive Advanced → 2.1–2.3 mm
-  if (Playstyle.includes('Offensive') && Level === 'Advanced') {
-    return {
-      thickness: '2.1–2.3 mm',
-      explanation: `Since you play offensively at an advanced level, we recommend a 2.1–2.3 mm sponge. This gives maximum spin and speed for aggressive play. Thicker sponges = more offense, thinner = more control. Just pick this thickness in the shop and you're good to go!`
-    };
-  }
-  
-  // Offensive Intermediate (or Beginner who chose Offensive) → 2.0 mm
-  if (Playstyle.includes('Offensive')) {
-    return {
-      thickness: '2.0 mm',
-      explanation: `Since you play offensively at an intermediate level, we recommend a 2.0 mm sponge. This provides great speed and spin while maintaining good control. Just pick this thickness in the shop and you're good to go!`
-    };
-  }
-  
-  // Default fallback
   return {
-    thickness: '1.8–2.0 mm',
-    explanation: `Based on your playstyle, we recommend a 1.8–2.0 mm sponge for balanced performance. This thickness works well for most playing styles. Just pick this thickness in the shop and you're good to go!`
+    forehandThickness: forehand.thickness,
+    forehandExplanation: forehand.explanation,
+    backhandThickness: backhand.thickness,
+    backhandExplanation: backhand.explanation
   };
 }
 
@@ -329,7 +383,7 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
 export function getRecommendation(answers: QuizAnswers): Recommendation {
   const preAssembled = findBestPreAssembledRacket(answers);
   const customSetup = findBestCustomSetup(answers);
-  const { thickness, explanation } = calculateSpongeThickness(answers);
+  const { forehandThickness, forehandExplanation, backhandThickness, backhandExplanation } = calculateSpongeThickness(answers);
 
   // Determine which option to prioritize
   let totalScore = 0;
@@ -341,8 +395,10 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       preAssembled, 
       customSetup, 
       totalScore,
-      recommendedThickness: thickness,
-      thicknessExplanation: explanation
+      forehandThickness,
+      forehandThicknessExplanation: forehandExplanation,
+      backhandThickness,
+      backhandThicknessExplanation: backhandExplanation
     };
   } else if (answers.AssemblyPreference.includes('Custom setup') && customSetup) {
     // Prefer custom setup for advanced users
@@ -351,8 +407,10 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       preAssembled, 
       customSetup, 
       totalScore,
-      recommendedThickness: thickness,
-      thicknessExplanation: explanation
+      forehandThickness,
+      forehandThicknessExplanation: forehandExplanation,
+      backhandThickness,
+      backhandThicknessExplanation: backhandExplanation
     };
   } else {
     // Return both options, prioritize based on scores
@@ -363,8 +421,10 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       preAssembled, 
       customSetup, 
       totalScore,
-      recommendedThickness: thickness,
-      thicknessExplanation: explanation
+      forehandThickness,
+      forehandThicknessExplanation: forehandExplanation,
+      backhandThickness,
+      backhandThicknessExplanation: backhandExplanation
     };
   }
 }
