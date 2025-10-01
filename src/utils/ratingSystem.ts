@@ -291,10 +291,10 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
   
   const suitableRackets = preAssembledRackets
     .filter(racket => {
-      // Budget filter
-      const withinBudget = isWithinBudget(racket.Racket_Price, answers.Budget);
-      if (!withinBudget) {
-        console.log(`Filtered out ${racket.Racket_Name} - Price: ${racket.Racket_Price}, Budget: ${answers.Budget}`);
+      // Strict budget filter - price must not exceed budget
+      const budgetRange = getBudgetRange(answers.Budget);
+      if (racket.Racket_Price > budgetRange.max) {
+        console.log(`Filtered out ${racket.Racket_Name} - Price: ${racket.Racket_Price}, Max Budget: ${budgetRange.max}`);
         return false;
       }
       
@@ -356,9 +356,14 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
           continue;
         }
         
-        const totalPrice = blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price;
+        const totalPrice = Math.round((blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price) * 100) / 100;
         
-        if (totalPrice <= budgetRange.max) {
+        // Strict budget check - must be strictly less than or equal to budget
+        if (totalPrice > budgetRange.max) {
+          continue;
+        }
+        
+        if (true) {
           // Calculate combined score
           const bladeScore = calculateScore(answers, blade);
           const fhScore = calculateScore(answers, fhRubber);
