@@ -22,7 +22,7 @@ const HeroSection = ({ onStartQuiz }: HeroSectionProps) => {
 
           {/* Subheading */}
           <p className="font-body text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl animate-fade-in">
-            Answer a few quick questions and discover your custom blade and rubbers.
+            Take the quiz and find your custom racket — simple and stress-free.
           </p>
 
           {/* CTA Button */}
