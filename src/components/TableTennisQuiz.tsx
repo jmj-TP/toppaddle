@@ -22,9 +22,9 @@ const questions = [
     id: 2,
     question: "How would you describe your overall playstyle?",
     options: [
-      { value: "Offensive player", label: "Offensive" },
+      { value: "Offensive player", label: "Offensive - Attack every Ball" },
       { value: "Allround player", label: "All-Round" },
-      { value: "Defensive player", label: "Defensive" }
+      { value: "Defensive player", label: "Defensive - Waiting for error from Opponent" }
     ],
     key: "Playstyle" as keyof QuizAnswers
   },
@@ -35,7 +35,7 @@ const questions = [
       { value: "Fast & aggressive", label: "Fast & Aggressive" },
       { value: "Spin & topspin", label: "I use a lot of Spin" },
       { value: "Calm & controlled", label: "Calm & Controlled" },
-      { value: "Both sides the same / not sure", label: "Same as Backhand" }
+      { value: "Both sides the same / not sure", label: "Not Sure" }
     ],
     key: "Forehand" as keyof QuizAnswers
   },
@@ -44,7 +44,7 @@ const questions = [
     question: "How do you usually play with your backhand?",
     options: [
       { value: "Fast & aggressive", label: "Fast & Aggressive" },
-      { value: "Spin & topspin", label: "I use a lot of spin" },
+      { value: "Spin & topspin", label: "I use a lot of Spin" },
       { value: "Calm & controlled", label: "Calm & Controlled" },
       { value: "Both sides the same / not sure", label: "Same as Forehand" }
     ],
