@@ -6,8 +6,7 @@ export interface QuizAnswers {
   Forehand: string;
   Backhand: string;
   Power: string;
-  HandlePreference: string;
-  Grip: string;
+  HandSize: string;
   WantsSpecialRubbers: string;
   ForehandRubberStyle: string;
   BackhandRubberStyle: string;
@@ -291,6 +290,11 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
   
   const suitableRackets = preAssembledRackets
     .filter(racket => {
+      // Hand size brand filter - Really small hands get DHS only
+      if (answers.HandSize === "Really small" && racket.Racket_Brand !== "DHS") {
+        return false;
+      }
+      
       // Strict budget filter - price must not exceed budget
       const budgetRange = getBudgetRange(answers.Budget);
       if (racket.Racket_Price > budgetRange.max) {
@@ -337,12 +341,22 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
   console.log('Custom setup budget range:', budgetRange);
   const bestCombinations: CustomSetup[] = [];
 
+  // Filter blades based on hand size
+  const filteredBlades = blades.filter(blade => {
+    // Hand size brand filter - Really small hands get DHS only
+    if (answers.HandSize === "Really small" && blade.Blade_Brand !== "DHS") {
+      return false;
+    }
+    return true;
+  });
+  
   // Filter rubbers by style preference for each side
   const forehandRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.ForehandRubberStyle);
-  const backhandRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.BackhandRubberStyle);
 
   // Try all combinations of blade + 2 rubbers
-  for (const blade of blades) {
+  const backhandRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.BackhandRubberStyle);
+
+  for (const blade of filteredBlades) {
     for (const fhRubber of forehandRubbers) {
       for (const bhRubber of backhandRubbers) {
         // Constraint: no rubber should be more expensive than the blade

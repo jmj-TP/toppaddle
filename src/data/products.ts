@@ -10,6 +10,7 @@ export interface Blade {
   Blade_Level: 'Beginner' | 'Intermediate' | 'Advanced';
   Blade_Weight?: number; // grams (optional - will be estimated if not provided)
   Blade_Affiliate_Link: string;
+  Blade_Brand: 'Butterfly' | 'Andro' | 'DHS' | 'Joola';
 }
 
 // Estimate blade weight based on characteristics
@@ -42,6 +43,7 @@ export interface Rubber {
   Rubber_Style: 'Normal' | 'Short Pimples' | 'Long Pimples' | 'Anti';
   Rubber_Weight?: number; // grams (when applied to blade - optional, will be estimated)
   Rubber_Affiliate_Link: string;
+  Rubber_Brand: 'Butterfly' | 'Andro' | 'DHS' | 'Joola';
 }
 
 // Estimate rubber weight when applied to blade
@@ -80,6 +82,7 @@ export interface PreAssembledRacket {
   Racket_Price: number; // USD
   Racket_Level: 'Beginner' | 'Intermediate' | 'Advanced';
   Racket_Affiliate_Link: string;
+  Racket_Brand: 'Butterfly' | 'Andro' | 'DHS' | 'Joola';
 }
 
 // Blades Database
@@ -95,7 +98,8 @@ export const blades: Blade[] =
     Blade_Price: 34.95,
     Blade_Level: "Beginner",
     Blade_Weight: 86,
-    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-all-table-tennis-blade"
+    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-all-table-tennis-blade",
+    Blade_Brand: "Joola"
   },
   {
     Blade_Name: "JOOLA BASEline OFF",
@@ -106,7 +110,8 @@ export const blades: Blade[] =
     Blade_Price: 39.95,
     Blade_Level: "Beginner",
     Blade_Weight: 88,
-    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-off-table-tennis-blade"
+    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-off-table-tennis-blade",
+    Blade_Brand: "Joola"
   },
   {
     Blade_Name: "JOOLA BASEline Carbon",
@@ -117,7 +122,8 @@ export const blades: Blade[] =
     Blade_Price: 49.95,
     Blade_Level: "Intermediate",
     Blade_Weight: 90,
-    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-carbon-table-tennis-blade"
+    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-carbon-table-tennis-blade",
+    Blade_Brand: "Joola"
   },
   {
     Blade_Name: "JOOLA Challenger Off",
@@ -128,7 +134,8 @@ export const blades: Blade[] =
     Blade_Price: 34.95,
     Blade_Level: "Beginner",
     Blade_Weight: 87,
-    Blade_Affiliate_Link: "https://joola.com/products/joola-challenger-off-table-tennis-blade"
+    Blade_Affiliate_Link: "https://joola.com/products/joola-challenger-off-table-tennis-blade",
+    Blade_Brand: "Joola"
   },
   {
     Blade_Name: "JOOLA Chen Weixing Defensive",
@@ -138,7 +145,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 59.95,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://joola.com/products/joola-chen-weixing-table-tennis-blade"
+    Blade_Affiliate_Link: "https://joola.com/products/joola-chen-weixing-table-tennis-blade",
+    Blade_Brand: "Joola"
   },
   {
     Blade_Name: "JOOLA Xylo 7",
@@ -148,7 +156,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 89.95,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://joola.com/products/joola-xylo-7-table-tennis-blade"
+    Blade_Affiliate_Link: "https://joola.com/products/joola-xylo-7-table-tennis-blade",
+    Blade_Brand: "Joola"
   },
   {
     Blade_Name: "JOOLA Classic All",
@@ -158,7 +167,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 34.95,
     Blade_Level: "Beginner",
-    Blade_Affiliate_Link: "https://joola.com/products/joola-classic-all-table-tennis-blade"
+    Blade_Affiliate_Link: "https://joola.com/products/joola-classic-all-table-tennis-blade",
+    Blade_Brand: "Joola"
   },
   {
     Blade_Name: "JOOLA Rosskopf Emotion",
@@ -168,7 +178,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 89.95,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://joola.com/products/joola-rosskopf-emotion-table-tennis-blade"
+    Blade_Affiliate_Link: "https://joola.com/products/joola-rosskopf-emotion-table-tennis-blade",
+    Blade_Brand: "Joola"
   },
   {
     Blade_Name: "JOOLA BASEline Junior",
@@ -178,7 +189,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared (Junior)",
     Blade_Price: 29.95,
     Blade_Level: "Beginner",
-    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-jr-table-tennis-blade"
+    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-jr-table-tennis-blade",
+    Blade_Brand: "Joola"
   },
   {
     Blade_Name: "ANDRO Treiber CO",
@@ -188,7 +200,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 79.95,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/treiber-co-off"
+    Blade_Affiliate_Link: "https://www.andro.de/en/treiber-co-off",
+    Blade_Brand: "Andro"
   },
   {
     Blade_Name: "ANDRO Treiber FI",
@@ -198,7 +211,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 84.95,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/treiber-fi-off"
+    Blade_Affiliate_Link: "https://www.andro.de/en/treiber-fi-off",
+    Blade_Brand: "Andro"
   },
   {
     Blade_Name: "ANDRO Treiber FL",
@@ -208,7 +222,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 84.95,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/treiber-fl-off"
+    Blade_Affiliate_Link: "https://www.andro.de/en/treiber-fl-off",
+    Blade_Brand: "Andro"
   },
   {
     Blade_Name: "ANDRO Timber 5 OFF",
@@ -218,7 +233,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 69.95,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-off"
+    Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-off",
+    Blade_Brand: "Andro"
   },
   {
     Blade_Name: "ANDRO Timber 5 ALL",
@@ -228,7 +244,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 64.95,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-all"
+    Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-all",
+    Blade_Brand: "Andro"
   },
   {
     Blade_Name: "ANDRO Timber 5 DEF",
@@ -238,7 +255,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 69.95,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-def"
+    Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-def",
+    Blade_Brand: "Andro"
   },
   {
     Blade_Name: "ANDRO Kanter CO",
@@ -248,7 +266,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 89.95,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/kanter-co-off"
+    Blade_Affiliate_Link: "https://www.andro.de/en/kanter-co-off",
+    Blade_Brand: "Andro"
   },
   {
     Blade_Name: "Butterfly TB5 Alpha",
@@ -258,7 +277,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 64.99,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/tb5-alpha-fl-blade"
+    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/tb5-alpha-fl-blade",
+    Blade_Brand: "Butterfly"
   },
   {
     Blade_Name: "Butterfly Boll Control",
@@ -268,7 +288,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 59.99,
     Blade_Level: "Beginner",
-    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/boll-control-blade"
+    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/boll-control-blade",
+    Blade_Brand: "Butterfly"
   },
   {
     Blade_Name: "Butterfly Boll Allround",
@@ -278,7 +299,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 64.99,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/boll-allround-blade"
+    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/boll-allround-blade",
+    Blade_Brand: "Butterfly"
   },
   {
     Blade_Name: "Butterfly Primorac",
@@ -288,7 +310,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 69.99,
     Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/primorac-blade"
+    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/primorac-blade",
+    Blade_Brand: "Butterfly"
   },
   {
     Blade_Name: "Butterfly Viscaria",
@@ -298,7 +321,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 166.49,
     Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://tabletennisstore.us/products/butterfly-viscaria-offensive-table-tennis-blade"
+    Blade_Affiliate_Link: "https://tabletennisstore.us/products/butterfly-viscaria-offensive-table-tennis-blade",
+    Blade_Brand: "Butterfly"
   },
   {
     Blade_Name: "Butterfly Timo Boll ALC",
@@ -308,7 +332,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 179.90,
     Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/timo-boll-alc.html"
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/timo-boll-alc.html",
+    Blade_Brand: "Butterfly"
   },
   {
     Blade_Name: "JOOLA Nobilis PBO-C",
@@ -318,7 +343,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 199.00,
     Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://joola.it/products/joola-holz-nobilis-pbo-c"
+    Blade_Affiliate_Link: "https://joola.it/products/joola-holz-nobilis-pbo-c",
+    Blade_Brand: "Joola"
   },
   {
     Blade_Name: "Butterfly Viscaria Super ALC",
@@ -328,7 +354,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 242.99,
     Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://tabletennisstore.us/products/butterfly-viscaria-super-alc-offensive-table-tennis-blade"
+    Blade_Affiliate_Link: "https://tabletennisstore.us/products/butterfly-viscaria-super-alc-offensive-table-tennis-blade",
+    Blade_Brand: "Butterfly"
   },
   {
     Blade_Name: "Butterfly Zhang Jike ALC",
@@ -338,7 +365,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 179.90,
     Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-alc.html"
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-alc.html",
+    Blade_Brand: "Butterfly"
   },
   {
     Blade_Name: "Butterfly Fan Zhendong ALC",
@@ -348,7 +376,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 184.90,
     Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/fan-zhendong-alc.html"
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/fan-zhendong-alc.html",
+    Blade_Brand: "Butterfly"
   },
   {
     Blade_Name: "Butterfly Lin Gaoyuan ALC",
@@ -358,7 +387,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 184.90,
     Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/lin-gaoyuan-alc.html"
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/lin-gaoyuan-alc.html",
+    Blade_Brand: "Butterfly"
   },
   {
     Blade_Name: "Butterfly Harimoto Tomokazu Innerforce ALC",
@@ -368,7 +398,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 184.90,
     Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/harimoto-tomokazu-innerforce-alc.html"
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/harimoto-tomokazu-innerforce-alc.html",
+    Blade_Brand: "Butterfly"
   },
   {
     Blade_Name: "Butterfly Jun Mizutani Super ZLC",
@@ -378,7 +409,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 379.90,
     Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/mizutani-jun-super-zlc.html"
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/mizutani-jun-super-zlc.html",
+    Blade_Brand: "Butterfly"
   },
   {
     Blade_Name: "Butterfly Zhang Jike Super ZLC",
@@ -388,7 +420,8 @@ export const blades: Blade[] =
     Blade_Grip: "Flared",
     Blade_Price: 379.90,
     Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-super-zlc.html"
+    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-super-zlc.html",
+    Blade_Brand: "Butterfly"
   },
   {
     "Blade_Name": "DHS Power G5X",
@@ -399,7 +432,8 @@ export const blades: Blade[] =
     "Blade_Price": 44.95,
     "Blade_Level": "Intermediate",
     "Blade_Weight": 89,
-    "Blade_Affiliate_Link": "https://www.megaspin.net/store/default.asp?pid=dhs-power-g5x"
+    "Blade_Affiliate_Link": "https://www.megaspin.net/store/default.asp?pid=dhs-power-g5x",
+    "Blade_Brand": "DHS"
   },
   {
     "Blade_Name": "DHS Hurricane 301",
@@ -410,7 +444,8 @@ export const blades: Blade[] =
     "Blade_Price": 63.60,
     "Blade_Level": "Intermediate",
     "Blade_Weight": 85,
-    "Blade_Affiliate_Link": "https://www.aliexpress.com/p/tesla-landing/index.html?scenario=c_ppc_item_bridge&productId=3256809282792901"
+    "Blade_Affiliate_Link": "https://www.aliexpress.com/p/tesla-landing/index.html?scenario=c_ppc_item_bridge&productId=3256809282792901",
+    "Blade_Brand": "DHS"
   },
   {
     "Blade_Name": "DHS Hurricane King ACB",
@@ -421,7 +456,8 @@ export const blades: Blade[] =
     "Blade_Price": 199.95,
     "Blade_Level": "Advanced",
     "Blade_Weight": 89,
-    "Blade_Affiliate_Link": "https://dhssport.com/en/DHS_Hurricane_King_acB"
+    "Blade_Affiliate_Link": "https://dhssport.com/en/DHS_Hurricane_King_acB",
+    "Blade_Brand": "DHS"
   },
   {
     "Blade_Name": "DHS PG7",
@@ -432,7 +468,8 @@ export const blades: Blade[] =
     "Blade_Price": 31.99,
     "Blade_Level": "Beginner",
     "Blade_Weight": 87,
-    "Blade_Affiliate_Link": "https://www.dhs-729.eu/gb/dhs-blades/115-dhs-pg7.html"
+    "Blade_Affiliate_Link": "https://www.dhs-729.eu/gb/dhs-blades/115-dhs-pg7.html",
+    "Blade_Brand": "DHS"
   }
   
 ];
@@ -448,7 +485,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 47.45,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-hexer-powergrip"
+    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-hexer-powergrip",
+    "Rubber_Brand": "Andro"
   },
   {
     "Rubber_Name": "Butterfly Flextra",
@@ -459,7 +497,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 17.99,
     "Rubber_Level": "Beginner",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/flextra"
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/flextra",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "JOOLA Rhyzer 48",
@@ -470,7 +509,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 54.95,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://joola.com/collections/table-tennis-rubbers/products/rhyzer-48-table-tennis-rubber"
+    "Rubber_Affiliate_Link": "https://joola.com/collections/table-tennis-rubbers/products/rhyzer-48-table-tennis-rubber",
+    "Rubber_Brand": "Joola"
   },
   {
     "Rubber_Name": "Andro Rasanter R42",
@@ -481,7 +521,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 47.45,
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-rasanter-r42"
+    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-rasanter-r42",
+    "Rubber_Brand": "Andro"
   },
   {
     "Rubber_Name": "Butterfly Sriver",
@@ -492,7 +533,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 30.00,
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/sriver"
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/sriver",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "JOOLA Samba",
@@ -503,7 +545,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 24.99,
     "Rubber_Level": "Beginner",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://www.joola.com/products/samba"
+    "Rubber_Affiliate_Link": "https://www.joola.com/products/samba",
+    "Rubber_Brand": "Joola"
   },
   {
     "Rubber_Name": "Andro Hexer",
@@ -514,7 +557,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 45.00,
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://www.andro.de/en/hexer"
+    "Rubber_Affiliate_Link": "https://www.andro.de/en/hexer",
+    "Rubber_Brand": "Andro"
   },
   {
     "Rubber_Name": "Butterfly Flextra FX",
@@ -525,7 +569,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 17.99,
     "Rubber_Level": "Beginner",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/flextra-fx"
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/flextra-fx",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "JOOLA Rhyzer 45",
@@ -536,7 +581,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 54.95,
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://joola.com/collections/table-tennis-rubbers/products/rhyzer-45-table-tennis-rubber"
+    "Rubber_Affiliate_Link": "https://joola.com/collections/table-tennis-rubbers/products/rhyzer-45-table-tennis-rubber",
+    "Rubber_Brand": "Joola"
   },
   {
     "Rubber_Name": "Andro Hexer Duro",
@@ -547,7 +593,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 47.45,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-hexer-duro"
+    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-hexer-duro",
+    "Rubber_Brand": "Andro"
   },
   {
     "Rubber_Name": "Andro Hexer PowerGrip SFX",
@@ -559,6 +606,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
     "Rubber_Affiliate_Link" : "https://www.megaspin.net/store/default.asp?pid=andro-hexer-pg-sfx",
+    "Rubber_Brand": "Andro"
   },
   {
     "Rubber_Name": "Butterfly Dignics 09C",
@@ -569,7 +617,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 89.99,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/dignics-09C-dig09Cp"
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/dignics-09C-dig09Cp",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "Butterfly Dignics 05",
@@ -580,7 +629,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 89.99,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://www.butterfly-global.com/en/products/detail/06040.html"
+    "Rubber_Affiliate_Link": "https://www.butterfly-global.com/en/products/detail/06040.html",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "Butterfly Tenergy 05",
@@ -591,7 +641,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 79.99,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://www.butterfly-global.com/en/products/detail/05800.html"
+    "Rubber_Affiliate_Link": "https://www.butterfly-global.com/en/products/detail/05800.html",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "ANDRO Rasanter R47",
@@ -602,7 +653,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 47.45,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/andro-rasanter-r47-table-tennis-rubber"
+    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/andro-rasanter-r47-table-tennis-rubber",
+    "Rubber_Brand": "Andro"
   },
   {
     "Rubber_Name": "ANDRO Rasanter R53",
@@ -613,7 +665,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 50.30,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-rasanter-r53"
+    "Rubber_Affiliate_Link": "https://www.tabletennis11.com/other_eng/andro-rasanter-r53",
+    "Rubber_Brand": "Andro"
   },
   {
     "Rubber_Name": "ANDRO Rasanter R50",
@@ -624,7 +677,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 59.95,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/andro-rasanter-r50-table-tennis-rubber"
+    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/andro-rasanter-r50-table-tennis-rubber",
+    "Rubber_Brand": "Andro"
   },
   {
     "Rubber_Name": "ANDRO Rasanter R42 Advanced",
@@ -635,7 +689,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 47.45,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://racketinsight.com/table-tennis/andro-rasanter-r42-review/"
+    "Rubber_Affiliate_Link": "https://racketinsight.com/table-tennis/andro-rasanter-r42-review/",
+    "Rubber_Brand": "Andro"
   },
   {
     "Rubber_Name": "Butterfly Feint Long II",
@@ -646,7 +701,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 52.00,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Long Pimples",
-    "Rubber_Affiliate_Link": "https://sb-beta.butterflyonline.com/feint-long-ii"
+    "Rubber_Affiliate_Link": "https://sb-beta.butterflyonline.com/feint-long-ii",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "Butterfly Feint Long III",
@@ -657,7 +713,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 53.95,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Long Pimples",
-    "Rubber_Affiliate_Link": "https://sb-beta.butterflyonline.com/feint-long-iii"
+    "Rubber_Affiliate_Link": "https://sb-beta.butterflyonline.com/feint-long-iii",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "Butterfly Ilius B",
@@ -668,7 +725,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 34.19,
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Long Pimples",
-    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/butterfly-ilius-b-long-pips-table-tennis-rubber"
+    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/butterfly-ilius-b-long-pips-table-tennis-rubber",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "JOOLA CWX Long-Pips",
@@ -679,7 +737,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 55.00,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Long Pimples",
-    "Rubber_Affiliate_Link": "https://joola.com.au/product/joola-cwx-long-pips-table-tennis-rubber"
+    "Rubber_Affiliate_Link": "https://joola.com.au/product/joola-cwx-long-pips-table-tennis-rubber",
+    "Rubber_Brand": "Joola"
   },
   {
     "Rubber_Name": "JOOLA Express Ultra Short-Pips",
@@ -690,7 +749,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 49.95,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Short Pimples",
-    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/joola-express-ultra-short-pips-table-tennis-rubber"
+    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/joola-express-ultra-short-pips-table-tennis-rubber",
+    "Rubber_Brand": "Joola"
   },
   {
     "Rubber_Name": "Butterfly Bryce Highspeed",
@@ -701,7 +761,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 89.99,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/bryce-highspeed"
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/bryce-highspeed",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "Butterfly Bryce Highspin",
@@ -712,7 +773,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 89.99,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/bryce-highspin"
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/bryce-highspin",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "Butterfly Tenergy 64",
@@ -723,7 +785,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 79.99,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/tenergy-64"
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/tenergy-64",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "Butterfly Dignics 80",
@@ -734,7 +797,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 89.99,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/dignics-80"
+    "Rubber_Affiliate_Link": "https://shop.butterflyonline.com/dignics-80",
+    "Rubber_Brand": "Butterfly"
   },
   {
     "Rubber_Name": "ANDRO Rasanter V47",
@@ -745,7 +809,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 59.95,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/andro-rasanter-v47"
+    "Rubber_Affiliate_Link": "https://tabletennisstore.us/products/andro-rasanter-v47",
+    "Rubber_Brand": "Andro"
   },
   {
     "Rubber_Name": "ANDRO Rasanter C53",
@@ -756,7 +821,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 64.95,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://www.andro.de/en/rubbers"
+    "Rubber_Affiliate_Link": "https://www.andro.de/en/rubbers",
+    "Rubber_Brand": "Andro"
   },
   {
     "Rubber_Name": "JOOLA Rhyzer 55",
@@ -767,7 +833,8 @@ export const rubbers: Rubber[] = [
     "Rubber_Price": 69.95,
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
-    "Rubber_Affiliate_Link": "https://www.joola.com/products/rhyzer-55"
+    "Rubber_Affiliate_Link": "https://www.joola.com/products/rhyzer-55",
+    "Rubber_Brand": "Joola"
   }
 ];
 
@@ -788,7 +855,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 19.99,
     "Racket_Level": "Beginner",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Butterfly"
   },
   {
     "Racket_Name": "Budget Offensive (Low)",
@@ -804,7 +872,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 29.99,
     "Racket_Level": "Beginner",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Joola"
   },
   {
     "Racket_Name": "Budget Short-Pips (Low)",
@@ -820,7 +889,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 34.99,
     "Racket_Level": "Beginner",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Joola"
   },
   {
     "Racket_Name": "Budget Long-Pips Defender (Low)",
@@ -836,7 +906,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 39.99,
     "Racket_Level": "Beginner",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Joola"
   },
   {
     "Racket_Name": "Budget Anti-Spin Set (Low)",
@@ -852,7 +923,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 34.99,
     "Racket_Level": "Beginner",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Joola"
   },
   {
     "Racket_Name": "Value Carbon Offense (Low→Mid)",
@@ -868,7 +940,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Concave",
     "Racket_Price": 59.99,
     "Racket_Level": "Intermediate",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Andro"
   },
   {
     "Racket_Name": "Mid Allround (Medium)",
@@ -884,7 +957,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 79.99,
     "Racket_Level": "Intermediate",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Butterfly"
   },
   {
     "Racket_Name": "Mid Offensive Loop (Medium)",
@@ -900,7 +974,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 99.99,
     "Racket_Level": "Intermediate",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Joola"
   },
   {
     "Racket_Name": "Mid Short-Pips Fast (Medium)",
@@ -916,7 +991,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 89.99,
     "Racket_Level": "Intermediate",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Joola"
   },
   {
     "Racket_Name": "Mid Long-Pips Defender (Medium)",
@@ -932,7 +1008,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 94.99,
     "Racket_Level": "Intermediate",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Joola"
   },
   {
     "Racket_Name": "Mid Anti-Spin Specialist (Medium)",
@@ -948,7 +1025,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Concave",
     "Racket_Price": 109.99,
     "Racket_Level": "Intermediate",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Andro"
   },
   {
     "Racket_Name": "Premium Offense (High)",
@@ -964,7 +1042,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 259.99,
     "Racket_Level": "Advanced",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Butterfly"
   },
   {
     "Racket_Name": "Premium Allround/Loop (High)",
@@ -980,7 +1059,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 229.99,
     "Racket_Level": "Advanced",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Andro"
   },
   {
     "Racket_Name": "Premium Short-Pips Attack (High)",
@@ -996,7 +1076,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 199.99,
     "Racket_Level": "Advanced",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Joola"
   },
   {
     "Racket_Name": "Premium Long-Pips Specialist (High)",
@@ -1012,7 +1093,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Flared",
     "Racket_Price": 179.99,
     "Racket_Level": "Advanced",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Butterfly"
   },
   {
     "Racket_Name": "Premium Anti-Spin Expert (High)",
@@ -1028,7 +1110,8 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Grip": "Concave",
     "Racket_Price": 189.99,
     "Racket_Level": "Advanced",
-    "Racket_Affiliate_Link": ""
+    "Racket_Affiliate_Link": "",
+    "Racket_Brand": "Andro"
   },
   {
     Racket_Name: "JOOLA Match Pro ITTF Approved",
@@ -1044,230 +1127,75 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Grip: "Flared",
     Racket_Price: 19.95,
     Racket_Level: "Beginner",
-    Racket_Affiliate_Link: "https://www.amazon.com/JOOLA-Approved-Allround-Competition-Thickness/dp/B095HGR1XM"
+    Racket_Affiliate_Link: "https://www.amazon.com/JOOLA-Approved-Allround-Competition-Thickness/dp/B095HGR1XM",
+    Racket_Brand: "Joola"
   },
   {
-    Racket_Name: "Butterfly BTY-CS 2000 Penhold",
-    Racket_Blade: "Butterfly CS 2000",
-    Racket_FH_Rubber: "Butterfly Wakaba",
-    Racket_BH_Rubber: "Butterfly Wakaba",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 63,
-    Racket_Spin: 68,
-    Racket_Control: 81,
-    Racket_Power: 59,
-    Racket_Grip: "Penhold",
-    Racket_Price: 31.04,
-    Racket_Level: "Beginner",
-    Racket_Affiliate_Link: "https://www.amazon.com/Butterfly-2000-Table-Tennis-Racket/dp/B00DCTAXOE"
-  },
-  {
-    Racket_Name: "Butterfly Timo Boll Shakehand",
-    Racket_Blade: "Butterfly Timo Boll",
-    Racket_FH_Rubber: "Butterfly Sriver",
-    Racket_BH_Rubber: "Butterfly Sriver",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 77,
-    Racket_Spin: 74,
-    Racket_Control: 70,
-    Racket_Power: 72,
-    Racket_Grip: "Flared",
-    Racket_Price: 69.99,
-    Racket_Level: "Intermediate",
-    Racket_Affiliate_Link: "https://www.amazon.com/Butterfly-Timo-Table-Tennis-Racket/dp/B008N7X06I"
-  },
-  {
-    Racket_Name: "JOOLA Carbon Control Performance",
-    Racket_Blade: "JOOLA Carbon Control",
-    Racket_FH_Rubber: "JOOLA Omega",
-    Racket_BH_Rubber: "JOOLA Omega",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 70,
-    Racket_Spin: 72,
-    Racket_Control: 74,
-    Racket_Power: 68,
-    Racket_Grip: "Flared",
-    Racket_Price: 25,
-    Racket_Level: "Intermediate",
-    Racket_Affiliate_Link: "https://www.amazon.com/Joola-Carbon-Control-Table-Tennis/dp/B010DB9WFY"
-  },
-  {
-    Racket_Name: "Butterfly Viscaria Pro-Line",
-    Racket_Blade: "Butterfly Viscaria",
-    Racket_FH_Rubber: "Butterfly Tenergy 05",
-    Racket_BH_Rubber: "Butterfly Tenergy 05",
+    Racket_Name: "JOOLA Spinforce 900 ITTF Approved",
+    Racket_Blade: "JOOLA Spinforce",
+    Racket_FH_Rubber: "JOOLA Energy X-Tra",
+    Racket_BH_Rubber: "JOOLA Energy X-Tra",
     Racket_FH_Rubber_Style: "Normal",
     Racket_BH_Rubber_Style: "Normal",
     Racket_Speed: 86,
     Racket_Spin: 88,
-    Racket_Control: 59,
-    Racket_Power: 83,
-    Racket_Grip: "Flared",
-    Racket_Price: 299.99,
-    Racket_Level: "Advanced",
-    Racket_Affiliate_Link: "https://www.amazon.com/stores/Butterfly/page/95496F6D-88AF-42D7-8975-ED7CB7AE5ECA"
-  },
-  {
-    Racket_Name: "ANDRO Timber Professional",
-    Racket_Blade: "ANDRO Timber 5",
-    Racket_FH_Rubber: "ANDRO Hexer",
-    Racket_BH_Rubber: "ANDRO GTT 45",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 79,
-    Racket_Spin: 77,
     Racket_Control: 68,
-    Racket_Power: 77,
+    Racket_Power: 85,
     Racket_Grip: "Flared",
-    Racket_Price: 149.99,
-    Racket_Level: "Advanced",
-    Racket_Affiliate_Link: "https://www.amazon.com/stores/Andro/page/andro-rackets"
-  },
-  {
-    Racket_Name: "Killerspin JET400",
-    Racket_Blade: "5-ply wood",
-    Racket_FH_Rubber: "Nitrx-4Z",
-    Racket_BH_Rubber: "Nitrx-4Z",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 64,
-    Racket_Spin: 68,
-    Racket_Control: 60,
-    Racket_Power: 64,
-    Racket_Grip: "Flared",
-    Racket_Price: 39.95,
-    Racket_Level: "Beginner",
-    Racket_Affiliate_Link: "https://www.killerspin.com/products/jet400-table-tennis-racket"
-  },
-  {
-    Racket_Name: "Palio Expert 3.0",
-    Racket_Blade: "5-ply wood",
-    Racket_FH_Rubber: "Palio CJ8000 Biotech",
-    Racket_BH_Rubber: "Palio CJ8000 Biotech",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 56,
-    Racket_Spin: 64,
-    Racket_Control: 68,
-    Racket_Power: 56,
-    Racket_Grip: "Flared",
-    Racket_Price: 19.99,
-    Racket_Level: "Beginner",
-    Racket_Affiliate_Link: "https://www.paliotabletennis.com/palio-expert-3-0-paddle"
-  },
-  {
-    Racket_Name: "STIGA Pro Carbon",
-    Racket_Blade: "7-ply wood + 2 carbon layers",
-    Racket_FH_Rubber: "STIGA S5",
-    Racket_BH_Rubber: "STIGA S5",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 72,
-    Racket_Spin: 68,
-    Racket_Control: 56,
-    Racket_Power: 72,
-    Racket_Grip: "Concave",
-    Racket_Price: 49.99,
+    Racket_Price: 24.95,
     Racket_Level: "Intermediate",
-    Racket_Affiliate_Link: "https://www.stigaus.com/products/stiga-pro-carbon-table-tennis-racket"
+    Racket_Affiliate_Link: "https://www.amazon.com/JOOLA-Spinforce-Approved-Table-Racket/dp/B07HJVD5SF",
+    Racket_Brand: "Joola"
   },
   {
-    Racket_Name: "JOOLA Infinity Balance",
-    Racket_Blade: "5-ply wood",
-    Racket_FH_Rubber: "JOOLA Micron",
-    Racket_BH_Rubber: "JOOLA Micron",
+    Racket_Name: "Butterfly 401 FL Shakehand Racket",
+    Racket_Blade: "Butterfly 401",
+    Racket_FH_Rubber: "Butterfly Sriver FX",
+    Racket_BH_Rubber: "Butterfly Sriver FX",
     Racket_FH_Rubber_Style: "Normal",
     Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 64,
-    Racket_Spin: 64,
-    Racket_Control: 64,
-    Racket_Power: 64,
-    Racket_Grip: "Concave",
-    Racket_Price: 39.95,
-    Racket_Level: "Intermediate",
-    Racket_Affiliate_Link: "https://www.joola.com/products/joola-infinity-balance"
-  },
-  {
-    Racket_Name: "Butterfly 401",
-    Racket_Blade: "5-ply wood",
-    Racket_FH_Rubber: "Flextra",
-    Racket_BH_Rubber: "Flextra",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 60,
-    Racket_Spin: 56,
-    Racket_Control: 68,
+    Racket_Speed: 58,
+    Racket_Spin: 62,
+    Racket_Control: 85,
     Racket_Power: 60,
     Racket_Grip: "Flared",
-    Racket_Price: 19.99,
+    Racket_Price: 27.99,
     Racket_Level: "Beginner",
-    Racket_Affiliate_Link: "https://shop.butterflyonline.com/401"
+    Racket_Affiliate_Link: "https://www.butterflyonline.com/401-fl-shakehand-racket",
+    Racket_Brand: "Butterfly"
   },
   {
-    Racket_Name: "DHS 4002",
-    Racket_Blade: "5-ply wood",
-    Racket_FH_Rubber: "DHS Hurricane 3",
-    Racket_BH_Rubber: "DHS Hurricane 3",
+    Racket_Name: "Butterfly 603 FL Shakehand Racket",
+    Racket_Blade: "Butterfly 603",
+    Racket_FH_Rubber: "Butterfly Sriver",
+    Racket_BH_Rubber: "Butterfly Sriver",
     Racket_FH_Rubber_Style: "Normal",
     Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 68,
-    Racket_Spin: 72,
-    Racket_Control: 56,
-    Racket_Power: 68,
+    Racket_Speed: 78,
+    Racket_Spin: 82,
+    Racket_Control: 72,
+    Racket_Power: 76,
     Racket_Grip: "Flared",
-    Racket_Price: 29.99,
+    Racket_Price: 42.99,
     Racket_Level: "Intermediate",
-    Racket_Affiliate_Link: "https://www.dhs-sports.com/4002"
+    Racket_Affiliate_Link: "https://www.butterflyonline.com/603-fl-shakehand-racket",
+    Racket_Brand: "Butterfly"
   },
   {
-    Racket_Name: "Yinhe 01B",
-    Racket_Blade: "5-ply wood",
-    Racket_FH_Rubber: "Yinhe Mercury II",
-    Racket_BH_Rubber: "Yinhe Mercury II",
+    Racket_Name: "Stiga Pro Carbon Performance-Level Racket",
+    Racket_Blade: "Stiga Carbo 5.4 WRB",
+    Racket_FH_Rubber: "Stiga S5",
+    Racket_BH_Rubber: "Stiga S5",
     Racket_FH_Rubber_Style: "Normal",
     Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 64,
-    Racket_Spin: 68,
-    Racket_Control: 60,
-    Racket_Power: 64,
+    Racket_Speed: 94,
+    Racket_Spin: 88,
+    Racket_Control: 70,
+    Racket_Power: 92,
     Racket_Grip: "Flared",
-    Racket_Price: 24.99,
-    Racket_Level: "Intermediate",
-    Racket_Affiliate_Link: "https://www.yinhett.com/01b"
-  },
-  {
-    Racket_Name: "Sanwei Taiji 710 Pro Carbon",
-    Racket_Blade: "7-ply wood + 2 carbon layers",
-    Racket_FH_Rubber: "Sanwei Target National",
-    Racket_BH_Rubber: "Sanwei Target National",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 72,
-    Racket_Spin: 68,
-    Racket_Control: 56,
-    Racket_Power: 72,
-    Racket_Grip: "Flared",
-    Racket_Price: 39.99,
+    Racket_Price: 59.99,
     Racket_Level: "Advanced",
-    Racket_Affiliate_Link: "https://www.sanwei.com/taiji-710-pro-carbon"
-  },
-  {
-    Racket_Name: "Palio Legend 2",
-    Racket_Blade: "5-ply wood",
-    Racket_FH_Rubber: "Palio CJ8000 Biotech",
-    Racket_BH_Rubber: "Palio CJ8000 Biotech",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 60,
-    Racket_Spin: 64,
-    Racket_Control: 68,
-    Racket_Power: 60,
-    Racket_Grip: "Flared",
-    Racket_Price: 29.99,
-    Racket_Level: "Intermediate",
-    Racket_Affiliate_Link: "https://www.paliotabletennis.com/palio-legend-2-paddle"
+    Racket_Affiliate_Link: "https://www.amazon.com/STIGA-Pro-Carbon-Performance-Level-Table/dp/B004XYO8NE",
+    Racket_Brand: "Joola"
   }
 ];
