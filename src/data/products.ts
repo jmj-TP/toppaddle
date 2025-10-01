@@ -212,9 +212,9 @@ export const blades: Blade[] =
   },
   {
     Blade_Name: "ANDRO Timber 5 OFF",
-    Blade_Speed: 80,
+    Blade_Speed: 72,
     Blade_Control: 78,
-    Blade_Power: 78,
+    Blade_Power: 75,
     Blade_Grip: "Flared",
     Blade_Price: 69.95,
     Blade_Level: "Intermediate",
@@ -222,9 +222,9 @@ export const blades: Blade[] =
   },
   {
     Blade_Name: "ANDRO Timber 5 ALL",
-    Blade_Speed: 67,
+    Blade_Speed: 66,
     Blade_Control: 84,
-    Blade_Power: 69,
+    Blade_Power: 64,
     Blade_Grip: "Flared",
     Blade_Price: 64.95,
     Blade_Level: "Intermediate",
@@ -391,25 +391,50 @@ export const blades: Blade[] =
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-super-zlc.html"
   },
   {
-    "Blade_Name": "Butterfly Innerforce Layer ALC (AN)",
-    "Blade_Speed": 88,
-    "Blade_Control": 85,
-    "Blade_Power": 90,
-    "Blade_Grip": "Anatomic",
-    "Blade_Price": 148.49,
-    "Blade_Level": "Advanced",
-    "Blade_Affiliate_Link": "https://shop.butterflyonline.com/innerforce-layer-alc"
+    "Blade_Name": "DHS Power G5X",
+    "Blade_Speed": 86,
+    "Blade_Control": 92,
+    "Blade_Power": 88,
+    "Blade_Grip": "Flared",
+    "Blade_Price": 44.95,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 89,
+    "Blade_Affiliate_Link": "https://www.megaspin.net/store/default.asp?pid=dhs-power-g5x"
   },
   {
-"Blade_Name": "STIGA Allround Classic (AN)",
-    "Blade_Speed": 75,
-    "Blade_Control": 77,
-    "Blade_Power": 70,
-    "Blade_Grip": "Anatomic",
-    "Blade_Price": 54.95,
+    "Blade_Name": "DHS Hurricane 301",
+    "Blade_Speed": 78,
+    "Blade_Control": 80,
+    "Blade_Power": 76,
+    "Blade_Grip": "Flared",
+    "Blade_Price": 63.60,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 85,
+    "Blade_Affiliate_Link": "https://www.aliexpress.com/p/tesla-landing/index.html?scenario=c_ppc_item_bridge&productId=3256809282792901"
+  },
+  {
+    "Blade_Name": "DHS Hurricane King ACB",
+    "Blade_Speed": 88,
+    "Blade_Control": 86,
+    "Blade_Power": 90,
+    "Blade_Grip": "Flared",
+    "Blade_Price": 199.95,
+    "Blade_Level": "Advanced",
+    "Blade_Weight": 89,
+    "Blade_Affiliate_Link": "https://dhssport.com/en/DHS_Hurricane_King_acB"
+  },
+  {
+    "Blade_Name": "DHS PG7",
+    "Blade_Speed": 82,
+    "Blade_Control": 85,
+    "Blade_Power": 80,
+    "Blade_Grip": "Flared",
+    "Blade_Price": 31.99,
     "Blade_Level": "Beginner",
-    "Blade_Affiliate_Link": "https://www.megaspin.net/store/default.asp?pid=s-all-classic"
-   }
+    "Blade_Weight": 87,
+    "Blade_Affiliate_Link": "https://www.dhs-729.eu/gb/dhs-blades/115-dhs-pg7.html"
+  }
+  
 ];
 
 // Rubbers Database
