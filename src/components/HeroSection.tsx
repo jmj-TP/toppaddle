@@ -17,7 +17,7 @@ const HeroSection = ({ onStartQuiz }: HeroSectionProps) => {
 
           {/* Headline */}
           <h1 className="font-headline text-4xl font-bold text-foreground md:text-5xl lg:text-6xl mb-6 max-w-4xl animate-fade-in">
-            Your Perfect Match in a Racket
+            One Quiz. Your Racket.
           </h1>
 
           {/* Subheading */}
