@@ -24,7 +24,7 @@ const questions = [
     options: [
       { value: "Offensive player", label: "Offensive - Attack every Ball" },
       { value: "Allround player", label: "All-Round" },
-      { value: "Defensive player", label: "Defensive - Waiting for error from Opponent" }
+      { value: "Defensive player", label: "Defensive - Waiting for error" }
     ],
     key: "Playstyle" as keyof QuizAnswers
   },
