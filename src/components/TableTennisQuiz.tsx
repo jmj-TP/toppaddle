@@ -22,7 +22,7 @@ const questions = [
     id: 2,
     question: "How would you describe your overall playstyle?",
     options: [
-      { value: "Offensive player", label: "Offensive" },
+      { value: "Offensive player", label: "Offensive - attack every ball" },
       { value: "Allround player", label: "All-Round" },
       { value: "Defensive player", label: "Defensive" }
     ],
