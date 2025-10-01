@@ -22,7 +22,7 @@ const HeroSection = ({ onStartQuiz }: HeroSectionProps) => {
 
           {/* Subheading */}
           <p className="font-body text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl animate-fade-in">
-            Take the quiz and get matched with the blade and rubbers that fit your game.
+            Answer a few quick questions and discover your custom blade and rubbers.
           </p>
 
           {/* CTA Button */}
