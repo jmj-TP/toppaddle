@@ -17,7 +17,7 @@ const HeroSection = ({ onStartQuiz }: HeroSectionProps) => {
 
           {/* Headline */}
           <h1 className="font-headline text-4xl font-bold text-foreground md:text-5xl lg:text-6xl mb-6 max-w-4xl animate-fade-in">
-            Your Ideal Table Tennis Racket Starts Here
+            Your Perfect Match in a Racket
           </h1>
 
           {/* Subheading */}
