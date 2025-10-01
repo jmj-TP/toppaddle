@@ -307,10 +307,26 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       }
       setBudgetAmount(budget);
 
+      // Convert numeric budget to budget string format
+      const budgetString = budget <= 50 ? "<50$" :
+                           budget <= 100 ? "<100$" :
+                           budget <= 150 ? "<150$" :
+                           budget <= 200 ? "<200$" :
+                           budget <= 250 ? "<250$" :
+                           budget <= 300 ? "<300$" :
+                           budget <= 360 ? "<360$" :
+                           "No limit";
+
+      // Add budget to answers
+      const answersWithBudget = {
+        ...newAnswers,
+        Budget: budgetString
+      };
+
       // If budget is less than 60, skip assembly preference and set to ready-to-play
       if (budget < 60) {
         const updatedAnswers = {
-          ...newAnswers,
+          ...answersWithBudget,
           AssemblyPreference: "Ready-to-play racket",
           WeightPreference: "Medium"
         };
@@ -327,12 +343,13 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
 
       // Check if user is Advanced - show weight question
       if (answers.Level === "Advanced") {
+        setAnswers(answersWithBudget);
         setShowWeightQuestion(true);
         setCurrentQuestion(8); // Show weight question (index 8)
       } else {
         // Skip weight question for non-advanced players
         const updatedAnswers = {
-          ...newAnswers,
+          ...answersWithBudget,
           WeightPreference: "Medium"
         };
         setAnswers(updatedAnswers);

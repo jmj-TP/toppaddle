@@ -278,10 +278,18 @@ function calculateSpongeThickness(answers: QuizAnswers): {
 
 // Find best pre-assembled racket
 export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledRacket & { score: number }) | null {
+  console.log('Finding pre-assembled rackets with budget:', answers.Budget);
+  const budgetRange = getBudgetRange(answers.Budget);
+  console.log('Budget range:', budgetRange);
+  
   const suitableRackets = preAssembledRackets
     .filter(racket => {
       // Budget filter
-      if (!isWithinBudget(racket.Racket_Price, answers.Budget)) return false;
+      const withinBudget = isWithinBudget(racket.Racket_Price, answers.Budget);
+      if (!withinBudget) {
+        console.log(`Filtered out ${racket.Racket_Name} - Price: ${racket.Racket_Price}, Budget: ${answers.Budget}`);
+        return false;
+      }
       
       // Rubber style filter
       if (racket.Racket_FH_Rubber_Style !== answers.ForehandRubberStyle) return false;
@@ -317,7 +325,9 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
 
 // Find best custom setup
 export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
+  console.log('Finding custom setup with budget:', answers.Budget);
   const budgetRange = getBudgetRange(answers.Budget);
+  console.log('Custom setup budget range:', budgetRange);
   const bestCombinations: CustomSetup[] = [];
 
   // Filter rubbers by style preference for each side
