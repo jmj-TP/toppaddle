@@ -297,13 +297,10 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
 
     // Handle budget question (question 7)
     if (currentQuestion === 7) {
-      // Extract numeric budget value
-      let budget = 0;
-      if (answer === "No limit") {
-        budget = 999;
-      } else {
-        const match = answer.match(/\d+/);
-        budget = match ? parseInt(match[0]) : 90;
+      // Extract numeric budget value from new budget selector
+      let budget = parseInt(answer);
+      if (budget >= 10000) {
+        budget = 10000; // No limit
       }
       setBudgetAmount(budget);
 
