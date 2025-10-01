@@ -212,9 +212,9 @@ export const blades: Blade[] =
   },
   {
     Blade_Name: "ANDRO Timber 5 OFF",
-    Blade_Speed: 72,
+    Blade_Speed: 80,
     Blade_Control: 78,
-    Blade_Power: 75,
+    Blade_Power: 78,
     Blade_Grip: "Flared",
     Blade_Price: 69.95,
     Blade_Level: "Intermediate",
@@ -222,9 +222,9 @@ export const blades: Blade[] =
   },
   {
     Blade_Name: "ANDRO Timber 5 ALL",
-    Blade_Speed: 66,
+    Blade_Speed: 67,
     Blade_Control: 84,
-    Blade_Power: 64,
+    Blade_Power: 69,
     Blade_Grip: "Flared",
     Blade_Price: 64.95,
     Blade_Level: "Intermediate",
@@ -389,7 +389,27 @@ export const blades: Blade[] =
     Blade_Price: 379.90,
     Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-super-zlc.html"
-  }
+  },
+  {
+    "Blade_Name": "Butterfly Innerforce Layer ALC (AN)",
+    "Blade_Speed": 88,
+    "Blade_Control": 85,
+    "Blade_Power": 90,
+    "Blade_Grip": "Anatomic",
+    "Blade_Price": 148.49,
+    "Blade_Level": "Advanced",
+    "Blade_Affiliate_Link": "https://shop.butterflyonline.com/innerforce-layer-alc"
+  },
+  {
+"Blade_Name": "STIGA Allround Classic (AN)",
+    "Blade_Speed": 75,
+    "Blade_Control": 77,
+    "Blade_Power": 70,
+    "Blade_Grip": "Anatomic",
+    "Blade_Price": 54.95,
+    "Blade_Level": "Beginner",
+    "Blade_Affiliate_Link": "https://www.megaspin.net/store/default.asp?pid=s-all-classic"
+   }
 ];
 
 // Rubbers Database
