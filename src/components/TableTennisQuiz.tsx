@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft } from "lucide-react";
 import QuestionCard from "./QuestionCard";
+import BudgetSlider from "./BudgetSlider";
 import RecommendationDisplay from "./RecommendationDisplay";
 import { getRecommendation, type QuizAnswers } from "@/utils/ratingSystem";
 
@@ -128,6 +129,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const [showHandleSpecial, setShowHandleSpecial] = useState(false);
   const [showWeightQuestion, setShowWeightQuestion] = useState(false);
   const [questionHistory, setQuestionHistory] = useState<number[]>([]);
+  const [budgetAmount, setBudgetAmount] = useState<number>(0);
 
   // Premium budget follow-up question
   const premiumBudgetQuestion = {
@@ -197,6 +199,17 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     // Add current question to history before moving forward
     setQuestionHistory([...questionHistory, currentQuestion]);
 
+    // If Beginner is selected, skip special rubbers and set both to Normal
+    if (currentQuestion === 0 && answer === "Beginner") {
+      const updatedAnswers = {
+        ...newAnswers,
+        ForehandRubberStyle: "Normal",
+        BackhandRubberStyle: "Normal",
+        WantsSpecialRubbers: "No"
+      };
+      setAnswers(updatedAnswers);
+    }
+
     // Check if forehand is "Both sides the same / not sure" (question 3)
     if (currentQuestion === 2 && answer === "Both sides the same / not sure") {
       // Set backhand to same answer and skip question 4
@@ -235,7 +248,21 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-    // Check if user wants special rubbers at all (question 7)
+    // Check if user is Beginner - skip special rubbers question entirely
+    if (currentQuestion === 5 && answers.Level === "Beginner") {
+      // Skip handle special question if needed, go straight to budget
+      if (answer === "Normal") {
+        const updatedAnswers = {
+          ...newAnswers,
+          Grip: "Not sure"
+        };
+        setAnswers(updatedAnswers);
+      }
+      setCurrentQuestion(7); // Skip to budget question
+      return;
+    }
+
+    // Check if user wants special rubbers at all (question 7) - only for non-beginners
     if (currentQuestion === 6 && answer === "No") {
       // Set both to Normal and skip special rubber questions
       const updatedAnswers = {
@@ -270,17 +297,37 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-    // Check if user selected "161+" on budget question (now question 8)
-    if (currentQuestion === 7 && answer === "161+") {
-      setShowPremiumBudget(true);
-      setCurrentQuestion(9.5);
-      return;
-    }
+    // Handle budget question (question 7)
+    if (currentQuestion === 7) {
+      // Extract numeric budget value
+      let budget = 0;
+      if (answer === "No limit") {
+        budget = 999;
+      } else {
+        const match = answer.match(/\d+/);
+        budget = match ? parseInt(match[0]) : 90;
+      }
+      setBudgetAmount(budget);
 
-    // Handle premium budget follow-up
-    if (currentQuestion === 9.5) {
-      setShowPremiumBudget(false);
-      // After premium budget, check if Advanced to show weight question
+      // If budget is less than 90, skip assembly preference and set to ready-to-play
+      if (budget < 90) {
+        const updatedAnswers = {
+          ...newAnswers,
+          AssemblyPreference: "Ready-to-play racket",
+          WeightPreference: "Medium"
+        };
+        setAnswers(updatedAnswers);
+        
+        // Complete the quiz
+        const completeQuizAnswers = updatedAnswers as QuizAnswers;
+        setCompleteAnswers(completeQuizAnswers);
+        const rec = getRecommendation(completeQuizAnswers);
+        setRecommendation(rec);
+        setIsComplete(true);
+        return;
+      }
+
+      // Check if user is Advanced - show weight question
       if (answers.Level === "Advanced") {
         setShowWeightQuestion(true);
         setCurrentQuestion(8); // Show weight question (index 8)
@@ -293,24 +340,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         setAnswers(updatedAnswers);
         setCurrentQuestion(9); // Go to assembly preference (index 9)
       }
-      return;
-    }
-
-    // Check if user is Advanced after budget question (no premium follow-up) - show weight question
-    if (currentQuestion === 7 && answer !== "161+" && answers.Level === "Advanced") {
-      setShowWeightQuestion(true);
-      setCurrentQuestion(8); // Show weight question (index 8)
-      return;
-    }
-
-    // If not advanced and just answered budget, skip weight question and set default
-    if (currentQuestion === 7 && answer !== "161+" && answers.Level !== "Advanced") {
-      const updatedAnswers = {
-        ...newAnswers,
-        WeightPreference: "Medium"
-      };
-      setAnswers(updatedAnswers);
-      setCurrentQuestion(9); // Skip to assembly preference (index 9)
       return;
     }
 
@@ -368,6 +397,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     setShowHandleSpecial(false);
     setShowWeightQuestion(false);
     setQuestionHistory([]);
+    setBudgetAmount(0);
     onQuizStatusChange(false);
   };
 
@@ -397,6 +427,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         recommendation={recommendation} 
         onRestart={handleRestart} 
         assemblyPreference={answers.AssemblyPreference}
+        budgetAmount={budgetAmount}
       />
     );
   }
@@ -428,16 +459,23 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
           </Button>
         )}
         
-        <QuestionCard
-          question={
-            currentQuestion === 9.5 ? premiumBudgetQuestion : 
-            currentQuestion === 7.5 ? forehandSpecialQuestion :
-            currentQuestion === 7.6 ? backhandSpecialQuestion :
-            currentQuestion === 6.5 ? handleSpecialQuestion :
-            questions[currentQuestion]
-          }
-          onAnswer={handleAnswer}
-        />
+        {currentQuestion === 7 ? (
+          <BudgetSlider
+            question="What is your total budget for the Blade?"
+            onAnswer={handleAnswer}
+          />
+        ) : (
+          <QuestionCard
+            question={
+              currentQuestion === 9.5 ? premiumBudgetQuestion : 
+              currentQuestion === 7.5 ? forehandSpecialQuestion :
+              currentQuestion === 7.6 ? backhandSpecialQuestion :
+              currentQuestion === 6.5 ? handleSpecialQuestion :
+              questions[currentQuestion]
+            }
+            onAnswer={handleAnswer}
+          />
+        )}
       </div>
     </div>
   );
