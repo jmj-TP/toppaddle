@@ -6,8 +6,8 @@ export interface QuizAnswers {
   Forehand: string;
   Backhand: string;
   Power: string;
-  HandSize: string;
-  GripType?: string; // Only for medium hand size
+  HandlePreference: string;
+  Grip: string;
   WantsSpecialRubbers: string;
   ForehandRubberStyle: string;
   BackhandRubberStyle: string;
@@ -89,35 +89,19 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += ((speed + control + power) / 300) * powerWeight;
   }
 
-  // Handle/Grip matching based on hand size (15% weight)
+  // Grip matching (15% weight)
   const gripWeight = 15;
   maxScore += gripWeight;
   
   const productGrip = product.Blade_Grip || product.Racket_Grip || '';
-  
-  // For really big hands, only anatomic grips score well
-  if (answers.HandSize === "Really big") {
-    if (productGrip.toLowerCase().includes('anatomic')) {
-      score += gripWeight;
-    }
-  }
-  // For medium hands with specific grip preference
-  else if (answers.HandSize === "Medium" && answers.GripType) {
-    if (answers.GripType === "Flare" && productGrip.toLowerCase().includes('flare')) {
-      score += gripWeight;
-    } else if (answers.GripType === "Straight" && productGrip.toLowerCase().includes('straight')) {
-      score += gripWeight;
-    } else if (answers.GripType === "Anatomic" && productGrip.toLowerCase().includes('anatomic')) {
-      score += gripWeight;
-    }
-  }
-  // For really small hands (DHS only), accept any grip
-  else if (answers.HandSize === "Really small") {
-    score += gripWeight * 0.8;
-  }
-  // Default case
-  else {
-    score += gripWeight * 0.5;
+  if (answers.Grip.includes('Shakehand') && productGrip.includes('Flared')) {
+    score += gripWeight;
+  } else if (answers.Grip.includes('Straight') && productGrip.includes('Straight')) {
+    score += gripWeight;
+  } else if (answers.Grip.includes('Penhold') && productGrip.includes('Penhold')) {
+    score += gripWeight;
+  } else if (answers.Grip.includes('Not sure')) {
+    score += gripWeight * 0.8; // Give benefit of doubt
   }
 
   // Forehand/Backhand style matching (15% weight)
@@ -307,20 +291,6 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
   
   const suitableRackets = preAssembledRackets
     .filter(racket => {
-      // Hand size filters
-      if (answers.HandSize === "Really small" && racket.Racket_Brand !== "DHS") {
-        return false;
-      }
-      if (answers.HandSize === "Really big" && !racket.Racket_Grip.toLowerCase().includes('anatomic')) {
-        return false;
-      }
-      if (answers.HandSize === "Medium" && answers.GripType) {
-        const grip = racket.Racket_Grip.toLowerCase();
-        if (answers.GripType === "Flare" && !grip.includes('flare')) return false;
-        if (answers.GripType === "Straight" && !grip.includes('straight')) return false;
-        if (answers.GripType === "Anatomic" && !grip.includes('anatomic')) return false;
-      }
-      
       // Strict budget filter - price must not exceed budget
       const budgetRange = getBudgetRange(answers.Budget);
       if (racket.Racket_Price > budgetRange.max) {
@@ -367,31 +337,12 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
   console.log('Custom setup budget range:', budgetRange);
   const bestCombinations: CustomSetup[] = [];
 
-  // Filter blades based on hand size
-  const filteredBlades = blades.filter(blade => {
-    // Hand size filters
-    if (answers.HandSize === "Really small" && blade.Blade_Brand !== "DHS") {
-      return false;
-    }
-    if (answers.HandSize === "Really big" && !blade.Blade_Grip.toLowerCase().includes('anatomic')) {
-      return false;
-    }
-    if (answers.HandSize === "Medium" && answers.GripType) {
-      const grip = blade.Blade_Grip.toLowerCase();
-      if (answers.GripType === "Flare" && !grip.includes('flare')) return false;
-      if (answers.GripType === "Straight" && !grip.includes('straight')) return false;
-      if (answers.GripType === "Anatomic" && !grip.includes('anatomic')) return false;
-    }
-    return true;
-  });
-  
   // Filter rubbers by style preference for each side
   const forehandRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.ForehandRubberStyle);
-
-  // Try all combinations of blade + 2 rubbers
   const backhandRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.BackhandRubberStyle);
 
-  for (const blade of filteredBlades) {
+  // Try all combinations of blade + 2 rubbers
+  for (const blade of blades) {
     for (const fhRubber of forehandRubbers) {
       for (const bhRubber of backhandRubbers) {
         // Constraint: no rubber should be more expensive than the blade
