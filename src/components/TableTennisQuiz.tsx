@@ -310,7 +310,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       // Convert numeric budget to budget string format
       const budgetString = budget <= 50 ? "<50$" :
                            budget <= 100 ? "<100$" :
-                           budget <= 150 ? "<150$" :
+                           budget <= 160 ? "<160$" :
                            budget <= 200 ? "<200$" :
                            budget <= 250 ? "<250$" :
                            budget <= 300 ? "<300$" :
