@@ -22,7 +22,7 @@ const questions = [
     id: 2,
     question: "How would you describe your overall playstyle?",
     options: [
-      { value: "Offensive player", label: "Offensive - attack every ball" },
+      { value: "Offensive player", label: "Offensive" },
       { value: "Allround player", label: "All-Round" },
       { value: "Defensive player", label: "Defensive" }
     ],
@@ -33,7 +33,7 @@ const questions = [
     question: "How do you usually play with your forehand?",
     options: [
       { value: "Fast & aggressive", label: "Fast & Aggressive" },
-      { value: "Spin & topspin", label: "Spin & Topspin" },
+      { value: "Spin & topspin", label: "I use a lot of Spin" },
       { value: "Calm & controlled", label: "Calm & Controlled" },
       { value: "Both sides the same / not sure", label: "Same as Backhand" }
     ],
@@ -44,7 +44,7 @@ const questions = [
     question: "How do you usually play with your backhand?",
     options: [
       { value: "Fast & aggressive", label: "Fast & Aggressive" },
-      { value: "Spin & topspin", label: "Spin & Topspin" },
+      { value: "Spin & topspin", label: "I use a lot of spin" },
       { value: "Calm & controlled", label: "Calm & Controlled" },
       { value: "Both sides the same / not sure", label: "Same as Forehand" }
     ],
@@ -81,7 +81,7 @@ const questions = [
   },
   {
     id: 8,
-    question: "What is your total budget for Blade + Rubbers or a Pre-Assembled Racket?",
+    question: "What is your total budget for the Blade?",
     options: [
       { value: "<50$", label: "Under $50" },
       { value: "<100$", label: "Under $100" },
@@ -102,7 +102,7 @@ const questions = [
   },
   {
     id: 10,
-    question: "Do you want a ready-to-play racket (pre-assembled), or do you want a custom setup (blade + separate rubbers)?",
+    question: "Do you want a ready-to-play racket (pre-assembled), or a custom setup (blade + separate rubbers)?",
     options: [
       { value: "Ready-to-play racket", label: "Ready-to-Play" },
       { value: "Custom setup", label: "Custom Setup" },
@@ -148,7 +148,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     id: 7.5,
     question: "Which rubber type for your forehand?",
     options: [
-      { value: "Normal", label: "Normal Inverted" },
+      { value: "Normal", label: "Normal" },
       { value: "Short Pimples", label: "Short Pimples" },
       { value: "Long Pimples", label: "Long Pimples" },
       { value: "Anti", label: "Anti-Spin" }
@@ -161,7 +161,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     id: 7.6,
     question: "Which rubber type for your backhand?",
     options: [
-      { value: "Normal", label: "Normal Inverted" },
+      { value: "Normal", label: "Normal" },
       { value: "Short Pimples", label: "Short Pimples" },
       { value: "Long Pimples", label: "Long Pimples" },
       { value: "Anti", label: "Anti-Spin" }
