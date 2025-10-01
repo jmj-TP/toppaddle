@@ -7,6 +7,7 @@ export interface QuizAnswers {
   Backhand: string;
   Power: string;
   HandSize: string;
+  GripType?: string; // Only for medium hand size
   WantsSpecialRubbers: string;
   ForehandRubberStyle: string;
   BackhandRubberStyle: string;
@@ -88,19 +89,35 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += ((speed + control + power) / 300) * powerWeight;
   }
 
-  // Grip matching (15% weight)
+  // Handle/Grip matching based on hand size (15% weight)
   const gripWeight = 15;
   maxScore += gripWeight;
   
   const productGrip = product.Blade_Grip || product.Racket_Grip || '';
-  if (answers.Grip.includes('Shakehand') && productGrip.includes('Flared')) {
-    score += gripWeight;
-  } else if (answers.Grip.includes('Straight') && productGrip.includes('Straight')) {
-    score += gripWeight;
-  } else if (answers.Grip.includes('Penhold') && productGrip.includes('Penhold')) {
-    score += gripWeight;
-  } else if (answers.Grip.includes('Not sure')) {
-    score += gripWeight * 0.8; // Give benefit of doubt
+  
+  // For really big hands, only anatomic grips score well
+  if (answers.HandSize === "Really big") {
+    if (productGrip.toLowerCase().includes('anatomic')) {
+      score += gripWeight;
+    }
+  }
+  // For medium hands with specific grip preference
+  else if (answers.HandSize === "Medium" && answers.GripType) {
+    if (answers.GripType === "Flare" && productGrip.toLowerCase().includes('flare')) {
+      score += gripWeight;
+    } else if (answers.GripType === "Straight" && productGrip.toLowerCase().includes('straight')) {
+      score += gripWeight;
+    } else if (answers.GripType === "Anatomic" && productGrip.toLowerCase().includes('anatomic')) {
+      score += gripWeight;
+    }
+  }
+  // For really small hands (DHS only), accept any grip
+  else if (answers.HandSize === "Really small") {
+    score += gripWeight * 0.8;
+  }
+  // Default case
+  else {
+    score += gripWeight * 0.5;
   }
 
   // Forehand/Backhand style matching (15% weight)
@@ -290,9 +307,18 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
   
   const suitableRackets = preAssembledRackets
     .filter(racket => {
-      // Hand size brand filter - Really small hands get DHS only
+      // Hand size filters
       if (answers.HandSize === "Really small" && racket.Racket_Brand !== "DHS") {
         return false;
+      }
+      if (answers.HandSize === "Really big" && !racket.Racket_Grip.toLowerCase().includes('anatomic')) {
+        return false;
+      }
+      if (answers.HandSize === "Medium" && answers.GripType) {
+        const grip = racket.Racket_Grip.toLowerCase();
+        if (answers.GripType === "Flare" && !grip.includes('flare')) return false;
+        if (answers.GripType === "Straight" && !grip.includes('straight')) return false;
+        if (answers.GripType === "Anatomic" && !grip.includes('anatomic')) return false;
       }
       
       // Strict budget filter - price must not exceed budget
@@ -343,9 +369,18 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
 
   // Filter blades based on hand size
   const filteredBlades = blades.filter(blade => {
-    // Hand size brand filter - Really small hands get DHS only
+    // Hand size filters
     if (answers.HandSize === "Really small" && blade.Blade_Brand !== "DHS") {
       return false;
+    }
+    if (answers.HandSize === "Really big" && !blade.Blade_Grip.toLowerCase().includes('anatomic')) {
+      return false;
+    }
+    if (answers.HandSize === "Medium" && answers.GripType) {
+      const grip = blade.Blade_Grip.toLowerCase();
+      if (answers.GripType === "Flare" && !grip.includes('flare')) return false;
+      if (answers.GripType === "Straight" && !grip.includes('straight')) return false;
+      if (answers.GripType === "Anatomic" && !grip.includes('anatomic')) return false;
     }
     return true;
   });
