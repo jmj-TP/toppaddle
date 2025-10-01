@@ -307,20 +307,10 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       }
       setBudgetAmount(budget);
 
-      // Convert numeric budget to budget string format
-      const budgetString = budget <= 50 ? "<50$" :
-                           budget <= 100 ? "<100$" :
-                           budget <= 160 ? "<160$" :
-                           budget <= 200 ? "<200$" :
-                           budget <= 250 ? "<250$" :
-                           budget <= 300 ? "<300$" :
-                           budget <= 360 ? "<360$" :
-                           "No limit";
-
-      // Add budget to answers
+      // Store exact numeric budget instead of rounded brackets
       const answersWithBudget = {
         ...newAnswers,
-        Budget: budgetString
+        Budget: budget.toString()
       };
 
       // If budget is less than 60, skip assembly preference and set to ready-to-play

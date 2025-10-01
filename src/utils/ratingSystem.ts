@@ -145,6 +145,13 @@ function calculateScore(answers: QuizAnswers, product: any): number {
 
 // Get budget range
 function getBudgetRange(budget: string): { min: number; max: number } {
+  // Check if budget is a numeric value
+  const numericBudget = parseFloat(budget);
+  if (!isNaN(numericBudget)) {
+    return { min: 0, max: numericBudget };
+  }
+  
+  // Legacy support for old budget string format
   switch (budget) {
     case '<50$':
       return { min: 0, max: 50 };
