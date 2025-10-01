@@ -176,11 +176,10 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     id: 6.5,
     question: "Which specific handle type do you prefer?",
     options: [
-      { value: "Not sure", label: "Not Sure" },
-      { value: "Classic Shakehand", label: "Classic Shakehand" },
-      { value: "Shakehand Flared", label: "Shakehand Flared" },
-      { value: "Shakehand Straight", label: "Shakehand Straight" },
-      { value: "Penhold", label: "Penhold" }
+      { value: "Flare", label: "Flare" },
+      { value: "Straight", label: "Straight" },
+      { value: "Straight Incline", label: "Straight Incline" },
+      { value: "Anatomic", label: "Anatomic" }
     ],
     key: "Grip" as keyof QuizAnswers
   };

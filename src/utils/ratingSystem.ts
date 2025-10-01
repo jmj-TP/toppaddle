@@ -94,13 +94,15 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   maxScore += gripWeight;
   
   const productGrip = product.Blade_Grip || product.Racket_Grip || '';
-  if (answers.Grip.includes('Shakehand') && productGrip.includes('Flared')) {
+  if (answers.Grip === 'Flare' && productGrip.includes('Flare')) {
     score += gripWeight;
-  } else if (answers.Grip.includes('Straight') && productGrip.includes('Straight')) {
+  } else if (answers.Grip === 'Straight' && productGrip.includes('Straight') && !productGrip.includes('Incline')) {
     score += gripWeight;
-  } else if (answers.Grip.includes('Penhold') && productGrip.includes('Penhold')) {
+  } else if (answers.Grip === 'Straight Incline' && productGrip.includes('Straight Incline')) {
     score += gripWeight;
-  } else if (answers.Grip.includes('Not sure')) {
+  } else if (answers.Grip === 'Anatomic' && productGrip.includes('Anatomic')) {
+    score += gripWeight;
+  } else if (answers.Grip === 'Not sure') {
     score += gripWeight * 0.8; // Give benefit of doubt
   }
 
