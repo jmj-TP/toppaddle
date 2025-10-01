@@ -222,6 +222,18 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
+    // Check if user is Beginner - skip special rubbers question entirely
+    if (currentQuestion === 5 && answers.Level === "Beginner") {
+      // Set grip based on answer and skip to budget
+      const updatedAnswers = {
+        ...newAnswers,
+        Grip: answer === "Normal" ? "Not sure" : newAnswers.Grip
+      };
+      setAnswers(updatedAnswers);
+      setCurrentQuestion(7); // Skip to budget question
+      return;
+    }
+
     // Check if user wants normal handle (question 6)
     if (currentQuestion === 5 && answer === "Normal") {
       // Set grip to "Not sure" and skip handle detail question
@@ -245,20 +257,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     if (currentQuestion === 6.5) {
       setShowHandleSpecial(false);
       setCurrentQuestion(6);
-      return;
-    }
-
-    // Check if user is Beginner - skip special rubbers question entirely
-    if (currentQuestion === 5 && answers.Level === "Beginner") {
-      // Skip handle special question if needed, go straight to budget
-      if (answer === "Normal") {
-        const updatedAnswers = {
-          ...newAnswers,
-          Grip: "Not sure"
-        };
-        setAnswers(updatedAnswers);
-      }
-      setCurrentQuestion(7); // Skip to budget question
       return;
     }
 
@@ -309,8 +307,8 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       }
       setBudgetAmount(budget);
 
-      // If budget is less than 90, skip assembly preference and set to ready-to-play
-      if (budget < 90) {
+      // If budget is less than 60, skip assembly preference and set to ready-to-play
+      if (budget < 60) {
         const updatedAnswers = {
           ...newAnswers,
           AssemblyPreference: "Ready-to-play racket",

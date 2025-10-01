@@ -310,7 +310,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         <p className="text-muted-foreground">
           Based on your preferences, here are our top recommendations
         </p>
-        {budgetAmount && budgetAmount < 90 && (
+        {budgetAmount && budgetAmount < 60 && (
           <div className="mt-4 p-4 bg-accent/10 border border-accent/30 rounded-lg">
             <p className="text-sm text-foreground">
               💡 <strong>Note:</strong> Your budget is best suited for pre-assembled rackets. 
