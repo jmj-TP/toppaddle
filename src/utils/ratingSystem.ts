@@ -33,6 +33,8 @@ export interface Recommendation {
   forehandThicknessExplanation: string;
   backhandThickness: string;
   backhandThicknessExplanation: string;
+  handleType: string;
+  handleTypeExplanation: string;
 }
 
 // Calculate compatibility score between user preferences and product attributes
@@ -202,6 +204,44 @@ function getBudgetRange(budget: string): { min: number; max: number } {
 function isWithinBudget(price: number, budget: string): boolean {
   const range = getBudgetRange(budget);
   return price >= range.min && price <= range.max;
+}
+
+// Calculate recommended handle type based on grip preference
+function calculateHandleType(answers: QuizAnswers): {
+  handleType: string;
+  explanation: string;
+} {
+  const { Grip, Level } = answers;
+  
+  // Penhold grip
+  if (Grip.includes('Penhold')) {
+    return {
+      handleType: 'Anatomic',
+      explanation: 'For penhold grip, an Anatomic handle provides the best ergonomic support and fits naturally in your palm for secure control.'
+    };
+  }
+  
+  // Straight grip preference
+  if (Grip.includes('Straight')) {
+    return {
+      handleType: 'Straight',
+      explanation: 'A Straight handle offers uniform shape and versatility, perfect for players who like to adjust their grip position frequently.'
+    };
+  }
+  
+  // Shakehand or Not sure - recommend Flared (most popular)
+  if (Grip.includes('Shakehand') || Grip.includes('Not sure')) {
+    return {
+      handleType: 'Flared',
+      explanation: 'A Flared handle is the most popular choice for shakehand grip. It\'s wider at the bottom, prevents slipping, and provides excellent control and comfort for most playing styles.'
+    };
+  }
+  
+  // Default fallback to Flared
+  return {
+    handleType: 'Flared',
+    explanation: 'A Flared handle is the most common and versatile choice, offering excellent grip security and comfort for most players.'
+  };
 }
 
 // Calculate recommended sponge thickness based on player level and style
@@ -465,6 +505,7 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
 // Get complete recommendation
 export function getRecommendation(answers: QuizAnswers): Recommendation {
   const { forehandThickness, forehandExplanation, backhandThickness, backhandExplanation } = calculateSpongeThickness(answers);
+  const { handleType, explanation: handleTypeExplanation } = calculateHandleType(answers);
   
   // Safe check for AssemblyPreference
   const assemblyPref = answers.AssemblyPreference || '';
@@ -480,7 +521,9 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       forehandThickness,
       forehandThicknessExplanation: forehandExplanation,
       backhandThickness,
-      backhandThicknessExplanation: backhandExplanation
+      backhandThicknessExplanation: backhandExplanation,
+      handleType,
+      handleTypeExplanation
     };
   } else if (assemblyPref.includes('Custom setup')) {
     // Only return custom setup
@@ -493,7 +536,9 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       forehandThickness,
       forehandThicknessExplanation: forehandExplanation,
       backhandThickness,
-      backhandThicknessExplanation: backhandExplanation
+      backhandThicknessExplanation: backhandExplanation,
+      handleType,
+      handleTypeExplanation
     };
   } else {
     // Return both options (for "Not sure")
@@ -509,7 +554,9 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       forehandThickness,
       forehandThicknessExplanation: forehandExplanation,
       backhandThickness,
-      backhandThicknessExplanation: backhandExplanation
+      backhandThicknessExplanation: backhandExplanation,
+      handleType,
+      handleTypeExplanation
     };
   }
 }
