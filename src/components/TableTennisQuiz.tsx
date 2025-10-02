@@ -81,18 +81,6 @@ const questions = [
   },
   {
     id: 8,
-    question: "Which brand do you prefer?",
-    options: [
-      { value: "All Brands", label: "All Brands" },
-      { value: "ANDRO", label: "ANDRO" },
-      { value: "BUTTERFLY", label: "BUTTERFLY" },
-      { value: "JOOLA", label: "JOOLA" },
-      { value: "DHS", label: "DHS" }
-    ],
-    key: "Brand" as keyof QuizAnswers
-  },
-  {
-    id: 9,
     question: "What is your racket weight preference?",
     options: [
       { value: "Lightweight", label: "Lightweight" },
@@ -102,7 +90,7 @@ const questions = [
     key: "WeightPreference" as keyof QuizAnswers
   },
   {
-    id: 10,
+    id: 9,
     question: "Do you want a ready-to-play racket (pre-assembled), or do you want a custom setup (blade + separate rubbers)?",
     options: [
       { value: "Ready-to-play racket", label: "Ready-to-Play" },
@@ -110,6 +98,18 @@ const questions = [
       { value: "Not sure", label: "Not Sure" }
     ],
     key: "AssemblyPreference" as keyof QuizAnswers
+  },
+  {
+    id: 10,
+    question: "Which brand do you prefer?",
+    options: [
+      { value: "All Brands", label: "All Brands" },
+      { value: "ANDRO", label: "ANDRO" },
+      { value: "BUTTERFLY", label: "BUTTERFLY" },
+      { value: "JOOLA", label: "JOOLA" },
+      { value: "DHS", label: "DHS" }
+    ],
+    key: "Brand" as keyof QuizAnswers
   },
   {
     id: 11,
@@ -230,20 +230,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       };
       setAnswers(updatedAnswers);
       
-      // For beginners, skip special rubbers question entirely and go to brand question
-      if (answers.Level === "Beginner") {
-        const finalAnswers = {
-          ...updatedAnswers,
-          WantsSpecialRubbers: "No",
-          ForehandRubberStyle: "Normal",
-          BackhandRubberStyle: "Normal"
-        };
-        setAnswers(finalAnswers);
-        setCurrentQuestion(7); // Go to brand question
-        return;
-      }
-      
-      setCurrentQuestion(6); // Skip to special rubbers question for non-beginners
+      setCurrentQuestion(6); // Go to special rubbers question
       return;
     }
 
@@ -257,25 +244,11 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     // Handle special handle follow-up
     if (currentQuestion === 6.5) {
       setShowHandleSpecial(false);
-      
-      // For beginners, skip special rubbers question entirely and go to brand question
-      if (answers.Level === "Beginner") {
-        const finalAnswers = {
-          ...newAnswers,
-          WantsSpecialRubbers: "No",
-          ForehandRubberStyle: "Normal",
-          BackhandRubberStyle: "Normal"
-        };
-        setAnswers(finalAnswers);
-        setCurrentQuestion(7); // Go to brand question
-        return;
-      }
-      
       setCurrentQuestion(6);
       return;
     }
 
-    // Check if user wants special rubbers at all (question 7)
+    // Check if user wants special rubbers at all (question 6)
     if (currentQuestion === 6 && answer === "No") {
       // Set both to Normal and skip special rubber questions
       const updatedAnswers = {
@@ -284,7 +257,14 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         BackhandRubberStyle: "Normal"
       };
       setAnswers(updatedAnswers);
-      setCurrentQuestion(7); // Skip to brand question
+      // Go to weight question (index 7) if Advanced, otherwise skip to assembly (index 8)
+      if (answers.Level === "Advanced") {
+        setShowWeightQuestion(true);
+        setCurrentQuestion(7);
+      } else {
+        setAnswers({ ...updatedAnswers, WeightPreference: "Medium" });
+        setCurrentQuestion(8);
+      }
       return;
     }
 
@@ -306,35 +286,40 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     // Handle backhand special rubber follow-up
     if (currentQuestion === 7.6) {
       setShowBackhandSpecial(false);
-      setCurrentQuestion(7);
-      return;
-    }
-
-    // After brand question (question 7), check if Advanced to show weight question
-    if (currentQuestion === 7) {
+      // Go to weight question (index 7) if Advanced, otherwise skip to assembly (index 8)
       if (answers.Level === "Advanced") {
         setShowWeightQuestion(true);
-        setCurrentQuestion(8); // Show weight question (index 8)
+        setCurrentQuestion(7);
       } else {
-        // Skip weight question for non-advanced players
-        const updatedAnswers = {
-          ...newAnswers,
-          WeightPreference: "Medium"
-        };
+        const updatedAnswers = { ...newAnswers, WeightPreference: "Medium" };
         setAnswers(updatedAnswers);
-        setCurrentQuestion(9); // Go to assembly preference (index 9)
+        setCurrentQuestion(8);
       }
       return;
     }
 
     // Handle weight question (only for advanced) - move to assembly preference
-    if (currentQuestion === 8 && showWeightQuestion) {
+    if (currentQuestion === 7 && showWeightQuestion) {
       setShowWeightQuestion(false);
-      setCurrentQuestion(9); // Go to assembly preference (index 9)
+      setCurrentQuestion(8); // Go to assembly preference (index 8)
       return;
     }
 
-    // After assembly preference (question 9), go to budget question (question 10)
+    // After assembly preference (question 8), go to brand or budget
+    if (currentQuestion === 8) {
+      // Show brand question only for Intermediate and Advanced
+      if (answers.Level === "Intermediate" || answers.Level === "Advanced") {
+        setCurrentQuestion(9); // Go to brand question (index 9)
+      } else {
+        // Beginners skip brand question, set default and go to budget
+        const updatedAnswers = { ...newAnswers, Brand: "All Brands" };
+        setAnswers(updatedAnswers);
+        setCurrentQuestion(10); // Go to budget question (index 10)
+      }
+      return;
+    }
+
+    // After brand question (question 9), go to budget question (question 10)
     if (currentQuestion === 9) {
       setCurrentQuestion(10); // Go to budget question (index 10)
       return;
@@ -416,15 +401,18 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     (showBackhandSpecial ? 1 : 0) +
     (showHandleSpecial ? 1 : 0) +
     (showWeightQuestion ? 1 : 0);
-  // Subtract 1 from base length since weight is conditional
-  const baseQuestions = showWeightQuestion ? questions.length : questions.length - 1;
+  // Calculate base questions: -1 for weight (conditional), -1 for brand (conditional for beginners)
+  const baseQuestions = questions.length - 
+    (showWeightQuestion ? 0 : 1) - 
+    (answers.Level === "Beginner" ? 1 : 0);
   const totalQuestions = baseQuestions + totalExtraQuestions;
   const currentProgress = 
     currentQuestion === 11.5 ? 11 : 
     currentQuestion === 7.5 ? 7 :
     currentQuestion === 7.6 ? 7 :
     currentQuestion === 6.5 ? 6 :
-    currentQuestion >= 9 && !showWeightQuestion ? currentQuestion - 1 :
+    currentQuestion >= 8 && !showWeightQuestion ? currentQuestion - 1 :
+    currentQuestion >= 9 && answers.Level === "Beginner" ? currentQuestion - 1 :
     currentQuestion;
   const progress = (currentProgress / totalQuestions) * 100;
 
