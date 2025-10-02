@@ -34,7 +34,7 @@ const questions = [
     question: <>How do you usually play with your <span className="underline">forehand</span>?</>,
     options: [
       { value: "Fast & aggressive", label: "Fast & Aggressive" },
-      { value: "Spin & topspin", label: "Spin & Topspin" },
+      { value: "Spin & topspin", label: "I use a lot of Spin" },
       { value: "Calm & controlled", label: "Calm & Controlled" },
       { value: "Both sides the same / not sure", label: "Not Sure" }
     ],
@@ -45,7 +45,7 @@ const questions = [
     question: <>How do you usually play with your <span className="underline">backhand</span>?</>,
     options: [
       { value: "Fast & aggressive", label: "Fast & Aggressive" },
-      { value: "Spin & topspin", label: "Spin & Topspin" },
+      { value: "Spin & topspin", label: "I use a lot of Spin" },
       { value: "Calm & controlled", label: "Calm & Controlled" },
       
     ],
@@ -114,7 +114,7 @@ const questions = [
   },
   {
     id: 11,
-    question: "What is your total budget for Blade + Rubbers or a Pre-Assembled Racket?",
+    question: "What is your total budget?",
     options: [
       { value: "<50$", label: "Under $50" },
       { value: "<100$", label: "Under $100" },
