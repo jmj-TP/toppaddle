@@ -217,6 +217,13 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     key: "Grip" as keyof QuizAnswers
   };
 
+// Check if user is beginner - skip special rubbers question entirely
+    if (currentQuestion === 5 && answers.Level === "Beginner") {
+      // Skip to budget question (question 7)
+      setCurrentQuestion(7);
+      return;
+    }
+  
   const handleAnswer = (answer: string) => {
     const question = 
       currentQuestion === 9.5 ? premiumBudgetQuestion : 
@@ -273,12 +280,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-    // Check if user is beginner - skip special rubbers question entirely
-    if (currentQuestion === 5 && answers.Level === "Beginner") {
-      // Skip to budget question (question 7)
-      setCurrentQuestion(7);
-      return;
-    }
+  
 
 // Check if user wants normal handle (question 6)
     if (currentQuestion === 5 && answer === "Normal") {
