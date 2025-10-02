@@ -362,6 +362,14 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
 
 // Find best custom setup
 export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
+  console.log('🔍 Finding custom setup for:', {
+    Level: answers.Level,
+    Playstyle: answers.Playstyle,
+    Power: answers.Power,
+    Brand: answers.Brand,
+    Budget: answers.Budget
+  });
+  
   const budgetRange = getBudgetRange(answers.Budget);
   const bestCombinations: CustomSetup[] = [];
 
@@ -375,6 +383,15 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
     if (!matchesBrandFilter(blade.Blade_Name, answers.Brand)) {
       continue;
     }
+    
+    // Calculate blade score to filter early
+    const bladeScore = calculateScore(answers, blade);
+    if (bladeScore === 0) {
+      console.log(`❌ Filtered out blade: ${blade.Blade_Name} (Level: ${blade.Blade_Level}, Speed: ${blade.Blade_Speed}, Control: ${blade.Blade_Control})`);
+      continue;
+    }
+    
+    console.log(`✅ Considering blade: ${blade.Blade_Name} (Score: ${bladeScore.toFixed(1)}, Level: ${blade.Blade_Level}, Speed: ${blade.Blade_Speed}, Control: ${blade.Blade_Control})`);
     
     for (const fhRubber of forehandRubbers) {
       // Brand filter for forehand rubber (STRICT - dealbreaker)
