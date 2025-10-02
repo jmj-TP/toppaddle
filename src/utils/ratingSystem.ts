@@ -361,6 +361,12 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
       if (racket.Racket_FH_Rubber_Style !== answers.ForehandRubberStyle) return false;
       if (racket.Racket_BH_Rubber_Style !== answers.BackhandRubberStyle) return false;
       
+      // Grip/Handle filter (STRICT - dealbreaker)
+      const productGrip = racket.Racket_Grip || '';
+      if (answers.Grip.includes('Penhold') && !productGrip.includes('Penhold')) return false;
+      if (answers.Grip.includes('Straight') && !productGrip.includes('Straight')) return false;
+      if (answers.Grip.includes('Shakehand') && !productGrip.includes('Flared') && !productGrip.includes('Shakehand')) return false;
+      
       return true;
     })
     .map(racket => ({
@@ -402,6 +408,18 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
   for (const blade of blades) {
     // Brand filter (STRICT - dealbreaker)
     if (!matchesBrandFilter(blade.Blade_Name, answers.Brand)) {
+      continue;
+    }
+    
+    // Grip/Handle filter (STRICT - dealbreaker)
+    const bladeGrip = blade.Blade_Grip || '';
+    if (answers.Grip.includes('Penhold') && !bladeGrip.includes('Penhold')) {
+      continue;
+    }
+    if (answers.Grip.includes('Straight') && !bladeGrip.includes('Straight')) {
+      continue;
+    }
+    if (answers.Grip.includes('Shakehand') && !bladeGrip.includes('Flared') && !bladeGrip.includes('Shakehand')) {
       continue;
     }
     
