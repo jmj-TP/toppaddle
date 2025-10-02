@@ -2,10 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Minus, TrendingUp, Waves, Triangle, Info } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ArrowLeft } from "lucide-react";
 import QuestionCard from "./QuestionCard";
-import BudgetSlider from "./BudgetSlider";
 import RecommendationDisplay from "./RecommendationDisplay";
 import { getRecommendation, type QuizAnswers } from "@/utils/ratingSystem";
 
@@ -24,9 +22,9 @@ const questions = [
     id: 2,
     question: "How would you describe your overall playstyle?",
     options: [
-      { value: "Offensive player", label: "Offensive - Attack every Ball" },
+      { value: "Offensive player", label: "Offensive" },
       { value: "Allround player", label: "All-Round" },
-      { value: "Defensive player", label: "Defensive - Waiting for error" }
+      { value: "Defensive player", label: "Defensive" }
     ],
     key: "Playstyle" as keyof QuizAnswers
   },
@@ -35,9 +33,9 @@ const questions = [
     question: "How do you usually play with your forehand?",
     options: [
       { value: "Fast & aggressive", label: "Fast & Aggressive" },
-      { value: "Spin & topspin", label: "I use a lot of Spin" },
+      { value: "Spin & topspin", label: "Spin & Topspin" },
       { value: "Calm & controlled", label: "Calm & Controlled" },
-      { value: "Both sides the same / not sure", label: "Not Sure" }
+      { value: "Both sides the same / not sure", label: "Same as Backhand" }
     ],
     key: "Forehand" as keyof QuizAnswers
   },
@@ -46,9 +44,9 @@ const questions = [
     question: "How do you usually play with your backhand?",
     options: [
       { value: "Fast & aggressive", label: "Fast & Aggressive" },
-      { value: "Spin & topspin", label: "I use a lot of Spin" },
+      { value: "Spin & topspin", label: "Spin & Topspin" },
       { value: "Calm & controlled", label: "Calm & Controlled" },
-      { value: "Both sides the same / not sure", label: "Same as Forehand" }
+      
     ],
     key: "Backhand" as keyof QuizAnswers
   },
@@ -83,7 +81,7 @@ const questions = [
   },
   {
     id: 8,
-    question: "What is your total budget for the Blade?",
+    question: "What is your total budget for Blade + Rubbers or a Pre-Assembled Racket?",
     options: [
       { value: "<50$", label: "Under $50" },
       { value: "<100$", label: "Under $100" },
@@ -94,17 +92,6 @@ const questions = [
   },
   {
     id: 9,
-    question: "Which brand do you prefer?",
-    options: [
-      { value: "ANDRO", label: "ANDRO" },
-      { value: "JOOLA", label: "JOOLA" },
-      { value: "BUTTERFLY", label: "BUTTERFLY" },
-      { value: "DHS", label: "DHS" }
-    ],
-    key: "Brand" as keyof QuizAnswers
-  },
-  {
-    id: 10,
     question: "What is your racket weight preference?",
     options: [
       { value: "Lightweight", label: "Lightweight" },
@@ -114,8 +101,8 @@ const questions = [
     key: "WeightPreference" as keyof QuizAnswers
   },
   {
-    id: 11,
-    question: "Do you want a ready-to-play racket (pre-assembled), or a custom setup (blade + separate rubbers)?",
+    id: 10,
+    question: "Do you want a ready-to-play racket (pre-assembled), or do you want a custom setup (blade + separate rubbers)?",
     options: [
       { value: "Ready-to-play racket", label: "Ready-to-Play" },
       { value: "Custom setup", label: "Custom Setup" },
@@ -141,7 +128,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const [showHandleSpecial, setShowHandleSpecial] = useState(false);
   const [showWeightQuestion, setShowWeightQuestion] = useState(false);
   const [questionHistory, setQuestionHistory] = useState<number[]>([]);
-  const [budgetAmount, setBudgetAmount] = useState<number>(0);
 
   // Premium budget follow-up question
   const premiumBudgetQuestion = {
@@ -162,7 +148,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     id: 7.5,
     question: "Which rubber type for your forehand?",
     options: [
-      { value: "Normal", label: "Normal" },
+      { value: "Normal", label: "Normal Inverted" },
       { value: "Short Pimples", label: "Short Pimples" },
       { value: "Long Pimples", label: "Long Pimples" },
       { value: "Anti", label: "Anti-Spin" }
@@ -175,7 +161,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     id: 7.6,
     question: "Which rubber type for your backhand?",
     options: [
-      { value: "Normal", label: "Normal" },
+      { value: "Normal", label: "Normal Inverted" },
       { value: "Short Pimples", label: "Short Pimples" },
       { value: "Long Pimples", label: "Long Pimples" },
       { value: "Anti", label: "Anti-Spin" }
@@ -183,35 +169,16 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     key: "BackhandRubberStyle" as keyof QuizAnswers
   };
 
-  // Handle type follow-up question with icons and tooltips
+  // Handle type follow-up question
   const handleSpecialQuestion = {
     id: 6.5,
     question: "Which specific handle type do you prefer?",
     options: [
-      { 
-        value: "Flare", 
-        label: "Flare",
-        icon: Triangle,
-        description: "Flared — wider at the bottom; the most common, prevents slipping."
-      },
-      { 
-        value: "Straight", 
-        label: "Straight",
-        icon: Minus,
-        description: "Straight — uniform shape, versatile for alternating grips."
-      },
-      { 
-        value: "Straight Incline", 
-        label: "Straight Incline",
-        icon: TrendingUp,
-        description: "Straight incline — slight taper for extra stability."
-      },
-      { 
-        value: "Anatomic", 
-        label: "Anatomic",
-        icon: Waves,
-        description: "Anatomic — contoured to fit the palm; secure and ergonomic."
-      }
+      { value: "Not sure", label: "Not Sure" },
+      { value: "Classic Shakehand", label: "Classic Shakehand" },
+      { value: "Shakehand Flared", label: "Shakehand Flared" },
+      { value: "Shakehand Straight", label: "Shakehand Straight" },
+      { value: "Penhold", label: "Penhold" }
     ],
     key: "Grip" as keyof QuizAnswers
   };
@@ -230,18 +197,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     // Add current question to history before moving forward
     setQuestionHistory([...questionHistory, currentQuestion]);
 
-    // If Beginner is selected, skip special rubbers question and set both to Normal
-    if (currentQuestion === 0 && answer === "Beginner") {
-      const updatedAnswers = {
-        ...newAnswers,
-        ForehandRubberStyle: "Normal",
-        BackhandRubberStyle: "Normal",
-        WantsSpecialRubbers: "No"
-      };
-      setAnswers(updatedAnswers);
-      // Will skip to budget question later in the flow
-    }
-
     // Check if forehand is "Both sides the same / not sure" (question 3)
     if (currentQuestion === 2 && answer === "Both sides the same / not sure") {
       // Set backhand to same answer and skip question 4
@@ -253,8 +208,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       setCurrentQuestion(4); // Skip to question 5 (power question)
       return;
     }
-
-    // Remove beginner skip - allow all levels to choose handle types
 
     // Check if user wants normal handle (question 6)
     if (currentQuestion === 5 && answer === "Normal") {
@@ -282,14 +235,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-    // Check if user is beginner - skip special rubbers question entirely
-    if (currentQuestion === 6 && answers.Level === "Beginner") {
-      // Already set in beginner selection, just move to budget
-      setCurrentQuestion(7);
-      return;
-    }
-
-    // Check if user wants special rubbers at all (question 7) - only for non-beginners
+    // Check if user wants special rubbers at all (question 7)
     if (currentQuestion === 6 && answer === "No") {
       // Set both to Normal and skip special rubber questions
       const updatedAnswers = {
@@ -324,71 +270,54 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-    // Handle budget question (question 7)
-    if (currentQuestion === 7) {
-      // Extract numeric budget value from slider
-      let budget = parseInt(answer);
-      if (budget >= 999999) {
-        budget = 999999; // No limit
-      }
-      setBudgetAmount(budget);
-
-      // Store exact numeric budget
-      const answersWithBudget = {
-        ...newAnswers,
-        Budget: budget.toString()
-      };
-      setAnswers(answersWithBudget);
-
-      // Move to brand question (question 8)
-      setCurrentQuestion(8);
+    // Check if user selected "161+" on budget question (now question 8)
+    if (currentQuestion === 7 && answer === "161+") {
+      setShowPremiumBudget(true);
+      setCurrentQuestion(9.5);
       return;
     }
 
-    // Handle brand question (question 8) - move to weight or assembly
-    if (currentQuestion === 8) {
-      const answersWithBrand = { ...newAnswers };
-      setAnswers(answersWithBrand);
-
-      // If budget is less than 60, skip assembly preference and weight, set to ready-to-play
-      const budget = parseInt(answers.Budget || "0");
-      if (budget < 60) {
-        const updatedAnswers = {
-          ...answersWithBrand,
-          AssemblyPreference: "Ready-to-play racket",
-          WeightPreference: "Medium"
-        };
-        setAnswers(updatedAnswers);
-        
-        // Complete the quiz
-        const completeQuizAnswers = updatedAnswers as QuizAnswers;
-        setCompleteAnswers(completeQuizAnswers);
-        const rec = getRecommendation(completeQuizAnswers);
-        setRecommendation(rec);
-        setIsComplete(true);
-        return;
-      }
-
-      // Check if user is Advanced - show weight question
+    // Handle premium budget follow-up
+    if (currentQuestion === 9.5) {
+      setShowPremiumBudget(false);
+      // After premium budget, check if Advanced to show weight question
       if (answers.Level === "Advanced") {
         setShowWeightQuestion(true);
-        setCurrentQuestion(9); // Show weight question (index 9)
+        setCurrentQuestion(8); // Show weight question (index 8)
       } else {
         // Skip weight question for non-advanced players
         const updatedAnswers = {
-          ...answersWithBrand,
+          ...newAnswers,
           WeightPreference: "Medium"
         };
         setAnswers(updatedAnswers);
-        setCurrentQuestion(10); // Go to assembly preference (index 10)
+        setCurrentQuestion(9); // Go to assembly preference (index 9)
       }
+      return;
+    }
+
+    // Check if user is Advanced after budget question (no premium follow-up) - show weight question
+    if (currentQuestion === 7 && answer !== "161+" && answers.Level === "Advanced") {
+      setShowWeightQuestion(true);
+      setCurrentQuestion(8); // Show weight question (index 8)
+      return;
+    }
+
+    // If not advanced and just answered budget, skip weight question and set default
+    if (currentQuestion === 7 && answer !== "161+" && answers.Level !== "Advanced") {
+      const updatedAnswers = {
+        ...newAnswers,
+        WeightPreference: "Medium"
+      };
+      setAnswers(updatedAnswers);
+      setCurrentQuestion(9); // Skip to assembly preference (index 9)
       return;
     }
 
     // Handle weight question (only for advanced) - move to assembly preference
-    if (currentQuestion === 9 && showWeightQuestion) {
+    if (currentQuestion === 8 && showWeightQuestion) {
       setShowWeightQuestion(false);
-      setCurrentQuestion(10); // Go to assembly preference (index 10)
+      setCurrentQuestion(9); // Go to assembly preference (index 9)
       return;
     }
 
@@ -439,7 +368,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     setShowHandleSpecial(false);
     setShowWeightQuestion(false);
     setQuestionHistory([]);
-    setBudgetAmount(0);
     onQuizStatusChange(false);
   };
 
@@ -450,8 +378,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     (showBackhandSpecial ? 1 : 0) +
     (showHandleSpecial ? 1 : 0) +
     (showWeightQuestion ? 1 : 0);
-  
-  // Base questions: 11 total, weight is conditional
+  // Subtract 1 from base length since weight is conditional
   const baseQuestions = showWeightQuestion ? questions.length : questions.length - 1;
   const totalQuestions = baseQuestions + totalExtraQuestions;
   const currentProgress = 
@@ -459,7 +386,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     currentQuestion === 7.5 ? 7 :
     currentQuestion === 7.6 ? 7 :
     currentQuestion === 6.5 ? 6 :
-    currentQuestion >= 10 && !showWeightQuestion ? currentQuestion - 1 :
+    currentQuestion >= 9 && !showWeightQuestion ? currentQuestion - 1 :
     currentQuestion;
   const progress = (currentProgress / totalQuestions) * 100;
 
@@ -470,7 +397,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         recommendation={recommendation} 
         onRestart={handleRestart} 
         assemblyPreference={answers.AssemblyPreference}
-        budgetAmount={budgetAmount}
       />
     );
   }
@@ -502,70 +428,16 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
           </Button>
         )}
         
-        {currentQuestion === 7 ? (
-          <BudgetSlider
-            question="What is your total budget for the Blade?"
-            onAnswer={handleAnswer}
-          />
-        ) : currentQuestion === 6.5 ? (
-          <Card className="p-8 shadow-lg border-2 border-primary/20">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-primary mb-4">
-                {handleSpecialQuestion.question}
-              </h2>
-            </div>
-            <TooltipProvider delayDuration={0}>
-              <div className="space-y-4">
-                {handleSpecialQuestion.options.map((option: any, index: number) => (
-                  <div key={option.value} className="relative">
-                    <Button
-                      onClick={() => handleAnswer(option.value)}
-                      variant="outline"
-                      className="w-full p-6 h-auto text-left justify-start border-2 border-border hover:border-primary hover:bg-primary/5 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-                    >
-                      <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-8 h-8 rounded-full bg-accent/20 text-accent font-bold flex items-center justify-center text-sm flex-shrink-0">
-                            {index + 1}
-                          </div>
-                          <span className="text-foreground font-medium">{option.label}</span>
-                        </div>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div 
-                              className="p-1.5 hover:bg-primary/10 rounded-full transition-colors flex-shrink-0"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <Info className="w-5 h-5 text-muted-foreground" />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent 
-                            side="top" 
-                            align="center"
-                            className="max-w-[280px] text-sm bg-background border-2 border-primary/20 shadow-xl rounded-xl px-4 py-3"
-                            sideOffset={8}
-                          >
-                            <p className="text-foreground">{option.description}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </TooltipProvider>
-          </Card>
-        ) : (
-          <QuestionCard
-            question={
-              currentQuestion === 9.5 ? premiumBudgetQuestion : 
-              currentQuestion === 7.5 ? forehandSpecialQuestion :
-              currentQuestion === 7.6 ? backhandSpecialQuestion :
-              questions[currentQuestion]
-            }
-            onAnswer={handleAnswer}
-          />
-        )}
+        <QuestionCard
+          question={
+            currentQuestion === 9.5 ? premiumBudgetQuestion : 
+            currentQuestion === 7.5 ? forehandSpecialQuestion :
+            currentQuestion === 7.6 ? backhandSpecialQuestion :
+            currentQuestion === 6.5 ? handleSpecialQuestion :
+            questions[currentQuestion]
+          }
+          onAnswer={handleAnswer}
+        />
       </div>
     </div>
   );
