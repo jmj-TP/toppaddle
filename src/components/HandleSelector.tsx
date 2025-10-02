@@ -22,7 +22,7 @@ const handleOptions = [
   },
   {
     name: "Anatomic",
-    value: "Penhold",
+    value: "Anatomic",
     desc: "Contoured to fit the palm; secure and ergonomic.",
     popular: false
   },
@@ -31,6 +31,12 @@ const handleOptions = [
     value: "Shakehand Flared",
     desc: "Wider at the bottom; the most common, prevents slipping.",
     popular: true
+  },
+  {
+    name: "Penhold",
+    value: "Penhold",
+    desc: "Traditional Chinese grip style handle.",
+    popular: false
   }
 ];
 

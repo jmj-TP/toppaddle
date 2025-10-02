@@ -213,11 +213,19 @@ function calculateHandleType(answers: QuizAnswers): {
 } {
   const { Grip, Level } = answers;
   
+  // Anatomic grip
+  if (Grip.includes('Anatomic')) {
+    return {
+      handleType: 'Anatomic',
+      explanation: 'An Anatomic handle is contoured to fit your palm perfectly, providing secure and ergonomic grip that reduces hand fatigue during long play sessions.'
+    };
+  }
+  
   // Penhold grip
   if (Grip.includes('Penhold')) {
     return {
-      handleType: 'Anatomic',
-      explanation: 'For penhold grip, an Anatomic handle provides the best ergonomic support and fits naturally in your palm for secure control.'
+      handleType: 'Penhold',
+      explanation: 'A Penhold handle is designed for the traditional Chinese grip style, offering excellent control and feel for penhold players.'
     };
   }
   
@@ -361,11 +369,9 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
       if (racket.Racket_FH_Rubber_Style !== answers.ForehandRubberStyle) return false;
       if (racket.Racket_BH_Rubber_Style !== answers.BackhandRubberStyle) return false;
       
-      // Grip/Handle filter (STRICT - dealbreaker)
+      // Grip/Handle filter (STRICT - dealbreaker for Anatomic only)
       const productGrip = racket.Racket_Grip || '';
-      if (answers.Grip.includes('Penhold') && !productGrip.includes('Penhold')) return false;
-      if (answers.Grip.includes('Straight') && !productGrip.includes('Straight')) return false;
-      if (answers.Grip.includes('Shakehand') && !productGrip.includes('Flared') && !productGrip.includes('Shakehand')) return false;
+      if (answers.Grip.includes('Anatomic') && !productGrip.includes('Anatomic')) return false;
       
       return true;
     })
@@ -411,15 +417,9 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
       continue;
     }
     
-    // Grip/Handle filter (STRICT - dealbreaker)
+    // Grip/Handle filter (STRICT - dealbreaker for Anatomic only)
     const bladeGrip = blade.Blade_Grip || '';
-    if (answers.Grip.includes('Penhold') && !bladeGrip.includes('Penhold')) {
-      continue;
-    }
-    if (answers.Grip.includes('Straight') && !bladeGrip.includes('Straight')) {
-      continue;
-    }
-    if (answers.Grip.includes('Shakehand') && !bladeGrip.includes('Flared') && !bladeGrip.includes('Shakehand')) {
+    if (answers.Grip.includes('Anatomic') && !bladeGrip.includes('Anatomic')) {
       continue;
     }
     
