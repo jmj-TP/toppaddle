@@ -45,6 +45,12 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   maxScore += levelWeight;
   const productLevel = product.Blade_Level || product.Racket_Level || product.Rubber_Level;
   
+  // Get product attributes early for filtering
+  const speed = product.Blade_Speed || product.Racket_Speed || product.Rubber_Speed || 0;
+  const control = product.Blade_Control || product.Racket_Control || product.Rubber_Control || 0;
+  const power = product.Blade_Power || product.Racket_Power || product.Rubber_Power || 0;
+  const spin = product.Racket_Spin || product.Rubber_Spin || 0;
+  
   if (answers.Level === productLevel) {
     score += levelWeight;
   } else if (answers.Level === 'Advanced' && productLevel === 'Intermediate') {
@@ -54,6 +60,12 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += levelWeight * 0.7; // Partial match for progression
   } else if (answers.Level === 'Intermediate' && productLevel === 'Advanced') {
     score += levelWeight * 0.7; // Partial match for progression
+  } else if (answers.Level === 'Intermediate' && productLevel === 'Beginner') {
+    // Intermediate offensive/aggressive players shouldn't get beginner control blades
+    if (answers.Playstyle.includes('Offensive') && control > 85 && speed < 65) {
+      return 0; // Filter out control-focused beginner products for intermediate offensive players
+    }
+    score += levelWeight * 0.5; // Reduced match for beginner products
   } else if (answers.Level === 'Advanced' && productLevel === 'Beginner') {
     // Filter out Beginner products for Advanced players
     return 0;
@@ -66,18 +78,17 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   const playstyleWeight = 40;
   maxScore += playstyleWeight;
   
-  const speed = product.Blade_Speed || product.Racket_Speed || product.Rubber_Speed || 0;
-  const control = product.Blade_Control || product.Racket_Control || product.Rubber_Control || 0;
-  const power = product.Blade_Power || product.Racket_Power || product.Rubber_Power || 0;
-  const spin = product.Racket_Spin || product.Rubber_Spin || 0;
-
   if (answers.Playstyle.includes('Offensive')) {
     // Heavily prefer high speed and power, penalize excessive control
     score += (speed / 100) * playstyleWeight * 0.5;
     score += (power / 100) * playstyleWeight * 0.5;
-    // Penalize overly control-focused rubbers for offensive play
-    if (control > 88) {
-      score -= playstyleWeight * 0.2;
+    // Penalize overly control-focused products for offensive play
+    if (control > 85) {
+      score -= playstyleWeight * 0.3; // Stronger penalty for control-focused equipment
+    }
+    // Bonus for high-speed offensive equipment
+    if (speed > 80 && power > 80) {
+      score += playstyleWeight * 0.2; // Bonus for truly offensive equipment
     }
   } else if (answers.Playstyle.includes('Defensive')) {
     // Prefer high control
@@ -94,6 +105,10 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   if (answers.Power.includes('A lot of power')) {
     score += (speed / 100) * powerWeight * 0.6;
     score += (power / 100) * powerWeight * 0.4;
+    // Additional penalty for low-speed equipment when maximum power is desired
+    if (speed < 70) {
+      score -= powerWeight * 0.3;
+    }
   } else if (answers.Power.includes('Control is more important')) {
     score += (control / 100) * powerWeight;
   } else if (answers.Power.includes('Balanced')) {
