@@ -213,11 +213,19 @@ function calculateHandleType(answers: QuizAnswers): {
 } {
   const { Grip, Level } = answers;
   
+  // Small Hands Special
+  if (Grip.includes('Small Hands Special')) {
+    return {
+      handleType: 'Small Hands Special (DHS only)',
+      explanation: 'For players with really small hands, we recommend DHS blades which offer specially designed handles in Straight, Straight Incline, and Anatomic styles that are perfect for smaller hand sizes.'
+    };
+  }
+  
   // Anatomic grip
   if (Grip.includes('Anatomic')) {
     return {
       handleType: 'Anatomic',
-      explanation: 'An Anatomic handle is contoured to fit your palm perfectly, providing secure and ergonomic grip that reduces hand fatigue during long play sessions.'
+      explanation: 'An Anatomic handle is contoured to fit your palm perfectly, providing secure and ergonomic grip that reduces hand fatigue during long play sessions. Great for players with really large hands.'
     };
   }
   
@@ -359,6 +367,11 @@ function calculateSpongeThickness(answers: QuizAnswers): {
 export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledRacket & { score: number }) | null {
   const suitableRackets = preAssembledRackets
     .filter(racket => {
+      // Small Hands Special - ONLY DHS brand (STRICT - dealbreaker)
+      if (answers.Grip.includes('Small Hands Special')) {
+        if (extractBrand(racket.Racket_Name) !== 'DHS') return false;
+      }
+      
       // Brand filter (STRICT - dealbreaker)
       if (!matchesBrandFilter(racket.Racket_Name, answers.Brand)) return false;
       
@@ -412,6 +425,13 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
 
   // Try all combinations of blade + 2 rubbers
   for (const blade of blades) {
+    // Small Hands Special - ONLY DHS brand (STRICT - dealbreaker)
+    if (answers.Grip.includes('Small Hands Special')) {
+      if (extractBrand(blade.Blade_Name) !== 'DHS') {
+        continue;
+      }
+    }
+    
     // Brand filter (STRICT - dealbreaker)
     if (!matchesBrandFilter(blade.Blade_Name, answers.Brand)) {
       continue;
@@ -423,13 +443,27 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
       continue;
     }
     
-    for (const fhRubber of forehandRubbers) {
+      for (const fhRubber of forehandRubbers) {
+      // Small Hands Special - ONLY DHS rubbers (STRICT - dealbreaker)
+      if (answers.Grip.includes('Small Hands Special')) {
+        if (extractBrand(fhRubber.Rubber_Name) !== 'DHS') {
+          continue;
+        }
+      }
+      
       // Brand filter for forehand rubber (STRICT - dealbreaker)
       if (!matchesBrandFilter(fhRubber.Rubber_Name, answers.Brand)) {
         continue;
       }
       
       for (const bhRubber of backhandRubbers) {
+        // Small Hands Special - ONLY DHS rubbers (STRICT - dealbreaker)
+        if (answers.Grip.includes('Small Hands Special')) {
+          if (extractBrand(bhRubber.Rubber_Name) !== 'DHS') {
+            continue;
+          }
+        }
+        
         // Brand filter for backhand rubber (STRICT - dealbreaker)
         if (!matchesBrandFilter(bhRubber.Rubber_Name, answers.Brand)) {
           continue;

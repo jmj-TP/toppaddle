@@ -23,7 +23,7 @@ const handleOptions = [
   {
     name: "Anatomic",
     value: "Anatomic",
-    desc: "Contoured to fit the palm; secure and ergonomic.",
+    desc: "Contoured to fit the palm; secure and ergonomic. Great for players with really large hands.",
     popular: false
   },
   {
@@ -31,6 +31,12 @@ const handleOptions = [
     value: "Shakehand Flared",
     desc: "Wider at the bottom; the most common, prevents slipping.",
     popular: true
+  },
+  {
+    name: "For really small hands",
+    value: "Small Hands Special",
+    desc: "Special selection of handles designed for players with really small hands. Includes Straight, Straight Incline, and Anatomic options.",
+    popular: false
   },
   {
     name: "Penhold",
