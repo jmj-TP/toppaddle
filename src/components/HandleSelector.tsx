@@ -1,51 +1,36 @@
 import { useState } from "react";
+import { Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const handleOptions = [
   {
     name: "Straight",
     value: "Shakehand Straight",
-    desc: "No taper, consistent thickness.",
-    svg: (
-      <svg viewBox="0 0 20 100" className="h-16 w-4">
-        <rect x="6" y="0" width="8" height="100" rx="2" fill="currentColor" />
-      </svg>
-    )
+    desc: "Uniform shape, versatile for alternating grips.",
+    popular: false
   },
   {
     name: "Straight Incline",
     value: "Classic Shakehand",
-    desc: "Slight taper, more grip stability.",
-    svg: (
-      <svg viewBox="0 0 20 100" className="h-16 w-4">
-        <polygon points="6,0 14,0 10,100 10,100" fill="currentColor" />
-      </svg>
-    )
+    desc: "Slight taper for extra stability.",
+    popular: false
   },
   {
     name: "Anatomic",
     value: "Penhold",
-    desc: "Curved to fit palm, very secure.",
-    svg: (
-      <svg viewBox="0 0 20 100" className="h-16 w-4">
-        <path d="M7 0 h6 v30 q2 10 -2 20 q4 10 -2 20 v30 h-6z" fill="currentColor" />
-      </svg>
-    )
+    desc: "Contoured to fit the palm; secure and ergonomic.",
+    popular: false
   },
   {
     name: "Flared",
     value: "Shakehand Flared",
-    desc: "Wider at bottom, most popular choice.",
-    svg: (
-      <svg viewBox="0 0 20 100" className="h-16 w-4">
-        <path d="M8 0 h4 v70 q4 10 -4 30 q-8 -20 -4 -30 v-70z" fill="currentColor" />
-      </svg>
-    )
+    desc: "Wider at the bottom; the most common, prevents slipping.",
+    popular: true
   }
 ];
 
@@ -62,35 +47,58 @@ export default function HandleSelector({ onSelect }: HandleSelectorProps) {
   };
 
   return (
-    <div className="flex flex-col gap-6 items-center w-full">
-      <h2 className="text-xl font-semibold text-foreground">Choose Your Handle Type</h2>
-      <TooltipProvider>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-2xl">
-          {handleOptions.map((handle) => (
-            <Tooltip key={handle.name}>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => handleSelection(handle.value)}
-                  className={`flex flex-col items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 hover:shadow-lg hover:scale-105 ${
-                    selected === handle.value
-                      ? "border-primary bg-primary/5 shadow-md"
-                      : "border-border hover:border-primary/50"
-                  }`}
-                >
-                  <div className="text-foreground">{handle.svg}</div>
-                  <span className="text-sm font-medium text-foreground">{handle.name}</span>
-                  {handle.name === "Flared" && (
+    <div className="space-y-4 w-full">
+      {handleOptions.map((handle, index) => (
+        <div key={handle.name} className="relative">
+          <Button
+            onClick={() => handleSelection(handle.value)}
+            variant="outline"
+            className={`w-full p-6 h-auto text-left justify-start border-2 transition-all duration-300 hover:scale-[1.02] hover:shadow-md ${
+              selected === handle.value
+                ? "border-primary bg-primary/5"
+                : "border-border hover:border-primary hover:bg-primary/5"
+            }`}
+          >
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center space-x-4">
+                <div className="w-8 h-8 rounded-full bg-accent/20 text-accent font-bold flex items-center justify-center text-sm flex-shrink-0">
+                  {index + 1}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-foreground font-medium">
+                    {handle.name}
+                  </span>
+                  {handle.popular && (
                     <span className="text-xs text-primary font-medium">Most Popular</span>
                   )}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{handle.desc}</p>
-              </TooltipContent>
-            </Tooltip>
-          ))}
+                </div>
+              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-muted-foreground hover:text-primary transition-colors p-2 flex-shrink-0"
+                  >
+                    <Info className="w-5 h-5" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent 
+                  className="w-64 bg-popover border-2 border-primary/20 shadow-lg"
+                  side="top"
+                  align="center"
+                  sideOffset={10}
+                >
+                  <div className="relative">
+                    <p className="text-sm text-popover-foreground leading-relaxed">
+                      {handle.desc}
+                    </p>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </Button>
         </div>
-      </TooltipProvider>
+      ))}
     </div>
   );
 }
