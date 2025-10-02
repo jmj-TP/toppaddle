@@ -12,7 +12,6 @@ export interface QuizAnswers {
   ForehandRubberStyle: string;
   BackhandRubberStyle: string;
   Budget: string;
-  Brand?: string;
   WeightPreference?: string;
   AssemblyPreference: string;
 }
@@ -40,8 +39,8 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   let score = 0;
   let maxScore = 0;
 
-  // Level matching (4% weight)
-  const levelWeight = 4;
+  // Level matching (10% weight)
+  const levelWeight = 10;
   maxScore += levelWeight;
   if (answers.Level === product.Blade_Level || answers.Level === product.Racket_Level || answers.Level === product.Rubber_Level) {
     score += levelWeight;
@@ -90,20 +89,18 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += ((speed + control + power) / 300) * powerWeight;
   }
 
-  // Grip matching (15% weight)
-  const gripWeight = 15;
+  // Grip matching (100% weight)
+  const gripWeight = 100;
   maxScore += gripWeight;
   
   const productGrip = product.Blade_Grip || product.Racket_Grip || '';
-  if (answers.Grip === 'Flare' && productGrip.includes('Flare')) {
+  if (answers.Grip.includes('Shakehand') && productGrip.includes('Flared')) {
     score += gripWeight;
-  } else if (answers.Grip === 'Straight' && productGrip.includes('Straight') && !productGrip.includes('Incline')) {
+  } else if (answers.Grip.includes('Straight') && productGrip.includes('Straight')) {
     score += gripWeight;
-  } else if (answers.Grip === 'Straight Incline' && productGrip.includes('Straight Incline')) {
+  } else if (answers.Grip.includes('Penhold') && productGrip.includes('Penhold')) {
     score += gripWeight;
-  } else if (answers.Grip === 'Anatomic' && productGrip.includes('Anatomic')) {
-    score += gripWeight;
-  } else if (answers.Grip === 'Not sure') {
+  } else if (answers.Grip.includes('Not sure')) {
     score += gripWeight * 0.8; // Give benefit of doubt
   }
 
@@ -122,9 +119,9 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += (control / 100) * styleWeight;
   }
 
-  // Weight matching (10% weight) - only for advanced players
+  // Weight matching (20% weight) - only for advanced players
   if (answers.WeightPreference && answers.Level === 'Advanced') {
-    const weightMatchWeight = 10;
+    const weightMatchWeight = 20;
     maxScore += weightMatchWeight;
     
     const productWeight = product.Blade_Weight || product.Racket_Weight || 0;
@@ -143,36 +140,11 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     }
   }
 
-  // Brand matching (20% weight) - high weight but not a dealbreaker
-  if (answers.Brand) {
-    const brandWeight = 20;
-    maxScore += brandWeight;
-    
-    const productBrand = product.Blade_Brand || product.Racket_Brand || product.Rubber_Brand || '';
-    if (productBrand === answers.Brand) {
-      score += brandWeight;
-    } else {
-      // Give partial score even if brand doesn't match (soft constraint)
-      score += brandWeight * 0.3;
-    }
-  }
-
   return Math.min(100, (score / maxScore) * 100);
 }
 
 // Get budget range
 function getBudgetRange(budget: string): { min: number; max: number } {
-  // Check if budget is a numeric value
-  const numericBudget = parseFloat(budget);
-  if (!isNaN(numericBudget)) {
-    // Treat 999999 as unlimited budget
-    if (numericBudget >= 999999) {
-      return { min: 0, max: 999999 };
-    }
-    return { min: 0, max: numericBudget };
-  }
-  
-  // Legacy support for old budget string format
   switch (budget) {
     case '<50$':
       return { min: 0, max: 50 };
@@ -189,9 +161,9 @@ function getBudgetRange(budget: string): { min: number; max: number } {
     case '<360$':
       return { min: 0, max: 360 };
     case 'No limit':
-      return { min: 0, max: 999999 };
+      return { min: 0, max: 10000 };
     default:
-      return { min: 0, max: 999999 };
+      return { min: 0, max: 10000 };
   }
 }
 
@@ -306,18 +278,10 @@ function calculateSpongeThickness(answers: QuizAnswers): {
 
 // Find best pre-assembled racket
 export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledRacket & { score: number }) | null {
-  console.log('Finding pre-assembled rackets with budget:', answers.Budget);
-  const budgetRange = getBudgetRange(answers.Budget);
-  console.log('Budget range:', budgetRange);
-  
   const suitableRackets = preAssembledRackets
     .filter(racket => {
-      // Strict budget filter - price must not exceed budget
-      const budgetRange = getBudgetRange(answers.Budget);
-      if (racket.Racket_Price > budgetRange.max) {
-        console.log(`Filtered out ${racket.Racket_Name} - Price: ${racket.Racket_Price}, Max Budget: ${budgetRange.max}`);
-        return false;
-      }
+      // Budget filter
+      if (!isWithinBudget(racket.Racket_Price, answers.Budget)) return false;
       
       // Rubber style filter
       if (racket.Racket_FH_Rubber_Style !== answers.ForehandRubberStyle) return false;
@@ -353,9 +317,7 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
 
 // Find best custom setup
 export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
-  console.log('Finding custom setup with budget:', answers.Budget);
   const budgetRange = getBudgetRange(answers.Budget);
-  console.log('Custom setup budget range:', budgetRange);
   const bestCombinations: CustomSetup[] = [];
 
   // Filter rubbers by style preference for each side
@@ -377,14 +339,9 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
           continue;
         }
         
-        const totalPrice = Math.round((blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price) * 100) / 100;
+        const totalPrice = blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price;
         
-        // Strict budget check - must be strictly less than or equal to budget
-        if (totalPrice > budgetRange.max) {
-          continue;
-        }
-        
-        if (true) {
+        if (totalPrice <= budgetRange.max) {
           // Calculate combined score
           const bladeScore = calculateScore(answers, blade);
           const fhScore = calculateScore(answers, fhRubber);
@@ -395,7 +352,7 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
           
           // Add diversity bonus: prefer different rubbers for FH and BH
           if (fhRubber.Rubber_Name !== bhRubber.Rubber_Name) {
-            combinedScore += 5; // 5 point bonus for variety
+            combinedScore += 2; // 2 point bonus for variety
           }
           
           // Budget split guidance bonus: prefer 40% blade, 60% rubbers (30% each)
