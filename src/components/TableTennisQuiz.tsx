@@ -35,7 +35,7 @@ const questions = [
       { value: "Fast & aggressive", label: "Fast & Aggressive" },
       { value: "Spin & topspin", label: "Spin & Topspin" },
       { value: "Calm & controlled", label: "Calm & Controlled" },
-      { value: "Both sides the same / not sure", label: "Same as Backhand" }
+      { value: "Both sides the same / not sure", label: "Not Sure" }
     ],
     key: "Forehand" as keyof QuizAnswers
   },
