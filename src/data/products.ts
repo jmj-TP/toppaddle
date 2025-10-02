@@ -91,7 +91,7 @@ export const blades: Blade[] =
     Blade_Speed: 60,
     Blade_Control: 82,
     Blade_Power: 65,
-    Blade_Grip: "Anatomic",
+    Blade_Grip: "Flared",
     Blade_Price: 34.95,
     Blade_Level: "Beginner",
     Blade_Weight: 86,
