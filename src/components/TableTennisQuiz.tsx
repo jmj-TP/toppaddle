@@ -64,10 +64,12 @@ const questions = [
   },
   {
     id: 6,
-    question: "Which handle type do you prefer?",
-    options: [],
-    key: "Grip" as keyof QuizAnswers,
-    isHandleSelector: true
+    question: "Do you want a special handle type?",
+    options: [
+      { value: "No", label: "No - Normal Handle" },
+      { value: "Yes", label: "Yes - Special Handle" }
+    ],
+    key: "WantsSpecialHandle" as keyof QuizAnswers
   },
   {
     id: 7,
@@ -136,7 +138,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const [showPremiumBudget, setShowPremiumBudget] = useState(false);
   const [showForehandSpecial, setShowForehandSpecial] = useState(false);
   const [showBackhandSpecial, setShowBackhandSpecial] = useState(false);
-  const [showHandleSpecial, setShowHandleSpecial] = useState(false);
+  const [showHandleSelector, setShowHandleSelector] = useState(false);
   const [showWeightQuestion, setShowWeightQuestion] = useState(false);
   const [questionHistory, setQuestionHistory] = useState<number[]>([]);
 
@@ -180,12 +182,22 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     key: "BackhandRubberStyle" as keyof QuizAnswers
   };
 
+  // Handle selector follow-up (shown when user wants special handle)
+  const handleSelectorQuestion = {
+    id: 6.5,
+    question: "Which handle type do you prefer?",
+    options: [],
+    key: "Grip" as keyof QuizAnswers,
+    isHandleSelector: true
+  };
+
 
   const handleAnswer = (answer: string) => {
     const question = 
       currentQuestion === 11.5 ? premiumBudgetQuestion : 
       currentQuestion === 7.5 ? forehandSpecialQuestion :
       currentQuestion === 7.6 ? backhandSpecialQuestion :
+      currentQuestion === 6.5 ? handleSelectorQuestion :
       questions[currentQuestion];
     
     const newAnswers = { ...answers, [question.key]: answer };
@@ -206,8 +218,28 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-    // Handle selection is now directly in question 5, move to special rubbers
-    if (currentQuestion === 5) {
+    // Check if user wants special handle (question 6)
+    if (currentQuestion === 5 && answer === "No") {
+      // Set default handle and skip handle selector
+      const updatedAnswers = {
+        ...newAnswers,
+        Grip: "Shakehand Flared"
+      };
+      setAnswers(updatedAnswers);
+      setCurrentQuestion(6); // Go to special rubbers question
+      return;
+    }
+
+    // If user wants special handle, show handle selector
+    if (currentQuestion === 5 && answer === "Yes") {
+      setShowHandleSelector(true);
+      setCurrentQuestion(6.5);
+      return;
+    }
+
+    // Handle selector follow-up - move to special rubbers
+    if (currentQuestion === 6.5) {
+      setShowHandleSelector(false);
       setCurrentQuestion(6); // Go to special rubbers question
       return;
     }
@@ -336,6 +368,8 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       setShowForehandSpecial(false);
     } else if (currentQuestion === 7.6) {
       setShowBackhandSpecial(false);
+    } else if (currentQuestion === 6.5) {
+      setShowHandleSelector(false);
     }
     
     setCurrentQuestion(previousQuestion);
@@ -350,7 +384,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     setShowPremiumBudget(false);
     setShowForehandSpecial(false);
     setShowBackhandSpecial(false);
-    setShowHandleSpecial(false);
+    setShowHandleSelector(false);
     setShowWeightQuestion(false);
     setQuestionHistory([]);
     onQuizStatusChange(false);
@@ -361,6 +395,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     (showPremiumBudget ? 1 : 0) + 
     (showForehandSpecial ? 1 : 0) + 
     (showBackhandSpecial ? 1 : 0) +
+    (showHandleSelector ? 1 : 0) +
     (showWeightQuestion ? 1 : 0);
   // Calculate base questions: -1 for weight (conditional), -1 for brand (conditional for beginners)
   const baseQuestions = questions.length - 
@@ -371,6 +406,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     currentQuestion === 11.5 ? 11 : 
     currentQuestion === 7.5 ? 7 :
     currentQuestion === 7.6 ? 7 :
+    currentQuestion === 6.5 ? 6 :
     currentQuestion >= 8 && !showWeightQuestion ? currentQuestion - 1 :
     currentQuestion >= 9 && answers.Level === "Beginner" ? currentQuestion - 1 :
     currentQuestion;
@@ -414,7 +450,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
           </Button>
         )}
         
-        {currentQuestion === 5 ? (
+        {currentQuestion === 6.5 ? (
           <Card className="p-8 backdrop-blur-sm bg-card/50 border-2">
             <HandleSelector onSelect={handleAnswer} />
           </Card>
