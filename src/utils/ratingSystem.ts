@@ -12,6 +12,7 @@ export interface QuizAnswers {
   ForehandRubberStyle: string;
   BackhandRubberStyle: string;
   Budget: string;
+  Brand?: string;
   WeightPreference?: string;
   AssemblyPreference: string;
 }
@@ -142,6 +143,20 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     }
   }
 
+  // Brand matching (20% weight) - high weight but not a dealbreaker
+  if (answers.Brand) {
+    const brandWeight = 20;
+    maxScore += brandWeight;
+    
+    const productBrand = product.Blade_Brand || product.Racket_Brand || product.Rubber_Brand || '';
+    if (productBrand === answers.Brand) {
+      score += brandWeight;
+    } else {
+      // Give partial score even if brand doesn't match (soft constraint)
+      score += brandWeight * 0.3;
+    }
+  }
+
   return Math.min(100, (score / maxScore) * 100);
 }
 
@@ -150,6 +165,10 @@ function getBudgetRange(budget: string): { min: number; max: number } {
   // Check if budget is a numeric value
   const numericBudget = parseFloat(budget);
   if (!isNaN(numericBudget)) {
+    // Treat 999999 as unlimited budget
+    if (numericBudget >= 999999) {
+      return { min: 0, max: 999999 };
+    }
     return { min: 0, max: numericBudget };
   }
   
@@ -170,9 +189,9 @@ function getBudgetRange(budget: string): { min: number; max: number } {
     case '<360$':
       return { min: 0, max: 360 };
     case 'No limit':
-      return { min: 0, max: 10000 };
+      return { min: 0, max: 999999 };
     default:
-      return { min: 0, max: 10000 };
+      return { min: 0, max: 999999 };
   }
 }
 
