@@ -31,7 +31,7 @@ const questions = [
   },
   {
     id: 3,
-    question: "How do you usually play with your forehand?",
+    question: <>How do you usually play with your <span className="underline">forehand</span>?</>,
     options: [
       { value: "Fast & aggressive", label: "Fast & Aggressive" },
       { value: "Spin & topspin", label: "Spin & Topspin" },
@@ -42,7 +42,7 @@ const questions = [
   },
   {
     id: 4,
-    question: "How do you usually play with your backhand?",
+    question: <>How do you usually play with your <span className="underline">backhand</span>?</>,
     options: [
       { value: "Fast & aggressive", label: "Fast & Aggressive" },
       { value: "Spin & topspin", label: "Spin & Topspin" },
@@ -161,7 +161,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   // Forehand special rubber follow-up question
   const forehandSpecialQuestion = {
     id: 7.5,
-    question: "Which rubber type for your forehand?",
+    question: <>Which rubber type for your <span className="underline">forehand</span>?</>,
     options: [
       { value: "Normal", label: "Normal Inverted" },
       { value: "Short Pimples", label: "Short Pimples" },
@@ -174,7 +174,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   // Backhand special rubber follow-up question
   const backhandSpecialQuestion = {
     id: 7.6,
-    question: "Which rubber type for your backhand?",
+    question: <>Which rubber type for your <span className="underline">backhand</span>?</>,
     options: [
       { value: "Normal", label: "Normal Inverted" },
       { value: "Short Pimples", label: "Short Pimples" },

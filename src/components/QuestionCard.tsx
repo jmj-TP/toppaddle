@@ -8,7 +8,7 @@ interface Option {
 
 interface Question {
   id: number;
-  question: string;
+  question: string | React.ReactNode;
   options: Option[];
   key: string;
 }
