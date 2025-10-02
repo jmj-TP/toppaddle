@@ -107,7 +107,14 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   maxScore += gripWeight;
   
   const productGrip = product.Blade_Grip || product.Racket_Grip || '';
-  if (answers.Grip.includes('Shakehand') && productGrip.includes('Flared')) {
+  if (answers.Grip.includes('Small Hands Special')) {
+    // For small hands, prefer non-flared handles but accept all DHS products
+    if (productGrip.includes('Straight') || productGrip.includes('Anatomic')) {
+      score += gripWeight; // Ideal for small hands
+    } else {
+      score += gripWeight * 0.7; // Accept other DHS handles too
+    }
+  } else if (answers.Grip.includes('Shakehand') && productGrip.includes('Flared')) {
     score += gripWeight;
   } else if (answers.Grip.includes('Straight') && productGrip.includes('Straight')) {
     score += gripWeight;

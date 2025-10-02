@@ -35,7 +35,7 @@ const handleOptions = [
   {
     name: "For really small hands",
     value: "Small Hands Special",
-    desc: "Special selection of handles designed for players with really small hands. Includes Straight, Straight Incline, and Anatomic options.",
+    desc: "Special selection for players with really small hands. Recommends only DHS brand blades (preferred handle types: Straight, Straight Incline, Anatomic, but all DHS handles work).",
     popular: false
   },
   {
