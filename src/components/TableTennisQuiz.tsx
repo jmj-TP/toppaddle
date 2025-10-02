@@ -81,14 +81,15 @@ const questions = [
   },
   {
     id: 8,
-    question: "What is your total budget for Blade + Rubbers or a Pre-Assembled Racket?",
+    question: "Which brand do you prefer?",
     options: [
-      { value: "<50$", label: "Under $50" },
-      { value: "<100$", label: "Under $100" },
-      { value: "<160$", label: "Under $160" },
-      { value: "161+", label: "$161+" }
+      { value: "All Brands", label: "All Brands" },
+      { value: "ANDRO", label: "ANDRO" },
+      { value: "BUTTERFLY", label: "BUTTERFLY" },
+      { value: "JOOLA", label: "JOOLA" },
+      { value: "DHS", label: "DHS" }
     ],
-    key: "Budget" as keyof QuizAnswers
+    key: "Brand" as keyof QuizAnswers
   },
   {
     id: 9,
@@ -109,6 +110,17 @@ const questions = [
       { value: "Not sure", label: "Not Sure" }
     ],
     key: "AssemblyPreference" as keyof QuizAnswers
+  },
+  {
+    id: 11,
+    question: "What is your total budget for Blade + Rubbers or a Pre-Assembled Racket?",
+    options: [
+      { value: "<50$", label: "Under $50" },
+      { value: "<100$", label: "Under $100" },
+      { value: "<160$", label: "Under $160" },
+      { value: "161+", label: "$161+" }
+    ],
+    key: "Budget" as keyof QuizAnswers
   }
 ];
 
@@ -131,7 +143,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
 
   // Premium budget follow-up question
   const premiumBudgetQuestion = {
-    id: 9.5,
+    id: 11.5,
     question: "Please select your exact budget range:",
     options: [
       { value: "<200$", label: "Under $200" },
@@ -185,7 +197,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
 
   const handleAnswer = (answer: string) => {
     const question = 
-      currentQuestion === 9.5 ? premiumBudgetQuestion : 
+      currentQuestion === 11.5 ? premiumBudgetQuestion : 
       currentQuestion === 7.5 ? forehandSpecialQuestion :
       currentQuestion === 7.6 ? backhandSpecialQuestion :
       currentQuestion === 6.5 ? handleSpecialQuestion :
@@ -270,17 +282,8 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-    // Check if user selected "161+" on budget question (now question 8)
-    if (currentQuestion === 7 && answer === "161+") {
-      setShowPremiumBudget(true);
-      setCurrentQuestion(9.5);
-      return;
-    }
-
-    // Handle premium budget follow-up
-    if (currentQuestion === 9.5) {
-      setShowPremiumBudget(false);
-      // After premium budget, check if Advanced to show weight question
+    // After brand question (question 7), check if Advanced to show weight question
+    if (currentQuestion === 7) {
       if (answers.Level === "Advanced") {
         setShowWeightQuestion(true);
         setCurrentQuestion(8); // Show weight question (index 8)
@@ -296,28 +299,35 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-    // Check if user is Advanced after budget question (no premium follow-up) - show weight question
-    if (currentQuestion === 7 && answer !== "161+" && answers.Level === "Advanced") {
-      setShowWeightQuestion(true);
-      setCurrentQuestion(8); // Show weight question (index 8)
-      return;
-    }
-
-    // If not advanced and just answered budget, skip weight question and set default
-    if (currentQuestion === 7 && answer !== "161+" && answers.Level !== "Advanced") {
-      const updatedAnswers = {
-        ...newAnswers,
-        WeightPreference: "Medium"
-      };
-      setAnswers(updatedAnswers);
-      setCurrentQuestion(9); // Skip to assembly preference (index 9)
-      return;
-    }
-
     // Handle weight question (only for advanced) - move to assembly preference
     if (currentQuestion === 8 && showWeightQuestion) {
       setShowWeightQuestion(false);
       setCurrentQuestion(9); // Go to assembly preference (index 9)
+      return;
+    }
+
+    // After assembly preference (question 9), go to budget question (question 10)
+    if (currentQuestion === 9) {
+      setCurrentQuestion(10); // Go to budget question (index 10)
+      return;
+    }
+
+    // Check if user selected "161+" on budget question (now question 10)
+    if (currentQuestion === 10 && answer === "161+") {
+      setShowPremiumBudget(true);
+      setCurrentQuestion(11.5);
+      return;
+    }
+
+    // Handle premium budget follow-up - this completes the quiz
+    if (currentQuestion === 11.5) {
+      setShowPremiumBudget(false);
+      // Generate recommendation when quiz is complete
+      const completeQuizAnswers = newAnswers as QuizAnswers;
+      setCompleteAnswers(completeQuizAnswers);
+      const rec = getRecommendation(completeQuizAnswers);
+      setRecommendation(rec);
+      setIsComplete(true);
       return;
     }
 
@@ -341,7 +351,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     setQuestionHistory(newHistory);
     
     // Reset conditional states based on where we're going back
-    if (currentQuestion === 9.5) {
+    if (currentQuestion === 11.5) {
       setShowPremiumBudget(false);
     } else if (currentQuestion === 9) {
       setShowWeightQuestion(false);
@@ -382,7 +392,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const baseQuestions = showWeightQuestion ? questions.length : questions.length - 1;
   const totalQuestions = baseQuestions + totalExtraQuestions;
   const currentProgress = 
-    currentQuestion === 9.5 ? 9 : 
+    currentQuestion === 11.5 ? 11 : 
     currentQuestion === 7.5 ? 7 :
     currentQuestion === 7.6 ? 7 :
     currentQuestion === 6.5 ? 6 :
@@ -430,7 +440,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         
         <QuestionCard
           question={
-            currentQuestion === 9.5 ? premiumBudgetQuestion : 
+            currentQuestion === 11.5 ? premiumBudgetQuestion : 
             currentQuestion === 7.5 ? forehandSpecialQuestion :
             currentQuestion === 7.6 ? backhandSpecialQuestion :
             currentQuestion === 6.5 ? handleSpecialQuestion :

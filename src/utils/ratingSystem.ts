@@ -11,6 +11,7 @@ export interface QuizAnswers {
   WantsSpecialRubbers: string;
   ForehandRubberStyle: string;
   BackhandRubberStyle: string;
+  Brand: string;
   Budget: string;
   WeightPreference?: string;
   AssemblyPreference: string;
