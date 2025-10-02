@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Minus, TrendingUp, Waves, Triangle, Info } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import QuestionCard from "./QuestionCard";
 import BudgetSlider from "./BudgetSlider";
 import RecommendationDisplay from "./RecommendationDisplay";
@@ -171,15 +172,35 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     key: "BackhandRubberStyle" as keyof QuizAnswers
   };
 
-  // Handle type follow-up question
+  // Handle type follow-up question with icons and tooltips
   const handleSpecialQuestion = {
     id: 6.5,
     question: "Which specific handle type do you prefer?",
     options: [
-      { value: "Flare", label: "Flare" },
-      { value: "Straight", label: "Straight" },
-      { value: "Straight Incline", label: "Straight Incline" },
-      { value: "Anatomic", label: "Anatomic" }
+      { 
+        value: "Flare", 
+        label: "Flare",
+        icon: Triangle,
+        description: "Flared — wider at the bottom; the most common, prevents slipping."
+      },
+      { 
+        value: "Straight", 
+        label: "Straight",
+        icon: Minus,
+        description: "Straight — uniform shape, versatile for alternating grips."
+      },
+      { 
+        value: "Straight Incline", 
+        label: "Straight Incline",
+        icon: TrendingUp,
+        description: "Straight incline — slight taper for extra stability."
+      },
+      { 
+        value: "Anatomic", 
+        label: "Anatomic",
+        icon: Waves,
+        description: "Anatomic — contoured to fit the palm; secure and ergonomic."
+      }
     ],
     key: "Grip" as keyof QuizAnswers
   };
@@ -221,17 +242,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-    // Check if user is Beginner - skip special rubbers question entirely
-    if (currentQuestion === 5 && answers.Level === "Beginner") {
-      // Set grip based on answer and skip to budget
-      const updatedAnswers = {
-        ...newAnswers,
-        Grip: answer === "Normal" ? "Not sure" : newAnswers.Grip
-      };
-      setAnswers(updatedAnswers);
-      setCurrentQuestion(7); // Skip to budget question
-      return;
-    }
+    // Remove beginner skip - allow all levels to choose handle types
 
     // Check if user wants normal handle (question 6)
     if (currentQuestion === 5 && answer === "Normal") {
@@ -465,13 +476,54 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
             question="What is your total budget for the Blade?"
             onAnswer={handleAnswer}
           />
+        ) : currentQuestion === 6.5 ? (
+          <Card className="p-8 shadow-xl border-primary/20">
+            <h2 className="text-2xl font-bold mb-6 text-center">{handleSpecialQuestion.question}</h2>
+            <TooltipProvider delayDuration={0}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {handleSpecialQuestion.options.map((option: any) => {
+                  const IconComponent = option.icon;
+                  return (
+                    <div key={option.value} className="relative">
+                      <Button
+                        onClick={() => handleAnswer(option.value)}
+                        variant="outline"
+                        className="w-full h-auto py-6 px-4 text-left hover:border-primary hover:bg-primary/5 transition-all flex items-center justify-between gap-3"
+                      >
+                        <div className="flex items-center gap-3 flex-1">
+                          <IconComponent className="w-6 h-6 text-primary flex-shrink-0" />
+                          <span className="font-medium">{option.label}</span>
+                        </div>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div 
+                              className="p-1.5 hover:bg-primary/10 rounded-full transition-colors"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <Info className="w-5 h-5 text-muted-foreground" />
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent 
+                            side="top" 
+                            className="max-w-[280px] text-sm"
+                            sideOffset={5}
+                          >
+                            <p>{option.description}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+            </TooltipProvider>
+          </Card>
         ) : (
           <QuestionCard
             question={
               currentQuestion === 9.5 ? premiumBudgetQuestion : 
               currentQuestion === 7.5 ? forehandSpecialQuestion :
               currentQuestion === 7.6 ? backhandSpecialQuestion :
-              currentQuestion === 6.5 ? handleSpecialQuestion :
               questions[currentQuestion]
             }
             onAnswer={handleAnswer}
