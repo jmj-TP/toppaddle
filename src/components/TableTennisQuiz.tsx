@@ -229,7 +229,21 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         Grip: "Not sure"
       };
       setAnswers(updatedAnswers);
-      setCurrentQuestion(6); // Skip to special rubbers question
+      
+      // For beginners, skip special rubbers question entirely and go to brand question
+      if (answers.Level === "Beginner") {
+        const finalAnswers = {
+          ...updatedAnswers,
+          WantsSpecialRubbers: "No",
+          ForehandRubberStyle: "Normal",
+          BackhandRubberStyle: "Normal"
+        };
+        setAnswers(finalAnswers);
+        setCurrentQuestion(7); // Go to brand question
+        return;
+      }
+      
+      setCurrentQuestion(6); // Skip to special rubbers question for non-beginners
       return;
     }
 
@@ -243,6 +257,20 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     // Handle special handle follow-up
     if (currentQuestion === 6.5) {
       setShowHandleSpecial(false);
+      
+      // For beginners, skip special rubbers question entirely and go to brand question
+      if (answers.Level === "Beginner") {
+        const finalAnswers = {
+          ...newAnswers,
+          WantsSpecialRubbers: "No",
+          ForehandRubberStyle: "Normal",
+          BackhandRubberStyle: "Normal"
+        };
+        setAnswers(finalAnswers);
+        setCurrentQuestion(7); // Go to brand question
+        return;
+      }
+      
       setCurrentQuestion(6);
       return;
     }
@@ -256,7 +284,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         BackhandRubberStyle: "Normal"
       };
       setAnswers(updatedAnswers);
-      setCurrentQuestion(7); // Skip to budget question
+      setCurrentQuestion(7); // Skip to brand question
       return;
     }
 

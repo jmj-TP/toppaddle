@@ -144,6 +144,22 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   return Math.min(100, (score / maxScore) * 100);
 }
 
+// Extract brand from product name
+function extractBrand(productName: string): string {
+  const name = productName.toUpperCase();
+  if (name.startsWith('JOOLA')) return 'JOOLA';
+  if (name.startsWith('ANDRO')) return 'ANDRO';
+  if (name.startsWith('BUTTERFLY')) return 'BUTTERFLY';
+  if (name.startsWith('DHS')) return 'DHS';
+  return 'UNKNOWN';
+}
+
+// Check if product matches brand filter (strict dealbreaker)
+function matchesBrandFilter(productName: string, selectedBrand: string): boolean {
+  if (selectedBrand === 'All Brands') return true;
+  return extractBrand(productName) === selectedBrand.toUpperCase();
+}
+
 // Get budget range
 function getBudgetRange(budget: string): { min: number; max: number } {
   switch (budget) {
@@ -281,6 +297,9 @@ function calculateSpongeThickness(answers: QuizAnswers): {
 export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledRacket & { score: number }) | null {
   const suitableRackets = preAssembledRackets
     .filter(racket => {
+      // Brand filter (STRICT - dealbreaker)
+      if (!matchesBrandFilter(racket.Racket_Name, answers.Brand)) return false;
+      
       // Budget filter
       if (!isWithinBudget(racket.Racket_Price, answers.Budget)) return false;
       
@@ -327,8 +346,23 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
 
   // Try all combinations of blade + 2 rubbers
   for (const blade of blades) {
+    // Brand filter (STRICT - dealbreaker)
+    if (!matchesBrandFilter(blade.Blade_Name, answers.Brand)) {
+      continue;
+    }
+    
     for (const fhRubber of forehandRubbers) {
+      // Brand filter for forehand rubber (STRICT - dealbreaker)
+      if (!matchesBrandFilter(fhRubber.Rubber_Name, answers.Brand)) {
+        continue;
+      }
+      
       for (const bhRubber of backhandRubbers) {
+        // Brand filter for backhand rubber (STRICT - dealbreaker)
+        if (!matchesBrandFilter(bhRubber.Rubber_Name, answers.Brand)) {
+          continue;
+        }
+        
         // Constraint: no rubber should be more expensive than the blade
         if (fhRubber.Rubber_Price > blade.Blade_Price || bhRubber.Rubber_Price > blade.Blade_Price) {
           continue;
