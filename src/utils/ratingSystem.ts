@@ -435,15 +435,19 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
           continue;
         }
         
-        // Constraint: no rubber should be more expensive than the blade
-        if (fhRubber.Rubber_Price > blade.Blade_Price || bhRubber.Rubber_Price > blade.Blade_Price) {
-          continue;
-        }
-        
-        // Constraint: cheapest rubber should be at least 1/2 of blade price
-        const cheapestRubber = Math.min(fhRubber.Rubber_Price, bhRubber.Rubber_Price);
-        if (cheapestRubber < blade.Blade_Price / 2) {
-          continue;
+        // For budgets over $200, allow blade to be much more expensive than rubbers
+        // For budgets under $200, maintain balanced pricing constraints
+        if (budgetRange.max <= 200) {
+          // Constraint: no rubber should be more expensive than the blade
+          if (fhRubber.Rubber_Price > blade.Blade_Price || bhRubber.Rubber_Price > blade.Blade_Price) {
+            continue;
+          }
+          
+          // Constraint: cheapest rubber should be at least 1/2 of blade price
+          const cheapestRubber = Math.min(fhRubber.Rubber_Price, bhRubber.Rubber_Price);
+          if (cheapestRubber < blade.Blade_Price / 2) {
+            continue;
+          }
         }
         
         const totalPrice = blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price;
