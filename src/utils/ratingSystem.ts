@@ -89,8 +89,8 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += ((speed + control) / 200) * playstyleWeight;
   }
 
-  // Power preference matching (18% weight)
-  const powerWeight = 18;
+  // Power preference matching (25% weight)
+  const powerWeight = 25;
   maxScore += powerWeight;
   
   if (answers.Power.includes('A lot of power')) {
