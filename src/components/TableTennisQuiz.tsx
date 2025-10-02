@@ -477,27 +477,32 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
             onAnswer={handleAnswer}
           />
         ) : currentQuestion === 6.5 ? (
-          <Card className="p-8 shadow-xl border-primary/20">
-            <h2 className="text-2xl font-bold mb-6 text-center">{handleSpecialQuestion.question}</h2>
+          <Card className="p-8 shadow-lg border-2 border-primary/20">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-primary mb-4">
+                {handleSpecialQuestion.question}
+              </h2>
+            </div>
             <TooltipProvider delayDuration={0}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {handleSpecialQuestion.options.map((option: any) => {
-                  const IconComponent = option.icon;
-                  return (
-                    <div key={option.value} className="relative">
-                      <Button
-                        onClick={() => handleAnswer(option.value)}
-                        variant="outline"
-                        className="w-full h-auto py-6 px-4 text-left hover:border-primary hover:bg-primary/5 transition-all flex items-center justify-between gap-3"
-                      >
-                        <div className="flex items-center gap-3 flex-1">
-                          <IconComponent className="w-6 h-6 text-primary flex-shrink-0" />
-                          <span className="font-medium">{option.label}</span>
+              <div className="space-y-4">
+                {handleSpecialQuestion.options.map((option: any, index: number) => (
+                  <div key={option.value} className="relative">
+                    <Button
+                      onClick={() => handleAnswer(option.value)}
+                      variant="outline"
+                      className="w-full p-6 h-auto text-left justify-start border-2 border-border hover:border-primary hover:bg-primary/5 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-8 h-8 rounded-full bg-accent/20 text-accent font-bold flex items-center justify-center text-sm flex-shrink-0">
+                            {index + 1}
+                          </div>
+                          <span className="text-foreground font-medium">{option.label}</span>
                         </div>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <div 
-                              className="p-1.5 hover:bg-primary/10 rounded-full transition-colors"
+                              className="p-1.5 hover:bg-primary/10 rounded-full transition-colors flex-shrink-0"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <Info className="w-5 h-5 text-muted-foreground" />
@@ -505,16 +510,17 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
                           </TooltipTrigger>
                           <TooltipContent 
                             side="top" 
-                            className="max-w-[280px] text-sm"
-                            sideOffset={5}
+                            align="center"
+                            className="max-w-[280px] text-sm bg-background border-2 border-primary/20 shadow-xl rounded-xl px-4 py-3"
+                            sideOffset={8}
                           >
-                            <p>{option.description}</p>
+                            <p className="text-foreground">{option.description}</p>
                           </TooltipContent>
                         </Tooltip>
-                      </Button>
-                    </div>
-                  );
-                })}
+                      </div>
+                    </Button>
+                  </div>
+                ))}
               </div>
             </TooltipProvider>
           </Card>
