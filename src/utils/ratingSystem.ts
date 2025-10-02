@@ -62,8 +62,8 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     return 0;
   }
 
-  // Playstyle matching (35% weight)
-  const playstyleWeight = 35;
+  // Playstyle matching (40% weight)
+  const playstyleWeight = 40;
   maxScore += playstyleWeight;
   
   const speed = product.Blade_Speed || product.Racket_Speed || product.Rubber_Speed || 0;
