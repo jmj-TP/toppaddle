@@ -43,13 +43,21 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   // Level matching (10% weight)
   const levelWeight = 10;
   maxScore += levelWeight;
-  if (answers.Level === product.Blade_Level || answers.Level === product.Racket_Level || answers.Level === product.Rubber_Level) {
+  const productLevel = product.Blade_Level || product.Racket_Level || product.Rubber_Level;
+  
+  if (answers.Level === productLevel) {
+    score += levelWeight;
+  } else if (answers.Level === 'Advanced' && productLevel === 'Intermediate') {
+    // Advanced players should see Intermediate products (full match)
     score += levelWeight;
   } else if (
-    (answers.Level === 'Beginner' && (product.Blade_Level === 'Intermediate' || product.Racket_Level === 'Intermediate')) ||
-    (answers.Level === 'Intermediate' && (product.Blade_Level === 'Advanced' || product.Racket_Level === 'Advanced'))
+    (answers.Level === 'Beginner' && productLevel === 'Intermediate') ||
+    (answers.Level === 'Intermediate' && productLevel === 'Advanced')
   ) {
     score += levelWeight * 0.7; // Partial match for progression
+  } else if (answers.Level === 'Advanced' && productLevel === 'Beginner') {
+    // Filter out Beginner products for Advanced players
+    return 0;
   }
 
   // Playstyle matching (35% weight)
