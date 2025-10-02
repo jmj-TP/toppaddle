@@ -96,7 +96,7 @@ const questions = [
     id: 9,
     question: "Which brand do you prefer?",
     options: [
-      { value: "All brands", label: "I dont Care" },
+      { value: "All brands", label: "All brands" },
       { value: "ANDRO", label: "ANDRO" },
       { value: "JOOLA", label: "JOOLA" },
       { value: "BUTTERFLY", label: "BUTTERFLY" },
@@ -231,13 +231,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     // Add current question to history before moving forward
     setQuestionHistory([...questionHistory, currentQuestion]);
 
-// Check if user is beginner - skip special rubbers question entirely
-    if (currentQuestion === 5 && answers.Level === "Beginner") {
-      // Skip to budget question (question 7)
-      setCurrentQuestion(7);
-      return;
-    }
-    
     // If Beginner is selected, skip special rubbers question and set both to Normal
     if (currentQuestion === 0 && answer === "Beginner") {
       const updatedAnswers = {
@@ -264,7 +257,17 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
 
     // Remove beginner skip - allow all levels to choose handle types
 
-
+    // Check if user wants normal handle (question 6)
+    if (currentQuestion === 5 && answer === "Normal") {
+      // Set grip to "Not sure" and skip handle detail question
+      const updatedAnswers = {
+        ...newAnswers,
+        Grip: "Not sure"
+      };
+      setAnswers(updatedAnswers);
+      setCurrentQuestion(6); // Skip to special rubbers question
+      return;
+    }
 
     // If user wants special handle, show handle selection
     if (currentQuestion === 5 && answer === "Special") {
@@ -280,17 +283,10 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-  
-
-// Check if user wants normal handle (question 6)
-    if (currentQuestion === 5 && answer === "Normal") {
-      // Set grip to "Not sure" and skip handle detail question
-      const updatedAnswers = {
-        ...newAnswers,
-        Grip: "Not sure"
-      };
-      setAnswers(updatedAnswers);
-      setCurrentQuestion(6); // Skip to special rubbers question
+    // Check if user is beginner - skip special rubbers question entirely
+    if (currentQuestion === 5 && answers.Level === "Beginner") {
+      // Skip to budget question (question 7)
+      setCurrentQuestion(7);
       return;
     }
     
