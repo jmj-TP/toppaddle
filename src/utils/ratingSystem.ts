@@ -107,19 +107,14 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   maxScore += gripWeight;
   
   const productGrip = product.Blade_Grip || product.Racket_Grip || '';
-  if (answers.Grip.includes('Small Hands Special')) {
-    // For small hands, prefer non-flared handles but accept all DHS products
-    if (productGrip.includes('Straight') || productGrip.includes('Anatomic')) {
-      score += gripWeight; // Ideal for small hands
-    } else {
-      score += gripWeight * 0.7; // Accept other DHS handles too
-    }
-  } else if (answers.Grip.includes('Shakehand') && productGrip.includes('Flared')) {
+  if (answers.Grip.includes('Shakehand') && productGrip.includes('Flared')) {
     score += gripWeight;
   } else if (answers.Grip.includes('Straight') && productGrip.includes('Straight')) {
     score += gripWeight;
   } else if (answers.Grip.includes('Penhold') && productGrip.includes('Penhold')) {
     score += gripWeight;
+  } else if (answers.Grip.includes('Small Hands Special') && productGrip.includes('Flared')) {
+    score += gripWeight; // Small hands special uses Flared handle
   } else if (answers.Grip.includes('Not sure')) {
     score += gripWeight * 0.8; // Give benefit of doubt
   }
@@ -223,8 +218,8 @@ function calculateHandleType(answers: QuizAnswers): {
   // Small Hands Special
   if (Grip.includes('Small Hands Special')) {
     return {
-      handleType: 'Small Hands Special (DHS only)',
-      explanation: 'For players with really small hands, we recommend DHS blades which offer specially designed handles in Straight, Straight Incline, and Anatomic styles that are perfect for smaller hand sizes.'
+      handleType: 'Flared (DHS brand only)',
+      explanation: 'For players with really small hands, we recommend DHS blades with Flared handles, which are designed to work well for smaller hand sizes.'
     };
   }
   
@@ -451,26 +446,12 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
     }
     
       for (const fhRubber of forehandRubbers) {
-      // Small Hands Special - ONLY DHS rubbers (STRICT - dealbreaker)
-      if (answers.Grip.includes('Small Hands Special')) {
-        if (extractBrand(fhRubber.Rubber_Name) !== 'DHS') {
-          continue;
-        }
-      }
-      
       // Brand filter for forehand rubber (STRICT - dealbreaker)
       if (!matchesBrandFilter(fhRubber.Rubber_Name, answers.Brand)) {
         continue;
       }
       
       for (const bhRubber of backhandRubbers) {
-        // Small Hands Special - ONLY DHS rubbers (STRICT - dealbreaker)
-        if (answers.Grip.includes('Small Hands Special')) {
-          if (extractBrand(bhRubber.Rubber_Name) !== 'DHS') {
-            continue;
-          }
-        }
-        
         // Brand filter for backhand rubber (STRICT - dealbreaker)
         if (!matchesBrandFilter(bhRubber.Rubber_Name, answers.Brand)) {
           continue;
