@@ -45,12 +45,6 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   maxScore += levelWeight;
   const productLevel = product.Blade_Level || product.Racket_Level || product.Rubber_Level;
   
-  // Get product attributes early for filtering
-  const speed = product.Blade_Speed || product.Racket_Speed || product.Rubber_Speed || 0;
-  const control = product.Blade_Control || product.Racket_Control || product.Rubber_Control || 0;
-  const power = product.Blade_Power || product.Racket_Power || product.Rubber_Power || 0;
-  const spin = product.Racket_Spin || product.Rubber_Spin || 0;
-  
   if (answers.Level === productLevel) {
     score += levelWeight;
   } else if (answers.Level === 'Advanced' && productLevel === 'Intermediate') {
@@ -60,12 +54,6 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += levelWeight * 0.7; // Partial match for progression
   } else if (answers.Level === 'Intermediate' && productLevel === 'Advanced') {
     score += levelWeight * 0.7; // Partial match for progression
-  } else if (answers.Level === 'Intermediate' && productLevel === 'Beginner') {
-    // Intermediate offensive/aggressive players shouldn't get beginner control blades
-    if (answers.Playstyle.includes('Offensive') && control > 85 && speed < 65) {
-      return 0; // Filter out control-focused beginner products for intermediate offensive players
-    }
-    score += levelWeight * 0.5; // Reduced match for beginner products
   } else if (answers.Level === 'Advanced' && productLevel === 'Beginner') {
     // Filter out Beginner products for Advanced players
     return 0;
@@ -78,17 +66,18 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   const playstyleWeight = 40;
   maxScore += playstyleWeight;
   
+  const speed = product.Blade_Speed || product.Racket_Speed || product.Rubber_Speed || 0;
+  const control = product.Blade_Control || product.Racket_Control || product.Rubber_Control || 0;
+  const power = product.Blade_Power || product.Racket_Power || product.Rubber_Power || 0;
+  const spin = product.Racket_Spin || product.Rubber_Spin || 0;
+
   if (answers.Playstyle.includes('Offensive')) {
     // Heavily prefer high speed and power, penalize excessive control
     score += (speed / 100) * playstyleWeight * 0.5;
     score += (power / 100) * playstyleWeight * 0.5;
-    // Penalize overly control-focused products for offensive play
-    if (control > 85) {
-      score -= playstyleWeight * 0.3; // Stronger penalty for control-focused equipment
-    }
-    // Bonus for high-speed offensive equipment
-    if (speed > 80 && power > 80) {
-      score += playstyleWeight * 0.2; // Bonus for truly offensive equipment
+    // Penalize overly control-focused rubbers for offensive play
+    if (control > 88) {
+      score -= playstyleWeight * 0.2;
     }
   } else if (answers.Playstyle.includes('Defensive')) {
     // Prefer high control
@@ -105,10 +94,6 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   if (answers.Power.includes('A lot of power')) {
     score += (speed / 100) * powerWeight * 0.6;
     score += (power / 100) * powerWeight * 0.4;
-    // Additional penalty for low-speed equipment when maximum power is desired
-    if (speed < 70) {
-      score -= powerWeight * 0.3;
-    }
   } else if (answers.Power.includes('Control is more important')) {
     score += (control / 100) * powerWeight;
   } else if (answers.Power.includes('Balanced')) {
@@ -362,23 +347,12 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
 
 // Find best custom setup
 export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
-  console.log('🔍 Finding custom setup for:', {
-    Level: answers.Level,
-    Playstyle: answers.Playstyle,
-    Power: answers.Power,
-    Brand: answers.Brand,
-    Budget: answers.Budget
-  });
-  
   const budgetRange = getBudgetRange(answers.Budget);
   const bestCombinations: CustomSetup[] = [];
 
   // Filter rubbers by style preference for each side
   const forehandRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.ForehandRubberStyle);
   const backhandRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.BackhandRubberStyle);
-
-  console.log(`📊 Available rubbers: FH=${forehandRubbers.length}, BH=${backhandRubbers.length}`);
-  console.log(`💰 Budget: ${answers.Budget} (max: ${budgetRange.max})`);
 
   // Try all combinations of blade + 2 rubbers
   for (const blade of blades) {
@@ -387,52 +361,32 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
       continue;
     }
     
-    // Calculate blade score to filter early
-    const bladeScore = calculateScore(answers, blade);
-    if (bladeScore === 0) {
-      console.log(`❌ Filtered out blade: ${blade.Blade_Name} (Level: ${blade.Blade_Level}, Speed: ${blade.Blade_Speed}, Control: ${blade.Blade_Control})`);
-      continue;
-    }
-    
-    console.log(`✅ Considering blade: ${blade.Blade_Name} (Score: ${bladeScore.toFixed(1)}, Level: ${blade.Blade_Level}, Speed: ${blade.Blade_Speed}, Control: ${blade.Blade_Control})`);
-    
-    let validCombinations = 0;
-    let brandFilteredFH = 0;
-    let brandFilteredBH = 0;
-    let priceFiltered = 0;
-    let budgetFiltered = 0;
-    
     for (const fhRubber of forehandRubbers) {
       // Brand filter for forehand rubber (STRICT - dealbreaker)
       if (!matchesBrandFilter(fhRubber.Rubber_Name, answers.Brand)) {
-        brandFilteredFH++;
         continue;
       }
       
       for (const bhRubber of backhandRubbers) {
         // Brand filter for backhand rubber (STRICT - dealbreaker)
         if (!matchesBrandFilter(bhRubber.Rubber_Name, answers.Brand)) {
-          brandFilteredBH++;
           continue;
         }
         
         // Constraint: no rubber should be more expensive than the blade
         if (fhRubber.Rubber_Price > blade.Blade_Price || bhRubber.Rubber_Price > blade.Blade_Price) {
-          priceFiltered++;
           continue;
         }
         
         // Constraint: cheapest rubber should be at least 1/2 of blade price
         const cheapestRubber = Math.min(fhRubber.Rubber_Price, bhRubber.Rubber_Price);
         if (cheapestRubber < blade.Blade_Price / 2) {
-          priceFiltered++;
           continue;
         }
         
         const totalPrice = blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price;
         
         if (totalPrice <= budgetRange.max) {
-          validCombinations++;
           // Calculate combined score
           const bladeScore = calculateScore(answers, blade);
           const fhScore = calculateScore(answers, fhRubber);
@@ -464,20 +418,10 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
             totalPrice,
             score: combinedScore
           });
-        } else {
-          budgetFiltered++;
         }
       }
     }
-    
-    if (validCombinations > 0) {
-      console.log(`✅ ${blade.Blade_Name}: Found ${validCombinations} valid combinations`);
-    } else if (brandFilteredFH > 0 || brandFilteredBH > 0 || priceFiltered > 0 || budgetFiltered > 0) {
-      console.log(`⚠️ ${blade.Blade_Name}: No valid combos (brand FH:${brandFilteredFH}, brand BH:${brandFilteredBH}, price:${priceFiltered}, budget:${budgetFiltered})`);
-    }
   }
-  
-  console.log(`🎯 Total valid combinations found: ${bestCombinations.length}`);
 
   // Sort by score and return best
   bestCombinations.sort((a, b) => b.score - a.score);
