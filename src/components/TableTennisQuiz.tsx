@@ -231,25 +231,9 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     // Add current question to history before moving forward
     setQuestionHistory([...questionHistory, currentQuestion]);
 
-// Check if user is beginner - skip special rubbers question entirely
-    if (currentQuestion === 5 && answers.Level === "Beginner") {
-      // Skip to budget question (question 7)
-      setCurrentQuestion(7);
-      return;
-    }
-    
-    // If Beginner is selected, skip special rubbers question and set both to Normal
-    if (currentQuestion === 0 && answer === "Beginner") {
-      const updatedAnswers = {
-        ...newAnswers,
-        ForehandRubberStyle: "Normal",
-        BackhandRubberStyle: "Normal",
-        WantsSpecialRubbers: "No"
-      };
-      setAnswers(updatedAnswers);
-      // Will skip to budget question later in the flow
-    }
 
+    // If Beginner is selected, skip special rubbers question and set both to Normal
+   
     // Check if forehand is "Both sides the same / not sure" (question 3)
     if (currentQuestion === 2 && answer === "Both sides the same / not sure") {
       // Set backhand to same answer and skip question 4
