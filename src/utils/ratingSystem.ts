@@ -40,8 +40,8 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   let score = 0;
   let maxScore = 0;
 
-  // Level matching (10% weight)
-  const levelWeight = 10;
+  // Level matching (5% weight)
+  const levelWeight = 5;
   maxScore += levelWeight;
   const productLevel = product.Blade_Level || product.Racket_Level || product.Rubber_Level;
   
