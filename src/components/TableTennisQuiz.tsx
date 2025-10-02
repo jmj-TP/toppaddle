@@ -257,17 +257,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
 
     // Remove beginner skip - allow all levels to choose handle types
 
-    // Check if user wants normal handle (question 6)
-    if (currentQuestion === 5 && answer === "Normal") {
-      // Set grip to "Not sure" and skip handle detail question
-      const updatedAnswers = {
-        ...newAnswers,
-        Grip: "Not sure"
-      };
-      setAnswers(updatedAnswers);
-      setCurrentQuestion(6); // Skip to special rubbers question
-      return;
-    }
+
 
     // If user wants special handle, show handle selection
     if (currentQuestion === 5 && answer === "Special") {
@@ -287,6 +277,18 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     if (currentQuestion === 5 && answers.Level === "Beginner") {
       // Skip to budget question (question 7)
       setCurrentQuestion(8);
+      return;
+    }
+
+// Check if user wants normal handle (question 6)
+    if (currentQuestion === 5 && answer === "Normal") {
+      // Set grip to "Not sure" and skip handle detail question
+      const updatedAnswers = {
+        ...newAnswers,
+        Grip: "Not sure"
+      };
+      setAnswers(updatedAnswers);
+      setCurrentQuestion(6); // Skip to special rubbers question
       return;
     }
     
