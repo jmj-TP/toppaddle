@@ -92,7 +92,7 @@ const questions = [
   },
   {
     id: 9,
-    question: "Do you want a ready-to-play racket (pre-assembled), or do you want a custom setup (blade + separate rubbers)?",
+    question: "Do you want a ready-to-play racket (pre-assembled), or a custom setup (blade + rubbers)?",
     options: [
       { value: "Ready-to-play racket", label: "Ready-to-Play" },
       { value: "Custom setup", label: "Custom Setup" },
