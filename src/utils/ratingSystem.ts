@@ -460,33 +460,30 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
 
 // Get complete recommendation
 export function getRecommendation(answers: QuizAnswers): Recommendation {
-  const preAssembled = findBestPreAssembledRacket(answers);
-  const customSetup = findBestCustomSetup(answers);
   const { forehandThickness, forehandExplanation, backhandThickness, backhandExplanation } = calculateSpongeThickness(answers);
-
-  // Determine which option to prioritize
-  let totalScore = 0;
   
   // Safe check for AssemblyPreference
   const assemblyPref = answers.AssemblyPreference || '';
   
-  if (assemblyPref.includes('Ready-to-play') && preAssembled) {
-    // Prefer pre-assembled for beginners
-    totalScore = preAssembled.score || 0;
+  if (assemblyPref.includes('Ready-to-play')) {
+    // Only return pre-assembled racket
+    const preAssembled = findBestPreAssembledRacket(answers);
+    const totalScore = preAssembled?.score || 0;
     return { 
       preAssembled, 
-      customSetup, 
+      customSetup: undefined,
       totalScore,
       forehandThickness,
       forehandThicknessExplanation: forehandExplanation,
       backhandThickness,
       backhandThicknessExplanation: backhandExplanation
     };
-  } else if (assemblyPref.includes('Custom setup') && customSetup) {
-    // Prefer custom setup for advanced users
-    totalScore = customSetup.score;
+  } else if (assemblyPref.includes('Custom setup')) {
+    // Only return custom setup
+    const customSetup = findBestCustomSetup(answers);
+    const totalScore = customSetup?.score || 0;
     return { 
-      preAssembled, 
+      preAssembled: undefined,
       customSetup, 
       totalScore,
       forehandThickness,
@@ -495,10 +492,12 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       backhandThicknessExplanation: backhandExplanation
     };
   } else {
-    // Return both options, prioritize based on scores
+    // Return both options (for "Not sure")
+    const preAssembled = findBestPreAssembledRacket(answers);
+    const customSetup = findBestCustomSetup(answers);
     const preScore = preAssembled?.score || 0;
     const customScore = customSetup?.score || 0;
-    totalScore = Math.max(preScore, customScore);
+    const totalScore = Math.max(preScore, customScore);
     return { 
       preAssembled, 
       customSetup, 
