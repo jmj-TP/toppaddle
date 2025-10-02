@@ -377,6 +377,9 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
   const forehandRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.ForehandRubberStyle);
   const backhandRubbers = rubbers.filter(rubber => rubber.Rubber_Style === answers.BackhandRubberStyle);
 
+  console.log(`📊 Available rubbers: FH=${forehandRubbers.length}, BH=${backhandRubbers.length}`);
+  console.log(`💰 Budget: ${answers.Budget} (max: ${budgetRange.max})`);
+
   // Try all combinations of blade + 2 rubbers
   for (const blade of blades) {
     // Brand filter (STRICT - dealbreaker)
@@ -393,32 +396,43 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
     
     console.log(`✅ Considering blade: ${blade.Blade_Name} (Score: ${bladeScore.toFixed(1)}, Level: ${blade.Blade_Level}, Speed: ${blade.Blade_Speed}, Control: ${blade.Blade_Control})`);
     
+    let validCombinations = 0;
+    let brandFilteredFH = 0;
+    let brandFilteredBH = 0;
+    let priceFiltered = 0;
+    let budgetFiltered = 0;
+    
     for (const fhRubber of forehandRubbers) {
       // Brand filter for forehand rubber (STRICT - dealbreaker)
       if (!matchesBrandFilter(fhRubber.Rubber_Name, answers.Brand)) {
+        brandFilteredFH++;
         continue;
       }
       
       for (const bhRubber of backhandRubbers) {
         // Brand filter for backhand rubber (STRICT - dealbreaker)
         if (!matchesBrandFilter(bhRubber.Rubber_Name, answers.Brand)) {
+          brandFilteredBH++;
           continue;
         }
         
         // Constraint: no rubber should be more expensive than the blade
         if (fhRubber.Rubber_Price > blade.Blade_Price || bhRubber.Rubber_Price > blade.Blade_Price) {
+          priceFiltered++;
           continue;
         }
         
         // Constraint: cheapest rubber should be at least 1/2 of blade price
         const cheapestRubber = Math.min(fhRubber.Rubber_Price, bhRubber.Rubber_Price);
         if (cheapestRubber < blade.Blade_Price / 2) {
+          priceFiltered++;
           continue;
         }
         
         const totalPrice = blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price;
         
         if (totalPrice <= budgetRange.max) {
+          validCombinations++;
           // Calculate combined score
           const bladeScore = calculateScore(answers, blade);
           const fhScore = calculateScore(answers, fhRubber);
@@ -450,10 +464,20 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
             totalPrice,
             score: combinedScore
           });
+        } else {
+          budgetFiltered++;
         }
       }
     }
+    
+    if (validCombinations > 0) {
+      console.log(`✅ ${blade.Blade_Name}: Found ${validCombinations} valid combinations`);
+    } else if (brandFilteredFH > 0 || brandFilteredBH > 0 || priceFiltered > 0 || budgetFiltered > 0) {
+      console.log(`⚠️ ${blade.Blade_Name}: No valid combos (brand FH:${brandFilteredFH}, brand BH:${brandFilteredBH}, price:${priceFiltered}, budget:${budgetFiltered})`);
+    }
   }
+  
+  console.log(`🎯 Total valid combinations found: ${bestCombinations.length}`);
 
   // Sort by score and return best
   bestCombinations.sort((a, b) => b.score - a.score);
