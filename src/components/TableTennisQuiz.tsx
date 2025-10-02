@@ -96,7 +96,7 @@ const questions = [
     id: 9,
     question: "Which brand do you prefer?",
     options: [
-      { value: "All brands", label: "All brands" },
+      { value: "All brands", label: "I dont Care" },
       { value: "ANDRO", label: "ANDRO" },
       { value: "JOOLA", label: "JOOLA" },
       { value: "BUTTERFLY", label: "BUTTERFLY" },
@@ -286,14 +286,14 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     // Check if user is beginner - skip special rubbers question entirely
     if (currentQuestion === 5 && answers.Level === "Beginner") {
       // Skip to budget question (question 7)
-      setCurrentQuestion(7);
+      setCurrentQuestion(8);
       return;
     }
     
     // Skip special rubbers question (6) entirely for beginners when navigating normally
     if (currentQuestion === 6 && answers.Level === "Beginner") {
       // Already set in beginner selection, just move to budget
-      setCurrentQuestion(7);
+      setCurrentQuestion(8);
       return;
     }
 
