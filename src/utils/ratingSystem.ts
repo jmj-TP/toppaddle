@@ -435,9 +435,9 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
           continue;
         }
         
-        // For budgets over $200, allow blade to be much more expensive than rubbers
-        // For budgets under $200, maintain balanced pricing constraints
-        if (budgetRange.max <= 200) {
+        // For budgets over $160, allow blade to be much more expensive than rubbers
+        // For budgets under $160, maintain balanced pricing constraints
+        if (budgetRange.max <= 160) {
           // Constraint: no rubber should be more expensive than the blade
           if (fhRubber.Rubber_Price > blade.Blade_Price || bhRubber.Rubber_Price > blade.Blade_Price) {
             continue;
