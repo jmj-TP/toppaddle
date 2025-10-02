@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 
 interface BudgetSliderProps {
   question: string;
@@ -8,41 +9,15 @@ interface BudgetSliderProps {
 }
 
 const BudgetSlider = ({ question, onAnswer }: BudgetSliderProps) => {
-  const [step, setStep] = useState<1 | 2>(1);
-  const [category, setCategory] = useState<"Budget" | "Medium" | "Higher" | null>(null);
+  const [budget, setBudget] = useState<number>(100);
 
-  const handleCategorySelect = (selectedCategory: "Budget" | "Medium" | "Higher") => {
-    setCategory(selectedCategory);
-    setStep(2);
+  const handleConfirm = () => {
+    // If slider is at 360, treat as unlimited (999999)
+    const finalBudget = budget === 360 ? 999999 : budget;
+    onAnswer(finalBudget.toString());
   };
 
-  const handleBudgetSelect = (budget: string) => {
-    // Convert budget string to number for storage
-    let budgetValue: number;
-    if (budget === "No Limit") {
-      budgetValue = 999999;
-    } else {
-      // Extract number from "< $XX" format
-      budgetValue = parseInt(budget.replace(/[<$\s]/g, ""));
-    }
-    onAnswer(budgetValue.toString());
-  };
-
-  const handleBack = () => {
-    setStep(1);
-    setCategory(null);
-  };
-
-  const getBudgetOptions = () => {
-    if (category === "Budget") {
-      return ["< $30", "< $50", "< $70", "< $90"];
-    } else if (category === "Medium") {
-      return ["< $100", "< $120", "< $140", "< $160"];
-    } else if (category === "Higher") {
-      return ["< $180", "< $200", "< $250", "< $300", "No Limit"];
-    }
-    return [];
-  };
+  const displayBudget = budget === 360 ? "$360+" : `$${budget}`;
 
   return (
     <Card className="p-8 shadow-lg border-2 border-primary/20">
@@ -51,57 +26,39 @@ const BudgetSlider = ({ question, onAnswer }: BudgetSliderProps) => {
           {question}
         </h2>
         <p className="text-muted-foreground text-sm">
-          {step === 1 ? "Choose your budget category" : "Select your maximum budget"}
+          Drag the slider to set your maximum budget
         </p>
       </div>
-
-      {step === 1 ? (
-        <div className="space-y-4">
-          {["Budget", "Medium", "Higher"].map((cat, index) => (
-            <Button
-              key={cat}
-              onClick={() => handleCategorySelect(cat as "Budget" | "Medium" | "Higher")}
-              variant="outline"
-              className="w-full p-6 h-auto text-left justify-start border-2 border-border hover:border-primary hover:bg-primary/5 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-            >
-              <div className="flex items-center space-x-4">
-                <div className="w-8 h-8 rounded-full bg-accent/20 text-accent font-bold flex items-center justify-center text-sm flex-shrink-0">
-                  {index + 1}
-                </div>
-                <span className="text-foreground font-medium text-lg">{cat}</span>
-              </div>
-            </Button>
-          ))}
-        </div>
-      ) : (
-        <div className="space-y-6">
-          <Button
-            onClick={handleBack}
-            variant="ghost"
-            size="sm"
-            className="mb-2"
-          >
-            ← Back to categories
-          </Button>
-          <div className="space-y-4">
-            {getBudgetOptions().map((budget, index) => (
-              <Button
-                key={budget}
-                onClick={() => handleBudgetSelect(budget)}
-                variant="outline"
-                className="w-full p-6 h-auto text-left justify-start border-2 border-border hover:border-primary hover:bg-primary/5 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-              >
-                <div className="flex items-center space-x-4">
-                  <div className="w-8 h-8 rounded-full bg-accent/20 text-accent font-bold flex items-center justify-center text-sm flex-shrink-0">
-                    {index + 1}
-                  </div>
-                  <span className="text-foreground font-medium text-lg">{budget}</span>
-                </div>
-              </Button>
-            ))}
+      
+      <div className="mb-8">
+        <div className="flex justify-center mb-6">
+          <div className="text-4xl font-bold text-primary">
+            {displayBudget}
           </div>
         </div>
-      )}
+        
+        <Slider
+          value={[budget]}
+          onValueChange={(value) => setBudget(value[0])}
+          min={30}
+          max={360}
+          step={5}
+          className="w-full"
+        />
+        
+        <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+          <span>$30</span>
+          <span>$360+</span>
+        </div>
+      </div>
+
+      <Button
+        onClick={handleConfirm}
+        className="w-full"
+        size="lg"
+      >
+        Continue with {displayBudget}
+      </Button>
     </Card>
   );
 };
