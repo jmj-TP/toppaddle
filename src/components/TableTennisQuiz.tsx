@@ -118,8 +118,9 @@ const questions = [
     options: [
       { value: "<50$", label: "Under $50" },
       { value: "<100$", label: "Under $100" },
-      { value: "<160$", label: "Under $160" },
-      { value: "161+", label: "$161+" }
+      { value: "<120$", label: "Under $120" },
+      { value: "<140$", label: "Under $140" },
+      { value: "more", label: "More Options" }
     ],
     key: "Budget" as keyof QuizAnswers
   }
@@ -142,15 +143,16 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const [showWeightQuestion, setShowWeightQuestion] = useState(false);
   const [questionHistory, setQuestionHistory] = useState<number[]>([]);
 
-  // Premium budget follow-up question
-  const premiumBudgetQuestion = {
+  // More budget options follow-up question
+  const moreBudgetQuestion = {
     id: 11.5,
     question: "Please select your exact budget range:",
     options: [
+      { value: "<160$", label: "Under $160" },
+      { value: "<180$", label: "Under $180" },
       { value: "<200$", label: "Under $200" },
       { value: "<250$", label: "Under $250" },
       { value: "<300$", label: "Under $300" },
-      { value: "<360$", label: "Under $360" },
       { value: "No limit", label: "No Limit" }
     ],
     key: "Budget" as keyof QuizAnswers
@@ -194,7 +196,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
 
   const handleAnswer = (answer: string) => {
     const question = 
-      currentQuestion === 11.5 ? premiumBudgetQuestion : 
+      currentQuestion === 11.5 ? moreBudgetQuestion : 
       currentQuestion === 7.5 ? forehandSpecialQuestion :
       currentQuestion === 7.6 ? backhandSpecialQuestion :
       currentQuestion === 6.5 ? handleSelectorQuestion :
@@ -321,14 +323,14 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-    // Check if user selected "161+" on budget question (now question 10)
-    if (currentQuestion === 10 && answer === "161+") {
+    // Check if user selected "more" on budget question (now question 10)
+    if (currentQuestion === 10 && answer === "more") {
       setShowPremiumBudget(true);
       setCurrentQuestion(11.5);
       return;
     }
 
-    // Handle premium budget follow-up - this completes the quiz
+    // Handle more budget options follow-up - this completes the quiz
     if (currentQuestion === 11.5) {
       setShowPremiumBudget(false);
       // Generate recommendation when quiz is complete
@@ -457,7 +459,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         ) : (
           <QuestionCard
             question={
-              currentQuestion === 11.5 ? premiumBudgetQuestion : 
+              currentQuestion === 11.5 ? moreBudgetQuestion : 
               currentQuestion === 7.5 ? forehandSpecialQuestion :
               currentQuestion === 7.6 ? backhandSpecialQuestion :
               questions[currentQuestion]

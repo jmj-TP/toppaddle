@@ -177,16 +177,20 @@ function getBudgetRange(budget: string): { min: number; max: number } {
       return { min: 0, max: 50 };
     case '<100$':
       return { min: 0, max: 100 };
+    case '<120$':
+      return { min: 0, max: 120 };
+    case '<140$':
+      return { min: 0, max: 140 };
     case '<160$':
       return { min: 0, max: 160 };
+    case '<180$':
+      return { min: 0, max: 180 };
     case '<200$':
       return { min: 0, max: 200 };
     case '<250$':
       return { min: 0, max: 250 };
     case '<300$':
       return { min: 0, max: 300 };
-    case '<360$':
-      return { min: 0, max: 360 };
     case 'No limit':
       return { min: 0, max: 10000 };
     default:
