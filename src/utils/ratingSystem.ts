@@ -50,13 +50,15 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   } else if (answers.Level === 'Advanced' && productLevel === 'Intermediate') {
     // Advanced players should see Intermediate products (full match)
     score += levelWeight;
-  } else if (
-    (answers.Level === 'Beginner' && productLevel === 'Intermediate') ||
-    (answers.Level === 'Intermediate' && productLevel === 'Advanced')
-  ) {
+  } else if (answers.Level === 'Beginner' && productLevel === 'Intermediate') {
+    score += levelWeight * 0.7; // Partial match for progression
+  } else if (answers.Level === 'Intermediate' && productLevel === 'Advanced') {
     score += levelWeight * 0.7; // Partial match for progression
   } else if (answers.Level === 'Advanced' && productLevel === 'Beginner') {
     // Filter out Beginner products for Advanced players
+    return 0;
+  } else if (answers.Level === 'Beginner' && productLevel === 'Advanced') {
+    // Filter out Advanced products for Beginner players
     return 0;
   }
 
