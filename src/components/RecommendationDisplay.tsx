@@ -266,25 +266,17 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     <div className="text-sm">
                       <span className="font-medium">Grip:</span> {setup.blade.Blade_Grip}
                     </div>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <button className="flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full text-left">
-                          <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                          <div>
-                            <span>Recommended Handle:</span>
-                            <span className="font-bold text-accent ml-1">{handleType}</span>
-                          </div>
-                        </button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-80">
-                        <div className="space-y-2">
-                          <h4 className="font-semibold text-sm">Why {handleType}?</h4>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            {handleTypeExplanation}
-                          </p>
+                    <div className="mt-3 p-3 bg-accent/10 border border-accent/30 rounded-md">
+                      <div className="flex items-start gap-2">
+                        <Info className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                        <div className="text-xs leading-relaxed">
+                          <span className="font-semibold text-accent">Handle Recommendation:</span>
+                          <span className="text-foreground"> When purchasing, make sure to choose </span>
+                          <span className="font-bold text-accent">{handleType}</span>
+                          <span className="text-foreground"> handle in the shop.</span>
                         </div>
-                      </PopoverContent>
-                    </Popover>
+                      </div>
+                    </div>
                     <div className="text-sm">
                       <span className="font-medium">Price:</span> 
                       <span className="font-bold ml-1">{formatPrice(setup.blade.Blade_Price)}</span>
@@ -439,19 +431,6 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               💡 <strong>Note:</strong> Your budget is best suited for pre-assembled rackets. 
               Custom setups typically start at $90+ due to blade and rubber costs.
             </p>
-          </div>
-        )}
-
-        {handleType && !handleType.includes('DHS brand only') && (
-          <div className="mt-4 p-4 bg-primary/10 border border-primary/30 rounded-lg">
-            <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-              <div className="text-left">
-                <p className="text-sm text-foreground">
-                  <strong>Handle Recommendation:</strong> When purchasing, make sure to choose <span className="font-semibold text-primary">{handleType}</span> handle in the shop.
-                </p>
-              </div>
-            </div>
           </div>
         )}
 
