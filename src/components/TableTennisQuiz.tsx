@@ -421,6 +421,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         recommendation={recommendation} 
         onRestart={handleRestart} 
         assemblyPreference={answers.AssemblyPreference}
+        playerLevel={answers.Level}
       />
     );
   }
