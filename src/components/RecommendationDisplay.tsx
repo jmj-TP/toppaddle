@@ -49,12 +49,12 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   );
 
   // Pre-assembled racket card component
-  const PreAssembledCard = () => preAssembled ? (
+  const PreAssembledCard = ({ rank }: { rank?: number }) => preAssembled ? (
     <Card className="border-border" style={{ boxShadow: "var(--shadow-lg)" }}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            🏓 <span>Ready-to-Play Racket</span>
+            🏓 <span>Ready-to-Play Racket{rank ? ` #${rank}` : ''}</span>
             <Badge variant="secondary">Beginner Friendly</Badge>
           </CardTitle>
           <div className="flex items-center gap-2">
@@ -421,12 +421,14 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
       {/* Render recommendations sorted by score (best first) */}
       {allRecommendations.map((item, index) => {
+        const rank = allRecommendations.length > 1 ? index + 1 : undefined;
+        
         if (item.type === 'preAssembled') {
-          return <PreAssembledCard key="preAssembled" />;
+          return <PreAssembledCard key="preAssembled" rank={rank} />;
         } else if (item.type === 'custom1') {
-          return <CustomSetupCard key="custom1" setup={item.data} rank={customSetup2 ? 1 : undefined} />;
+          return <CustomSetupCard key="custom1" setup={item.data} rank={rank} />;
         } else if (item.type === 'custom2') {
-          return <CustomSetupCard key="custom2" setup={item.data} rank={2} />;
+          return <CustomSetupCard key="custom2" setup={item.data} rank={rank} />;
         }
         return null;
       })}
