@@ -33,8 +33,6 @@ export interface Recommendation {
   forehandThicknessExplanation: string;
   backhandThickness: string;
   backhandThicknessExplanation: string;
-  handleType: string;
-  handleTypeExplanation: string;
 }
 
 // Calculate compatibility score between user preferences and product attributes
@@ -47,6 +45,12 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   maxScore += levelWeight;
   const productLevel = product.Blade_Level || product.Racket_Level || product.Rubber_Level;
   
+  // Get product attributes early for filtering
+  const speed = product.Blade_Speed || product.Racket_Speed || product.Rubber_Speed || 0;
+  const control = product.Blade_Control || product.Racket_Control || product.Rubber_Control || 0;
+  const power = product.Blade_Power || product.Racket_Power || product.Rubber_Power || 0;
+  const spin = product.Racket_Spin || product.Rubber_Spin || 0;
+  
   if (answers.Level === productLevel) {
     score += levelWeight;
   } else if (answers.Level === 'Advanced' && productLevel === 'Intermediate') {
@@ -56,6 +60,12 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += levelWeight * 0.7; // Partial match for progression
   } else if (answers.Level === 'Intermediate' && productLevel === 'Advanced') {
     score += levelWeight * 0.7; // Partial match for progression
+  } else if (answers.Level === 'Intermediate' && productLevel === 'Beginner') {
+    // Intermediate offensive/aggressive players shouldn't get beginner control blades
+    if (answers.Playstyle.includes('Offensive') && control > 85 && speed < 65) {
+      return 0; // Filter out control-focused beginner products for intermediate offensive players
+    }
+    score += levelWeight * 0.5; // Reduced match for beginner products
   } else if (answers.Level === 'Advanced' && productLevel === 'Beginner') {
     // Filter out Beginner products for Advanced players
     return 0;
@@ -68,18 +78,17 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   const playstyleWeight = 40;
   maxScore += playstyleWeight;
   
-  const speed = product.Blade_Speed || product.Racket_Speed || product.Rubber_Speed || 0;
-  const control = product.Blade_Control || product.Racket_Control || product.Rubber_Control || 0;
-  const power = product.Blade_Power || product.Racket_Power || product.Rubber_Power || 0;
-  const spin = product.Racket_Spin || product.Rubber_Spin || 0;
-
   if (answers.Playstyle.includes('Offensive')) {
     // Heavily prefer high speed and power, penalize excessive control
     score += (speed / 100) * playstyleWeight * 0.5;
     score += (power / 100) * playstyleWeight * 0.5;
-    // Penalize overly control-focused rubbers for offensive play
-    if (control > 88) {
-      score -= playstyleWeight * 0.2;
+    // Penalize overly control-focused products for offensive play
+    if (control > 85) {
+      score -= playstyleWeight * 0.3; // Stronger penalty for control-focused equipment
+    }
+    // Bonus for high-speed offensive equipment
+    if (speed > 80 && power > 80) {
+      score += playstyleWeight * 0.2; // Bonus for truly offensive equipment
     }
   } else if (answers.Playstyle.includes('Defensive')) {
     // Prefer high control
@@ -96,6 +105,10 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   if (answers.Power.includes('A lot of power')) {
     score += (speed / 100) * powerWeight * 0.6;
     score += (power / 100) * powerWeight * 0.4;
+    // Additional penalty for low-speed equipment when maximum power is desired
+    if (speed < 70) {
+      score -= powerWeight * 0.3;
+    }
   } else if (answers.Power.includes('Control is more important')) {
     score += (control / 100) * powerWeight;
   } else if (answers.Power.includes('Balanced')) {
@@ -113,8 +126,6 @@ function calculateScore(answers: QuizAnswers, product: any): number {
     score += gripWeight;
   } else if (answers.Grip.includes('Penhold') && productGrip.includes('Penhold')) {
     score += gripWeight;
-  } else if (answers.Grip.includes('Small Hands Special') && productGrip.includes('Flared')) {
-    score += gripWeight; // Small hands special uses Flared handle
   } else if (answers.Grip.includes('Not sure')) {
     score += gripWeight * 0.8; // Give benefit of doubt
   }
@@ -181,20 +192,16 @@ function getBudgetRange(budget: string): { min: number; max: number } {
       return { min: 0, max: 50 };
     case '<100$':
       return { min: 0, max: 100 };
-    case '<120$':
-      return { min: 0, max: 120 };
-    case '<140$':
-      return { min: 0, max: 140 };
     case '<160$':
       return { min: 0, max: 160 };
-    case '<180$':
-      return { min: 0, max: 180 };
     case '<200$':
       return { min: 0, max: 200 };
     case '<250$':
       return { min: 0, max: 250 };
     case '<300$':
       return { min: 0, max: 300 };
+    case '<360$':
+      return { min: 0, max: 360 };
     case 'No limit':
       return { min: 0, max: 10000 };
     default:
@@ -206,60 +213,6 @@ function getBudgetRange(budget: string): { min: number; max: number } {
 function isWithinBudget(price: number, budget: string): boolean {
   const range = getBudgetRange(budget);
   return price >= range.min && price <= range.max;
-}
-
-// Calculate recommended handle type based on grip preference
-function calculateHandleType(answers: QuizAnswers): {
-  handleType: string;
-  explanation: string;
-} {
-  const { Grip, Level } = answers;
-  
-  // Small Hands Special
-  if (Grip.includes('Small Hands Special')) {
-    return {
-      handleType: 'Flared (DHS brand only)',
-      explanation: 'For players with really small hands, we recommend DHS blades with Flared handles, which are designed to work well for smaller hand sizes.'
-    };
-  }
-  
-  // Anatomic grip
-  if (Grip.includes('Anatomic')) {
-    return {
-      handleType: 'Anatomic',
-      explanation: 'An Anatomic handle is contoured to fit your palm perfectly, providing secure and ergonomic grip that reduces hand fatigue during long play sessions. Great for players with really large hands.'
-    };
-  }
-  
-  // Penhold grip
-  if (Grip.includes('Penhold')) {
-    return {
-      handleType: 'Penhold',
-      explanation: 'A Penhold handle is designed for the traditional Chinese grip style, offering excellent control and feel for penhold players.'
-    };
-  }
-  
-  // Straight grip preference
-  if (Grip.includes('Straight')) {
-    return {
-      handleType: 'Straight',
-      explanation: 'A Straight handle offers uniform shape and versatility, perfect for players who like to adjust their grip position frequently.'
-    };
-  }
-  
-  // Shakehand or Not sure - recommend Flared (most popular)
-  if (Grip.includes('Shakehand') || Grip.includes('Not sure')) {
-    return {
-      handleType: 'Flared',
-      explanation: 'A Flared handle is the most popular choice for shakehand grip. It\'s wider at the bottom, prevents slipping, and provides excellent control and comfort for most playing styles.'
-    };
-  }
-  
-  // Default fallback to Flared
-  return {
-    handleType: 'Flared',
-    explanation: 'A Flared handle is the most common and versatile choice, offering excellent grip security and comfort for most players.'
-  };
 }
 
 // Calculate recommended sponge thickness based on player level and style
@@ -369,11 +322,6 @@ function calculateSpongeThickness(answers: QuizAnswers): {
 export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledRacket & { score: number }) | null {
   const suitableRackets = preAssembledRackets
     .filter(racket => {
-      // Small Hands Special - ONLY DHS brand (STRICT - dealbreaker)
-      if (answers.Grip.includes('Small Hands Special')) {
-        if (extractBrand(racket.Racket_Name) !== 'DHS') return false;
-      }
-      
       // Brand filter (STRICT - dealbreaker)
       if (!matchesBrandFilter(racket.Racket_Name, answers.Brand)) return false;
       
@@ -383,10 +331,6 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
       // Rubber style filter
       if (racket.Racket_FH_Rubber_Style !== answers.ForehandRubberStyle) return false;
       if (racket.Racket_BH_Rubber_Style !== answers.BackhandRubberStyle) return false;
-      
-      // Grip/Handle filter (STRICT - dealbreaker for Anatomic only)
-      const productGrip = racket.Racket_Grip || '';
-      if (answers.Grip.includes('Anatomic') && !productGrip.includes('Anatomic')) return false;
       
       return true;
     })
@@ -418,6 +362,14 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
 
 // Find best custom setup
 export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
+  console.log('🔍 Finding custom setup for:', {
+    Level: answers.Level,
+    Playstyle: answers.Playstyle,
+    Power: answers.Power,
+    Brand: answers.Brand,
+    Budget: answers.Budget
+  });
+  
   const budgetRange = getBudgetRange(answers.Budget);
   const bestCombinations: CustomSetup[] = [];
 
@@ -427,25 +379,21 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
 
   // Try all combinations of blade + 2 rubbers
   for (const blade of blades) {
-    // Small Hands Special - ONLY DHS brand (STRICT - dealbreaker)
-    if (answers.Grip.includes('Small Hands Special')) {
-      if (extractBrand(blade.Blade_Name) !== 'DHS') {
-        continue;
-      }
-    }
-    
     // Brand filter (STRICT - dealbreaker)
     if (!matchesBrandFilter(blade.Blade_Name, answers.Brand)) {
       continue;
     }
     
-    // Grip/Handle filter (STRICT - dealbreaker for Anatomic only)
-    const bladeGrip = blade.Blade_Grip || '';
-    if (answers.Grip.includes('Anatomic') && !bladeGrip.includes('Anatomic')) {
+    // Calculate blade score to filter early
+    const bladeScore = calculateScore(answers, blade);
+    if (bladeScore === 0) {
+      console.log(`❌ Filtered out blade: ${blade.Blade_Name} (Level: ${blade.Blade_Level}, Speed: ${blade.Blade_Speed}, Control: ${blade.Blade_Control})`);
       continue;
     }
     
-      for (const fhRubber of forehandRubbers) {
+    console.log(`✅ Considering blade: ${blade.Blade_Name} (Score: ${bladeScore.toFixed(1)}, Level: ${blade.Blade_Level}, Speed: ${blade.Blade_Speed}, Control: ${blade.Blade_Control})`);
+    
+    for (const fhRubber of forehandRubbers) {
       // Brand filter for forehand rubber (STRICT - dealbreaker)
       if (!matchesBrandFilter(fhRubber.Rubber_Name, answers.Brand)) {
         continue;
@@ -457,19 +405,15 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
           continue;
         }
         
-        // For budgets over $160, allow blade to be much more expensive than rubbers
-        // For budgets under $160, maintain balanced pricing constraints
-        if (budgetRange.max <= 160) {
-          // Constraint: no rubber should be more expensive than the blade
-          if (fhRubber.Rubber_Price > blade.Blade_Price || bhRubber.Rubber_Price > blade.Blade_Price) {
-            continue;
-          }
-          
-          // Constraint: cheapest rubber should be at least 1/2 of blade price
-          const cheapestRubber = Math.min(fhRubber.Rubber_Price, bhRubber.Rubber_Price);
-          if (cheapestRubber < blade.Blade_Price / 2) {
-            continue;
-          }
+        // Constraint: no rubber should be more expensive than the blade
+        if (fhRubber.Rubber_Price > blade.Blade_Price || bhRubber.Rubber_Price > blade.Blade_Price) {
+          continue;
+        }
+        
+        // Constraint: cheapest rubber should be at least 1/2 of blade price
+        const cheapestRubber = Math.min(fhRubber.Rubber_Price, bhRubber.Rubber_Price);
+        if (cheapestRubber < blade.Blade_Price / 2) {
+          continue;
         }
         
         const totalPrice = blade.Blade_Price + fhRubber.Rubber_Price + bhRubber.Rubber_Price;
@@ -548,49 +492,45 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
 
 // Get complete recommendation
 export function getRecommendation(answers: QuizAnswers): Recommendation {
+  const preAssembled = findBestPreAssembledRacket(answers);
+  const customSetup = findBestCustomSetup(answers);
   const { forehandThickness, forehandExplanation, backhandThickness, backhandExplanation } = calculateSpongeThickness(answers);
-  const { handleType, explanation: handleTypeExplanation } = calculateHandleType(answers);
+
+  // Determine which option to prioritize
+  let totalScore = 0;
   
   // Safe check for AssemblyPreference
   const assemblyPref = answers.AssemblyPreference || '';
   
-  if (assemblyPref.includes('Ready-to-play')) {
-    // Only return pre-assembled racket
-    const preAssembled = findBestPreAssembledRacket(answers);
-    const totalScore = preAssembled?.score || 0;
+  if (assemblyPref.includes('Ready-to-play') && preAssembled) {
+    // Prefer pre-assembled for beginners
+    totalScore = preAssembled.score || 0;
     return { 
       preAssembled, 
-      customSetup: undefined,
-      totalScore,
-      forehandThickness,
-      forehandThicknessExplanation: forehandExplanation,
-      backhandThickness,
-      backhandThicknessExplanation: backhandExplanation,
-      handleType,
-      handleTypeExplanation
-    };
-  } else if (assemblyPref.includes('Custom setup')) {
-    // Only return custom setup
-    const customSetup = findBestCustomSetup(answers);
-    const totalScore = customSetup?.score || 0;
-    return { 
-      preAssembled: undefined,
       customSetup, 
       totalScore,
       forehandThickness,
       forehandThicknessExplanation: forehandExplanation,
       backhandThickness,
-      backhandThicknessExplanation: backhandExplanation,
-      handleType,
-      handleTypeExplanation
+      backhandThicknessExplanation: backhandExplanation
+    };
+  } else if (assemblyPref.includes('Custom setup') && customSetup) {
+    // Prefer custom setup for advanced users
+    totalScore = customSetup.score;
+    return { 
+      preAssembled, 
+      customSetup, 
+      totalScore,
+      forehandThickness,
+      forehandThicknessExplanation: forehandExplanation,
+      backhandThickness,
+      backhandThicknessExplanation: backhandExplanation
     };
   } else {
-    // Return both options (for "Not sure")
-    const preAssembled = findBestPreAssembledRacket(answers);
-    const customSetup = findBestCustomSetup(answers);
+    // Return both options, prioritize based on scores
     const preScore = preAssembled?.score || 0;
     const customScore = customSetup?.score || 0;
-    const totalScore = Math.max(preScore, customScore);
+    totalScore = Math.max(preScore, customScore);
     return { 
       preAssembled, 
       customSetup, 
@@ -598,9 +538,7 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       forehandThickness,
       forehandThicknessExplanation: forehandExplanation,
       backhandThickness,
-      backhandThicknessExplanation: backhandExplanation,
-      handleType,
-      handleTypeExplanation
+      backhandThicknessExplanation: backhandExplanation
     };
   }
 }
