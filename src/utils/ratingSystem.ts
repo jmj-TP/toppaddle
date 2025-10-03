@@ -403,19 +403,18 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
     const minScoreInBudget = suitableRackets[suitableRackets.length - 1].score;
     const scoreRange = maxScoreInBudget - minScoreInBudget;
     
-    // Use wider range: scale scores from 65-100 based on quality
-    // Best match gets close to raw score (capped at 100)
+    // Use wider range: scale scores from 65-99 based on quality (max 99%, never 100%)
     const normalizedRackets = suitableRackets.map(racket => {
       if (scoreRange > 0) {
-        // Scale from 65 to 100, but prefer raw score if it's already good
-        const scaledScore = 65 + ((racket.score - minScoreInBudget) / scoreRange) * 35;
-        // Use the higher of scaled or raw score (capped at 100)
+        // Scale from 65 to 99, but prefer raw score if it's already good
+        const scaledScore = 65 + ((racket.score - minScoreInBudget) / scoreRange) * 34;
+        // Use the higher of scaled or raw score (capped at 99)
         return {
           ...racket,
-          score: Math.min(100, Math.max(scaledScore, racket.score))
+          score: Math.min(99, Math.max(scaledScore, racket.score))
         };
       }
-      return { ...racket, score: Math.min(100, racket.score) };
+      return { ...racket, score: Math.min(99, racket.score) };
     });
     
     return normalizedRackets[0];
@@ -532,13 +531,18 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
     const topSetups = bestCombinations.slice(0, topN).map((setup, index) => {
       let normalizedScore;
       if (scoreRange > 0) {
-        // Scale from 65 to 100, but prefer raw score if it's already good
-        const scaledScore = 65 + ((setup.score - minScoreInBudget) / scoreRange) * 35;
-        // Use the higher of scaled or raw score (capped at 100)
-        normalizedScore = Math.min(100, Math.max(scaledScore, setup.score));
+        // Scale from 65 to 99, but prefer raw score if it's already good
+        const scaledScore = 65 + ((setup.score - minScoreInBudget) / scoreRange) * 34;
+        // Use the higher of scaled or raw score (capped at 99)
+        normalizedScore = Math.min(99, Math.max(scaledScore, setup.score));
       } else {
         // If all scores are the same, decrease slightly for each rank
-        normalizedScore = Math.min(100, setup.score) - (index * 1);
+        normalizedScore = Math.min(99, setup.score) - (index * 1);
+      }
+      
+      // Ensure 2nd recommendation has lower score than 1st
+      if (index > 0 && normalizedScore >= topSetups[0].score) {
+        normalizedScore = topSetups[0].score - 1;
       }
       
       // If both rubbers are Normal and prices differ, ensure more expensive one is on forehand
