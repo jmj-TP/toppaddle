@@ -222,9 +222,9 @@ export const blades: Blade[] =
   },
   {
     Blade_Name: "ANDRO Timber 5 ALL",
-    Blade_Speed: 66,
-    Blade_Control: 70,
-    Blade_Power: 64,
+    Blade_Speed: 50,
+    Blade_Control: 90,
+    Blade_Power: 45,
     Blade_Grip: "Flared",
     Blade_Price: 64.95,
     Blade_Level: "Intermediate",
