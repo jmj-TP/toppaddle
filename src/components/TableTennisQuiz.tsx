@@ -7,6 +7,7 @@ import QuestionCard from "./QuestionCard";
 import RecommendationDisplay from "./RecommendationDisplay";
 import HandleSelector from "./HandleSelector";
 import MediumHandsSelector from "./MediumHandsSelector";
+import BrandSelector from "./BrandSelector";
 import { getRecommendation, type QuizAnswers } from "@/utils/ratingSystem";
 
 const questions = [
@@ -103,15 +104,10 @@ const questions = [
   },
   {
     id: 10,
-    question: "Which brand do you prefer?",
-    options: [
-      { value: "All Brands", label: "All Brands" },
-      { value: "ANDRO", label: "ANDRO" },
-      { value: "BUTTERFLY", label: "BUTTERFLY" },
-      { value: "JOOLA", label: "JOOLA" },
-      { value: "DHS", label: "DHS" }
-    ],
-    key: "Brand" as keyof QuizAnswers
+    question: "Which brands do you prefer?",
+    options: [], // Will use BrandSelector component instead
+    key: "Brand" as keyof QuizAnswers,
+    isBrandSelector: true
   },
   {
     id: 11,
@@ -143,6 +139,8 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const [showHandleSelector, setShowHandleSelector] = useState(false);
   const [showMediumHandsSelector, setShowMediumHandsSelector] = useState(false);
   const [showWeightQuestion, setShowWeightQuestion] = useState(false);
+  const [showBrandSelector, setShowBrandSelector] = useState(false);
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [questionHistory, setQuestionHistory] = useState<number[]>([]);
 
   // More budget options follow-up question
@@ -341,10 +339,15 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     if (currentQuestion === 8) {
       // Show brand question only for Intermediate and Advanced
       if (answers.Level === "Intermediate" || answers.Level === "Advanced") {
+        setShowBrandSelector(true);
+        // Initialize selectedBrands from answers if going back
+        if (answers.Brand && Array.isArray(answers.Brand)) {
+          setSelectedBrands(answers.Brand);
+        }
         setCurrentQuestion(9); // Go to brand question (index 9)
       } else {
         // Beginners skip brand question, set default and go to budget
-        const updatedAnswers = { ...newAnswers, Brand: "All Brands" };
+        const updatedAnswers = { ...newAnswers, Brand: [] }; // Empty array = all brands
         setAnswers(updatedAnswers);
         setCurrentQuestion(10); // Go to budget question (index 10)
       }
@@ -353,6 +356,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
 
     // After brand question (question 9), go to budget question (question 10)
     if (currentQuestion === 9) {
+      setShowBrandSelector(false);
       setCurrentQuestion(10); // Go to budget question (index 10)
       return;
     }
@@ -398,8 +402,16 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     // Reset conditional states based on where we're going back
     if (currentQuestion === 11.5) {
       setShowPremiumBudget(false);
+    } else if (currentQuestion === 10 && previousQuestion === 9) {
+      // Going back to brand selector from budget question
+      setShowBrandSelector(true);
+      // Restore selected brands from answers
+      if (answers.Brand && Array.isArray(answers.Brand)) {
+        setSelectedBrands(answers.Brand);
+      }
     } else if (currentQuestion === 9) {
       setShowWeightQuestion(false);
+      setShowBrandSelector(false);
     } else if (currentQuestion === 7.5) {
       setShowForehandSpecial(false);
     } else if (currentQuestion === 7.6) {
@@ -411,6 +423,27 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     }
     
     setCurrentQuestion(previousQuestion);
+  };
+
+  const handleBrandToggle = (brand: string) => {
+    setSelectedBrands(prev => {
+      if (prev.includes(brand)) {
+        // Remove brand, but keep at least one
+        const newBrands = prev.filter(b => b !== brand);
+        return newBrands.length === 0 ? [brand] : newBrands;
+      } else {
+        // Add brand
+        return [...prev, brand];
+      }
+    });
+  };
+
+  const handleBrandContinue = () => {
+    const newAnswers = { ...answers, Brand: selectedBrands };
+    setAnswers(newAnswers);
+    setQuestionHistory([...questionHistory, currentQuestion]);
+    setShowBrandSelector(false);
+    setCurrentQuestion(10); // Go to budget question
   };
 
   const handleRestart = () => {
@@ -425,6 +458,8 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     setShowHandleSelector(false);
     setShowMediumHandsSelector(false);
     setShowWeightQuestion(false);
+    setShowBrandSelector(false);
+    setSelectedBrands([]);
     setQuestionHistory([]);
     onQuizStatusChange(false);
   };
@@ -520,6 +555,22 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
           <Card className="p-8 backdrop-blur-sm bg-card/50 border-2">
             <h2 className="text-2xl font-bold text-foreground mb-6">Which handle shape do you prefer?</h2>
             <MediumHandsSelector onSelect={handleAnswer} />
+          </Card>
+        ) : showBrandSelector && currentQuestion === 9 ? (
+          <Card className="p-8 backdrop-blur-sm bg-card/50 border-2">
+            <h2 className="text-2xl font-bold text-foreground mb-6">Which brands do you prefer?</h2>
+            <BrandSelector 
+              selectedBrands={selectedBrands}
+              onBrandToggle={handleBrandToggle}
+            />
+            <Button 
+              onClick={handleBrandContinue}
+              disabled={selectedBrands.length === 0}
+              className="w-full mt-6"
+              size="lg"
+            >
+              Continue
+            </Button>
           </Card>
         ) : (
           <QuestionCard

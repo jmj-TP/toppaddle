@@ -13,7 +13,7 @@ export interface QuizAnswers {
   WantsSpecialRubbers: string;
   ForehandRubberStyle: string;
   BackhandRubberStyle: string;
-  Brand: string;
+  Brand: string[]; // Array of selected brands
   Budget: string;
   WeightPreference?: string;
   AssemblyPreference: string;
@@ -173,9 +173,12 @@ function extractBrand(productName: string): string {
 }
 
 // Check if product matches brand filter (strict dealbreaker)
-function matchesBrandFilter(productName: string, selectedBrand: string): boolean {
-  if (selectedBrand === 'All Brands') return true;
-  return extractBrand(productName) === selectedBrand.toUpperCase();
+function matchesBrandFilter(productName: string, selectedBrands: string[]): boolean {
+  // Empty array or all brands selected means accept all
+  if (selectedBrands.length === 0 || selectedBrands.length === 4) return true;
+  
+  const productBrand = extractBrand(productName);
+  return selectedBrands.some(brand => brand.toUpperCase() === productBrand);
 }
 
 // Get budget range
