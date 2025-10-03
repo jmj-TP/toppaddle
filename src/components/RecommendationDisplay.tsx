@@ -35,21 +35,21 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
      return b.score - a.score;
    });
 
-  // Filter based on assembly preference to show exactly 2 rackets
+  // Filter based on assembly preference to show 4 rackets
   if (assemblyPreference === "Ready-to-play racket") {
-    // Show only pre-assembled rackets (max 2)
-    allRecommendations = allRecommendations.filter(item => item.type === 'preAssembled').slice(0, 2);
+    // Show only pre-assembled rackets (max 4)
+    allRecommendations = allRecommendations.filter(item => item.type === 'preAssembled').slice(0, 4);
   } else if (assemblyPreference === "Custom setup") {
-    // Show only custom setups (max 2)
-    allRecommendations = allRecommendations.filter(item => item.type !== 'preAssembled').slice(0, 2);
+    // Show only custom setups (max 4)
+    allRecommendations = allRecommendations.filter(item => item.type !== 'preAssembled').slice(0, 4);
   } else if (assemblyPreference === "Not sure") {
-    // Show 1 custom and 1 pre-assembled
-    const customOptions = allRecommendations.filter(item => item.type !== 'preAssembled').slice(0, 1);
-    const preAssembledOptions = allRecommendations.filter(item => item.type === 'preAssembled').slice(0, 1);
+    // Show 2 custom and 2 pre-assembled
+    const customOptions = allRecommendations.filter(item => item.type !== 'preAssembled').slice(0, 2);
+    const preAssembledOptions = allRecommendations.filter(item => item.type === 'preAssembled').slice(0, 2);
     allRecommendations = [...customOptions, ...preAssembledOptions];
   } else {
-    // Default: show top 2 of any type
-    allRecommendations = allRecommendations.slice(0, 2);
+    // Default: show top 4 of any type
+    allRecommendations = allRecommendations.slice(0, 4);
   }
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
