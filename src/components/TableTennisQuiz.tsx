@@ -392,27 +392,44 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     onQuizStatusChange(false);
   };
 
-  // Calculate progress considering all potential follow-up questions
-  const totalExtraQuestions = 
-    (showPremiumBudget ? 1 : 0) + 
-    (showForehandSpecial ? 1 : 0) + 
-    (showBackhandSpecial ? 1 : 0) +
-    (showHandleSelector ? 1 : 0) +
-    (showWeightQuestion ? 1 : 0);
-  // Calculate base questions: -1 for weight (conditional), -1 for brand (conditional for beginners)
-  const baseQuestions = questions.length - 
-    (showWeightQuestion ? 0 : 1) - 
-    (answers.Level === "Beginner" ? 1 : 0);
-  const totalQuestions = baseQuestions + totalExtraQuestions;
-  const currentProgress = 
-    currentQuestion === 11.5 ? 11 : 
-    currentQuestion === 7.5 ? 7 :
-    currentQuestion === 7.6 ? 7 :
-    currentQuestion === 6.5 ? 6 :
-    currentQuestion >= 8 && !showWeightQuestion ? currentQuestion - 1 :
-    currentQuestion >= 9 && answers.Level === "Beginner" ? currentQuestion - 1 :
-    currentQuestion;
-  const progress = (currentProgress / totalQuestions) * 100;
+  // Calculate actual number of questions answered (including current)
+  const questionsAnswered = questionHistory.length + 1;
+  
+  // Calculate total expected questions based on current answers
+  let totalQuestions = 11; // Base questions: all 11 main questions
+  
+  // Subtract questions that will be skipped based on current answers
+  if (answers.Forehand === "Both sides the same / not sure") {
+    totalQuestions -= 1; // Skip backhand question
+  }
+  
+  if ("WantsSpecialHandle" in answers) {
+    if (answers.WantsSpecialHandle === "Yes") {
+      totalQuestions += 1; // Add handle selector question
+    }
+  }
+  
+  if ("WantsSpecialRubbers" in answers) {
+    if (answers.WantsSpecialRubbers === "Yes") {
+      totalQuestions += 2; // Add forehand and backhand rubber style questions
+    }
+  }
+  
+  if (answers.Level === "Beginner") {
+    totalQuestions -= 1; // Skip brand question
+  }
+  
+  if (answers.Level !== "Advanced" && answers.Level !== undefined) {
+    totalQuestions -= 1; // Skip weight question
+  }
+  
+  if (answers.Budget === "more") {
+    totalQuestions += 1; // Add premium budget question
+  }
+  
+  // Ensure we never show more answered than total
+  const safeAnswered = Math.min(questionsAnswered, totalQuestions);
+  const progress = (safeAnswered / totalQuestions) * 100;
 
   // Quiz completion screen with recommendations
   if (isComplete && recommendation) {
@@ -432,7 +449,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-medium text-muted-foreground">
-              Question {currentProgress + 1} of {totalQuestions}
+              Question {safeAnswered} of {totalQuestions}
             </span>
             <span className="text-sm font-medium text-primary">
               {Math.round(progress)}% Complete
