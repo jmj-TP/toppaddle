@@ -540,8 +540,8 @@ export const rubbers: Rubber[] = [
   },
   {
     "Rubber_Name": "Andro Hexer Duro",
-    "Rubber_Speed": 90,
-    "Rubber_Spin": 85,
+    "Rubber_Speed": 85,
+    "Rubber_Spin": 90,
     "Rubber_Control": 80,
     "Rubber_Power": 90,
     "Rubber_Price": 47.45,
