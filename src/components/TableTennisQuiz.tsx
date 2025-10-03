@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import QuestionCard from "./QuestionCard";
 import RecommendationDisplay from "./RecommendationDisplay";
 import HandleSelector from "./HandleSelector";
+import MediumHandsSelector from "./MediumHandsSelector";
 import { getRecommendation, type QuizAnswers } from "@/utils/ratingSystem";
 
 const questions = [
@@ -140,6 +141,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const [showForehandSpecial, setShowForehandSpecial] = useState(false);
   const [showBackhandSpecial, setShowBackhandSpecial] = useState(false);
   const [showHandleSelector, setShowHandleSelector] = useState(false);
+  const [showMediumHandsSelector, setShowMediumHandsSelector] = useState(false);
   const [showWeightQuestion, setShowWeightQuestion] = useState(false);
   const [questionHistory, setQuestionHistory] = useState<number[]>([]);
 
@@ -187,10 +189,19 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   // Handle selector follow-up (shown when user wants special handle)
   const handleSelectorQuestion = {
     id: 6.5,
-    question: "Which handle type do you prefer?",
+    question: "What is your hand size?",
+    options: [],
+    key: "HandSize" as keyof QuizAnswers,
+    isHandleSelector: true
+  };
+
+  // Medium hands selector follow-up
+  const mediumHandsQuestion = {
+    id: 6.6,
+    question: "Which handle shape do you prefer?",
     options: [],
     key: "Grip" as keyof QuizAnswers,
-    isHandleSelector: true
+    isMediumHandsSelector: true
   };
 
 
@@ -200,6 +211,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       currentQuestion === 7.5 ? forehandSpecialQuestion :
       currentQuestion === 7.6 ? backhandSpecialQuestion :
       currentQuestion === 6.5 ? handleSelectorQuestion :
+      currentQuestion === 6.6 ? mediumHandsQuestion :
       questions[currentQuestion];
     
     const newAnswers = { ...answers, [question.key]: answer };
@@ -239,9 +251,31 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-    // Handle selector follow-up - move to special rubbers
+    // Handle selector follow-up - route based on hand size
     if (currentQuestion === 6.5) {
       setShowHandleSelector(false);
+      
+      if (answer === "Small Hands Special") {
+        // Really small hands - set grip and move to special rubbers
+        const updatedAnswers = { ...newAnswers, Grip: "Small Hands Special" };
+        setAnswers(updatedAnswers);
+        setCurrentQuestion(6); // Go to special rubbers question
+      } else if (answer === "Anatomic") {
+        // Really large hands - set grip and move to special rubbers
+        const updatedAnswers = { ...newAnswers, Grip: "Anatomic" };
+        setAnswers(updatedAnswers);
+        setCurrentQuestion(6); // Go to special rubbers question
+      } else if (answer === "Medium Hands") {
+        // Medium hands - show flared vs straight selector
+        setShowMediumHandsSelector(true);
+        setCurrentQuestion(6.6);
+      }
+      return;
+    }
+
+    // Medium hands selector follow-up - move to special rubbers
+    if (currentQuestion === 6.6) {
+      setShowMediumHandsSelector(false);
       setCurrentQuestion(6); // Go to special rubbers question
       return;
     }
@@ -372,6 +406,8 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       setShowBackhandSpecial(false);
     } else if (currentQuestion === 6.5) {
       setShowHandleSelector(false);
+    } else if (currentQuestion === 6.6) {
+      setShowMediumHandsSelector(false);
     }
     
     setCurrentQuestion(previousQuestion);
@@ -387,6 +423,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     setShowForehandSpecial(false);
     setShowBackhandSpecial(false);
     setShowHandleSelector(false);
+    setShowMediumHandsSelector(false);
     setShowWeightQuestion(false);
     setQuestionHistory([]);
     onQuizStatusChange(false);
@@ -406,6 +443,10 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   if ("WantsSpecialHandle" in answers) {
     if (answers.WantsSpecialHandle === "Yes") {
       totalQuestions += 1; // Add handle selector question
+      // Add one more if medium hands is selected
+      if ("HandSize" in answers && answers.HandSize === "Medium Hands") {
+        totalQuestions += 1;
+      }
     }
   }
   
@@ -472,7 +513,13 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         
         {currentQuestion === 6.5 ? (
           <Card className="p-8 backdrop-blur-sm bg-card/50 border-2">
+            <h2 className="text-2xl font-bold text-foreground mb-6">What is your hand size?</h2>
             <HandleSelector onSelect={handleAnswer} />
+          </Card>
+        ) : currentQuestion === 6.6 ? (
+          <Card className="p-8 backdrop-blur-sm bg-card/50 border-2">
+            <h2 className="text-2xl font-bold text-foreground mb-6">Which handle shape do you prefer?</h2>
+            <MediumHandsSelector onSelect={handleAnswer} />
           </Card>
         ) : (
           <QuestionCard

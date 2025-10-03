@@ -7,32 +7,26 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const handleOptions = [
+const mediumHandOptions = [
   {
-    name: "Really small hands",
-    value: "Small Hands Special",
-    desc: "Special selection for players with really small hands. Only DHS brand blades will be recommended with Flared handles.",
-    popular: false
-  },
-  {
-    name: "Medium hands",
-    value: "Medium Hands",
-    desc: "Most common hand size. You'll choose between Flared (most popular) and Straight handles.",
+    name: "Flared",
+    value: "Shakehand Flared",
+    desc: "Wider at the bottom; the most common choice, prevents slipping.",
     popular: true
   },
   {
-    name: "Really large hands",
-    value: "Anatomic",
-    desc: "Contoured to fit the palm; secure and ergonomic. Perfect for larger hands.",
+    name: "Straight",
+    value: "Shakehand Straight",
+    desc: "Uniform shape, versatile for alternating grips.",
     popular: false
   }
 ];
 
-interface HandleSelectorProps {
+interface MediumHandsSelectorProps {
   onSelect: (value: string) => void;
 }
 
-export default function HandleSelector({ onSelect }: HandleSelectorProps) {
+export default function MediumHandsSelector({ onSelect }: MediumHandsSelectorProps) {
   const [selected, setSelected] = useState<string | null>(null);
 
   const handleSelection = (value: string) => {
@@ -42,7 +36,7 @@ export default function HandleSelector({ onSelect }: HandleSelectorProps) {
 
   return (
     <div className="space-y-4 w-full">
-      {handleOptions.map((handle, index) => (
+      {mediumHandOptions.map((handle, index) => (
         <div key={handle.name} className="relative">
           <Button
             onClick={() => handleSelection(handle.value)}

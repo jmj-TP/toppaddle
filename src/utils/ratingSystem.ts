@@ -7,6 +7,8 @@ export interface QuizAnswers {
   Backhand: string;
   Power: string;
   HandlePreference: string;
+  WantsSpecialHandle?: string;
+  HandSize?: string;
   Grip: string;
   WantsSpecialRubbers: string;
   ForehandRubberStyle: string;
