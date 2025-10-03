@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ExternalLink, Star, Target, Gauge, Shield, Info, Weight } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ExternalLink, Star, Target, Gauge, Shield, Info, Weight, ChevronDown, ChevronUp } from "lucide-react";
 import type { Recommendation } from "@/utils/ratingSystem";
 import { estimateBladeWeight, estimateRubberWeight } from "@/data/products";
 
@@ -114,192 +116,263 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     </Card>
   ) : null;
 
-  // Custom setup card component
-  const CustomSetupCard = () => customSetup ? (
-    <Card className="border-border" style={{ boxShadow: "var(--shadow-lg)" }}>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            ⚡ <span>Custom Setup</span>
-            <Badge variant="outline">Advanced Choice</Badge>
-          </CardTitle>
-          <div className="flex items-center gap-2">
-            <Star className="w-4 h-4 text-yellow-500" />
-            <span className={`font-bold ${getScoreColor(customSetup.score)}`}>
-              {customSetup.score.toFixed(0)}% Match
-            </span>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Blade */}
-        <div className="border rounded-lg p-4 bg-card">
-          <h3 className="font-semibold mb-3 flex items-center gap-2">
-            🏏 Blade: {customSetup.blade.Blade_Name}
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <StatBar label="Speed" value={customSetup.blade.Blade_Speed} icon={Gauge} />
-              <StatBar label="Control" value={customSetup.blade.Blade_Control} icon={Shield} />
-              <StatBar label="Power" value={customSetup.blade.Blade_Power} icon={Star} />
-            </div>
-            <div className="space-y-2">
-              <div className="text-sm">
-                <span className="font-medium">Level:</span> {customSetup.blade.Blade_Level}
-              </div>
-              <div className="text-sm">
-                <span className="font-medium">Grip:</span> {customSetup.blade.Blade_Grip}
-              </div>
-              <div className="text-sm">
-                <span className="font-medium">Price:</span> 
-                <span className="font-bold ml-1">{formatPrice(customSetup.blade.Blade_Price)}</span>
-              </div>
-              <Button size="sm" asChild variant="accent">
-                <a 
-                  href={customSetup.blade.Blade_Affiliate_Link} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1"
-                >
-                  <ExternalLink className="w-3 h-3" />
-                  Buy Blade
-                </a>
-              </Button>
-            </div>
-          </div>
-        </div>
+  // Custom setup card component with collapsible details
+  const CustomSetupCard = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    
+    if (!customSetup) return null;
 
-        {/* Forehand Rubber */}
-        <div className="border rounded-lg p-4 bg-card">
-          <h3 className="font-semibold mb-3 flex items-center gap-2">
-            🔴 Forehand Rubber: {customSetup.forehandRubber.Rubber_Name}
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <StatBar label="Speed" value={customSetup.forehandRubber.Rubber_Speed} icon={Gauge} />
-              <StatBar label="Spin" value={customSetup.forehandRubber.Rubber_Spin} icon={Target} />
-              <StatBar label="Control" value={customSetup.forehandRubber.Rubber_Control} icon={Shield} />
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full justify-start">
-                    <Info className="w-4 h-4" />
-                    <span>Recommended Sponge:</span>
-                    <span className="font-bold text-accent">{forehandThickness}</span>
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80">
-                  <div className="space-y-2">
-                    <h4 className="font-semibold text-sm">Forehand Sponge Thickness</h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {forehandThicknessExplanation}
-                    </p>
+    // Calculate combined stats (weighted average)
+    const combinedSpeed = Math.round((customSetup.blade.Blade_Speed + customSetup.forehandRubber.Rubber_Speed + customSetup.backhandRubber.Rubber_Speed) / 3);
+    const combinedSpin = Math.round((customSetup.forehandRubber.Rubber_Spin + customSetup.backhandRubber.Rubber_Spin) / 2);
+    const combinedControl = Math.round((customSetup.blade.Blade_Control + customSetup.forehandRubber.Rubber_Control + customSetup.backhandRubber.Rubber_Control) / 3);
+    const combinedPower = Math.round((customSetup.blade.Blade_Power + customSetup.forehandRubber.Rubber_Speed + customSetup.backhandRubber.Rubber_Speed) / 3);
+    
+    const bladeWeight = estimateBladeWeight(customSetup.blade);
+    const fhWeight = estimateRubberWeight(customSetup.forehandRubber);
+    const bhWeight = estimateRubberWeight(customSetup.backhandRubber);
+    const totalWeight = bladeWeight + fhWeight + bhWeight;
+
+    return (
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <Card className="border-border" style={{ boxShadow: "var(--shadow-lg)" }}>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                ⚡ <span>Custom Setup</span>
+                <Badge variant="outline">Advanced Choice</Badge>
+              </CardTitle>
+              <div className="flex items-center gap-2">
+                <Star className="w-4 h-4 text-yellow-500" />
+                <span className={`font-bold ${getScoreColor(customSetup.score)}`}>
+                  {customSetup.score.toFixed(0)}% Match
+                </span>
+              </div>
+            </div>
+          </CardHeader>
+          
+          <CardContent className="space-y-4">
+            {/* Collapsed View - Mimics Ready-to-Play format */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h3 className="font-semibold text-lg mb-2">
+                  {customSetup.blade.Blade_Name}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  ⚡ Professional custom setup - complete control!
+                </p>
+                
+                <div className="space-y-2">
+                  <StatBar label="Speed" value={combinedSpeed} icon={Gauge} />
+                  <StatBar label="Spin" value={combinedSpin} icon={Target} />
+                  <StatBar label="Control" value={combinedControl} icon={Shield} />
+                  <StatBar label="Power" value={combinedPower} icon={Star} />
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <span className="font-medium">Weight:</span> ~{totalWeight}g
                   </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-            <div className="space-y-2">
-              <div className="text-sm">
-                <span className="font-medium">Level:</span> {customSetup.forehandRubber.Rubber_Level}
-              </div>
-              <div className="text-sm">
-                <span className="font-medium">Price:</span> 
-                <span className="font-bold ml-1">{formatPrice(customSetup.forehandRubber.Rubber_Price)}</span>
-              </div>
-              <Button size="sm" asChild variant="accent">
-                <a 
-                  href={customSetup.forehandRubber.Rubber_Affiliate_Link} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1"
-                >
-                  <ExternalLink className="w-3 h-3" />
-                  Buy FH Rubber
-                </a>
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Backhand Rubber */}
-        <div className="border rounded-lg p-4 bg-card">
-          <h3 className="font-semibold mb-3 flex items-center gap-2">
-            🔵 Backhand Rubber: {customSetup.backhandRubber.Rubber_Name}
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <StatBar label="Speed" value={customSetup.backhandRubber.Rubber_Speed} icon={Gauge} />
-              <StatBar label="Spin" value={customSetup.backhandRubber.Rubber_Spin} icon={Target} />
-              <StatBar label="Control" value={customSetup.backhandRubber.Rubber_Control} icon={Shield} />
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full justify-start">
-                    <Info className="w-4 h-4" />
-                    <span>Recommended Sponge:</span>
-                    <span className="font-bold text-primary">{backhandThickness}</span>
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80">
-                  <div className="space-y-2">
-                    <h4 className="font-semibold text-sm">Backhand Sponge Thickness</h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {backhandThicknessExplanation}
-                    </p>
+                  <div>
+                    <span className="font-medium">Level:</span> {customSetup.blade.Blade_Level}
                   </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-            <div className="space-y-2">
-              <div className="text-sm">
-                <span className="font-medium">Level:</span> {customSetup.backhandRubber.Rubber_Level}
+                  <div>
+                    <span className="font-medium">Grip:</span> {customSetup.blade.Blade_Grip}
+                  </div>
+                  <div>
+                    <span className="font-medium">Price:</span> 
+                    <span className="text-lg font-bold text-primary ml-1">
+                      {formatPrice(customSetup.totalPrice)}
+                    </span>
+                  </div>
+                </div>
+                
+                <CollapsibleTrigger asChild>
+                  <Button 
+                    variant="accent"
+                    className="w-full"
+                  >
+                    {isOpen ? (
+                      <>
+                        <ChevronUp className="w-4 h-4 mr-2" />
+                        Hide Component Details
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-4 h-4 mr-2" />
+                        View Component Details
+                      </>
+                    )}
+                  </Button>
+                </CollapsibleTrigger>
               </div>
-              <div className="text-sm">
-                <span className="font-medium">Price:</span> 
-                <span className="font-bold ml-1">{formatPrice(customSetup.backhandRubber.Rubber_Price)}</span>
-              </div>
-              <Button size="sm" asChild variant="accent">
-                <a 
-                  href={customSetup.backhandRubber.Rubber_Affiliate_Link} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1"
-                >
-                  <ExternalLink className="w-3 h-3" />
-                  Buy BH Rubber
-                </a>
-              </Button>
             </div>
-          </div>
-        </div>
 
-        {/* Total Price and Weight */}
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-secondary rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-primary">
-              💰 Total Price: {formatPrice(customSetup.totalPrice)}
-            </div>
-            <p className="text-sm text-muted-foreground mt-1">
-              ✅ Fits your budget perfectly!
-            </p>
-          </div>
-          <div className="bg-secondary rounded-lg p-4 text-center">
-            <div className="flex items-center justify-center gap-2 text-2xl font-bold text-primary">
-              <Weight className="w-6 h-6" />
-              {(() => {
-                const bladeWeight = estimateBladeWeight(customSetup.blade);
-                const fhWeight = estimateRubberWeight(customSetup.forehandRubber);
-                const bhWeight = estimateRubberWeight(customSetup.backhandRubber);
-                const totalWeight = bladeWeight + fhWeight + bhWeight;
-                return `${totalWeight}g`;
-              })()}
-            </div>
-            <p className="text-sm text-muted-foreground mt-1">
-              Total racket weight
-            </p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  ) : null;
+            {/* Expanded View - Full component breakdown */}
+            <CollapsibleContent className="space-y-6 pt-4 border-t">
+              <div className="text-center py-2">
+                <p className="text-sm font-medium text-muted-foreground">
+                  📦 Component Breakdown
+                </p>
+              </div>
+
+              {/* Blade */}
+              <div className="border rounded-lg p-4 bg-card">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  🏏 Blade: {customSetup.blade.Blade_Name}
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <StatBar label="Speed" value={customSetup.blade.Blade_Speed} icon={Gauge} />
+                    <StatBar label="Control" value={customSetup.blade.Blade_Control} icon={Shield} />
+                    <StatBar label="Power" value={customSetup.blade.Blade_Power} icon={Star} />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-sm">
+                      <span className="font-medium">Level:</span> {customSetup.blade.Blade_Level}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-medium">Grip:</span> {customSetup.blade.Blade_Grip}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-medium">Price:</span> 
+                      <span className="font-bold ml-1">{formatPrice(customSetup.blade.Blade_Price)}</span>
+                    </div>
+                    <Button size="sm" asChild variant="accent">
+                      <a 
+                        href={customSetup.blade.Blade_Affiliate_Link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        Buy Blade
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Forehand Rubber */}
+              <div className="border rounded-lg p-4 bg-card">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  🔴 Forehand Rubber: {customSetup.forehandRubber.Rubber_Name}
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <StatBar label="Speed" value={customSetup.forehandRubber.Rubber_Speed} icon={Gauge} />
+                    <StatBar label="Spin" value={customSetup.forehandRubber.Rubber_Spin} icon={Target} />
+                    <StatBar label="Control" value={customSetup.forehandRubber.Rubber_Control} icon={Shield} />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full justify-start">
+                          <Info className="w-4 h-4" />
+                          <span>Recommended Sponge:</span>
+                          <span className="font-bold text-accent">{forehandThickness}</span>
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80">
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm">Forehand Sponge Thickness</h4>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {forehandThicknessExplanation}
+                          </p>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-sm">
+                      <span className="font-medium">Level:</span> {customSetup.forehandRubber.Rubber_Level}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-medium">Price:</span> 
+                      <span className="font-bold ml-1">{formatPrice(customSetup.forehandRubber.Rubber_Price)}</span>
+                    </div>
+                    <Button size="sm" asChild variant="accent">
+                      <a 
+                        href={customSetup.forehandRubber.Rubber_Affiliate_Link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        Buy FH Rubber
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Backhand Rubber */}
+              <div className="border rounded-lg p-4 bg-card">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  🔵 Backhand Rubber: {customSetup.backhandRubber.Rubber_Name}
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <StatBar label="Speed" value={customSetup.backhandRubber.Rubber_Speed} icon={Gauge} />
+                    <StatBar label="Spin" value={customSetup.backhandRubber.Rubber_Spin} icon={Target} />
+                    <StatBar label="Control" value={customSetup.backhandRubber.Rubber_Control} icon={Shield} />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full justify-start">
+                          <Info className="w-4 h-4" />
+                          <span>Recommended Sponge:</span>
+                          <span className="font-bold text-primary">{backhandThickness}</span>
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80">
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm">Backhand Sponge Thickness</h4>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {backhandThicknessExplanation}
+                          </p>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-sm">
+                      <span className="font-medium">Level:</span> {customSetup.backhandRubber.Rubber_Level}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-medium">Price:</span> 
+                      <span className="font-bold ml-1">{formatPrice(customSetup.backhandRubber.Rubber_Price)}</span>
+                    </div>
+                    <Button size="sm" asChild variant="accent">
+                      <a 
+                        href={customSetup.backhandRubber.Rubber_Affiliate_Link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        Buy BH Rubber
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Total Weight Info */}
+              <div className="bg-secondary rounded-lg p-4 text-center">
+                <div className="flex items-center justify-center gap-2 text-xl font-bold text-primary">
+                  <Weight className="w-5 h-5" />
+                  Total Weight: {totalWeight}g
+                </div>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Blade ({bladeWeight}g) + FH Rubber ({fhWeight}g) + BH Rubber ({bhWeight}g)
+                </p>
+              </div>
+            </CollapsibleContent>
+          </CardContent>
+        </Card>
+      </Collapsible>
+    );
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6 space-y-6">
