@@ -17,19 +17,20 @@ interface RecommendationDisplayProps {
 }
 
 export default function RecommendationDisplay({ recommendation, onRestart, assemblyPreference, budgetAmount, playerLevel }: RecommendationDisplayProps) {
-  const { preAssembled, customSetup, customSetup2, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation, handleType, handleTypeExplanation } = recommendation;
+  const { preAssembled, preAssembled2, customSetup, customSetup2, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation, handleType, handleTypeExplanation } = recommendation;
   
   // Create array of all recommendations sorted by match score
   let allRecommendations = [
-    preAssembled ? { type: 'preAssembled' as const, score: preAssembled.score, data: preAssembled } : null,
-    customSetup ? { type: 'custom1' as const, score: customSetup.score, data: customSetup } : null,
-    customSetup2 ? { type: 'custom2' as const, score: customSetup2.score, data: customSetup2 } : null,
+    preAssembled ? { type: 'preAssembled' as const, score: preAssembled.score, data: preAssembled, rank: 1 } : null,
+    preAssembled2 ? { type: 'preAssembled2' as const, score: preAssembled2.score, data: preAssembled2, rank: 2 } : null,
+    customSetup ? { type: 'custom1' as const, score: customSetup.score, data: customSetup, rank: 1 } : null,
+    customSetup2 ? { type: 'custom2' as const, score: customSetup2.score, data: customSetup2, rank: 2 } : null,
   ].filter((item): item is NonNullable<typeof item> => item !== null)
    .sort((a, b) => {
      // For intermediate/advanced players, prioritize custom setups over pre-assembled
      if (playerLevel === 'Intermediate' || playerLevel === 'Advanced') {
-       if (a.type === 'preAssembled' && b.type !== 'preAssembled') return 1;
-       if (a.type !== 'preAssembled' && b.type === 'preAssembled') return -1;
+       if ((a.type === 'preAssembled' || a.type === 'preAssembled2') && (b.type !== 'preAssembled' && b.type !== 'preAssembled2')) return 1;
+       if ((a.type !== 'preAssembled' && a.type !== 'preAssembled2') && (b.type === 'preAssembled' || b.type === 'preAssembled2')) return -1;
      }
      // Otherwise sort by match score descending
      return b.score - a.score;
@@ -38,14 +39,14 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   // Filter based on assembly preference to show exactly 2 rackets
   if (assemblyPreference === "Ready-to-play racket") {
     // Show only pre-assembled rackets (max 2)
-    allRecommendations = allRecommendations.filter(item => item.type === 'preAssembled').slice(0, 2);
+    allRecommendations = allRecommendations.filter(item => item.type === 'preAssembled' || item.type === 'preAssembled2').slice(0, 2);
   } else if (assemblyPreference === "Custom setup") {
     // Show only custom setups (max 2)
-    allRecommendations = allRecommendations.filter(item => item.type !== 'preAssembled').slice(0, 2);
+    allRecommendations = allRecommendations.filter(item => item.type !== 'preAssembled' && item.type !== 'preAssembled2').slice(0, 2);
   } else if (assemblyPreference === "Not sure") {
     // Show 1 custom and 1 pre-assembled
-    const customOptions = allRecommendations.filter(item => item.type !== 'preAssembled').slice(0, 1);
-    const preAssembledOptions = allRecommendations.filter(item => item.type === 'preAssembled').slice(0, 1);
+    const customOptions = allRecommendations.filter(item => item.type !== 'preAssembled' && item.type !== 'preAssembled2').slice(0, 1);
+    const preAssembledOptions = allRecommendations.filter(item => item.type === 'preAssembled' || item.type === 'preAssembled2').slice(0, 1);
     allRecommendations = [...customOptions, ...preAssembledOptions];
   } else {
     // Default: show top 2 of any type
@@ -75,7 +76,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   );
 
   // Pre-assembled racket card component
-  const PreAssembledCard = ({ rank }: { rank?: number }) => preAssembled ? (
+  const PreAssembledCard = ({ racket, rank }: { racket: typeof preAssembled, rank?: number }) => racket ? (
     <Card className="border-border" style={{ boxShadow: "var(--shadow-lg)" }}>
       <CardHeader>
         <div className="flex items-center justify-between">
@@ -85,8 +86,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           </CardTitle>
           <div className="flex items-center gap-2">
             <Star className="w-4 h-4 text-yellow-500" />
-            <span className={`font-bold ${getScoreColor(preAssembled.score)}`}>
-              {preAssembled.score.toFixed(0)}% Match
+            <span className={`font-bold ${getScoreColor(racket.score)}`}>
+              {racket.score.toFixed(0)}% Match
             </span>
           </div>
         </div>
@@ -94,16 +95,16 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       <CardContent className="space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <h3 className="font-semibold text-lg mb-2">{preAssembled.Racket_Name}</h3>
+            <h3 className="font-semibold text-lg mb-2">{racket.Racket_Name}</h3>
             <p className="text-sm text-muted-foreground mb-3">
               ✅ No assembly needed - perfect for beginners!
             </p>
             
             <div className="space-y-2">
-              <StatBar label="Speed" value={preAssembled.Racket_Speed} icon={Gauge} />
-              <StatBar label="Spin" value={preAssembled.Racket_Spin} icon={Target} />
-              <StatBar label="Control" value={preAssembled.Racket_Control} icon={Shield} />
-              <StatBar label="Power" value={preAssembled.Racket_Power} icon={Star} />
+              <StatBar label="Speed" value={racket.Racket_Speed} icon={Gauge} />
+              <StatBar label="Spin" value={racket.Racket_Spin} icon={Target} />
+              <StatBar label="Control" value={racket.Racket_Control} icon={Shield} />
+              <StatBar label="Power" value={racket.Racket_Power} icon={Star} />
             </div>
           </div>
           
@@ -113,15 +114,15 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                 <span className="font-medium">Weight:</span> ~180g
               </div>
               <div>
-                <span className="font-medium">Level:</span> {preAssembled.Racket_Level}
+                <span className="font-medium">Level:</span> {racket.Racket_Level}
               </div>
               <div>
-                <span className="font-medium">Grip:</span> {preAssembled.Racket_Grip}
+                <span className="font-medium">Grip:</span> {racket.Racket_Grip}
               </div>
               <div>
                 <span className="font-medium">Price:</span> 
                 <span className="text-lg font-bold text-primary ml-1">
-                  {formatPrice(preAssembled.Racket_Price)}
+                  {formatPrice(racket.Racket_Price)}
                 </span>
               </div>
             </div>
@@ -132,7 +133,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               className="w-full"
             >
               <a 
-                href={preAssembled.Racket_Affiliate_Link} 
+                href={racket.Racket_Affiliate_Link} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center gap-2"
@@ -460,8 +461,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       {allRecommendations.map((item, index) => {
         const rank = allRecommendations.length > 1 ? index + 1 : undefined;
         
-        if (item.type === 'preAssembled') {
-          return <PreAssembledCard key="preAssembled" rank={rank} />;
+        if (item.type === 'preAssembled' || item.type === 'preAssembled2') {
+          return <PreAssembledCard key={item.type} racket={item.data} rank={rank} />;
         } else if (item.type === 'custom1') {
           return <CustomSetupCard key="custom1" setup={item.data} rank={rank} />;
         } else if (item.type === 'custom2') {

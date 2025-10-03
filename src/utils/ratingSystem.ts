@@ -29,6 +29,7 @@ export interface CustomSetup {
 
 export interface Recommendation {
   preAssembled?: PreAssembledRacket & { score: number };
+  preAssembled2?: PreAssembledRacket & { score: number };
   customSetup?: CustomSetup;
   customSetup2?: CustomSetup;
   totalScore: number;
@@ -368,8 +369,8 @@ function calculateSpongeThickness(answers: QuizAnswers): {
   };
 }
 
-// Find best pre-assembled racket
-export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledRacket & { score: number }) | null {
+// Find best pre-assembled rackets (top N)
+export function findBestPreAssembledRackets(answers: QuizAnswers, topN: number = 2): (PreAssembledRacket & { score: number })[] {
   const suitableRackets = preAssembledRackets
     .filter(racket => {
       // Small Hands Special - ONLY DHS brand (STRICT - dealbreaker)
@@ -405,25 +406,40 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
     const minScoreInBudget = suitableRackets[suitableRackets.length - 1].score;
     const scoreRange = maxScoreInBudget - minScoreInBudget;
     
-    // Use wider range: scale scores from 65-99 based on quality
-    // Best match gets close to raw score (capped at 99)
-    const normalizedRackets = suitableRackets.map(racket => {
+    // Normalize scores for all top N rackets with wider range
+    const topRackets = suitableRackets.slice(0, topN).map((racket, index) => {
+      let normalizedScore;
       if (scoreRange > 0) {
         // Scale from 65 to 99, but prefer raw score if it's already good
         const scaledScore = 65 + ((racket.score - minScoreInBudget) / scoreRange) * 34;
         // Use the higher of scaled or raw score (capped at 99)
-        return {
-          ...racket,
-          score: Math.min(99, Math.max(scaledScore, racket.score))
-        };
+        normalizedScore = Math.min(99, Math.max(scaledScore, racket.score));
+      } else {
+        // If all scores are the same, decrease slightly for each rank
+        normalizedScore = Math.min(99, racket.score) - (index * 1);
       }
-      return { ...racket, score: Math.min(99, racket.score) };
+      
+      return {
+        ...racket,
+        score: normalizedScore
+      };
     });
     
-    return normalizedRackets[0];
+    // Ensure second racket has lower score than first
+    if (topRackets.length > 1 && topRackets[1].score >= topRackets[0].score) {
+      topRackets[1].score = topRackets[0].score - 1;
+    }
+    
+    return topRackets;
   }
 
-  return null;
+  return [];
+}
+
+// Legacy function for backward compatibility
+export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledRacket & { score: number }) | null {
+  const rackets = findBestPreAssembledRackets(answers, 1);
+  return rackets.length > 0 ? rackets[0] : null;
 }
 
 // Find best custom setups (top 2)
@@ -585,11 +601,14 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
   const assemblyPref = answers.AssemblyPreference || '';
   
   if (assemblyPref.includes('Ready-to-play')) {
-    // Only return pre-assembled racket
-    const preAssembled = findBestPreAssembledRacket(answers);
+    // Return top 2 pre-assembled rackets
+    const preAssembledRackets = findBestPreAssembledRackets(answers, 2);
+    const preAssembled = preAssembledRackets[0] || undefined;
+    const preAssembled2 = preAssembledRackets[1] || undefined;
     const totalScore = preAssembled?.score || 0;
     return { 
-      preAssembled, 
+      preAssembled,
+      preAssembled2,
       customSetup: undefined,
       customSetup2: undefined,
       totalScore,
@@ -608,6 +627,7 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
     const totalScore = customSetup?.score || 0;
     return { 
       preAssembled: undefined,
+      preAssembled2: undefined,
       customSetup,
       customSetup2,
       totalScore,
@@ -620,7 +640,9 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
     };
   } else {
     // Return both pre-assembled and top 2 custom setups (for "Not sure")
-    const preAssembled = findBestPreAssembledRacket(answers);
+    const preAssembledRackets = findBestPreAssembledRackets(answers, 2);
+    const preAssembled = preAssembledRackets[0] || undefined;
+    const preAssembled2 = preAssembledRackets[1] || undefined;
     const customSetups = findBestCustomSetups(answers, 2);
     const customSetup = customSetups[0] || undefined;
     const customSetup2 = customSetups[1] || undefined;
@@ -628,7 +650,8 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
     const customScore = customSetup?.score || 0;
     const totalScore = Math.max(preScore, customScore);
     return { 
-      preAssembled, 
+      preAssembled,
+      preAssembled2,
       customSetup,
       customSetup2,
       totalScore,
