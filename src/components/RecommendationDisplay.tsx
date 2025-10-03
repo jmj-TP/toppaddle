@@ -21,12 +21,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   // Calculate combined stats for sorting
   const getStatsTotal = (item: any) => {
     if (item.type === 'preAssembled') {
-      // Reduce pre-assembled stats by 5%
-      const reducedSpeed = Math.round(item.data.Racket_Speed * 0.95);
-      const reducedSpin = Math.round(item.data.Racket_Spin * 0.95);
-      const reducedControl = Math.round(item.data.Racket_Control * 0.95);
-      const reducedPower = Math.round(item.data.Racket_Power * 0.95);
-      return reducedSpeed + reducedSpin + reducedControl + reducedPower;
+      return item.data.Racket_Speed + item.data.Racket_Spin + item.data.Racket_Control + item.data.Racket_Power;
     } else {
       // For custom setups, calculate combined stats
       const blade = item.data.blade;
@@ -97,10 +92,10 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
             </p>
             
             <div className="space-y-2">
-              <StatBar label="Speed" value={Math.round(preAssembled.Racket_Speed * 0.95)} icon={Gauge} />
-              <StatBar label="Spin" value={Math.round(preAssembled.Racket_Spin * 0.95)} icon={Target} />
-              <StatBar label="Control" value={Math.round(preAssembled.Racket_Control * 0.95)} icon={Shield} />
-              <StatBar label="Power" value={Math.round(preAssembled.Racket_Power * 0.95)} icon={Star} />
+              <StatBar label="Speed" value={preAssembled.Racket_Speed} icon={Gauge} />
+              <StatBar label="Spin" value={preAssembled.Racket_Spin} icon={Target} />
+              <StatBar label="Control" value={preAssembled.Racket_Control} icon={Shield} />
+              <StatBar label="Power" value={preAssembled.Racket_Power} icon={Star} />
             </div>
           </div>
           
