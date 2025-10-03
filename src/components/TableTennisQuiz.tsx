@@ -507,6 +507,21 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const safeAnswered = Math.min(questionsAnswered, totalQuestions);
   const progress = (safeAnswered / totalQuestions) * 100;
 
+  const handleUpdatePreferences = (newBudget: string, newBrands: string[]) => {
+    const updatedAnswers = {
+      ...completeAnswers,
+      Budget: newBudget,
+      Brand: newBrands
+    } as QuizAnswers;
+    
+    setCompleteAnswers(updatedAnswers);
+    setAnswers(updatedAnswers);
+    
+    // Regenerate recommendations with new values
+    const newRecommendation = getRecommendation(updatedAnswers);
+    setRecommendation(newRecommendation);
+  };
+
   // Quiz completion screen with recommendations
   if (isComplete && recommendation) {
     return (
@@ -515,6 +530,8 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         onRestart={handleRestart} 
         assemblyPreference={answers.AssemblyPreference}
         playerLevel={answers.Level}
+        currentAnswers={completeAnswers || undefined}
+        onUpdatePreferences={handleUpdatePreferences}
       />
     );
   }
