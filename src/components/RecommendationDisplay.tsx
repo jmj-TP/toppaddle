@@ -433,88 +433,6 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           Based on your preferences, here are our top recommendations
         </p>
         
-        {/* Preference Adjustment Section */}
-        <Card className="mt-4 border-2 border-accent/50">
-          <Collapsible open={showPreferenceEditor} onOpenChange={setShowPreferenceEditor}>
-            <CardHeader className="pb-3">
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" className="w-full flex items-center justify-between p-4 hover:bg-accent/10">
-                  <div className="flex items-center gap-2">
-                    <Settings className="w-5 h-5 text-accent" />
-                    <span className="font-semibold">Adjust Budget & Brand Preferences</span>
-                  </div>
-                  {showPreferenceEditor ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                </Button>
-              </CollapsibleTrigger>
-            </CardHeader>
-            
-            <CollapsibleContent>
-              <CardContent className="space-y-4 pb-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* Budget Selector */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-accent" />
-                      Budget
-                    </label>
-                    <Select value={tempBudget} onValueChange={setTempBudget}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select budget" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="<50$">Under $50</SelectItem>
-                        <SelectItem value="<100$">Under $100</SelectItem>
-                        <SelectItem value="<120$">Under $120</SelectItem>
-                        <SelectItem value="<140$">Under $140</SelectItem>
-                        <SelectItem value="<160$">Under $160</SelectItem>
-                        <SelectItem value="<180$">Under $180</SelectItem>
-                        <SelectItem value="<200$">Under $200</SelectItem>
-                        <SelectItem value="<250$">Under $250</SelectItem>
-                        <SelectItem value="<300$">Under $300</SelectItem>
-                        <SelectItem value="No limit">No Limit</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  {/* Brand Selector */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold flex items-center gap-2">
-                      <Package className="w-4 h-4 text-accent" />
-                      Brands
-                    </label>
-                    <BrandSelector 
-                      selectedBrands={tempBrands}
-                      onBrandToggle={(brand) => {
-                        setTempBrands(prev => {
-                          if (prev.includes(brand)) {
-                            const newBrands = prev.filter(b => b !== brand);
-                            return newBrands.length === 0 ? [brand] : newBrands;
-                          } else {
-                            return [...prev, brand];
-                          }
-                        });
-                      }}
-                    />
-                  </div>
-                </div>
-                
-                <Button 
-                  onClick={() => {
-                    if (onUpdatePreferences) {
-                      onUpdatePreferences(tempBudget, tempBrands);
-                      setShowPreferenceEditor(false);
-                    }
-                  }}
-                  className="w-full"
-                  size="lg"
-                >
-                  Update Recommendations
-                </Button>
-              </CardContent>
-            </CollapsibleContent>
-          </Collapsible>
-        </Card>
-        
         {budgetAmount && budgetAmount < 60 && (
           <div className="mt-4 p-4 bg-accent/10 border border-accent/30 rounded-lg">
             <p className="text-sm text-foreground">
@@ -552,6 +470,88 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         }
         return null;
       })}
+
+      {/* Preference Adjustment Section */}
+      <Card className="mt-6 border-2 border-accent/50">
+        <Collapsible open={showPreferenceEditor} onOpenChange={setShowPreferenceEditor}>
+          <CardHeader className="pb-3">
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="w-full flex items-center justify-between p-4 hover:bg-accent/10">
+                <div className="flex items-center gap-2">
+                  <Settings className="w-5 h-5 text-accent" />
+                  <span className="font-semibold">Adjust Budget & Brand Preferences</span>
+                </div>
+                {showPreferenceEditor ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+              </Button>
+            </CollapsibleTrigger>
+          </CardHeader>
+          
+          <CollapsibleContent>
+            <CardContent className="space-y-4 pb-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Budget Selector */}
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-accent" />
+                    Budget
+                  </label>
+                  <Select value={tempBudget} onValueChange={setTempBudget}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select budget" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="<50$">Under $50</SelectItem>
+                      <SelectItem value="<100$">Under $100</SelectItem>
+                      <SelectItem value="<120$">Under $120</SelectItem>
+                      <SelectItem value="<140$">Under $140</SelectItem>
+                      <SelectItem value="<160$">Under $160</SelectItem>
+                      <SelectItem value="<180$">Under $180</SelectItem>
+                      <SelectItem value="<200$">Under $200</SelectItem>
+                      <SelectItem value="<250$">Under $250</SelectItem>
+                      <SelectItem value="<300$">Under $300</SelectItem>
+                      <SelectItem value="No limit">No Limit</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* Brand Selector */}
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold flex items-center gap-2">
+                    <Package className="w-4 h-4 text-accent" />
+                    Brands
+                  </label>
+                  <BrandSelector 
+                    selectedBrands={tempBrands}
+                    onBrandToggle={(brand) => {
+                      setTempBrands(prev => {
+                        if (prev.includes(brand)) {
+                          const newBrands = prev.filter(b => b !== brand);
+                          return newBrands.length === 0 ? [brand] : newBrands;
+                        } else {
+                          return [...prev, brand];
+                        }
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+              
+              <Button 
+                onClick={() => {
+                  if (onUpdatePreferences) {
+                    onUpdatePreferences(tempBudget, tempBrands);
+                    setShowPreferenceEditor(false);
+                  }
+                }}
+                className="w-full"
+                size="lg"
+              >
+                Update Recommendations
+              </Button>
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
+      </Card>
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
