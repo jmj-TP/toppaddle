@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ExternalLink, Star, Target, Gauge, Shield, Info, Weight, ChevronDown, ChevronUp } from "lucide-react";
-import type { Recommendation } from "@/utils/ratingSystem";
+import type { Recommendation, CustomSetup } from "@/utils/ratingSystem";
 import { estimateBladeWeight, estimateRubberWeight } from "@/data/products";
 
 interface RecommendationDisplayProps {
@@ -16,10 +16,15 @@ interface RecommendationDisplayProps {
 }
 
 export default function RecommendationDisplay({ recommendation, onRestart, assemblyPreference, budgetAmount }: RecommendationDisplayProps) {
-  const { preAssembled, customSetup, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation, handleType, handleTypeExplanation } = recommendation;
+  const { preAssembled, customSetup, customSetup2, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation, handleType, handleTypeExplanation } = recommendation;
   
-  // Determine which option to show first based on user preference
-  const showCustomFirst = assemblyPreference === "Custom setup";
+  // Create array of all recommendations with their scores for sorting
+  const allRecommendations = [
+    preAssembled ? { type: 'preAssembled' as const, score: preAssembled.score, data: preAssembled } : null,
+    customSetup ? { type: 'custom1' as const, score: customSetup.score, data: customSetup } : null,
+    customSetup2 ? { type: 'custom2' as const, score: customSetup2.score, data: customSetup2 } : null,
+  ].filter((item): item is NonNullable<typeof item> => item !== null)
+   .sort((a, b) => b.score - a.score); // Sort by score descending
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
@@ -117,20 +122,18 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   ) : null;
 
   // Custom setup card component with collapsible details
-  const CustomSetupCard = () => {
+  const CustomSetupCard = ({ setup, rank }: { setup: CustomSetup; rank?: number }) => {
     const [isOpen, setIsOpen] = useState(false);
-    
-    if (!customSetup) return null;
 
     // Calculate combined stats (weighted average)
-    const combinedSpeed = Math.round((customSetup.blade.Blade_Speed + customSetup.forehandRubber.Rubber_Speed + customSetup.backhandRubber.Rubber_Speed) / 3);
-    const combinedSpin = Math.round((customSetup.forehandRubber.Rubber_Spin + customSetup.backhandRubber.Rubber_Spin) / 2);
-    const combinedControl = Math.round((customSetup.blade.Blade_Control + customSetup.forehandRubber.Rubber_Control + customSetup.backhandRubber.Rubber_Control) / 3);
-    const combinedPower = Math.round((customSetup.blade.Blade_Power + customSetup.forehandRubber.Rubber_Speed + customSetup.backhandRubber.Rubber_Speed) / 3);
+    const combinedSpeed = Math.round((setup.blade.Blade_Speed + setup.forehandRubber.Rubber_Speed + setup.backhandRubber.Rubber_Speed) / 3);
+    const combinedSpin = Math.round((setup.forehandRubber.Rubber_Spin + setup.backhandRubber.Rubber_Spin) / 2);
+    const combinedControl = Math.round((setup.blade.Blade_Control + setup.forehandRubber.Rubber_Control + setup.backhandRubber.Rubber_Control) / 3);
+    const combinedPower = Math.round((setup.blade.Blade_Power + setup.forehandRubber.Rubber_Speed + setup.backhandRubber.Rubber_Speed) / 3);
     
-    const bladeWeight = estimateBladeWeight(customSetup.blade);
-    const fhWeight = estimateRubberWeight(customSetup.forehandRubber);
-    const bhWeight = estimateRubberWeight(customSetup.backhandRubber);
+    const bladeWeight = estimateBladeWeight(setup.blade);
+    const fhWeight = estimateRubberWeight(setup.forehandRubber);
+    const bhWeight = estimateRubberWeight(setup.backhandRubber);
     const totalWeight = bladeWeight + fhWeight + bhWeight;
 
     return (
@@ -139,13 +142,13 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
-                ⚡ <span>Custom Setup</span>
+                ⚡ <span>Custom Setup{rank ? ` #${rank}` : ''}</span>
                 <Badge variant="outline">Advanced Choice</Badge>
               </CardTitle>
               <div className="flex items-center gap-2">
                 <Star className="w-4 h-4 text-yellow-500" />
-                <span className={`font-bold ${getScoreColor(customSetup.score)}`}>
-                  {customSetup.score.toFixed(0)}% Match
+                <span className={`font-bold ${getScoreColor(setup.score)}`}>
+                  {setup.score.toFixed(0)}% Match
                 </span>
               </div>
             </div>
@@ -156,7 +159,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <h3 className="font-semibold text-lg mb-2">
-                  {customSetup.blade.Blade_Name}
+                  {setup.blade.Blade_Name}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-3">
                   ⚡ Professional custom setup - complete control!
@@ -176,15 +179,15 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     <span className="font-medium">Weight:</span> ~{totalWeight}g
                   </div>
                   <div>
-                    <span className="font-medium">Level:</span> {customSetup.blade.Blade_Level}
+                    <span className="font-medium">Level:</span> {setup.blade.Blade_Level}
                   </div>
                   <div>
-                    <span className="font-medium">Grip:</span> {customSetup.blade.Blade_Grip}
+                    <span className="font-medium">Grip:</span> {setup.blade.Blade_Grip}
                   </div>
                   <div>
                     <span className="font-medium">Price:</span> 
                     <span className="text-lg font-bold text-primary ml-1">
-                      {formatPrice(customSetup.totalPrice)}
+                      {formatPrice(setup.totalPrice)}
                     </span>
                   </div>
                 </div>
@@ -221,28 +224,28 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               {/* Blade */}
               <div className="border rounded-lg p-4 bg-card">
                 <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  🏏 Blade: {customSetup.blade.Blade_Name}
+                  🏏 Blade: {setup.blade.Blade_Name}
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <StatBar label="Speed" value={customSetup.blade.Blade_Speed} icon={Gauge} />
-                    <StatBar label="Control" value={customSetup.blade.Blade_Control} icon={Shield} />
-                    <StatBar label="Power" value={customSetup.blade.Blade_Power} icon={Star} />
+                    <StatBar label="Speed" value={setup.blade.Blade_Speed} icon={Gauge} />
+                    <StatBar label="Control" value={setup.blade.Blade_Control} icon={Shield} />
+                    <StatBar label="Power" value={setup.blade.Blade_Power} icon={Star} />
                   </div>
                   <div className="space-y-2">
                     <div className="text-sm">
-                      <span className="font-medium">Level:</span> {customSetup.blade.Blade_Level}
+                      <span className="font-medium">Level:</span> {setup.blade.Blade_Level}
                     </div>
                     <div className="text-sm">
-                      <span className="font-medium">Grip:</span> {customSetup.blade.Blade_Grip}
+                      <span className="font-medium">Grip:</span> {setup.blade.Blade_Grip}
                     </div>
                     <div className="text-sm">
                       <span className="font-medium">Price:</span> 
-                      <span className="font-bold ml-1">{formatPrice(customSetup.blade.Blade_Price)}</span>
+                      <span className="font-bold ml-1">{formatPrice(setup.blade.Blade_Price)}</span>
                     </div>
                     <Button size="sm" asChild variant="accent">
                       <a 
-                        href={customSetup.blade.Blade_Affiliate_Link} 
+                        href={setup.blade.Blade_Affiliate_Link} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="flex items-center gap-1"
@@ -258,13 +261,13 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               {/* Forehand Rubber */}
               <div className="border rounded-lg p-4 bg-card">
                 <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  🔴 Forehand Rubber: {customSetup.forehandRubber.Rubber_Name}
+                  🔴 Forehand Rubber: {setup.forehandRubber.Rubber_Name}
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <StatBar label="Speed" value={customSetup.forehandRubber.Rubber_Speed} icon={Gauge} />
-                    <StatBar label="Spin" value={customSetup.forehandRubber.Rubber_Spin} icon={Target} />
-                    <StatBar label="Control" value={customSetup.forehandRubber.Rubber_Control} icon={Shield} />
+                    <StatBar label="Speed" value={setup.forehandRubber.Rubber_Speed} icon={Gauge} />
+                    <StatBar label="Spin" value={setup.forehandRubber.Rubber_Spin} icon={Target} />
+                    <StatBar label="Control" value={setup.forehandRubber.Rubber_Control} icon={Shield} />
                     <Popover>
                       <PopoverTrigger asChild>
                         <button className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full justify-start">
@@ -285,15 +288,15 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                   </div>
                   <div className="space-y-2">
                     <div className="text-sm">
-                      <span className="font-medium">Level:</span> {customSetup.forehandRubber.Rubber_Level}
+                      <span className="font-medium">Level:</span> {setup.forehandRubber.Rubber_Level}
                     </div>
                     <div className="text-sm">
                       <span className="font-medium">Price:</span> 
-                      <span className="font-bold ml-1">{formatPrice(customSetup.forehandRubber.Rubber_Price)}</span>
+                      <span className="font-bold ml-1">{formatPrice(setup.forehandRubber.Rubber_Price)}</span>
                     </div>
                     <Button size="sm" asChild variant="accent">
                       <a 
-                        href={customSetup.forehandRubber.Rubber_Affiliate_Link} 
+                        href={setup.forehandRubber.Rubber_Affiliate_Link} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="flex items-center gap-1"
@@ -309,13 +312,13 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               {/* Backhand Rubber */}
               <div className="border rounded-lg p-4 bg-card">
                 <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  🔵 Backhand Rubber: {customSetup.backhandRubber.Rubber_Name}
+                  🔵 Backhand Rubber: {setup.backhandRubber.Rubber_Name}
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <StatBar label="Speed" value={customSetup.backhandRubber.Rubber_Speed} icon={Gauge} />
-                    <StatBar label="Spin" value={customSetup.backhandRubber.Rubber_Spin} icon={Target} />
-                    <StatBar label="Control" value={customSetup.backhandRubber.Rubber_Control} icon={Shield} />
+                    <StatBar label="Speed" value={setup.backhandRubber.Rubber_Speed} icon={Gauge} />
+                    <StatBar label="Spin" value={setup.backhandRubber.Rubber_Spin} icon={Target} />
+                    <StatBar label="Control" value={setup.backhandRubber.Rubber_Control} icon={Shield} />
                     <Popover>
                       <PopoverTrigger asChild>
                         <button className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full justify-start">
@@ -336,15 +339,15 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                   </div>
                   <div className="space-y-2">
                     <div className="text-sm">
-                      <span className="font-medium">Level:</span> {customSetup.backhandRubber.Rubber_Level}
+                      <span className="font-medium">Level:</span> {setup.backhandRubber.Rubber_Level}
                     </div>
                     <div className="text-sm">
                       <span className="font-medium">Price:</span> 
-                      <span className="font-bold ml-1">{formatPrice(customSetup.backhandRubber.Rubber_Price)}</span>
+                      <span className="font-bold ml-1">{formatPrice(setup.backhandRubber.Rubber_Price)}</span>
                     </div>
                     <Button size="sm" asChild variant="accent">
                       <a 
-                        href={customSetup.backhandRubber.Rubber_Affiliate_Link} 
+                        href={setup.backhandRubber.Rubber_Affiliate_Link} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="flex items-center gap-1"
@@ -416,18 +419,17 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       </div>
 
 
-      {/* Render recommendations in order based on preference */}
-      {showCustomFirst ? (
-        <>
-          <CustomSetupCard />
-          <PreAssembledCard />
-        </>
-      ) : (
-        <>
-          <PreAssembledCard />
-          <CustomSetupCard />
-        </>
-      )}
+      {/* Render recommendations sorted by score (best first) */}
+      {allRecommendations.map((item, index) => {
+        if (item.type === 'preAssembled') {
+          return <PreAssembledCard key="preAssembled" />;
+        } else if (item.type === 'custom1') {
+          return <CustomSetupCard key="custom1" setup={item.data} rank={customSetup2 ? 1 : undefined} />;
+        } else if (item.type === 'custom2') {
+          return <CustomSetupCard key="custom2" setup={item.data} rank={2} />;
+        }
+        return null;
+      })}
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 justify-center">

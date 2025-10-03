@@ -28,6 +28,7 @@ export interface CustomSetup {
 export interface Recommendation {
   preAssembled?: PreAssembledRacket & { score: number };
   customSetup?: CustomSetup;
+  customSetup2?: CustomSetup;
   totalScore: number;
   forehandThickness: string;
   forehandThicknessExplanation: string;
@@ -416,8 +417,8 @@ export function findBestPreAssembledRacket(answers: QuizAnswers): (PreAssembledR
   return null;
 }
 
-// Find best custom setup
-export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
+// Find best custom setups (top 2)
+export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): CustomSetup[] {
   const budgetRange = getBudgetRange(answers.Budget);
   const bestCombinations: CustomSetup[] = [];
 
@@ -511,7 +512,7 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
     }
   }
 
-  // Sort by score and return best
+  // Sort by score and return top N
   bestCombinations.sort((a, b) => b.score - a.score);
   
   // Normalize scores relative to budget range
@@ -520,30 +521,38 @@ export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
     const minScoreInBudget = bestCombinations[bestCombinations.length - 1].score;
     const scoreRange = maxScoreInBudget - minScoreInBudget;
     
-    // Normalize so the best setup in budget gets 85-95 match score
-    const normalizedScore = scoreRange > 0 
-      ? 85 + ((maxScoreInBudget - minScoreInBudget) / scoreRange) * 10
-      : 90;
+    // Normalize scores for all top N setups
+    const topSetups = bestCombinations.slice(0, topN).map((setup, index) => {
+      const normalizedScore = scoreRange > 0 
+        ? 85 + ((setup.score - minScoreInBudget) / scoreRange) * 10
+        : 90 - (index * 2); // If all scores are the same, decrease slightly for each
+      
+      // If both rubbers are Normal and prices differ, ensure more expensive one is on forehand
+      if (answers.ForehandRubberStyle === "Normal" && 
+          answers.BackhandRubberStyle === "Normal" &&
+          setup.backhandRubber.Rubber_Price > setup.forehandRubber.Rubber_Price) {
+        // Swap the rubbers
+        const temp = setup.forehandRubber;
+        setup.forehandRubber = setup.backhandRubber;
+        setup.backhandRubber = temp;
+      }
+      
+      return {
+        ...setup,
+        score: normalizedScore
+      };
+    });
     
-    const bestSetup = bestCombinations[0];
-    
-    // If both rubbers are Normal and prices differ, ensure more expensive one is on forehand
-    if (answers.ForehandRubberStyle === "Normal" && 
-        answers.BackhandRubberStyle === "Normal" &&
-        bestSetup.backhandRubber.Rubber_Price > bestSetup.forehandRubber.Rubber_Price) {
-      // Swap the rubbers
-      const temp = bestSetup.forehandRubber;
-      bestSetup.forehandRubber = bestSetup.backhandRubber;
-      bestSetup.backhandRubber = temp;
-    }
-    
-    return {
-      ...bestSetup,
-      score: normalizedScore
-    };
+    return topSetups;
   }
   
-  return null;
+  return [];
+}
+
+// Legacy function for backward compatibility
+export function findBestCustomSetup(answers: QuizAnswers): CustomSetup | null {
+  const setups = findBestCustomSetups(answers, 1);
+  return setups.length > 0 ? setups[0] : null;
 }
 
 // Get complete recommendation
@@ -561,6 +570,7 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
     return { 
       preAssembled, 
       customSetup: undefined,
+      customSetup2: undefined,
       totalScore,
       forehandThickness,
       forehandThicknessExplanation: forehandExplanation,
@@ -570,12 +580,15 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       handleTypeExplanation
     };
   } else if (assemblyPref.includes('Custom setup')) {
-    // Only return custom setup
-    const customSetup = findBestCustomSetup(answers);
+    // Return top 2 custom setups
+    const customSetups = findBestCustomSetups(answers, 2);
+    const customSetup = customSetups[0] || undefined;
+    const customSetup2 = customSetups[1] || undefined;
     const totalScore = customSetup?.score || 0;
     return { 
       preAssembled: undefined,
-      customSetup, 
+      customSetup,
+      customSetup2,
       totalScore,
       forehandThickness,
       forehandThicknessExplanation: forehandExplanation,
@@ -585,15 +598,18 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       handleTypeExplanation
     };
   } else {
-    // Return both options (for "Not sure")
+    // Return both pre-assembled and top 2 custom setups (for "Not sure")
     const preAssembled = findBestPreAssembledRacket(answers);
-    const customSetup = findBestCustomSetup(answers);
+    const customSetups = findBestCustomSetups(answers, 2);
+    const customSetup = customSetups[0] || undefined;
+    const customSetup2 = customSetups[1] || undefined;
     const preScore = preAssembled?.score || 0;
     const customScore = customSetup?.score || 0;
     const totalScore = Math.max(preScore, customScore);
     return { 
       preAssembled, 
-      customSetup, 
+      customSetup,
+      customSetup2,
       totalScore,
       forehandThickness,
       forehandThicknessExplanation: forehandExplanation,
