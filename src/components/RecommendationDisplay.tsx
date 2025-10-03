@@ -20,7 +20,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   const { preAssembled, customSetup, customSetup2, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation, handleType, handleTypeExplanation } = recommendation;
   
   // Create array of all recommendations sorted by match score
-  const allRecommendations = [
+  let allRecommendations = [
     preAssembled ? { type: 'preAssembled' as const, score: preAssembled.score, data: preAssembled } : null,
     customSetup ? { type: 'custom1' as const, score: customSetup.score, data: customSetup } : null,
     customSetup2 ? { type: 'custom2' as const, score: customSetup2.score, data: customSetup2 } : null,
@@ -34,6 +34,23 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
      // Otherwise sort by match score descending
      return b.score - a.score;
    });
+
+  // Filter based on assembly preference to show exactly 2 rackets
+  if (assemblyPreference === "Ready-to-play racket") {
+    // Show only pre-assembled rackets (max 2)
+    allRecommendations = allRecommendations.filter(item => item.type === 'preAssembled').slice(0, 2);
+  } else if (assemblyPreference === "Custom setup") {
+    // Show only custom setups (max 2)
+    allRecommendations = allRecommendations.filter(item => item.type !== 'preAssembled').slice(0, 2);
+  } else if (assemblyPreference === "Not sure") {
+    // Show 1 custom and 1 pre-assembled
+    const customOptions = allRecommendations.filter(item => item.type !== 'preAssembled').slice(0, 1);
+    const preAssembledOptions = allRecommendations.filter(item => item.type === 'preAssembled').slice(0, 1);
+    allRecommendations = [...customOptions, ...preAssembledOptions];
+  } else {
+    // Default: show top 2 of any type
+    allRecommendations = allRecommendations.slice(0, 2);
+  }
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
