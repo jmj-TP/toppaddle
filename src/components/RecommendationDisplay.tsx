@@ -454,6 +454,19 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
             </div>
           </div>
         )}
+
+        {allRecommendations.length > 0 && allRecommendations[0].score < 60 && (
+          <div className="mt-4 p-4 bg-destructive/10 border border-destructive/30 rounded-lg">
+            <div className="flex items-start gap-3">
+              <Info className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+              <div className="text-left">
+                <p className="text-sm text-foreground">
+                  <strong>Low Match Score:</strong> The best match found is below 60%. For better recommendations, try adjusting your budget or expanding your brand preferences.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
 
