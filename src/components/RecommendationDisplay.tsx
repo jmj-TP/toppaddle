@@ -440,6 +440,19 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
             </p>
           </div>
         )}
+
+        {handleType && !handleType.includes('DHS brand only') && (
+          <div className="mt-4 p-4 bg-primary/10 border border-primary/30 rounded-lg">
+            <div className="flex items-start gap-3">
+              <Info className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+              <div className="text-left">
+                <p className="text-sm text-foreground">
+                  <strong>Handle Recommendation:</strong> When purchasing, make sure to choose <span className="font-semibold text-primary">{handleType}</span> handle in the shop.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
 
