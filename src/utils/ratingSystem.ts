@@ -484,10 +484,14 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
         }
         
         // Price parity constraint: both rubbers should be within 30% price difference
-        const maxRubberPrice = Math.max(fhRubber.Rubber_Price, bhRubber.Rubber_Price);
-        const minRubberPrice = Math.min(fhRubber.Rubber_Price, bhRubber.Rubber_Price);
-        if (minRubberPrice > 0 && maxRubberPrice / minRubberPrice > 1.3) {
-          continue; // Skip if price difference exceeds 30%
+        // Skip this constraint for special rubbers (pimples, anti)
+        const isSpecialRubber = fhRubber.Rubber_Style !== 'Normal' || bhRubber.Rubber_Style !== 'Normal';
+        if (!isSpecialRubber) {
+          const maxRubberPrice = Math.max(fhRubber.Rubber_Price, bhRubber.Rubber_Price);
+          const minRubberPrice = Math.min(fhRubber.Rubber_Price, bhRubber.Rubber_Price);
+          if (minRubberPrice > 0 && maxRubberPrice / minRubberPrice > 1.3) {
+            continue; // Skip if price difference exceeds 30%
+          }
         }
         
         // For budgets over $160, allow blade to be much more expensive than rubbers
