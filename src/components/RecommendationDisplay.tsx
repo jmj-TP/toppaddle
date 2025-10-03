@@ -18,13 +18,31 @@ interface RecommendationDisplayProps {
 export default function RecommendationDisplay({ recommendation, onRestart, assemblyPreference, budgetAmount }: RecommendationDisplayProps) {
   const { preAssembled, customSetup, customSetup2, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation, handleType, handleTypeExplanation } = recommendation;
   
-  // Create array of all recommendations with their scores for sorting
+  // Calculate combined stats for sorting
+  const getStatsTotal = (item: any) => {
+    if (item.type === 'preAssembled') {
+      return item.data.Racket_Speed + item.data.Racket_Spin + item.data.Racket_Control + item.data.Racket_Power;
+    } else {
+      // For custom setups, calculate combined stats
+      const blade = item.data.blade;
+      const fhRubber = item.data.forehandRubber;
+      const bhRubber = item.data.backhandRubber;
+      const combinedSpeed = Math.round((blade.Blade_Speed + fhRubber.Rubber_Speed + bhRubber.Rubber_Speed) / 3);
+      const combinedSpin = Math.round((fhRubber.Rubber_Spin + bhRubber.Rubber_Spin) / 2);
+      const combinedControl = Math.round((blade.Blade_Control + fhRubber.Rubber_Control + bhRubber.Rubber_Control) / 3);
+      const combinedPower = Math.round((blade.Blade_Power + fhRubber.Rubber_Speed + bhRubber.Rubber_Speed) / 3);
+      return combinedSpeed + combinedSpin + combinedControl + combinedPower;
+    }
+  };
+  
+  // Create array of all recommendations with their stats total for sorting
   const allRecommendations = [
-    preAssembled ? { type: 'preAssembled' as const, score: preAssembled.score, data: preAssembled } : null,
-    customSetup ? { type: 'custom1' as const, score: customSetup.score, data: customSetup } : null,
-    customSetup2 ? { type: 'custom2' as const, score: customSetup2.score, data: customSetup2 } : null,
+    preAssembled ? { type: 'preAssembled' as const, score: preAssembled.score, data: preAssembled, statsTotal: 0 } : null,
+    customSetup ? { type: 'custom1' as const, score: customSetup.score, data: customSetup, statsTotal: 0 } : null,
+    customSetup2 ? { type: 'custom2' as const, score: customSetup2.score, data: customSetup2, statsTotal: 0 } : null,
   ].filter((item): item is NonNullable<typeof item> => item !== null)
-   .sort((a, b) => b.score - a.score); // Sort by score descending
+   .map(item => ({ ...item, statsTotal: getStatsTotal(item) }))
+   .sort((a, b) => b.statsTotal - a.statsTotal); // Sort by stats total descending
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
