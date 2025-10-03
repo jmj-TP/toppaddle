@@ -265,6 +265,25 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     <div className="text-sm">
                       <span className="font-medium">Grip:</span> {setup.blade.Blade_Grip}
                     </div>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="flex items-start gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full text-left">
+                          <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <span>Recommended Handle:</span>
+                            <span className="font-bold text-accent ml-1">{handleType}</span>
+                          </div>
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80">
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm">Why {handleType}?</h4>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {handleTypeExplanation}
+                          </p>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                     <div className="text-sm">
                       <span className="font-medium">Price:</span> 
                       <span className="font-bold ml-1">{formatPrice(setup.blade.Blade_Price)}</span>
@@ -412,27 +431,6 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         <p className="text-muted-foreground">
           Based on your preferences, here are our top recommendations
         </p>
-        
-        {/* Handle Type Recommendation */}
-        <div className="mt-4 p-4 bg-accent/10 border border-accent/30 rounded-lg max-w-2xl mx-auto">
-          <Popover>
-            <PopoverTrigger asChild>
-              <button className="flex items-center justify-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors w-full">
-                <Info className="w-4 h-4" />
-                <span>Recommended Handle Type:</span>
-                <span className="font-bold text-accent">{handleType}</span>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-80">
-              <div className="space-y-2">
-                <h4 className="font-semibold text-sm">Why {handleType}?</h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {handleTypeExplanation}
-                </p>
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
         
         {budgetAmount && budgetAmount < 60 && (
           <div className="mt-4 p-4 bg-accent/10 border border-accent/30 rounded-lg">
