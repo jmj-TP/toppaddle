@@ -14,10 +14,7 @@ const Footer = () => {
               <span className="text-2xl">🏓</span>
               <h3 className="font-headline text-xl font-bold">TT Quiz Pro</h3>
             </div>
-            <p className="font-body text-sm text-primary-foreground/70 leading-relaxed">
-              Helping table tennis players find their perfect equipment since 2017.
-            </p>
-          </div>
+           
 
           {/* Quick Links */}
           <div className="space-y-4">
