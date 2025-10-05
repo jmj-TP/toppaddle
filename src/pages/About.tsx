@@ -15,7 +15,7 @@ const About = () => {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-3xl text-center">
               <h1 className="font-headline text-4xl font-bold md:text-5xl">
-                About TT Quiz Pro
+                About TopPaddle
               </h1>
               <p className="font-body mt-6 text-lg text-primary-foreground/90">
                 Helping table tennis players find their perfect equipment since 2017
@@ -32,8 +32,7 @@ const About = () => {
                 Our Mission
               </h2>
               <p className="font-body mt-6 text-lg leading-relaxed text-muted-foreground">
-                With over 8 years of experience in table tennis, we've helped thousands of players 
-                navigate the complex world of table tennis equipment. Our mission is simple: make 
+                With 8 years of table tennis experience, our mission is simple: make 
                 it easy for every player, from beginner to advanced, to find the perfect racket 
                 that matches their playing style and skill level.
               </p>
@@ -55,11 +54,11 @@ const About = () => {
                   <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
                     <Award className="h-8 w-8 text-accent" />
                   </div>
-                  <CardTitle className="font-headline text-xl">8 Years Experience</CardTitle>
+                  <CardTitle className="font-headline text-xl">8 Years Playing</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="font-body text-sm text-muted-foreground">
-                    Deep expertise in table tennis equipment
+                    Years of table tennis experience
                   </p>
                 </CardContent>
               </Card>

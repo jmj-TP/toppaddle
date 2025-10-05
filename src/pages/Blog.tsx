@@ -17,7 +17,7 @@ const Blog = () => {
               Table Tennis Blog
             </h1>
             <p className="font-body mt-4 text-lg text-muted-foreground">
-              Expert advice, reviews, and tips from 8 years of table tennis experience
+              Expert advice, reviews, and tips with 8 years of table tennis experience
             </p>
           </div>
 

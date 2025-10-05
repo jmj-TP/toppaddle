@@ -22,7 +22,7 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <span className="font-headline text-xl font-bold text-primary-foreground">
-              TT Quiz Pro
+              TopPaddle
             </span>
           </Link>
 

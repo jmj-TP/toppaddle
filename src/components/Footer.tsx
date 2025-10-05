@@ -7,12 +7,12 @@ const Footer = () => {
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4 mb-12">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3 mb-12">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <span className="text-2xl">🏓</span>
-              <h3 className="font-headline text-xl font-bold">TT Quiz Pro</h3>
+              <h3 className="font-headline text-xl font-bold">TopPaddle</h3>
             </div>
             <p className="font-body text-sm text-primary-foreground/70 leading-relaxed">
               Helping table tennis players find their perfect equipment since 2017.
@@ -63,56 +63,21 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/privacy"
                   className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
                 >
                   Privacy Policy
-                </a>
+                </Link>
               </li>
             </ul>
-          </div>
-
-          {/* Social */}
-          <div className="space-y-4">
-            <h4 className="font-headline text-sm font-semibold uppercase tracking-wider">Connect</h4>
-            <div className="flex space-x-4">
-              <a
-                href="#"
-                className="p-2 rounded-full bg-primary-foreground/10 text-primary-foreground/70 transition-all hover:bg-accent hover:text-accent-foreground"
-                aria-label="Instagram"
-              >
-                <Instagram size={18} />
-              </a>
-              <a
-                href="#"
-                className="p-2 rounded-full bg-primary-foreground/10 text-primary-foreground/70 transition-all hover:bg-accent hover:text-accent-foreground"
-                aria-label="YouTube"
-              >
-                <Youtube size={18} />
-              </a>
-              <a
-                href="#"
-                className="p-2 rounded-full bg-primary-foreground/10 text-primary-foreground/70 transition-all hover:bg-accent hover:text-accent-foreground"
-                aria-label="Facebook"
-              >
-                <Facebook size={18} />
-              </a>
-              <a
-                href="#"
-                className="p-2 rounded-full bg-primary-foreground/10 text-primary-foreground/70 transition-all hover:bg-accent hover:text-accent-foreground"
-                aria-label="Twitter"
-              >
-                <Twitter size={18} />
-              </a>
-            </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="border-t border-primary-foreground/10 pt-8">
           <p className="font-body text-center text-sm text-primary-foreground/50">
-            © {currentYear} TT Quiz Pro. All rights reserved.
+            © {currentYear} TopPaddle. All rights reserved.
           </p>
         </div>
       </div>
