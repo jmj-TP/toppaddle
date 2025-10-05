@@ -26,6 +26,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
                 >
                   Quiz
@@ -34,6 +35,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/blog"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
                 >
                   Blog
@@ -42,6 +44,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/about"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
                 >
                   About
@@ -57,6 +60,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/terms"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
                 >
                   Terms & Disclaimer
@@ -65,6 +69,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/privacy"
+                  onClick={() => window.scrollTo(0, 0)}
                   className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
                 >
                   Privacy Policy
