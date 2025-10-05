@@ -23,7 +23,7 @@ const handleOptions = [
   {
     name: "Really large hands",
     value: "Anatomic",
-    desc: "Contoured to fit the palm; secure and ergonomic. Perfect for larger hands.",
+    desc: "Anatomic handle- Contoured to fit the palm; secure and ergonomic. Perfect for larger hands.",
     popular: false
   }
 ];
