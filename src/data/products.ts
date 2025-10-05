@@ -7,7 +7,7 @@ export interface Blade {
   Blade_Control: number; // 1-100
   Blade_Power: number; // 1-100
   Blade_Grip: string;
-  Blade_Price: number; // USD
+  Blade_Price: number; // USD, manually added, for sorting only
   Blade_Level: 'Beginner' | 'Intermediate' | 'Advanced';
   Blade_Weight?: number; // grams (optional - will be estimated if not provided)
   Blade_Affiliate_Link: string;
