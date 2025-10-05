@@ -130,7 +130,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               <div>
                 <span className="font-medium">Price:</span> 
                 <span className="text-lg font-bold text-primary ml-1">
-                  {formatPrice(racket.Racket_Price)}
+                  {formatPrice(racket.Racket_Price)}*
                 </span>
               </div>
             </div>
@@ -222,7 +222,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                   <div>
                     <span className="font-medium">Price:</span> 
                     <span className="text-lg font-bold text-primary ml-1">
-                      {formatPrice(setup.totalPrice)}
+                      {formatPrice(setup.totalPrice)}*
                     </span>
                   </div>
                 </div>
@@ -288,7 +288,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     </div>
                     <div className="text-sm">
                       <span className="font-medium">Price:</span> 
-                      <span className="font-bold ml-1">{formatPrice(setup.blade.Blade_Price)}</span>
+                      <span className="font-bold ml-1">{formatPrice(setup.blade.Blade_Price)}*</span>
                     </div>
                     <Button size="sm" asChild variant="accent">
                       <a 
@@ -339,7 +339,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     </div>
                     <div className="text-sm">
                       <span className="font-medium">Price:</span> 
-                      <span className="font-bold ml-1">{formatPrice(setup.forehandRubber.Rubber_Price)}</span>
+                      <span className="font-bold ml-1">{formatPrice(setup.forehandRubber.Rubber_Price)}*</span>
                     </div>
                     <Button size="sm" asChild variant="accent">
                       <a 
@@ -390,7 +390,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     </div>
                     <div className="text-sm">
                       <span className="font-medium">Price:</span> 
-                      <span className="font-bold ml-1">{formatPrice(setup.backhandRubber.Rubber_Price)}</span>
+                      <span className="font-bold ml-1">{formatPrice(setup.backhandRubber.Rubber_Price)}*</span>
                     </div>
                     <Button size="sm" asChild variant="accent">
                       <a 
@@ -553,6 +553,11 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           </CollapsibleContent>
         </Collapsible>
       </Card>
+
+      {/* Price Disclaimer */}
+      <div className="text-center text-xs text-muted-foreground italic">
+        *Estimated price. Actual price may vary depending on the retailer and region.
+      </div>
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 justify-center">

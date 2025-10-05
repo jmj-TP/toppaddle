@@ -15,7 +15,7 @@ const Footer = () => {
               <h3 className="font-headline text-xl font-bold">TopPaddle</h3>
             </div>
             <p className="font-body text-sm text-primary-foreground/70 leading-relaxed">
-              Helping table tennis players find their perfect equipment since 2017.
+              Almost a decade of experience in table tennis.
             </p>
           </div>
 

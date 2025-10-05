@@ -18,7 +18,7 @@ const About = () => {
                 About TopPaddle
               </h1>
               <p className="font-body mt-6 text-lg text-primary-foreground/90">
-                Helping table tennis players find their perfect equipment since 2017
+                Almost a decade of experience in table tennis
               </p>
             </div>
           </div>
