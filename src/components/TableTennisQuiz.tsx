@@ -426,14 +426,25 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   };
 
   const handleBrandToggle = (brand: string) => {
+    const allBrands = ["ANDRO", "BUTTERFLY", "JOOLA", "DHS"];
+    
     setSelectedBrands(prev => {
+      // If empty array (all brands selected), clicking a brand should deselect it
+      if (prev.length === 0) {
+        // Return all brands except the clicked one
+        return allBrands.filter(b => b !== brand);
+      }
+      
+      // If brand is in the array, remove it
       if (prev.includes(brand)) {
-        // Remove brand, but keep at least one
         const newBrands = prev.filter(b => b !== brand);
-        return newBrands.length === 0 ? [brand] : newBrands;
+        // If removing would leave empty, return empty array (all selected)
+        return newBrands;
       } else {
         // Add brand
-        return [...prev, brand];
+        const newBrands = [...prev, brand];
+        // If all brands are now selected, return empty array
+        return newBrands.length === allBrands.length ? [] : newBrands;
       }
     });
   };
@@ -582,7 +593,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
             />
             <Button 
               onClick={handleBrandContinue}
-              disabled={selectedBrands.length === 0}
               className="w-full mt-6"
               size="lg"
             >
