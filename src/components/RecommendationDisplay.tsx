@@ -264,6 +264,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <StatBar label="Speed" value={setup.blade.Blade_Speed} icon={Gauge} />
+                    <StatBar label="Spin" value={setup.blade.Blade_Spin} icon={Target} />
                     <StatBar label="Control" value={setup.blade.Blade_Control} icon={Shield} />
                     <StatBar label="Power" value={setup.blade.Blade_Power} icon={Star} />
                   </div>

@@ -3,6 +3,7 @@
 export interface Blade {
   Blade_Name: string;
   Blade_Speed: number; // 1-100
+  Blade_Spin: number; // 1-100
   Blade_Control: number; // 1-100
   Blade_Power: number; // 1-100
   Blade_Grip: string;
@@ -89,6 +90,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "JOOLA BASEline All",
     Blade_Speed: 60,
+    Blade_Spin: 70,
     Blade_Control: 82,
     Blade_Power: 65,
     Blade_Grip: "Flared",
@@ -100,6 +102,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "JOOLA BASEline OFF",
     Blade_Speed: 70,
+    Blade_Spin: 75,
     Blade_Control: 72,
     Blade_Power: 75,
     Blade_Grip: "Flared",
@@ -111,6 +114,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "JOOLA BASEline Carbon",
     Blade_Speed: 78,
+    Blade_Spin: 80,
     Blade_Control: 66,
     Blade_Power: 82,
     Blade_Grip: "Flared",
@@ -122,6 +126,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "JOOLA Challenger Off",
     Blade_Speed: 72,
+    Blade_Spin: 74,
     Blade_Control: 74,
     Blade_Power: 78,
     Blade_Grip: "Flared",
@@ -133,6 +138,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "JOOLA Chen Weixing Defensive",
     Blade_Speed: 55,
+    Blade_Spin: 60,
     Blade_Control: 92,
     Blade_Power: 58,
     Blade_Grip: "Flared",
@@ -143,6 +149,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "JOOLA Xylo 7",
     Blade_Speed: 80,
+    Blade_Spin: 82,
     Blade_Control: 72,
     Blade_Power: 84,
     Blade_Grip: "Flared",
@@ -153,6 +160,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "JOOLA Classic All",
     Blade_Speed: 58,
+    Blade_Spin: 68,
     Blade_Control: 88,
     Blade_Power: 62,
     Blade_Grip: "Flared",
@@ -163,6 +171,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "JOOLA Rosskopf Emotion",
     Blade_Speed: 82,
+    Blade_Spin: 84,
     Blade_Control: 78,
     Blade_Power: 83,
     Blade_Grip: "Flared",
@@ -173,6 +182,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "JOOLA BASEline Junior",
     Blade_Speed: 56,
+    Blade_Spin: 66,
     Blade_Control: 86,
     Blade_Power: 60,
     Blade_Grip: "Flared (Junior)",
@@ -183,6 +193,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "ANDRO Treiber CO",
     Blade_Speed: 86,
+    Blade_Spin: 84,
     Blade_Control: 72,
     Blade_Power: 88,
     Blade_Grip: "Flared",
@@ -193,6 +204,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "ANDRO Treiber FI",
     Blade_Speed: 84,
+    Blade_Spin: 82,
     Blade_Control: 74,
     Blade_Power: 86,
     Blade_Grip: "Flared",
@@ -203,6 +215,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "ANDRO Treiber FL",
     Blade_Speed: 85,
+    Blade_Spin: 83,
     Blade_Control: 72,
     Blade_Power: 87,
     Blade_Grip: "Flared",
@@ -213,6 +226,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "ANDRO Timber 5 OFF",
     Blade_Speed: 72,
+    Blade_Spin: 74,
     Blade_Control: 78,
     Blade_Power: 75,
     Blade_Grip: "Flared",
@@ -223,6 +237,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "ANDRO Timber 5 ALL",
     Blade_Speed: 66,
+    Blade_Spin: 72,
     Blade_Control: 84,
     Blade_Power: 64,
     Blade_Grip: "Flared",
@@ -233,6 +248,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "ANDRO Timber 5 DEF",
     Blade_Speed: 52,
+    Blade_Spin: 58,
     Blade_Control: 92,
     Blade_Power: 50,
     Blade_Grip: "Flared",
@@ -243,6 +259,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "ANDRO Kanter CO",
     Blade_Speed: 90,
+    Blade_Spin: 88,
     Blade_Control: 64,
     Blade_Power: 92,
     Blade_Grip: "Flared",
@@ -253,6 +270,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly TB5 Alpha",
     Blade_Speed: 74,
+    Blade_Spin: 76,
     Blade_Control: 80,
     Blade_Power: 70,
     Blade_Grip: "Flared",
@@ -263,6 +281,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly Boll Control",
     Blade_Speed: 58,
+    Blade_Spin: 65,
     Blade_Control: 88,
     Blade_Power: 60,
     Blade_Grip: "Flared",
@@ -273,6 +292,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly Boll Allround",
     Blade_Speed: 62,
+    Blade_Spin: 70,
     Blade_Control: 84,
     Blade_Power: 65,
     Blade_Grip: "Flared",
@@ -283,6 +303,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly Primorac",
     Blade_Speed: 74,
+    Blade_Spin: 76,
     Blade_Control: 78,
     Blade_Power: 72,
     Blade_Grip: "Flared",
@@ -293,6 +314,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly Viscaria",
     Blade_Speed: 92,
+    Blade_Spin: 90,
     Blade_Control: 80,
     Blade_Power: 94,
     Blade_Grip: "Flared",
@@ -303,6 +325,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly Timo Boll ALC",
     Blade_Speed: 90,
+    Blade_Spin: 88,
     Blade_Control: 82,
     Blade_Power: 92,
     Blade_Grip: "Flared",
@@ -313,6 +336,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "JOOLA Nobilis PBO-C",
     Blade_Speed: 95,
+    Blade_Spin: 92,
     Blade_Control: 78,
     Blade_Power: 98,
     Blade_Grip: "Flared",
@@ -323,6 +347,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly Viscaria Super ALC",
     Blade_Speed: 94,
+    Blade_Spin: 92,
     Blade_Control: 78,
     Blade_Power: 96,
     Blade_Grip: "Flared",
@@ -333,6 +358,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly Zhang Jike ALC",
     Blade_Speed: 91,
+    Blade_Spin: 89,
     Blade_Control: 80,
     Blade_Power: 93,
     Blade_Grip: "Flared",
@@ -343,6 +369,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly Fan Zhendong ALC",
     Blade_Speed: 94,
+    Blade_Spin: 92,
     Blade_Control: 81,
     Blade_Power: 95,
     Blade_Grip: "Flared",
@@ -353,6 +380,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly Lin Gaoyuan ALC",
     Blade_Speed: 93,
+    Blade_Spin: 91,
     Blade_Control: 80,
     Blade_Power: 94,
     Blade_Grip: "Flared",
@@ -363,6 +391,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly Harimoto Tomokazu Innerforce ALC",
     Blade_Speed: 92,
+    Blade_Spin: 90,
     Blade_Control: 83,
     Blade_Power: 93,
     Blade_Grip: "Flared",
@@ -373,6 +402,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly Jun Mizutani Super ZLC",
     Blade_Speed: 97,
+    Blade_Spin: 94,
     Blade_Control: 76,
     Blade_Power: 99,
     Blade_Grip: "Flared",
@@ -383,6 +413,7 @@ export const blades: Blade[] =
   {
     Blade_Name: "Butterfly Zhang Jike Super ZLC",
     Blade_Speed: 98,
+    Blade_Spin: 95,
     Blade_Control: 75,
     Blade_Power: 99,
     Blade_Grip: "Flared",
@@ -393,6 +424,7 @@ export const blades: Blade[] =
   {
     "Blade_Name": "DHS Power G5X",
     "Blade_Speed": 86,
+    "Blade_Spin": 88,
     "Blade_Control": 92,
     "Blade_Power": 88,
     "Blade_Grip": "Flared",
@@ -404,6 +436,7 @@ export const blades: Blade[] =
   {
     "Blade_Name": "DHS Hurricane 301",
     "Blade_Speed": 78,
+    "Blade_Spin": 82,
     "Blade_Control": 80,
     "Blade_Power": 76,
     "Blade_Grip": "Flared",
@@ -415,6 +448,7 @@ export const blades: Blade[] =
   {
     "Blade_Name": "DHS Hurricane King ACB",
     "Blade_Speed": 88,
+    "Blade_Spin": 90,
     "Blade_Control": 86,
     "Blade_Power": 90,
     "Blade_Grip": "Flared",
@@ -426,6 +460,7 @@ export const blades: Blade[] =
   {
     "Blade_Name": "DHS PG7",
     "Blade_Speed": 82,
+    "Blade_Spin": 80,
     "Blade_Control": 85,
     "Blade_Power": 80,
     "Blade_Grip": "Flared",
