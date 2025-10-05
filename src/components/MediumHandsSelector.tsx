@@ -57,7 +57,7 @@ export default function MediumHandsSelector({ onSelect }: MediumHandsSelectorPro
                     {handle.name}
                   </span>
                   {handle.popular && (
-                    <span className="text-xs text-primary font-medium">Most Likely</span>
+                    <span className="text-xs text-primary font-medium">Most Popular</span>
                   )}
                 </div>
               </div>

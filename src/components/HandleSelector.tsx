@@ -63,7 +63,7 @@ export default function HandleSelector({ onSelect }: HandleSelectorProps) {
                     {handle.name}
                   </span>
                   {handle.popular && (
-                    <span className="text-xs text-primary font-medium">Most Popular</span>
+                    <span className="text-xs text-primary font-medium">Most Likely</span>
                   )}
                 </div>
               </div>
