@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import TableTennisQuiz from "@/components/TableTennisQuiz";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -12,7 +12,14 @@ const Index = () => {
   const [isQuizActive, setIsQuizActive] = useState(false);
   const quizRef = useRef<HTMLDivElement>(null);
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleStartQuiz = () => {
+    // Scroll to top first
+    window.scrollTo(0, 0);
     setIsQuizActive(true);
     // Scroll to quiz after a brief delay to ensure state updates
     setTimeout(() => {

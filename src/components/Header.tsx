@@ -20,7 +20,7 @@ const Header = () => {
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center space-x-2">
             <span className="font-headline text-xl font-bold text-primary-foreground">
               TopPaddle
             </span>
@@ -32,6 +32,7 @@ const Header = () => {
               <Link
                 key={item.name}
                 to={item.href}
+                onClick={() => window.scrollTo(0, 0)}
                 className={`font-body text-sm font-medium transition-colors hover:text-accent ${
                   isActive(item.href)
                     ? "text-accent"
@@ -60,7 +61,10 @@ const Header = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    window.scrollTo(0, 0);
+                  }}
                   className={`font-body px-4 py-2 text-sm font-medium transition-colors hover:text-accent ${
                     isActive(item.href)
                       ? "text-accent"
