@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import tableTennisImg from "@/assets/table-tennis.png";
 
 interface HeroSectionProps {
   onStartQuiz: () => void;
@@ -10,9 +11,13 @@ const HeroSection = ({ onStartQuiz }: HeroSectionProps) => {
     <section className="relative overflow-hidden bg-gradient-to-br from-background via-secondary/30 to-background py-20 md:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center text-center">
-          {/* Icon/Emoji */}
-          <div className="mb-8 text-7xl md:text-8xl animate-fade-in">
-            🏓
+          {/* Table Tennis Icon */}
+          <div className="mb-8 animate-fade-in">
+            <img 
+              src={tableTennisImg} 
+              alt="Table tennis paddles and ball" 
+              className="w-32 h-32 md:w-40 md:h-40 mx-auto"
+            />
           </div>
 
           {/* Headline */}
