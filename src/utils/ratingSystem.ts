@@ -77,37 +77,20 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   const power = product.Blade_Power || product.Racket_Power || product.Rubber_Power || 0;
   const spin = product.Racket_Spin || product.Rubber_Spin || 0;
 
-  // Beginner adjustments: prioritize control while respecting playstyle
-  const isBeginner = answers.Level === 'Beginner';
-  
   if (answers.Playstyle.includes('Offensive')) {
-    if (isBeginner) {
-      // Beginners: Reduce speed/power emphasis, increase control importance
-      score += (speed / 100) * playstyleWeight * 0.25;  // Reduced from 0.5
-      score += (power / 100) * playstyleWeight * 0.25;  // Reduced from 0.5
-      score += (control / 100) * playstyleWeight * 0.5; // Added control boost
-      // Don't penalize high control for beginner offensive players
-    } else {
-      // Advanced/Intermediate: Original offensive logic
-      score += (speed / 100) * playstyleWeight * 0.5;
-      score += (power / 100) * playstyleWeight * 0.5;
-      // Penalize overly control-focused rubbers for offensive play
-      if (control > 88) {
-        score -= playstyleWeight * 0.2;
-      }
+    // Heavily prefer high speed and power, penalize excessive control
+    score += (speed / 100) * playstyleWeight * 0.5;
+    score += (power / 100) * playstyleWeight * 0.5;
+    // Penalize overly control-focused rubbers for offensive play
+    if (control > 88) {
+      score -= playstyleWeight * 0.2;
     }
   } else if (answers.Playstyle.includes('Defensive')) {
-    // Prefer high control (same for all levels)
+    // Prefer high control
     score += (control / 100) * playstyleWeight;
   } else if (answers.Playstyle.includes('Allround')) {
-    if (isBeginner) {
-      // Beginners: Emphasize control more in allround style
-      score += (control / 100) * playstyleWeight * 0.6;
-      score += (speed / 100) * playstyleWeight * 0.4;
-    } else {
-      // Balanced approach for intermediate/advanced
-      score += ((speed + control) / 200) * playstyleWeight;
-    }
+    // Balanced approach
+    score += ((speed + control) / 200) * playstyleWeight;
   }
 
   // Power preference matching (25% weight)
@@ -115,25 +98,12 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   maxScore += powerWeight;
   
   if (answers.Power.includes('A lot of power')) {
-    if (isBeginner) {
-      // Beginners: Reduce power emphasis, add control component
-      score += (speed / 100) * powerWeight * 0.3;   // Reduced from 0.6
-      score += (power / 100) * powerWeight * 0.2;   // Reduced from 0.4
-      score += (control / 100) * powerWeight * 0.5; // Added control boost
-    } else {
-      score += (speed / 100) * powerWeight * 0.6;
-      score += (power / 100) * powerWeight * 0.4;
-    }
+    score += (speed / 100) * powerWeight * 0.6;
+    score += (power / 100) * powerWeight * 0.4;
   } else if (answers.Power.includes('Control is more important')) {
     score += (control / 100) * powerWeight;
   } else if (answers.Power.includes('Balanced')) {
-    if (isBeginner) {
-      // Beginners: Favor control in balanced preference
-      score += (control / 100) * powerWeight * 0.5;
-      score += ((speed + power) / 200) * powerWeight * 0.5;
-    } else {
-      score += ((speed + control + power) / 300) * powerWeight;
-    }
+    score += ((speed + control + power) / 300) * powerWeight;
   }
 
   // Grip matching (100% weight)
@@ -158,25 +128,12 @@ function calculateScore(answers: QuizAnswers, product: any): number {
   maxScore += styleWeight;
   
   if (answers.Forehand.includes('Fast & aggressive') || answers.Backhand.includes('Fast & aggressive')) {
-    if (isBeginner) {
-      // Beginners: Reduce speed/power, add control
-      score += (speed / 100) * styleWeight * 0.3;   // Reduced from 0.6
-      score += (power / 100) * styleWeight * 0.2;   // Reduced from 0.4
-      score += (control / 100) * styleWeight * 0.5; // Added control boost
-    } else {
-      score += (speed / 100) * styleWeight * 0.6;
-      score += (power / 100) * styleWeight * 0.4;
-    }
+    score += (speed / 100) * styleWeight * 0.6;
+    score += (power / 100) * styleWeight * 0.4;
   } else if (answers.Forehand.includes('Spin & topspin') || answers.Backhand.includes('Spin & topspin')) {
-    if (isBeginner) {
-      // Beginners: Increase control importance for spin players
-      score += (spin / 100) * styleWeight * 0.4;    // Reduced from 0.6
-      score += (control / 100) * styleWeight * 0.6; // Increased from 0.4
-    } else {
-      // Spin players need good spin AND control
-      score += (spin / 100) * styleWeight * 0.6;
-      score += (control / 100) * styleWeight * 0.4;
-    }
+    // Spin players need good spin AND control
+    score += (spin / 100) * styleWeight * 0.6;
+    score += (control / 100) * styleWeight * 0.4;
   } else if (answers.Forehand.includes('Calm & controlled') || answers.Backhand.includes('Calm & controlled')) {
     score += (control / 100) * styleWeight;
   }
