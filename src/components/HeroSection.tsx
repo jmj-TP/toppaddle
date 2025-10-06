@@ -22,12 +22,12 @@ const HeroSection = ({ onStartQuiz }: HeroSectionProps) => {
 
           {/* Headline */}
           <h1 className="font-headline text-4xl font-bold text-foreground md:text-5xl lg:text-6xl mb-6 max-w-4xl animate-fade-in">
-            One Quiz. Your Racket.
+            Find Your Perfect Paddle in One Quiz
           </h1>
 
           {/* Subheading */}
           <p className="font-body text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl animate-fade-in">
-            Take the quiz and find your custom racket — simple and stress-free.
+            Custom recommendations based on your style, skill, and budget — fast, accurate, and fun.
           </p>
 
           {/* CTA Button */}
@@ -40,6 +40,11 @@ const HeroSection = ({ onStartQuiz }: HeroSectionProps) => {
             Take the Quiz
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
+
+          {/* Sub-CTA Text */}
+          <p className="mt-4 text-sm text-muted-foreground animate-fade-in">
+            Takes less than 2 minutes — no sign-up required.
+          </p>
 
         </div>
       </div>
