@@ -125,7 +125,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                 <span className="font-medium">Level:</span> {racket.Racket_Level}
               </div>
               <div>
-                <span className="font-medium">Grip:</span> {racket.Racket_Grip}
+                <span className="font-medium">Grip:</span> {handleType}
               </div>
               <div>
                 <span className="font-medium">Price:</span> 
@@ -229,7 +229,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     <span className="font-medium">Level:</span> {setup.blade.Blade_Level}
                   </div>
                   <div>
-                    <span className="font-medium">Grip:</span> {setup.blade.Blade_Grip}
+                    <span className="font-medium">Grip:</span> {handleType}
                   </div>
                   <div>
                     <span className="font-medium">Price:</span> 
@@ -285,7 +285,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                       <span className="font-medium">Level:</span> {setup.blade.Blade_Level}
                     </div>
                     <div className="text-sm">
-                      <span className="font-medium">Grip:</span> {setup.blade.Blade_Grip}
+                      <span className="font-medium">Grip:</span> {handleType}
                     </div>
                     <div className="mt-3 p-3 bg-accent/10 border border-accent/30 rounded-md">
                       <div className="flex items-start gap-2">
