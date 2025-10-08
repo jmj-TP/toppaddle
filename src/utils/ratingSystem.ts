@@ -42,12 +42,13 @@ export interface Recommendation {
 }
 
 // Calculate compatibility score between user preferences and product attributes
-function calculateScore(answers: QuizAnswers, product: any): number {
+function calculateScore(answers: QuizAnswers, product: any, productType: 'blade' | 'rubber' | 'racket' = 'racket'): number {
   let score = 0;
   let maxScore = 0;
 
-  // Level matching (5% weight)
-  const levelWeight = 5;
+  // Level matching - MUCH more important for blades when user is beginner
+  const isBladeForBeginner = productType === 'blade' && answers.Level === 'Beginner';
+  const levelWeight = isBladeForBeginner ? 35 : 5; // 35% weight for beginner blades, 5% for others
   maxScore += levelWeight;
   const productLevel = product.Blade_Level || product.Racket_Level || product.Rubber_Level;
   
@@ -399,7 +400,7 @@ export function findBestPreAssembledRackets(answers: QuizAnswers, topN: number =
     })
     .map(racket => ({
       ...racket,
-      score: calculateScore(answers, racket)
+      score: calculateScore(answers, racket, 'racket')
     }))
     .sort((a, b) => b.score - a.score);
 
@@ -516,9 +517,9 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
         
         if (totalPrice <= budgetRange.max) {
           // Calculate combined score
-          const bladeScore = calculateScore(answers, blade);
-          const fhScore = calculateScore(answers, fhRubber);
-          const bhScore = calculateScore(answers, bhRubber);
+          const bladeScore = calculateScore(answers, blade, 'blade');
+          const fhScore = calculateScore(answers, fhRubber, 'rubber');
+          const bhScore = calculateScore(answers, bhRubber, 'rubber');
           
           // Weight: blade 50%, forehand rubber 30%, backhand rubber 20%
           let combinedScore = (bladeScore * 0.5) + (fhScore * 0.3) + (bhScore * 0.2);
