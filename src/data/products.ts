@@ -78,7 +78,7 @@ export interface PreAssembledRacket {
   Racket_Spin: number; // 1-100
   Racket_Control: number; // 1-100
   Racket_Power: number; // 1-100
-  Racket_Grip: string;
+  Racket_Grip: string[]; // Array of available grips: e.g., ["Flared", "Straight"]
   Racket_Price: number; // USD
   Racket_Level: 'Beginner' | 'Intermediate' | 'Advanced';
   Racket_Affiliate_Link: string;
@@ -821,7 +821,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 52,
     "Racket_Control": 80,
     "Racket_Power": 56,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 19.99,
     "Racket_Level": "Beginner",
     "Racket_Affiliate_Link": ""
@@ -837,7 +837,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 60,
     "Racket_Control": 62,
     "Racket_Power": 67,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 29.99,
     "Racket_Level": "Beginner",
     "Racket_Affiliate_Link": ""
@@ -853,7 +853,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 46,
     "Racket_Control": 75,
     "Racket_Power": 69,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 34.99,
     "Racket_Level": "Beginner",
     "Racket_Affiliate_Link": ""
@@ -869,7 +869,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 51,
     "Racket_Control": 87,
     "Racket_Power": 38,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 39.99,
     "Racket_Level": "Beginner",
     "Racket_Affiliate_Link": ""
@@ -885,7 +885,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 20,
     "Racket_Control": 89,
     "Racket_Power": 38,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 34.99,
     "Racket_Level": "Beginner",
     "Racket_Affiliate_Link": ""
@@ -901,7 +901,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 71,
     "Racket_Control": 65,
     "Racket_Power": 78,
-    "Racket_Grip": "Concave",
+    "Racket_Grip": ["Anatomic"],
     "Racket_Price": 59.99,
     "Racket_Level": "Intermediate",
     "Racket_Affiliate_Link": ""
@@ -917,7 +917,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 74,
     "Racket_Control": 78,
     "Racket_Power": 72,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 79.99,
     "Racket_Level": "Intermediate",
     "Racket_Affiliate_Link": ""
@@ -933,7 +933,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 80,
     "Racket_Control": 71,
     "Racket_Power": 83,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 99.99,
     "Racket_Level": "Intermediate",
     "Racket_Affiliate_Link": ""
@@ -949,7 +949,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 60,
     "Racket_Control": 72,
     "Racket_Power": 86,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 89.99,
     "Racket_Level": "Intermediate",
     "Racket_Affiliate_Link": ""
@@ -965,7 +965,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 54,
     "Racket_Control": 92,
     "Racket_Power": 43,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 94.99,
     "Racket_Level": "Intermediate",
     "Racket_Affiliate_Link": ""
@@ -981,7 +981,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 23,
     "Racket_Control": 94,
     "Racket_Power": 49,
-    "Racket_Grip": "Concave",
+    "Racket_Grip": ["Anatomic"],
     "Racket_Price": 109.99,
     "Racket_Level": "Intermediate",
     "Racket_Affiliate_Link": ""
@@ -997,7 +997,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 94,
     "Racket_Control": 76,
     "Racket_Power": 92,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 259.99,
     "Racket_Level": "Advanced",
     "Racket_Affiliate_Link": ""
@@ -1013,7 +1013,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 92,
     "Racket_Control": 75,
     "Racket_Power": 92,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 229.99,
     "Racket_Level": "Advanced",
     "Racket_Affiliate_Link": ""
@@ -1029,7 +1029,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 71,
     "Racket_Control": 78,
     "Racket_Power": 95,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 199.99,
     "Racket_Level": "Advanced",
     "Racket_Affiliate_Link": ""
@@ -1045,7 +1045,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 60,
     "Racket_Control": 98,
     "Racket_Power": 36,
-    "Racket_Grip": "Flared",
+    "Racket_Grip": ["Flared", "Straight"],
     "Racket_Price": 179.99,
     "Racket_Level": "Advanced",
     "Racket_Affiliate_Link": ""
@@ -1061,7 +1061,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     "Racket_Spin": 18,
     "Racket_Control": 96,
     "Racket_Power": 51,
-    "Racket_Grip": "Concave",
+    "Racket_Grip": ["Anatomic"],
     "Racket_Price": 189.99,
     "Racket_Level": "Advanced",
     "Racket_Affiliate_Link": ""
@@ -1077,7 +1077,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 72,
     Racket_Control: 77,
     Racket_Power: 64,
-    Racket_Grip: "Flared",
+    Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 19.95,
     Racket_Level: "Beginner",
     Racket_Affiliate_Link: "https://www.amazon.com/JOOLA-Approved-Allround-Competition-Thickness/dp/B095HGR1XM"
@@ -1093,7 +1093,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 69,
     Racket_Control: 82,
     Racket_Power: 60,
-    Racket_Grip: "Penhold",
+    Racket_Grip: ["Penhold"],
     Racket_Price: 31.04,
     Racket_Level: "Beginner",
     Racket_Affiliate_Link: "https://www.amazon.com/Butterfly-2000-Table-Tennis-Racket/dp/B00DCTAXOE"
@@ -1109,7 +1109,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 74,
     Racket_Control: 71,
     Racket_Power: 72,
-    Racket_Grip: "Flared",
+    Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 69.99,
     Racket_Level: "Intermediate",
     Racket_Affiliate_Link: "https://www.amazon.com/Butterfly-Timo-Table-Tennis-Racket/dp/B008N7X06I"
@@ -1125,7 +1125,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 72,
     Racket_Control: 74,
     Racket_Power: 69,
-    Racket_Grip: "Flared",
+    Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 25,
     Racket_Level: "Intermediate",
     Racket_Affiliate_Link: "https://www.amazon.com/Joola-Carbon-Control-Table-Tennis/dp/B010DB9WFY"
@@ -1141,7 +1141,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 89,
     Racket_Control: 60,
     Racket_Power: 84,
-    Racket_Grip: "Flared",
+    Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 299.99,
     Racket_Level: "Advanced",
     Racket_Affiliate_Link: "https://www.amazon.com/stores/Butterfly/page/95496F6D-88AF-42D7-8975-ED7CB7AE5ECA"
@@ -1157,7 +1157,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 77,
     Racket_Control: 69,
     Racket_Power: 77,
-    Racket_Grip: "Flared",
+    Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 149.99,
     Racket_Level: "Advanced",
     Racket_Affiliate_Link: "https://www.amazon.com/stores/Andro/page/andro-rackets"
@@ -1173,7 +1173,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 69,
     Racket_Control: 60,
     Racket_Power: 65,
-    Racket_Grip: "Flared",
+    Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 39.95,
     Racket_Level: "Beginner",
     Racket_Affiliate_Link: "https://www.killerspin.com/products/jet400-table-tennis-racket"
@@ -1189,7 +1189,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 65,
     Racket_Control: 69,
     Racket_Power: 56,
-    Racket_Grip: "Flared",
+    Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 19.99,
     Racket_Level: "Beginner",
     Racket_Affiliate_Link: "https://www.paliotabletennis.com/palio-expert-3-0-paddle"
@@ -1205,7 +1205,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 69,
     Racket_Control: 56,
     Racket_Power: 72,
-    Racket_Grip: "Concave",
+    Racket_Grip: ["Anatomic"],
     Racket_Price: 49.99,
     Racket_Level: "Intermediate",
     Racket_Affiliate_Link: "https://www.stigaus.com/products/stiga-pro-carbon-table-tennis-racket"
@@ -1221,7 +1221,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 65,
     Racket_Control: 65,
     Racket_Power: 65,
-    Racket_Grip: "Concave",
+    Racket_Grip: ["Anatomic"],
     Racket_Price: 39.95,
     Racket_Level: "Intermediate",
     Racket_Affiliate_Link: "https://www.joola.com/products/joola-infinity-balance"
@@ -1237,7 +1237,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 56,
     Racket_Control: 69,
     Racket_Power: 60,
-    Racket_Grip: "Flared",
+    Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 19.99,
     Racket_Level: "Beginner",
     Racket_Affiliate_Link: "https://shop.butterflyonline.com/401"
@@ -1253,7 +1253,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 72,
     Racket_Control: 56,
     Racket_Power: 69,
-    Racket_Grip: "Flared",
+    Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 29.99,
     Racket_Level: "Intermediate",
     Racket_Affiliate_Link: "https://www.dhs-sports.com/4002"
@@ -1269,7 +1269,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 69,
     Racket_Control: 60,
     Racket_Power: 65,
-    Racket_Grip: "Flared",
+    Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 24.99,
     Racket_Level: "Intermediate",
     Racket_Affiliate_Link: "https://www.yinhett.com/01b"
@@ -1285,7 +1285,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 69,
     Racket_Control: 56,
     Racket_Power: 72,
-    Racket_Grip: "Flared",
+    Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 39.99,
     Racket_Level: "Advanced",
     Racket_Affiliate_Link: "https://www.sanwei.com/taiji-710-pro-carbon"
@@ -1301,7 +1301,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Spin: 65,
     Racket_Control: 69,
     Racket_Power: 60,
-    Racket_Grip: "Flared",
+    Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 29.99,
     Racket_Level: "Intermediate",
     Racket_Affiliate_Link: "https://www.paliotabletennis.com/palio-legend-2-paddle"

@@ -128,12 +128,12 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
     score += ((speed + control + power) / 300) * powerWeight;
   }
 
-  // Grip matching (100% weight) - STRICT filter for blades
+  // Grip matching (100% weight) - STRICT filter for blades and rackets
   const gripWeight = 100;
   maxScore += gripWeight;
   
-  // Handle blade grip arrays vs racket grip strings
-  const productGrips = Array.isArray(product.Blade_Grip) ? product.Blade_Grip : [product.Racket_Grip || ''];
+  // Both blades and rackets now use grip arrays
+  const productGrips = product.Blade_Grip || product.Racket_Grip || [];
   
   // Determine what grip type the user wants
   let userWantsFlared = answers.Grip.includes('Shakehand Flared') || answers.Grip.includes('Small Hands Special');
