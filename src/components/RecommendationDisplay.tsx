@@ -135,6 +135,18 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               </div>
             </div>
             
+            <div className="mt-3 p-3 bg-accent/10 border border-accent/30 rounded-md">
+              <div className="flex items-start gap-2">
+                <Info className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                <div className="text-xs leading-relaxed">
+                  <span className="font-semibold text-accent">Handle Selection:</span>
+                  <span className="text-foreground"> When purchasing, select </span>
+                  <span className="font-bold text-accent">{handleType}</span>
+                  <span className="text-foreground"> handle in the shop.</span>
+                </div>
+              </div>
+            </div>
+            
             <Button 
               asChild 
               variant="accent"

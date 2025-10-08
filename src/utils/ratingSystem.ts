@@ -156,16 +156,14 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
     hasPreferredGrip = true; // Give benefit of doubt
   }
   
-  // For blades, grip is a dealbreaker - filter out if not available
-  if (productType === 'blade' && !hasPreferredGrip) {
-    return 0; // Filter out this blade completely
+  // For blades and rackets, grip is a dealbreaker - filter out if not available
+  if ((productType === 'blade' || productType === 'racket') && !hasPreferredGrip) {
+    return 0; // Filter out completely if grip doesn't match
   }
   
   // Award points if grip matches
   if (hasPreferredGrip) {
     score += gripWeight;
-  } else {
-    score += gripWeight * 0.8; // Partial points for rackets
   }
 
   // Forehand/Backhand style matching (15% weight)
