@@ -69,7 +69,28 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
     return 0;
   }
 
-  // Playstyle matching (40% weight)
+  // Style attribute matching for blades (30% weight)
+  if (productType === 'blade' && product.Blade_Style) {
+    const styleWeight = 30;
+    maxScore += styleWeight;
+    
+    const bladeStyle = product.Blade_Style;
+    if (answers.Playstyle.includes('Offensive') && bladeStyle === 'Offensive') {
+      score += styleWeight;
+    } else if (answers.Playstyle.includes('Defensive') && bladeStyle === 'Defensive') {
+      score += styleWeight;
+    } else if (answers.Playstyle.includes('Allround') && bladeStyle === 'All-Round') {
+      score += styleWeight;
+    } else if (answers.Playstyle.includes('Offensive') && bladeStyle === 'All-Round') {
+      // Partial match: offensive players can use all-round blades
+      score += styleWeight * 0.5;
+    } else if (answers.Playstyle.includes('Defensive') && bladeStyle === 'All-Round') {
+      // Partial match: defensive players can use all-round blades
+      score += styleWeight * 0.5;
+    }
+  }
+
+  // Playstyle matching (40% weight) - stats-based
   const playstyleWeight = 40;
   maxScore += playstyleWeight;
   
