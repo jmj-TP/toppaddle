@@ -128,21 +128,44 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
     score += ((speed + control + power) / 300) * powerWeight;
   }
 
-  // Grip matching (100% weight)
+  // Grip matching (100% weight) - STRICT filter for blades
   const gripWeight = 100;
   maxScore += gripWeight;
   
-  const productGrip = product.Blade_Grip || product.Racket_Grip || '';
-  if (answers.Grip.includes('Shakehand') && productGrip.includes('Flared')) {
-    score += gripWeight;
-  } else if (answers.Grip.includes('Straight') && productGrip.includes('Straight')) {
-    score += gripWeight;
-  } else if (answers.Grip.includes('Penhold') && productGrip.includes('Penhold')) {
-    score += gripWeight;
-  } else if (answers.Grip.includes('Small Hands Special') && productGrip.includes('Flared')) {
-    score += gripWeight; // Small hands special uses Flared handle
+  // Handle blade grip arrays vs racket grip strings
+  const productGrips = Array.isArray(product.Blade_Grip) ? product.Blade_Grip : [product.Racket_Grip || ''];
+  
+  // Determine what grip type the user wants
+  let userWantsFlared = answers.Grip.includes('Shakehand Flared') || answers.Grip.includes('Small Hands Special');
+  let userWantsStraight = answers.Grip.includes('Shakehand Straight') || answers.Grip.includes('Straight');
+  let userWantsAnatomic = answers.Grip.includes('Anatomic');
+  let userWantsPenhold = answers.Grip.includes('Penhold');
+  
+  // Check if product has the user's preferred grip
+  let hasPreferredGrip = false;
+  
+  if (userWantsFlared && productGrips.some(grip => grip.includes('Flared'))) {
+    hasPreferredGrip = true;
+  } else if (userWantsStraight && productGrips.some(grip => grip.includes('Straight'))) {
+    hasPreferredGrip = true;
+  } else if (userWantsAnatomic && productGrips.some(grip => grip.includes('Anatomic'))) {
+    hasPreferredGrip = true;
+  } else if (userWantsPenhold && productGrips.some(grip => grip.includes('Penhold'))) {
+    hasPreferredGrip = true;
   } else if (answers.Grip.includes('Not sure')) {
-    score += gripWeight * 0.8; // Give benefit of doubt
+    hasPreferredGrip = true; // Give benefit of doubt
+  }
+  
+  // For blades, grip is a dealbreaker - filter out if not available
+  if (productType === 'blade' && !hasPreferredGrip) {
+    return 0; // Filter out this blade completely
+  }
+  
+  // Award points if grip matches
+  if (hasPreferredGrip) {
+    score += gripWeight;
+  } else {
+    score += gripWeight * 0.8; // Partial points for rackets
   }
 
   // Forehand/Backhand style matching (15% weight)

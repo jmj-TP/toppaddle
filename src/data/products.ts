@@ -6,11 +6,12 @@ export interface Blade {
   Blade_Spin: number; // 1-100
   Blade_Control: number; // 1-100
   Blade_Power: number; // 1-100
-  Blade_Grip: string;
+  Blade_Grip: string[]; // Array of available grips: e.g., ["Flared", "Straight", "Anatomic"]
   Blade_Price: number; // USD, manually added, for sorting only
   Blade_Level: 'Beginner' | 'Intermediate' | 'Advanced';
   Blade_Weight?: number; // grams (optional - will be estimated if not provided)
   Blade_Affiliate_Link: string;
+  Blade_Style?: 'Offensive' | 'Defensive' | 'All-Round'; // Playing style of the blade
 }
 
 // Estimate blade weight based on characteristics
@@ -93,7 +94,7 @@ export const blades: Blade[] =
     Blade_Spin: 70,
     Blade_Control: 82,
     Blade_Power: 65,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 34.95,
     Blade_Level: "Beginner",
     Blade_Weight: 86,
@@ -105,7 +106,7 @@ export const blades: Blade[] =
     Blade_Spin: 75,
     Blade_Control: 72,
     Blade_Power: 75,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 39.95,
     Blade_Level: "Beginner",
     Blade_Weight: 88,
@@ -117,7 +118,7 @@ export const blades: Blade[] =
     Blade_Spin: 80,
     Blade_Control: 66,
     Blade_Power: 82,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 49.95,
     Blade_Level: "Intermediate",
     Blade_Weight: 90,
@@ -129,7 +130,7 @@ export const blades: Blade[] =
     Blade_Spin: 74,
     Blade_Control: 74,
     Blade_Power: 78,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 34.95,
     Blade_Level: "Beginner",
     Blade_Weight: 87,
@@ -141,7 +142,7 @@ export const blades: Blade[] =
     Blade_Spin: 60,
     Blade_Control: 92,
     Blade_Power: 58,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 59.95,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://joola.com/products/joola-chen-weixing-table-tennis-blade"
@@ -152,7 +153,7 @@ export const blades: Blade[] =
     Blade_Spin: 82,
     Blade_Control: 72,
     Blade_Power: 84,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 89.95,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://joola.com/products/joola-xylo-7-table-tennis-blade"
@@ -163,7 +164,7 @@ export const blades: Blade[] =
     Blade_Spin: 68,
     Blade_Control: 88,
     Blade_Power: 62,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 34.95,
     Blade_Level: "Beginner",
     Blade_Affiliate_Link: "https://joola.com/products/joola-classic-all-table-tennis-blade"
@@ -174,7 +175,7 @@ export const blades: Blade[] =
     Blade_Spin: 84,
     Blade_Control: 78,
     Blade_Power: 83,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 89.95,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://joola.com/products/joola-rosskopf-emotion-table-tennis-blade"
@@ -185,7 +186,7 @@ export const blades: Blade[] =
     Blade_Spin: 66,
     Blade_Control: 86,
     Blade_Power: 60,
-    Blade_Grip: "Flared (Junior)",
+    Blade_Grip: ["Flared"],
     Blade_Price: 29.95,
     Blade_Level: "Beginner",
     Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-jr-table-tennis-blade"
@@ -196,7 +197,7 @@ export const blades: Blade[] =
     Blade_Spin: 84,
     Blade_Control: 72,
     Blade_Power: 88,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 79.95,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.andro.de/en/treiber-co-off"
@@ -207,7 +208,7 @@ export const blades: Blade[] =
     Blade_Spin: 82,
     Blade_Control: 74,
     Blade_Power: 86,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 84.95,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.andro.de/en/treiber-fi-off"
@@ -218,7 +219,7 @@ export const blades: Blade[] =
     Blade_Spin: 83,
     Blade_Control: 72,
     Blade_Power: 87,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 84.95,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.andro.de/en/treiber-fl-off"
@@ -229,7 +230,7 @@ export const blades: Blade[] =
     Blade_Spin: 74,
     Blade_Control: 78,
     Blade_Power: 75,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 69.95,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-off"
@@ -240,7 +241,7 @@ export const blades: Blade[] =
     Blade_Spin: 72,
     Blade_Control: 84,
     Blade_Power: 64,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 64.95,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-all"
@@ -251,7 +252,7 @@ export const blades: Blade[] =
     Blade_Spin: 58,
     Blade_Control: 92,
     Blade_Power: 50,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 69.95,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-def"
@@ -262,7 +263,7 @@ export const blades: Blade[] =
     Blade_Spin: 88,
     Blade_Control: 64,
     Blade_Power: 92,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 89.95,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.andro.de/en/kanter-co-off"
@@ -273,7 +274,7 @@ export const blades: Blade[] =
     Blade_Spin: 76,
     Blade_Control: 80,
     Blade_Power: 70,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 64.99,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.butterflyonline.com/product/tb5-alpha-fl-blade"
@@ -284,7 +285,7 @@ export const blades: Blade[] =
     Blade_Spin: 65,
     Blade_Control: 88,
     Blade_Power: 60,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 59.99,
     Blade_Level: "Beginner",
     Blade_Affiliate_Link: "https://www.butterflyonline.com/product/boll-control-blade"
@@ -295,7 +296,7 @@ export const blades: Blade[] =
     Blade_Spin: 70,
     Blade_Control: 84,
     Blade_Power: 65,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 64.99,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.butterflyonline.com/product/boll-allround-blade"
@@ -306,7 +307,7 @@ export const blades: Blade[] =
     Blade_Spin: 76,
     Blade_Control: 78,
     Blade_Power: 72,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 69.99,
     Blade_Level: "Intermediate",
     Blade_Affiliate_Link: "https://www.butterflyonline.com/product/primorac-blade"
@@ -317,7 +318,7 @@ export const blades: Blade[] =
     Blade_Spin: 90,
     Blade_Control: 80,
     Blade_Power: 94,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 166.49,
     Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://tabletennisstore.us/products/butterfly-viscaria-offensive-table-tennis-blade"
@@ -328,7 +329,7 @@ export const blades: Blade[] =
     Blade_Spin: 88,
     Blade_Control: 82,
     Blade_Power: 92,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 179.90,
     Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/timo-boll-alc.html"
@@ -339,7 +340,7 @@ export const blades: Blade[] =
     Blade_Spin: 92,
     Blade_Control: 78,
     Blade_Power: 98,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 199.00,
     Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://joola.it/products/joola-holz-nobilis-pbo-c"
@@ -350,7 +351,7 @@ export const blades: Blade[] =
     Blade_Spin: 92,
     Blade_Control: 78,
     Blade_Power: 96,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 242.99,
     Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://tabletennisstore.us/products/butterfly-viscaria-super-alc-offensive-table-tennis-blade"
@@ -361,7 +362,7 @@ export const blades: Blade[] =
     Blade_Spin: 89,
     Blade_Control: 80,
     Blade_Power: 93,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 179.90,
     Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-alc.html"
@@ -372,7 +373,7 @@ export const blades: Blade[] =
     Blade_Spin: 92,
     Blade_Control: 81,
     Blade_Power: 95,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 184.90,
     Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/fan-zhendong-alc.html"
@@ -383,7 +384,7 @@ export const blades: Blade[] =
     Blade_Spin: 91,
     Blade_Control: 80,
     Blade_Power: 94,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 184.90,
     Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/lin-gaoyuan-alc.html"
@@ -394,7 +395,7 @@ export const blades: Blade[] =
     Blade_Spin: 90,
     Blade_Control: 83,
     Blade_Power: 93,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 184.90,
     Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/harimoto-tomokazu-innerforce-alc.html"
@@ -405,7 +406,7 @@ export const blades: Blade[] =
     Blade_Spin: 94,
     Blade_Control: 76,
     Blade_Power: 99,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 379.90,
     Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/mizutani-jun-super-zlc.html"
@@ -416,7 +417,7 @@ export const blades: Blade[] =
     Blade_Spin: 95,
     Blade_Control: 75,
     Blade_Power: 99,
-    Blade_Grip: "Flared",
+    Blade_Grip: ["Flared", "Straight"],
     Blade_Price: 379.90,
     Blade_Level: "Advanced",
     Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-super-zlc.html"
@@ -427,7 +428,7 @@ export const blades: Blade[] =
     "Blade_Spin": 88,
     "Blade_Control": 92,
     "Blade_Power": 88,
-    "Blade_Grip": "Flared",
+    "Blade_Grip": ["Flared", "Straight"],
     "Blade_Price": 44.95,
     "Blade_Level": "Intermediate",
     "Blade_Weight": 89,
@@ -439,7 +440,7 @@ export const blades: Blade[] =
     "Blade_Spin": 82,
     "Blade_Control": 80,
     "Blade_Power": 76,
-    "Blade_Grip": "Flared",
+    "Blade_Grip": ["Flared", "Straight"],
     "Blade_Price": 63.60,
     "Blade_Level": "Intermediate",
     "Blade_Weight": 85,
@@ -451,7 +452,7 @@ export const blades: Blade[] =
     "Blade_Spin": 90,
     "Blade_Control": 86,
     "Blade_Power": 90,
-    "Blade_Grip": "Flared",
+    "Blade_Grip": ["Flared", "Straight"],
     "Blade_Price": 199.95,
     "Blade_Level": "Advanced",
     "Blade_Weight": 89,
@@ -463,7 +464,7 @@ export const blades: Blade[] =
     "Blade_Spin": 80,
     "Blade_Control": 85,
     "Blade_Power": 80,
-    "Blade_Grip": "Flared",
+    "Blade_Grip": ["Flared", "Straight"],
     "Blade_Price": 31.99,
     "Blade_Level": "Beginner",
     "Blade_Weight": 87,
