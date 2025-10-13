@@ -14,7 +14,7 @@ export const blogPosts: BlogPost[] = [
     id: "guide-to-table-tennis-rubbers",
     title: "The Ultimate Guide to Table Tennis Rubbers: Spin, Speed, and Control",
     excerpt: "Learn how table tennis rubbers affect spin, speed, and control, and find the perfect rubber setup for your paddle.",
-    thumbnail: "https://images.unsplash.com/photo-1593006127485-b1c0c9133895?w=800&q=80",
+    thumbnail: "https://images.unsplash.com/photo-1534158914592-062992fbe900?w=800&q=80",
     author: "TopPaddle Team",
     date: "2025-01-20",
     content: `<p>When players talk about upgrading their racket, they often focus on the blade. But the truth is, your rubbers influence your performance more than almost anything else. They define how much spin you can create, how fast the ball leaves your racket, and how much control you have during rallies.</p>
@@ -34,7 +34,7 @@ export const blogPosts: BlogPost[] = [
     id: "beginners-guide-choosing-racket",
     title: "Beginner's Guide to Choosing the Perfect Table Tennis Racket",
     excerpt: "A simple 2025 guide to choosing your first table tennis racket with the right balance of speed, control, and spin.",
-    thumbnail: "https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=800&q=80",
+    thumbnail: "https://images.unsplash.com/photo-1611004991004-5d213669ddb5?w=800&q=80",
     author: "TopPaddle Team",
     date: "2025-01-15",
     content: `<p>Choosing your first table tennis racket can feel confusing. There are hundreds of options, and every product claims to be the best. The truth is, as a beginner, your focus should be on developing good control and consistency, not on speed or power.</p>
