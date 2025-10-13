@@ -14,7 +14,7 @@ export const blogPosts: BlogPost[] = [
     id: "guide-to-table-tennis-rubbers",
     title: "The Ultimate Guide to Table Tennis Rubbers: Spin, Speed, and Control",
     excerpt: "Learn how table tennis rubbers affect spin, speed, and control, and find the perfect rubber setup for your paddle.",
-    thumbnail: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=800&q=80",
+    thumbnail: "https://images.unsplash.com/photo-1593006127485-b1c0c9133895?w=800&q=80",
     author: "TopPaddle Team",
     date: "2025-01-20",
     content: `<p>When players talk about upgrading their racket, they often focus on the blade. But the truth is, your rubbers influence your performance more than almost anything else. They define how much spin you can create, how fast the ball leaves your racket, and how much control you have during rallies.</p>
@@ -34,7 +34,7 @@ export const blogPosts: BlogPost[] = [
     id: "beginners-guide-choosing-racket",
     title: "Beginner's Guide to Choosing the Perfect Table Tennis Racket",
     excerpt: "A simple 2025 guide to choosing your first table tennis racket with the right balance of speed, control, and spin.",
-    thumbnail: "https://images.unsplash.com/photo-1593786481097-47a9b7d3a48b?w=800&q=80",
+    thumbnail: "https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=800&q=80",
     author: "TopPaddle Team",
     date: "2025-01-15",
     content: `<p>Choosing your first table tennis racket can feel confusing. There are hundreds of options, and every product claims to be the best. The truth is, as a beginner, your focus should be on developing good control and consistency, not on speed or power.</p>
@@ -52,7 +52,7 @@ export const blogPosts: BlogPost[] = [
     id: "how-to-glue-table-tennis-rubbers",
     title: "How to Glue Table Tennis Rubbers on Your Racket",
     excerpt: "Learn how to glue table tennis rubbers on your blade correctly for the best performance and feel.",
-    thumbnail: "https://images.unsplash.com/photo-1565034946487-077786996e27?w=800&q=80",
+    thumbnail: "https://images.unsplash.com/photo-1609710228159-0fa9bd7c0827?w=800&q=80",
     author: "TopPaddle Team",
     date: "2025-01-10",
     content: `<p>At some point, every table tennis player needs to replace their rubbers. Maybe your old ones have lost grip, or you are upgrading to a faster setup. Gluing your own rubbers can feel intimidating at first, but with a bit of care and patience, it is simple and satisfying to do it yourself.</p>
