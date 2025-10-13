@@ -34,7 +34,7 @@ export const blogPosts: BlogPost[] = [
     id: "beginners-guide-choosing-racket",
     title: "Beginner's Guide to Choosing the Perfect Table Tennis Racket",
     excerpt: "A simple 2025 guide to choosing your first table tennis racket with the right balance of speed, control, and spin.",
-    thumbnail: "https://images.unsplash.com/photo-1611004991004-5d213669ddb5?w=800&q=80",
+    thumbnail: "https://images.unsplash.com/photo-1556817411-92969197da56?w=800&q=80",
     author: "TopPaddle Team",
     date: "2025-01-15",
     content: `<p>Choosing your first table tennis racket can feel confusing. There are hundreds of options, and every product claims to be the best. The truth is, as a beginner, your focus should be on developing good control and consistency, not on speed or power.</p>
