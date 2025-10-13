@@ -11,7 +11,7 @@ export interface Blade {
   Blade_Level: 'Beginner' | 'Intermediate' | 'Advanced';
   Blade_Weight?: number; // grams (optional - will be estimated if not provided)
   Blade_Affiliate_Link: string;
-  Blade_Style?: 'Offensive' | 'Defensive' | 'All-Round'; // Playing style of the blade
+  Blade_Style?: 'Offensive' | 'Defensive' | 'All-Round' | 'Allround'; // Playing style of the blade
 }
 
 // Estimate blade weight based on characteristics
@@ -85,392 +85,407 @@ export interface PreAssembledRacket {
 }
 
 // Blades Database
-export const blades: Blade[] = 
-
-[
+export const blades: Blade[] = [
   {
-    Blade_Name: "JOOLA BASEline All",
-    Blade_Speed: 60,
-    Blade_Spin: 70,
-    Blade_Control: 82,
-    Blade_Power: 65,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 34.95,
-    Blade_Level: "Beginner",
-    Blade_Weight: 86,
-    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-all-table-tennis-blade"
+    "Blade_Name": "Butterfly Primorac",
+    "Blade_Speed": 68,
+    "Blade_Spin": 74,
+    "Blade_Control": 86,
+    "Blade_Power": 62,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 70.0,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 88.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Butterfly-Primorac-FL-Blade-Flared-Handle/dp/B001ADV8NE?dib=eyJ2IjoiMSJ9.jSmhzbfHGqGdtGUOgn6qFAoz3p7uV9X5UE3Ahis8DwldR0UT36rGC3WL4fkyHiIbOURWLDTgAvgtk5Zlu5m2n-GS3T63gT0-U16c5mMfF-HbdH6M-s1JNgXHXX3UCq554jIB_njE7_HIA0os3nl8neveNDR8-S_ikN8pSXDQ39iMdr00RkUwFs4yiTWdHIyVu1wfivjr1AjhOS7SKuqtKZREMU758K4MhlMEM3f2YdYPSSarIP92FMqPbYDrcDasBOqZrrySraqhY1iEjJxlD_qkUlnI8h-PkQCfUK2Oq6c.cedMsr5rt0R7ESLEYfaeUWgirbPSpqqZSgTmyhsZQIE&dib_tag=se&keywords=Butterfly%2BPrimorac%2Bblade&qid=1759977220&sr=8-6&th=1",
+    "Blade_Style": "Allround"
   },
   {
-    Blade_Name: "JOOLA BASEline OFF",
-    Blade_Speed: 70,
-    Blade_Spin: 75,
-    Blade_Control: 72,
-    Blade_Power: 75,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 39.95,
-    Blade_Level: "Beginner",
-    Blade_Weight: 88,
-    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-off-table-tennis-blade"
+    "Blade_Name": "Butterfly Primorac Carbon",
+    "Blade_Speed": 80,
+    "Blade_Spin": 75,
+    "Blade_Control": 74,
+    "Blade_Power": 78,
+    "Blade_Grip": [
+      "Flared",
+      "Straight"
+    ],
+    "Blade_Price": 104.0,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 88.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Butterfly-Primorac-Carbon-FL-Flared-Handle/dp/B000AS884W?dib=eyJ2IjoiMSJ9.w9CgYdfAIaRCsMoh5YN0WyUvbt7tQVN9uKjbcef2D8_BtzJ-BekiB5TizLJ8rc6lk-5SesW05rcPWygyrbZRVvAa6v9fD-cWFD2ow_5bPJa0QTjuoMbUpRbV2zEuDvU36f4i6xt_GkzW7BO6wejgTDZfYlXefbprJdYpmg0vDGuV--OM4pZpQPrDf8S1-0L1t20icsOsU_qfpGEpt0fz1bApBx0Cpg9z8hBHY54U57mZFOZ7UC2hCC2nEPVqN44VP2pL-OaqWCUU89fn9KT9SxhAc3flLEIWKP1k5v3jl6c.hDpNvaeA3plWmRQdfhNI-oT2k0aMSPYv-CzuQZ3FiFw&dib_tag=se&keywords=Butterfly%2BPrimorac%2BCarbon%2Bblade&qid=1759978596&sr=8-2&th=1",
+    "Blade_Style": "Offensive"
   },
   {
-    Blade_Name: "JOOLA BASEline Carbon",
-    Blade_Speed: 78,
-    Blade_Spin: 80,
-    Blade_Control: 66,
-    Blade_Power: 82,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 49.95,
-    Blade_Level: "Intermediate",
-    Blade_Weight: 90,
-    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-carbon-table-tennis-blade"
+    "Blade_Name": "Butterfly Petr Korbel",
+    "Blade_Speed": 76,
+    "Blade_Spin": 76,
+    "Blade_Control": 84,
+    "Blade_Power": 70,
+    "Blade_Grip": [
+      "Flared",
+      "Straight"
+    ],
+    "Blade_Price": 62.0,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 91.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Butterfly-Korbel-FL-Blade-Flared-Handle/dp/B000AS886A?dib=eyJ2IjoiMSJ9.bFaDC2ha8h9NbhUdyhqY0MbeQzSi3ihNZeo5Du2HsYXqB61_GNcBmmF1PIOhKXCrj3gKHyygCpAFA86t8RgXMcPLQZ8r2nTik-ArC6aZchiGbzeK43wQTdN6zdA-1yg2SZP9fqBGii0qw9iW_zo_EJwnMA1q02DtCgHTlDaysaJ-SoYqWtLIiRWcU-KLxH1mkeHbc2YLhlyeaxt-BSRn4YsNVPg-azA-Qmu7kQVxop9vnbSkRSUe9SZioAMnSXLtUn8Xpt1jGi4I6ZQb3wW2AKyZC172lVf4G83KpafYuVs.hWWKv1hkn82tBNSPBKL11xka7hrR1L4cbhNCfOyfW5U&dib_tag=se&keywords=Butterfly%2BPetr%2BKorbel%2Bblade&qid=1759978564&sr=8-3&th=1",
+    "Blade_Style": "Allround"
   },
   {
-    Blade_Name: "JOOLA Challenger Off",
-    Blade_Speed: 72,
-    Blade_Spin: 74,
-    Blade_Control: 74,
-    Blade_Power: 78,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 34.95,
-    Blade_Level: "Beginner",
-    Blade_Weight: 87,
-    Blade_Affiliate_Link: "https://joola.com/products/joola-challenger-off-table-tennis-blade"
+    "Blade_Name": "Butterfly Viscaria ALC",
+    "Blade_Speed": 88,
+    "Blade_Spin": 82,
+    "Blade_Control": 72,
+    "Blade_Power": 85,
+    "Blade_Grip": [
+      "Flared",
+      "Straight"
+    ],
+    "Blade_Price": 166.0,
+    "Blade_Level": "Advanced",
+    "Blade_Weight": 87.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Butterfly-Viscaria-FL-Blade-Flared-Handle/dp/B003XLDQDQ?dib=eyJ2IjoiMSJ9.rhyhfsfBhz8apqx0i7KFggMI4Q5Eptxlq1DmrhtUMQ6x16yb-H79PMmADrPx8udAKSNfZutQ8Wi3imc4uCJLU0dHmrtkL9ET-FHeqiJ0vJaSurG6NWFIcWu1ZRjhL_c6SLA5roa0nnreHQEWbozfozzi1cepQKeHKWA6XIYYpbakryzjvafN5evJ9cR9XC_YqWSIousBn61sgLfgzPrGxJVgbtZ9a1wkbj8OBeCSDI4sIIZf6ZzmYIAhWzwSJlANiuh_YTiDoL0q44vnMCzeIK-yeoTIoUx08LYaxD0zVmM.G7SPX1Cnl4DVnoxnaSruot0Ritz4boMxsmP_D7c9Wzs&dib_tag=se&keywords=Butterfly%2BViscaria%2Bblade&qid=1759978501&sr=8-4&th=1",
+    "Blade_Style": "Offensive"
   },
   {
-    Blade_Name: "JOOLA Chen Weixing Defensive",
-    Blade_Speed: 55,
-    Blade_Spin: 60,
-    Blade_Control: 92,
-    Blade_Power: 58,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 59.95,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://joola.com/products/joola-chen-weixing-table-tennis-blade"
+    "Blade_Name": "Butterfly Timo Boll ALC",
+    "Blade_Speed": 86,
+    "Blade_Spin": 78,
+    "Blade_Control": 74,
+    "Blade_Power": 84,
+    "Blade_Grip": [
+      "Flared",
+      "Straight",
+      "Anatomic"
+    ],
+    "Blade_Price": 166.0,
+    "Blade_Level": "Advanced",
+    "Blade_Weight": 86.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Butterfly-Alc-ST-Blade-Straight-Handle/dp/B002EENFLQ?dib=eyJ2IjoiMSJ9.UIc7O75P4bR-CKZoADus-kzqstv0EDgXjgX49pCGJBh3ZJ-Ep6JAp2xe-ggqkAD-i3xUwMMBf_mOjO-luolSZiEYSIEo686f_pzP2L4-BGVyLW9eWzqRbG5We143zmRd6YZX4sDOIBk2u8C0l7lOXVdsZs16ab3KhqwNZyI4v8P9ej-OKI8jkRaf1iXcNLx4P8bJ74ykdAJSzN21_j1Gh90sAh85H1oEWz0uT6BKENK8Q4bDNnc0klNNek2ZrU_UKGXAUYTq3iRlfFQ32EELjp2OueFvhnaO-B78lkoEj6Q.qFY2PPYA9ds-hBreoTBfZIBx6J5TplrNSCoVa2-lQA8&dib_tag=se&keywords=Butterfly%2BTimo%2BBoll%2BALC%2Bblade&qid=1759978475&sr=8-6&th=1",
+    "Blade_Style": "Offensive"
   },
   {
-    Blade_Name: "JOOLA Xylo 7",
-    Blade_Speed: 80,
-    Blade_Spin: 82,
-    Blade_Control: 72,
-    Blade_Power: 84,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 89.95,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://joola.com/products/joola-xylo-7-table-tennis-blade"
+    "Blade_Name": "Butterfly Timo Boll ZLC",
+    "Blade_Speed": 90,
+    "Blade_Spin": 80,
+    "Blade_Control": 70,
+    "Blade_Power": 88,
+    "Blade_Grip": [
+      "Flared",
+      "Straight",
+      "Anatomic"
+    ],
+    "Blade_Price": 243.0,
+    "Blade_Level": "Advanced",
+    "Blade_Weight": 84.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Butterfly-Timo-Boll-ZLC-Blade/dp/B002EENFI4?dib=eyJ2IjoiMSJ9.rCnVjsTEPGZ_GPfFeQrCP3T5E5pw1LMjlBNcnCaVIu4eS0GqISe1C1I8FtpO6jjaPpsYJMOvaHYzkHDnW-5h6ZaTJS3PC8vJLvYi4kfoWxdgD-syTsddJ-uyk678GjQ_dlCkwuls-bx1dtLfYGZV-1G5stfmT2QyMa2fz6UjKiz2-vL44vvDDhEt-31co5AFhGLFjaI3R3G9I8Ez1MyPtaj25LZipXeSPm7QTS7xwf9x5w9pHxQ16FqpYnz6X2LksEgcGQdRdJjX5HEizYzI_7Phj131etOD4ofxBvJr-2w.PQzgttVJM0HnCkP9_nQNnBSxRrXxbBekyl4HjPVS2rw&dib_tag=se&keywords=Butterfly%2BTimo%2BBoll%2BZLC%2Bblade&qid=1759979381&sr=8-6&th=1",
+    "Blade_Style": "Offensive"
   },
   {
-    Blade_Name: "JOOLA Classic All",
-    Blade_Speed: 58,
-    Blade_Spin: 68,
-    Blade_Control: 88,
-    Blade_Power: 62,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 34.95,
-    Blade_Level: "Beginner",
-    Blade_Affiliate_Link: "https://joola.com/products/joola-classic-all-table-tennis-blade"
+    "Blade_Name": "Butterfly TB5 Alpha",
+    "Blade_Speed": 78,
+    "Blade_Spin": 75,
+    "Blade_Control": 76,
+    "Blade_Power": 74,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 58.0,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 88.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Butterfly-Tennis-Cypress-Professional-Handle/dp/B07PQD6MB7?dib=eyJ2IjoiMSJ9.f5BmT3-Bu5f0ORo4PC8erv3k1uw5njtalbBL4-B-_HwsBs7cBCoTf3CrKLuncjR8jSPRxRQdiFXaKU9l0w_fGvqW_nJ3SG99vgYueNEUz1I.DQ1KqE8sqbvZn1-0vf7nRvs-2belwgvlloKDLPFcyiE&dib_tag=se&keywords=Butterfly%2BTB5%2BAlpha%2Bblade&qid=1759979504&sr=8-1&th=1",
+    "Blade_Style": "Allround"
   },
   {
-    Blade_Name: "JOOLA Rosskopf Emotion",
-    Blade_Speed: 82,
-    Blade_Spin: 84,
-    Blade_Control: 78,
-    Blade_Power: 83,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 89.95,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://joola.com/products/joola-rosskopf-emotion-table-tennis-blade"
+    "Blade_Name": "Butterfly Maze Advance",
+    "Blade_Speed": 80,
+    "Blade_Spin": 78,
+    "Blade_Control": 74,
+    "Blade_Power": 76,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 59.39,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 82.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/s?k=Butterfly+Maze+Advance+blade",
+    "Blade_Style": "Allround"
   },
   {
-    Blade_Name: "JOOLA BASEline Junior",
-    Blade_Speed: 56,
-    Blade_Spin: 66,
-    Blade_Control: 86,
-    Blade_Power: 60,
-    Blade_Grip: ["Flared"],
-    Blade_Price: 29.95,
-    Blade_Level: "Beginner",
-    Blade_Affiliate_Link: "https://joola.com/products/joola-baseline-jr-table-tennis-blade"
+    "Blade_Name": "Butterfly Falcima",
+    "Blade_Speed": 74,
+    "Blade_Spin": 73,
+    "Blade_Control": 78,
+    "Blade_Power": 70,
+    "Blade_Grip": [
+      "Flared",
+      "Straight"
+    ],
+    "Blade_Price": 66.59,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 87.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/s?k=Butterfly+Falcima+blade",
+    "Blade_Style": "Allround"
   },
   {
-    Blade_Name: "ANDRO Treiber CO",
-    Blade_Speed: 86,
-    Blade_Spin: 84,
-    Blade_Control: 72,
-    Blade_Power: 88,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 79.95,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/treiber-co-off"
+    "Blade_Name": "Butterfly Timo Boll CAF",
+    "Blade_Speed": 84,
+    "Blade_Spin": 80,
+    "Blade_Control": 75,
+    "Blade_Power": 82,
+    "Blade_Grip": [
+      "Flared",
+      "Straight"
+    ],
+    "Blade_Price": 94.49,
+    "Blade_Level": "Advanced",
+    "Blade_Weight": 82.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Butterfly-Timo-Boll-CAF-Blade/dp/B07HN7R79P?dib=eyJ2IjoiMSJ9.DFA1J04bk1HBIC0xfjH9raRpajXn9WAr0sLApyfe3ItBKt64wqrjxNE7V908acTjujWmTF-rpN0ut9efLSpgk-6fiTOk8MfEXZm-L9zytwsNFxU3OQ-4tqoAFetDI1T4JuwWri3XVIbsI5dXYcspBrCCSiTmaaOSJSrq5gONdeQyjmbEaly884bqW5xl4uOp_mhXOxeCN_sUP4tuX4pS_I5p62Lnigq-4BzD2SOwT-ImtRng6TrQwwm00Qe1y-W3Aqm8cKv9B5HMKgWM-N_ZBwy1wlmQMaqM2bFew1TsXfA.fNh6CZaJHqVbkxdb5iV8DxPKZNpCdFGzgfljvvysldc&dib_tag=se&keywords=Butterfly%2BTimo%2BBoll%2BCAF%2Bblade&qid=1759980236&sr=8-6&th=1",
+    "Blade_Style": "Offensive"
   },
   {
-    Blade_Name: "ANDRO Treiber FI",
-    Blade_Speed: 84,
-    Blade_Spin: 82,
-    Blade_Control: 74,
-    Blade_Power: 86,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 84.95,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/treiber-fi-off"
+    "Blade_Name": "JOOLA Vyzaryz Trinity",
+    "Blade_Speed": 92,
+    "Blade_Spin": 86,
+    "Blade_Control": 73,
+    "Blade_Power": 90,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 273.24,
+    "Blade_Level": "Advanced",
+    "Blade_Weight": 90.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/JOOLA-Vyzaryz-Trinity-Table-Tennis/dp/B084JQQV7P?dib=eyJ2IjoiMSJ9._FGPKwO7bWcopa469wHeOvIT6LPNFBW-2W28DicfG5jGjHj071QN20LucGBJIEps.yk9lmNedh8ENWIvhpeC4QFRa1pkIlzMjvF0vZUIt_vc&dib_tag=se&keywords=JOOLA%2BVyzaryz%2BTrinity%2Bblade&qid=1759980350&sr=8-3&th=1",
+    "Blade_Style": "Offensive"
   },
   {
-    Blade_Name: "ANDRO Treiber FL",
-    Blade_Speed: 85,
-    Blade_Spin: 83,
-    Blade_Control: 72,
-    Blade_Power: 87,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 84.95,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/treiber-fl-off"
+    "Blade_Name": "JOOLA Vyzaryz Freeze",
+    "Blade_Speed": 90,
+    "Blade_Spin": 85,
+    "Blade_Control": 74,
+    "Blade_Power": 88,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 211.7,
+    "Blade_Level": "Advanced",
+    "Blade_Weight": 85.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/JOOLA-Vyzaryz-Freeze-Table-Tennis/dp/B084HKFXDY?dib=eyJ2IjoiMSJ9.2Q4EpK8yPRas1auR2E-7j2sw22LkFPMaKH1VioteloA.5TOQ1Ox3UBMLOUTIMlvsrXaas4ZG-5G6aQgVk5UJ_Ek&dib_tag=se&keywords=JOOLA%2BVyzaryz%2BFreeze%2Bblade&qid=1759980631&sr=8-3&th=1",
+    "Blade_Style": "Offensive"
   },
   {
-    Blade_Name: "ANDRO Timber 5 OFF",
-    Blade_Speed: 72,
-    Blade_Spin: 74,
-    Blade_Control: 78,
-    Blade_Power: 75,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 69.95,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-off"
+    "Blade_Name": "JOOLA CWX",
+    "Blade_Speed": 62,
+    "Blade_Spin": 65,
+    "Blade_Control": 88,
+    "Blade_Power": 58,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 55.52,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 90.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/JOOLA-Weixing-Flared-Table-Tennis/dp/B00589C40M?dib=eyJ2IjoiMSJ9.EMg6Lq73yBIuQzH0T33Axd9s83UWwWxyNJOBz-kDgGh3IxJGkydsikBtAn56DAKTSB_AjrUjcUd9V_7pqIDHOcpYxIN7cd0Mrb8Z6FzlKtw.jOKuYme2lk-lpGD9ExZIpbRSWirzx399pE1s_9ryMZk&dib_tag=se&keywords=JOOLA+CWX+blade&qid=1760026698&sr=8-3",
+    "Blade_Style": "Defensive"
   },
   {
-    Blade_Name: "ANDRO Timber 5 ALL",
-    Blade_Speed: 66,
-    Blade_Spin: 72,
-    Blade_Control: 84,
-    Blade_Power: 64,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 64.95,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-all"
+    "Blade_Name": "Andro Inizio OFF",
+    "Blade_Speed": 80,
+    "Blade_Spin": 70,
+    "Blade_Control": 74,
+    "Blade_Power": 74,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 41.09,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 84.0,
+    "Blade_Affiliate_Link": "https://www.amazon.ca/Andro-Inizio-Table-Tennis-Blade/dp/B07N8NT7FG",
+    "Blade_Style": "Offensive"
   },
   {
-    Blade_Name: "ANDRO Timber 5 DEF",
-    Blade_Speed: 52,
-    Blade_Spin: 58,
-    Blade_Control: 92,
-    Blade_Power: 50,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 69.95,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/timber-5-def"
+    "Blade_Name": "Andro Treiber FO",
+    "Blade_Speed": 89,
+    "Blade_Spin": 76,
+    "Blade_Control": 71,
+    "Blade_Power": 81,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 89.95,
+    "Blade_Level": "Advanced",
+    "Blade_Weight": 90.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Andro-Treiber-Table-Tennis-Blade/dp/B07N48WCB4?dib=eyJ2IjoiMSJ9.oN7ZvLEd_wKvDTd-ag_Dq4zJwUwRM7wd_QDrPDiIbLPGjHj071QN20LucGBJIEps._LGfO1By5DKT1KHUiBRM2BAQLhaNwhrr4q90Oe4Cce4&dib_tag=se&keywords=Andro+Treiber+FO+blade&qid=1759981176&sr=8-1",
+    "Blade_Style": "Offensive"
   },
   {
-    Blade_Name: "ANDRO Kanter CO",
-    Blade_Speed: 90,
-    Blade_Spin: 88,
-    Blade_Control: 64,
-    Blade_Power: 92,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 89.95,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.andro.de/en/kanter-co-off"
+    "Blade_Name": "Andro Treiber CI",
+    "Blade_Speed": 87,
+    "Blade_Spin": 75,
+    "Blade_Control": 73,
+    "Blade_Power": 79,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 89.95,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 90.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/s?k=Andro+Treiber+CI+blade",
+    "Blade_Style": "Offensive"
   },
   {
-    Blade_Name: "Butterfly TB5 Alpha",
-    Blade_Speed: 74,
-    Blade_Spin: 76,
-    Blade_Control: 80,
-    Blade_Power: 70,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 64.99,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/tb5-alpha-fl-blade"
+    "Blade_Name": "Andro Treiber CO",
+    "Blade_Speed": 88,
+    "Blade_Spin": 76,
+    "Blade_Control": 72,
+    "Blade_Power": 80,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 89.95,
+    "Blade_Level": "Advanced",
+    "Blade_Weight": 90.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Andro-Treiber-Table-Tennis-Blade/dp/B07N3XCWNJ?dib=eyJ2IjoiMSJ9.euOWEkewPuqI7uW2E9DUFaTsD0CShOkeyY7WMj_W21Zrepv9fRSXSAuzt4TBzhwI.dM9vCbMHLf0cDfCKxx52xv3RdUYRhHSFoLo6iOTw4fg&dib_tag=se&keywords=Andro+Treiber+CO+blade&qid=1759981282&sr=8-1",
+    "Blade_Style": "Offensive"
   },
   {
-    Blade_Name: "Butterfly Boll Control",
-    Blade_Speed: 58,
-    Blade_Spin: 65,
-    Blade_Control: 88,
-    Blade_Power: 60,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 59.99,
-    Blade_Level: "Beginner",
-    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/boll-control-blade"
+    "Blade_Name": "Andro Timber 5 ALL",
+    "Blade_Speed": 68,
+    "Blade_Spin": 68,
+    "Blade_Control": 86,
+    "Blade_Power": 64,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 49.95,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 83.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Andro-Timber-Table-Tennis-Blade/dp/B07N3Y339B?dib=eyJ2IjoiMSJ9.CWkJdYW_rNgJ4_QJMqfLpCrXN4PTb7CL4oei7tXJMXzJwONel3C48pAIlWNCOkmr.tyYKiTSuAIfzETqLsQa3bH6_nxtREP5DQjxl9ToFoqU&dib_tag=se&keywords=Andro+Timber+5+ALL+blade&qid=1760026727&sr=8-4",
+    "Blade_Style": "Allround"
   },
   {
-    Blade_Name: "Butterfly Boll Allround",
-    Blade_Speed: 62,
-    Blade_Spin: 70,
-    Blade_Control: 84,
-    Blade_Power: 65,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 64.99,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/boll-allround-blade"
+    "Blade_Name": "Andro Timber 5 OFF",
+    "Blade_Speed": 80,
+    "Blade_Spin": 74,
+    "Blade_Control": 76,
+    "Blade_Power": 76,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 49.95,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 83.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/s?k=Andro+Timber+5+OFF+blade",
+    "Blade_Style": "Offensive"
   },
   {
-    Blade_Name: "Butterfly Primorac",
-    Blade_Speed: 74,
-    Blade_Spin: 76,
-    Blade_Control: 78,
-    Blade_Power: 72,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 69.99,
-    Blade_Level: "Intermediate",
-    Blade_Affiliate_Link: "https://www.butterflyonline.com/product/primorac-blade"
-  },
-  {
-    Blade_Name: "Butterfly Viscaria",
-    Blade_Speed: 92,
-    Blade_Spin: 90,
-    Blade_Control: 80,
-    Blade_Power: 94,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 166.49,
-    Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://tabletennisstore.us/products/butterfly-viscaria-offensive-table-tennis-blade"
-  },
-  {
-    Blade_Name: "Butterfly Timo Boll ALC",
-    Blade_Speed: 90,
-    Blade_Spin: 88,
-    Blade_Control: 82,
-    Blade_Power: 92,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 179.90,
-    Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/timo-boll-alc.html"
-  },
-  {
-    Blade_Name: "JOOLA Nobilis PBO-C",
-    Blade_Speed: 95,
-    Blade_Spin: 92,
-    Blade_Control: 78,
-    Blade_Power: 98,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 199.00,
-    Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://joola.it/products/joola-holz-nobilis-pbo-c"
-  },
-  {
-    Blade_Name: "Butterfly Viscaria Super ALC",
-    Blade_Speed: 94,
-    Blade_Spin: 92,
-    Blade_Control: 78,
-    Blade_Power: 96,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 242.99,
-    Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://tabletennisstore.us/products/butterfly-viscaria-super-alc-offensive-table-tennis-blade"
-  },
-  {
-    Blade_Name: "Butterfly Zhang Jike ALC",
-    Blade_Speed: 91,
-    Blade_Spin: 89,
-    Blade_Control: 80,
-    Blade_Power: 93,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 179.90,
-    Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-alc.html"
-  },
-  {
-    Blade_Name: "Butterfly Fan Zhendong ALC",
-    Blade_Speed: 94,
-    Blade_Spin: 92,
-    Blade_Control: 81,
-    Blade_Power: 95,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 184.90,
-    Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/fan-zhendong-alc.html"
-  },
-  {
-    Blade_Name: "Butterfly Lin Gaoyuan ALC",
-    Blade_Speed: 93,
-    Blade_Spin: 91,
-    Blade_Control: 80,
-    Blade_Power: 94,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 184.90,
-    Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/lin-gaoyuan-alc.html"
-  },
-  {
-    Blade_Name: "Butterfly Harimoto Tomokazu Innerforce ALC",
-    Blade_Speed: 92,
-    Blade_Spin: 90,
-    Blade_Control: 83,
-    Blade_Power: 93,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 184.90,
-    Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/harimoto-tomokazu-innerforce-alc.html"
-  },
-  {
-    Blade_Name: "Butterfly Jun Mizutani Super ZLC",
-    Blade_Speed: 97,
-    Blade_Spin: 94,
-    Blade_Control: 76,
-    Blade_Power: 99,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 379.90,
-    Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/mizutani-jun-super-zlc.html"
-  },
-  {
-    Blade_Name: "Butterfly Zhang Jike Super ZLC",
-    Blade_Speed: 98,
-    Blade_Spin: 95,
-    Blade_Control: 75,
-    Blade_Power: 99,
-    Blade_Grip: ["Flared", "Straight"],
-    Blade_Price: 379.90,
-    Blade_Level: "Advanced",
-    Blade_Affiliate_Link: "https://en.butterfly.tt/hoelzer/zhang-jike-super-zlc.html"
+    "Blade_Name": "DHS Power G7",
+    "Blade_Speed": 81,
+    "Blade_Spin": 86,
+    "Blade_Control": 67,
+    "Blade_Power": 82,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 42.95,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 89.0,
+    "Blade_Affiliate_Link": "https://www.megaspin.net/store/default.asp?pid=dhs-power-g7",
+    "Blade_Style": "Offensive"
   },
   {
     "Blade_Name": "DHS Power G5X",
-    "Blade_Speed": 86,
-    "Blade_Spin": 88,
-    "Blade_Control": 92,
-    "Blade_Power": 88,
-    "Blade_Grip": ["Flared", "Straight"],
+    "Blade_Speed": 80,
+    "Blade_Spin": 82,
+    "Blade_Control": 74,
+    "Blade_Power": 78,
+    "Blade_Grip": [
+      "Flared"
+    ],
     "Blade_Price": 44.95,
     "Blade_Level": "Intermediate",
-    "Blade_Weight": 89,
-    "Blade_Affiliate_Link": "https://www.megaspin.net/store/default.asp?pid=dhs-power-g5x"
+    "Blade_Weight": 89.0,
+    "Blade_Affiliate_Link": "https://www.megaspin.net/store/default.asp?pid=dhs-power-g5x",
+    "Blade_Style": "Offensive"
+  },
+  {
+    "Blade_Name": "DHS Hurricane Long 5X",
+    "Blade_Speed": 92,
+    "Blade_Spin": 89,
+    "Blade_Control": 68,
+    "Blade_Power": 91,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 198.0,
+    "Blade_Level": "Advanced",
+    "Blade_Weight": 95.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Ping-Pong-Hurricane-Long-5X-Aromatic-Carbon%EF%BC%9BFL/dp/B07QNKNQKS?dib=eyJ2IjoiMSJ9.yGrgufrqtgtPe60ZOhdRDx29bY0tH686zn3YoJL48ZwEK3f5t4FSbcMWeozmcEqX9Y4l0QV1tRdF5u9gBFDqwqShOnSOOXKWaoq1hVQVgeE.K1hpG7Zs8YOF8s7WAUdhNdNpiF3BPtboNUwL-slxEv8&dib_tag=se&keywords=DHS%2BHurricane%2BLong%2B5%2Bblade&qid=1759982209&sr=8-1&th=1",
+    "Blade_Style": "Offensive"
   },
   {
     "Blade_Name": "DHS Hurricane 301",
-    "Blade_Speed": 78,
-    "Blade_Spin": 82,
-    "Blade_Control": 80,
-    "Blade_Power": 76,
-    "Blade_Grip": ["Flared", "Straight"],
-    "Blade_Price": 63.60,
-    "Blade_Level": "Intermediate",
-    "Blade_Weight": 85,
-    "Blade_Affiliate_Link": "https://www.aliexpress.com/p/tesla-landing/index.html?scenario=c_ppc_item_bridge&productId=3256809282792901"
-  },
-  {
-    "Blade_Name": "DHS Hurricane King ACB",
     "Blade_Speed": 88,
-    "Blade_Spin": 90,
-    "Blade_Control": 86,
-    "Blade_Power": 90,
-    "Blade_Grip": ["Flared", "Straight"],
-    "Blade_Price": 199.95,
+    "Blade_Spin": 86,
+    "Blade_Control": 72,
+    "Blade_Power": 86,
+    "Blade_Grip": [
+      "Flared",
+      "Straight"
+    ],
+    "Blade_Price": 89.95,
     "Blade_Level": "Advanced",
-    "Blade_Weight": 89,
-    "Blade_Affiliate_Link": "https://dhssport.com/en/DHS_Hurricane_King_acB"
+    "Blade_Weight": 89.0,
+    "Blade_Affiliate_Link": "https://www.megaspin.net/store/default.asp?pid=dhs-hurricane-301",
+    "Blade_Style": "Offensive"
   },
   {
-    "Blade_Name": "DHS PG7",
+    "Blade_Name": "DHS Hurricane King 3",
+    "Blade_Speed": 86,
+    "Blade_Spin": 80,
+    "Blade_Control": 75,
+    "Blade_Power": 85,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 165.95,
+    "Blade_Level": "Advanced",
+    "Blade_Weight": 87.0,
+    "Blade_Affiliate_Link": "https://www.megaspin.net/store/default.asp?pid=dhs-hurricane-king-3",
+    "Blade_Style": "Offensive"
+  },
+  {
+    "Blade_Name": "DHS Fang Bo B2",
     "Blade_Speed": 82,
     "Blade_Spin": 80,
-    "Blade_Control": 85,
-    "Blade_Power": 80,
-    "Blade_Grip": ["Flared", "Straight"],
-    "Blade_Price": 31.99,
-    "Blade_Level": "Beginner",
-    "Blade_Weight": 87,
-    "Blade_Affiliate_Link": "https://www.dhs-729.eu/gb/dhs-blades/115-dhs-pg7.html"
+    "Blade_Control": 76,
+    "Blade_Power": 78,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 76.95,
+    "Blade_Level": "Intermediate",
+    "Blade_Weight": 90.0,
+    "Blade_Affiliate_Link": "https://www.megaspin.net/store/default.asp?pid=dhs-fang-bo-b2",
+    "Blade_Style": "Offensive"
+  },
+  {
+    "Blade_Name": "ANDRO ANDRO Kanter CO",
+    "Blade_Speed": 90,
+    "Blade_Spin": 88,
+    "Blade_Control": 64,
+    "Blade_Power": 92,
+    "Blade_Grip": [
+      "Flared"
+    ],
+    "Blade_Price": 89.95,
+    "Blade_Level": "Advanced",
+    "Blade_Weight": 68.0,
+    "Blade_Affiliate_Link": "https://www.amazon.com/Andro-Kanter-Table-Tennis-Blade/dp/B07N3Z323G?dib=eyJ2IjoiMSJ9.0IS2umMKeEoitWDqWG7x_g.mBxhIYFbtoC64Da6AbdTmWRDR-asdgeVcM3zeWcxL4k&dib_tag=se&keywords=ANDRO+Kanter+CO&qid=1760027340&s=leisure-sports-games&sr=1-1",
+    "Blade_Style": "Offensive"
   }
-  
 ];
 
 // Rubbers Database
