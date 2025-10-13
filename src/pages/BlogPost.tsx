@@ -54,15 +54,10 @@ const BlogPost = () => {
               </p>
             </header>
 
-            <div className="prose prose-lg max-w-none">
-              <p className="font-body text-lg leading-relaxed text-muted-foreground">
-                {post.content}
-              </p>
-              <p className="font-body mt-6 leading-relaxed text-muted-foreground">
-                This is a placeholder for the full blog post content. In a real implementation, 
-                you would have the complete article text stored in your database or CMS.
-              </p>
-            </div>
+            <div 
+              className="prose prose-lg max-w-none font-body text-muted-foreground"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
 
             {post.relatedQuizLink && (
               <div className="mt-12 rounded-lg border border-border bg-secondary/30 p-8 text-center">
