@@ -129,4 +129,18 @@ All colors MUST be HSL.
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline;
   }
+
+  /* Blog post link styling */
+  .prose a {
+    @apply text-accent font-medium underline decoration-2 underline-offset-4;
+    transition: var(--transition-smooth);
+  }
+
+  .prose a:hover {
+    @apply text-accent/80 decoration-accent/80;
+  }
+
+  .prose h2 {
+    @apply font-headline text-2xl font-semibold text-foreground mt-8 mb-4;
+  }
 }
