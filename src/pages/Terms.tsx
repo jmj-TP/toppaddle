@@ -23,12 +23,13 @@ const Terms = () => {
                 Affiliate Disclosure
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                TopPaddle.com participates in various affiliate marketing programs.
-                This means we may earn a commission if you make a purchase through some links.
-                Commissions come at no additional cost to you and help maintain/improve the service.
+                TopPaddle.com is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.
               </p>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                (Affiliate disclosure will be updated with Amazon Associate info when officially approved.)
+                As an Amazon Associate, we earn from qualifying purchases. This means that when you click on an Amazon product link on our website and make a purchase, we may receive a small commission at no additional cost to you. These commissions help us maintain and improve our service, including our free table tennis equipment quiz.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                Our product recommendations are based on genuine experience and research in table tennis. We only recommend products we believe will benefit players, regardless of affiliate relationships. The prices you pay and the products you receive are exactly the same whether you use our links or not.
               </p>
             </section>
 
