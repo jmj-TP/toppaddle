@@ -27,6 +27,8 @@ export const blogPosts: BlogPost[] = [
 
 <p>When you combine rubber type and sponge thickness, you get endless possibilities. That is why players experiment so much. If you are not sure where to start, the Yasaka Mark V is a classic, balanced rubber suitable for most skill levels. For advanced loopers, Butterfly Tenergy 05 or Donic Bluefire M2 are modern favorites that offer outstanding spin and speed.</p>
 
+<p>To maintain your rubbers and keep them performing at their best, it is important to clean them regularly with proper equipment. The <a href="https://amzn.to/493ZtHs" target="_blank" rel="noopener noreferrer">JOOLA Pro Table Tennis Cleaning Set</a> includes everything you need to keep your rubbers clean and tacky, extending their lifespan and ensuring consistent performance.</p>
+
 <p>If you want help choosing the right rubber combination for your playstyle, you can take the TopPaddle quiz. It matches you with a setup that fits your spin, speed, and control preferences in just a couple of minutes.</p>`,
     relatedQuizLink: "/",
   },
@@ -67,11 +69,11 @@ export const blogPosts: BlogPost[] = [
 
 <p>Today, almost all players use water-based table tennis glues because they are safe, easy to use, and approved by the ITTF. There are two particularly popular options that stand out.</p>
 
-<p>The <a href="https://www.amazon.com/dp/B00GS6I5YS?_encoding=UTF8&th=1" target="_blank" rel="noopener noreferrer">Butterfly Free Chack II Table Tennis Racket Glue</a> is one of the most common and beginner-friendly choices. It spreads smoothly, dries evenly, and works perfectly for both new and experienced players.</p>
+<p>The <a href="https://amzn.to/4nL5r4B" target="_blank" rel="noopener noreferrer">Butterfly Free Chack II Table Tennis Racket Glue</a> is one of the most common and beginner-friendly choices. It spreads smoothly, dries evenly, and works perfectly for both new and experienced players.</p>
 
-<p>For intermediate to advanced players who want a slightly stronger bond and cleaner removal, the <a href="https://www.amazon.com/Nittaku-Adhesive-Tennis-Rubber-NL-9624/dp/B01FDCDDNK?crid=1CQ6306H6BMAH&dib=eyJ2IjoiMSJ9.PSxJFL9HecGuvF54AmXf2iOd-3tTzMDGNyFoJVSX-BXTnKGSk4iWgpw2pfgMVQ4_EA5ZoHCGpGraV8PLatX9r7vmjoXb_HIhee4QYFXBkOatEKVxZaxQr1YPM4Rz8hkc07d2NgG2ruOv00Dtf2mUixNOA-L9EgDH7XUIGV8-zgo.9O9qbVGGWnQg-tPcrjnUEnMgIH27SAhpxtdsQFPD02U&dib_tag=se&keywords=nittaku%2Bfinezip%2Bglue&qid=1760414458&sprefix=nittaku%2Bfinezip%2Bglue%2Caps%2C229&sr=8-4&th=1&psc=1" target="_blank" rel="noopener noreferrer">Nittaku Finezip Glue</a> is often considered one of the best options available. It provides excellent adhesion and a professional finish without adding unnecessary weight to the racket.</p>
+<p>For intermediate to advanced players who want a slightly stronger bond and cleaner removal, the <a href="https://amzn.to/3WBLOjl" target="_blank" rel="noopener noreferrer">NITTAKU NTA-NL9624 Table Tennis Fine Zip Value</a> is often considered one of the best options available. It provides excellent adhesion and a professional finish without adding unnecessary weight to the racket.</p>
 
-<p>You can use a small sponge applicator to spread the glue evenly across both surfaces. Many players like the Butterfly Table Tennis Clip Sponge II, which is made specifically for this purpose and allows for a smooth, even layer every time.</p>
+<p>You can use a small sponge applicator to spread the glue evenly across both surfaces. The <a href="https://amzn.to/4oojdu0" target="_blank" rel="noopener noreferrer">Butterfly Table Tennis Clip Sponge II</a> is made specifically for this purpose and allows for a smooth, even layer every time.</p>
 
 <h2>Step 3: Apply the Glue</h2>
 
