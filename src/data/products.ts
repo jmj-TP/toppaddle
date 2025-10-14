@@ -846,9 +846,9 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Control: 84,
     Racket_Power: 55,
     Racket_Grip: ["Flared"],
-    Racket_Price: 34.99,
+    Racket_Price: 24.83,
     Racket_Level: "Beginner",
-    Racket_Affiliate_Link: "https://www.amazon.com/s?k=Butterfly+B302FL+Table+Tennis+Racket"
+    Racket_Affiliate_Link: "https://www.amazon.com/Butterfly-302-Table-Tennis-Racket/dp/B003M4GS6G?dib=eyJ2IjoiMSJ9.XGXbbr4pzf2OE9wLc333riicmpyh7BQejo_OhJMIEn2Kmd9QxEOK7lfinhpW1oNi1wM8o1c2o5bb0hz4GWxz8vac9q1S-rhl04sur23zZJjIRe-WL4qplKK-WWXfCw_b31jgUEVoFNmsBuomIoYDHDUQZ4qnFG0AzsJz7T4g82sP-EmshWkgGlG_sX4VdxOj1GZUv5oeo1tG49cyyTFDVfBRNk1_k52tFrV8aJNNIfmFpiCAwgoMld4A4-SbpO6F_RwqaV34ojI19saDeXHWQphlqD7ue4sakZz6oK06Yac.jDOMLO7SopVFmeL1ZepQQhHmdzK6I8ZxeoCK9YR1mX4&dib_tag=se&keywords=Butterfly+B302FL+Table+Tennis+Racket&qid=1760418625&sr=8-6"
   },
   {
     Racket_Name: "Butterfly 401",
@@ -864,23 +864,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Grip: ["Flared"],
     Racket_Price: 31.99,
     Racket_Level: "Beginner",
-    Racket_Affiliate_Link: "https://www.amazon.com/s?k=Butterfly+401+Table+Tennis+Racket"
-  },
-  {
-    Racket_Name: "Andro Super Cell 2 Off",
-    Racket_Blade: "Andro Super Cell 2 Off",
-    Racket_FH_Rubber: "Andro Hexer PowerGrip",
-    Racket_BH_Rubber: "Andro Hexer Grip",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 85,
-    Racket_Spin: 75,
-    Racket_Control: 72,
-    Racket_Power: 82,
-    Racket_Grip: ["Flared"],
-    Racket_Price: 89.99,
-    Racket_Level: "Intermediate",
-    Racket_Affiliate_Link: "https://www.amazon.com/s?k=Andro+Super+Cell+2+Off+Table+Tennis+Racket"
+    Racket_Affiliate_Link: "https://www.amazon.com/Butterfly-401-Table-Tennis-Racket/dp/B003M4DS5U?dib=eyJ2IjoiMSJ9.z_yDsCLKBDfwDHoKU2aN0hb108-uQP5pqoqFEnjW2JwN5dKrsuNMFctr-S6e8p7pNljr1s_gO7WPzjkdVIqyfE7yQYhEy8oRCg2ceG5BTDpP4OpWDjStc_lOglJBxvQfSsIkQ3r0ExuIWTauvuPLOpbXlcw86NSMcehIdPFblKNG_JHkKd5AC5Nj3V_V3G0xANEgJ1JsG5SYCYjN7PP2zF2DDWoRzVM_YLWuD2_3suUxmk3vBQa3CrnhKE_TW3kcZZF9GxRYAZ6SM0036YIg00UzpJS1ZaGzpunTr1AklEA.knfL5HjflPzYZ0F11wWRGt9ScvxPjyf2DCo3QkcFGRM&dib_tag=se&keywords=Butterfly+401+Table+Tennis+Racket&qid=1760418676&sr=8-1"
   },
   {
     Racket_Name: "DHS 9002",
@@ -894,24 +878,9 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Control: 70,
     Racket_Power: 86,
     Racket_Grip: ["Flared"],
-    Racket_Price: 45.99,
-    Racket_Level: "Advanced",
-    Racket_Affiliate_Link: "https://www.amazon.com/s?k=DHS+9002+Table+Tennis+Racket"
+    Racket_Price: 83.99,
+    Racket_Level: "intermediate",
+    Racket_Affiliate_Link: "https://www.amazon.com/Tennis-Professional-Offensive-Hurricane-9002-FL-Longhandle/dp/B0C7ZBMLY3?dib=eyJ2IjoiMSJ9.sRmqEhpOt_8bnYv2zSgvbobYTMzs8R3FUbAcIM2t_usZTuCq-PQDnS9b-LktBStve5XH_UpthYLOMqpZK9nbYymH0M5aJ_u_gQgZC1BI9RSAJYEcZjc-5Fqbnk3hqOKz-lAiOeBOb74S9B79L4zAjnBLOvqAyRcTe8nKUd0qd3xhtYkYWWKl-n9PDLm91pxzJT99vTFoewiaIo2TSfaMceca1yHQjxkJ4VSH6u06v35PFZmUSiGrYQL_n31tbOpsBoVoKjziaRUkq2Tg2Io9qCWIkbzOtnOFkvD6JPPxbW0.nPW6ies-flYnBm1xAnyxrb7DJwqObAhdBgozNMdUd5k&dib_tag=se&keywords=DHS+9002+Table+Tennis+Racket&qid=1760418729&sr=8-6"
   },
-  {
-    Racket_Name: "DHS 5002",
-    Racket_Blade: "DHS 5-Ply Allwood",
-    Racket_FH_Rubber: "DHS Hurricane 3",
-    Racket_BH_Rubber: "DHS G888",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 78,
-    Racket_Spin: 80,
-    Racket_Control: 76,
-    Racket_Power: 76,
-    Racket_Grip: ["Flared"],
-    Racket_Price: 37.99,
-    Racket_Level: "Intermediate",
-    Racket_Affiliate_Link: "https://www.amazon.com/s?k=DHS+5002+Table+Tennis+Racket"
-  }
+  
 ];
