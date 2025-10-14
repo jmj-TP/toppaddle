@@ -782,9 +782,9 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Control: 72,
     Racket_Power: 86,
     Racket_Grip: ["Flared", "Straight"],
-    Racket_Price: 69.95,
-    Racket_Level: "Advanced",
-    Racket_Affiliate_Link: "https://www.amazon.com/s?k=JOOLA+Carbon+X+Pro+Table+Tennis+Racket"
+    Racket_Price: 39.95,
+    Racket_Level: "intermediate",
+    Racket_Affiliate_Link: "https://www.amazon.com/JOOLA-Racket-Approved-Professional-Competition/dp/B094JSXWHZ?dib=eyJ2IjoiMSJ9.haEriOo-2bdmhZNCF2d1H0EAOvJZZy5M2XWxri4ZXAqVSULqL1p0l2EmSTAmGA6gP69ySYDohpSfRtsIYjeBD5IJtw6A9OkMhKS16iZbJr2nYZbjYbqwId9DnwsHZXD2-AvUSjXif1RZIANdQF32QlVjFuGC1kEsN5H3xXn6l7RjapUzHaOIP_4aDlAa970Wtc8RXpAI40fE_Ow72DrDYlVmutFw6fEQVCX7j-v_JV4hVylRU9qqT4Xg19tTneZHgh6HPBv6ZUVWcbYj5Mfr7GNa1cKU9EJFIj2j9e1zRYU.r4ZGCdFza-yaULG6tyo0k1JON3BpgmmyFxR_24YySX0&dib_tag=se&keywords=JOOLA%2BCarbon%2BX%2BPro%2BTable%2BTennis%2BRacket&qid=1760417826&sr=8-6&th=1"
   },
   {
     Racket_Name: "JOOLA Infinity Carbon",
@@ -798,25 +798,9 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Control: 74,
     Racket_Power: 84,
     Racket_Grip: ["Flared"],
-    Racket_Price: 59.95,
+    Racket_Price: 86.54,
     Racket_Level: "Advanced",
-    Racket_Affiliate_Link: "https://www.amazon.com/s?k=JOOLA+Infinity+Carbon+Table+Tennis+Racket"
-  },
-  {
-    Racket_Name: "JOOLA Carbon Control",
-    Racket_Blade: "JOOLA Carbon Control 5+2",
-    Racket_FH_Rubber: "JOOLA Micron 40",
-    Racket_BH_Rubber: "JOOLA Micron 40",
-    Racket_FH_Rubber_Style: "Normal",
-    Racket_BH_Rubber_Style: "Normal",
-    Racket_Speed: 80,
-    Racket_Spin: 76,
-    Racket_Control: 80,
-    Racket_Power: 78,
-    Racket_Grip: ["Flared"],
-    Racket_Price: 54.95,
-    Racket_Level: "Intermediate",
-    Racket_Affiliate_Link: "https://www.amazon.com/s?k=JOOLA+Carbon+Control+Table+Tennis+Racket"
+    Racket_Affiliate_Link: "https://www.amazon.com/JOOLA-Professional-Infinity-Approved-Competition/dp/B0BQCMTD1M?dib=eyJ2IjoiMSJ9.DWwbbkSl7KlTAtbkK76EOPlmgGAd4koUdX5vGUVDjqSWT0PiBuvms5BSE1SFi-IKxcp4856yP-ozcGX5znul19fK7TfEqoV1-GwmpOQDVk3m4nln16G8Q_mvWhGw3kBvwBwa8NiMX0BQYzIYG_RkP_thmhWm4hRDa8Up1Hx4WXNsS4LMRSedGXElhOk5g16gAVFPeIvnwM1OYk8QMJ790fa1QjgEnjDo5jTqUD-SUwgZ6etrG-QnVGJKhiJPXIFHU60_PMgzLdp9ToFHsUTbBuwb-oCPMi_N0gyK39tm0cc.AUIfUFULf55Q5sC3fHV8cYc4YQH1SgTSD2HBUeNVh3w&dib_tag=se&keywords=JOOLA%2BInfinity%2BCarbon%2BTable%2BTennis%2BRacket&qid=1760418049&sr=8-7&th=1"
   },
   {
     Racket_Name: "JOOLA Match Pro",
@@ -830,9 +814,9 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Control: 82,
     Racket_Power: 72,
     Racket_Grip: ["Flared"],
-    Racket_Price: 39.95,
-    Racket_Level: "Intermediate",
-    Racket_Affiliate_Link: "https://www.amazon.com/s?k=JOOLA+Match+Pro+Table+Tennis+Racket"
+    Racket_Price: 19.95,
+    Racket_Level: "beginner",
+    Racket_Affiliate_Link: "https://www.amazon.com/JOOLA-Approved-Allround-Competition-Thickness/dp/B095HGR1XM?dib=eyJ2IjoiMSJ9.FsA5yMugbgn8T_2ImV1nEil16ZaOhENqiMHm9KW282mi491CC7mLeVfeRaEYEDkQcwkq0aBg3yrpRqJefxmAE2MIUbI2JdlmzZ7Ni1xYSkLlKKDztQeaZ-d-iBwPJbJWxmMp5BxrrdkCQjN2rwYDY0T0i1otGCFQENYtzQW3hEhllQMrgooLHbIFkMG8vT2i76z1JXt8yTDLS-Q6tUN9qftBRiEmJ8FFbGpSEvpP0w5Zzx_dOCpb_EOpC8V0YvwiLI5K2r78lx9pJC1QktEDYSOH0TupcEFK8AVQbvEIwdk.Nb95QZyktKvBwez6xUMWW4RqB4t0JAvD5I2sre_UcqA&dib_tag=se&keywords=JOOLA+Match+Pro+Table+Tennis+Racket&qid=1760418228&sr=8-1"
   },
   {
     Racket_Name: "Butterfly Nakama S5",
