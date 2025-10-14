@@ -783,7 +783,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Power: 86,
     Racket_Grip: ["Flared", "Straight"],
     Racket_Price: 39.95,
-    Racket_Level: "intermediate",
+    Racket_Level: "Intermediate",
     Racket_Affiliate_Link: "https://www.amazon.com/JOOLA-Racket-Approved-Professional-Competition/dp/B094JSXWHZ?dib=eyJ2IjoiMSJ9.haEriOo-2bdmhZNCF2d1H0EAOvJZZy5M2XWxri4ZXAqVSULqL1p0l2EmSTAmGA6gP69ySYDohpSfRtsIYjeBD5IJtw6A9OkMhKS16iZbJr2nYZbjYbqwId9DnwsHZXD2-AvUSjXif1RZIANdQF32QlVjFuGC1kEsN5H3xXn6l7RjapUzHaOIP_4aDlAa970Wtc8RXpAI40fE_Ow72DrDYlVmutFw6fEQVCX7j-v_JV4hVylRU9qqT4Xg19tTneZHgh6HPBv6ZUVWcbYj5Mfr7GNa1cKU9EJFIj2j9e1zRYU.r4ZGCdFza-yaULG6tyo0k1JON3BpgmmyFxR_24YySX0&dib_tag=se&keywords=JOOLA%2BCarbon%2BX%2BPro%2BTable%2BTennis%2BRacket&qid=1760417826&sr=8-6&th=1"
   },
   {
@@ -815,7 +815,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Power: 72,
     Racket_Grip: ["Flared"],
     Racket_Price: 19.95,
-    Racket_Level: "beginner",
+    Racket_Level: "Beginner",
     Racket_Affiliate_Link: "https://www.amazon.com/JOOLA-Approved-Allround-Competition-Thickness/dp/B095HGR1XM?dib=eyJ2IjoiMSJ9.FsA5yMugbgn8T_2ImV1nEil16ZaOhENqiMHm9KW282mi491CC7mLeVfeRaEYEDkQcwkq0aBg3yrpRqJefxmAE2MIUbI2JdlmzZ7Ni1xYSkLlKKDztQeaZ-d-iBwPJbJWxmMp5BxrrdkCQjN2rwYDY0T0i1otGCFQENYtzQW3hEhllQMrgooLHbIFkMG8vT2i76z1JXt8yTDLS-Q6tUN9qftBRiEmJ8FFbGpSEvpP0w5Zzx_dOCpb_EOpC8V0YvwiLI5K2r78lx9pJC1QktEDYSOH0TupcEFK8AVQbvEIwdk.Nb95QZyktKvBwez6xUMWW4RqB4t0JAvD5I2sre_UcqA&dib_tag=se&keywords=JOOLA+Match+Pro+Table+Tennis+Racket&qid=1760418228&sr=8-1"
   },
   {
@@ -879,7 +879,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Power: 86,
     Racket_Grip: ["Flared"],
     Racket_Price: 83.99,
-    Racket_Level: "intermediate",
+    Racket_Level: "Intermediate",
     Racket_Affiliate_Link: "https://www.amazon.com/Tennis-Professional-Offensive-Hurricane-9002-FL-Longhandle/dp/B0C7ZBMLY3?dib=eyJ2IjoiMSJ9.sRmqEhpOt_8bnYv2zSgvbobYTMzs8R3FUbAcIM2t_usZTuCq-PQDnS9b-LktBStve5XH_UpthYLOMqpZK9nbYymH0M5aJ_u_gQgZC1BI9RSAJYEcZjc-5Fqbnk3hqOKz-lAiOeBOb74S9B79L4zAjnBLOvqAyRcTe8nKUd0qd3xhtYkYWWKl-n9PDLm91pxzJT99vTFoewiaIo2TSfaMceca1yHQjxkJ4VSH6u06v35PFZmUSiGrYQL_n31tbOpsBoVoKjziaRUkq2Tg2Io9qCWIkbzOtnOFkvD6JPPxbW0.nPW6ies-flYnBm1xAnyxrb7DJwqObAhdBgozNMdUd5k&dib_tag=se&keywords=DHS+9002+Table+Tennis+Racket&qid=1760418729&sr=8-6"
   },
   
