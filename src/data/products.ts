@@ -130,7 +130,7 @@ export const blades: Blade[] = [
     "Blade_Price": 62.0,
     "Blade_Level": "Intermediate",
     "Blade_Weight": 91.0,
-    "Blade_Affiliate_Link": "https://amzn.to/4hbWfns"
+    "Blade_Affiliate_Link": "https://amzn.to/4hbWfns",
     "Blade_Style": "Allround"
   },
   {
@@ -146,7 +146,7 @@ export const blades: Blade[] = [
     "Blade_Price": 166.0,
     "Blade_Level": "Advanced",
     "Blade_Weight": 87.0,
-    "Blade_Affiliate_Link": "https://amzn.to/4opbtI9"
+    "Blade_Affiliate_Link": "https://amzn.to/4opbtI9",
     "Blade_Style": "Offensive"
   },
   {
@@ -713,7 +713,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Control": 72,
     "Rubber_Power": 86,
     "Rubber_Price": 50.23,
-    "Rubber_Level": "intermediate",
+    "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 43,
     "Rubber_Affiliate_Link": "https://amzn.to/4nR9hcB"
