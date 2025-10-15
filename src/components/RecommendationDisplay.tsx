@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ExternalLink, Star, Target, Gauge, Shield, Info, Weight, ChevronDown, ChevronUp, Settings, DollarSign, Package, Share2 } from "lucide-react";
+import { ExternalLink, Star, Target, Gauge, Shield, Info, Weight, ChevronDown, ChevronUp, Settings, DollarSign, Package } from "lucide-react";
 import type { Recommendation, CustomSetup, QuizAnswers } from "@/utils/ratingSystem";
 import { estimateBladeWeight, estimateRubberWeight } from "@/data/products";
 import BrandSelector from "./BrandSelector";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ShareButton from "./ShareButton";
 
 interface RecommendationDisplayProps {
   recommendation: Recommendation;
@@ -69,32 +70,6 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     return "text-destructive";
   };
 
-  // Share functionality
-  const handleShare = (racketName: string, score: number, price: number, isCustom: boolean) => {
-    const matchScore = score.toFixed(0);
-    const formattedPrice = formatPrice(price);
-    const setupType = isCustom ? "Custom Setup" : "Ready-to-Play Racket";
-    
-    const shareText = `🏓 Check out my table tennis recommendation!\n\n${setupType}: ${racketName}\n✅ ${matchScore}% Match Score\n💰 ${formattedPrice}\n\nFind your perfect racket at TopPaddle.com`;
-    
-    const shareUrl = encodeURIComponent(window.location.origin);
-    const encodedText = encodeURIComponent(shareText);
-    
-    // Try native share API first (mobile-friendly)
-    if (navigator.share) {
-      navigator.share({
-        title: 'My Table Tennis Recommendation',
-        text: shareText,
-        url: window.location.origin,
-      }).catch(() => {
-        // Fallback to WhatsApp if native share is cancelled
-        window.open(`https://wa.me/?text=${encodedText}%20${shareUrl}`, '_blank');
-      });
-    } else {
-      // Fallback to WhatsApp for desktop
-      window.open(`https://wa.me/?text=${encodedText}%20${shareUrl}`, '_blank');
-    }
-  };
 
   const StatBar = ({ label, value, icon: Icon }: { label: string; value: number; icon: any }) => (
     <div className="flex items-center gap-2 mb-2">
@@ -114,27 +89,27 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   const PreAssembledCard = ({ racket, rank }: { racket: typeof preAssembled, rank?: number }) => racket ? (
     <Card className="border-border" style={{ boxShadow: "var(--shadow-lg)" }}>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 flex-1">
-            🏓 <span>Ready-to-Play Racket{rank ? ` #${rank}` : ''}</span>
-            <Badge variant="secondary">Beginner Friendly</Badge>
-          </CardTitle>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Star className="w-4 h-4 text-yellow-500" />
-              <span className={`font-bold ${getScoreColor(racket.score)}`}>
-                {racket.score.toFixed(0)}% Match
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <span className="text-2xl flex-shrink-0">🏓</span>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
+              <span className="font-semibold text-base sm:text-lg truncate">Ready-to-Play Racket{rank ? ` #${rank}` : ''}</span>
+              <Badge variant="secondary" className="w-fit text-xs">Beginner Friendly</Badge>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1.5">
+              <Star className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+              <span className={`font-bold text-sm ${getScoreColor(racket.score)}`}>
+                {racket.score.toFixed(0)}%
               </span>
             </div>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => handleShare(racket.Racket_Name, racket.score, racket.Racket_Price, false)}
-              className="flex-shrink-0"
-              title="Share this recommendation"
-            >
-              <Share2 className="w-4 h-4" />
-            </Button>
+            <ShareButton
+              racketName={racket.Racket_Name}
+              score={racket.score}
+              price={racket.Racket_Price}
+              isCustom={false}
+            />
           </div>
         </div>
       </CardHeader>
@@ -225,27 +200,27 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <Card className="border-border" style={{ boxShadow: "var(--shadow-lg)" }}>
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2 flex-1">
-                ⚡ <span>Custom Setup{rank ? ` #${rank}` : ''}</span>
-                <Badge variant="outline">Advanced Choice</Badge>
-              </CardTitle>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 text-yellow-500" />
-                  <span className={`font-bold ${getScoreColor(setup.score)}`}>
-                    {setup.score.toFixed(0)}% Match
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <span className="text-2xl flex-shrink-0">⚡</span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
+                  <span className="font-semibold text-base sm:text-lg truncate">Custom Setup{rank ? ` #${rank}` : ''}</span>
+                  <Badge variant="outline" className="w-fit text-xs">Advanced Choice</Badge>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-1.5">
+                  <Star className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+                  <span className={`font-bold text-sm ${getScoreColor(setup.score)}`}>
+                    {setup.score.toFixed(0)}%
                   </span>
                 </div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleShare(setup.blade.Blade_Name, setup.score, setup.totalPrice, true)}
-                  className="flex-shrink-0"
-                  title="Share this recommendation"
-                >
-                  <Share2 className="w-4 h-4" />
-                </Button>
+                <ShareButton
+                  racketName={setup.blade.Blade_Name}
+                  score={setup.score}
+                  price={setup.totalPrice}
+                  isCustom={true}
+                />
               </div>
             </div>
           </CardHeader>
