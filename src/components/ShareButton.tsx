@@ -16,9 +16,26 @@ interface ShareButtonProps {
   price: number;
   isCustom: boolean;
   className?: string;
+  affiliateLink?: string;
+  // For custom setups only
+  forehandRubberName?: string;
+  forehandRubberLink?: string;
+  backhandRubberName?: string;
+  backhandRubberLink?: string;
 }
 
-export default function ShareButton({ racketName, score, price, isCustom, className }: ShareButtonProps) {
+export default function ShareButton({ 
+  racketName, 
+  score, 
+  price, 
+  isCustom, 
+  className,
+  affiliateLink,
+  forehandRubberName,
+  forehandRubberLink,
+  backhandRubberName,
+  backhandRubberLink
+}: ShareButtonProps) {
   const [showDialog, setShowDialog] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -26,7 +43,22 @@ export default function ShareButton({ racketName, score, price, isCustom, classN
   const formattedPrice = `$${price.toFixed(2)}`;
   const setupType = isCustom ? "Custom Setup" : "Ready-to-Play Racket";
   
-  const shareText = `🏓 Check out my table tennis recommendation!\n\n${setupType}: ${racketName}\n✅ ${matchScore}% Match Score\n💰 ${formattedPrice}\n\nFind your perfect racket at TopTableTennisPaddle.com`;
+  // Build share text based on custom vs pre-assembled
+  let shareText = `🏓 Check out my table tennis recommendation!\n\n`;
+  shareText += `${setupType}\n`;
+  shareText += `✅ ${matchScore}% Match Score | 💰 ${formattedPrice}\n\n`;
+  
+  if (isCustom && forehandRubberName && backhandRubberName) {
+    // Custom setup - list all components
+    shareText += `🏓 Blade: ${racketName}\n${affiliateLink || ''}\n\n`;
+    shareText += `🔴 Forehand: ${forehandRubberName}\n${forehandRubberLink || ''}\n\n`;
+    shareText += `🔵 Backhand: ${backhandRubberName}\n${backhandRubberLink || ''}\n\n`;
+  } else {
+    // Pre-assembled racket
+    shareText += `${racketName}\n${affiliateLink || ''}\n\n`;
+  }
+  
+  shareText += `Find your perfect racket at TopTableTennisPaddle.com`;
   
   const shareUrl = window.location.origin;
 

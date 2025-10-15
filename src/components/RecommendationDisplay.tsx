@@ -109,6 +109,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               score={racket.score}
               price={racket.Racket_Price}
               isCustom={false}
+              affiliateLink={racket.Racket_Affiliate_Link}
             />
           </div>
         </div>
@@ -220,6 +221,11 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                   score={setup.score}
                   price={setup.totalPrice}
                   isCustom={true}
+                  affiliateLink={setup.blade.Blade_Affiliate_Link}
+                  forehandRubberName={setup.forehandRubber.Rubber_Name}
+                  forehandRubberLink={setup.forehandRubber.Rubber_Affiliate_Link}
+                  backhandRubberName={setup.backhandRubber.Rubber_Name}
+                  backhandRubberLink={setup.backhandRubber.Rubber_Affiliate_Link}
                 />
               </div>
             </div>
