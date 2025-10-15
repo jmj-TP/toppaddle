@@ -11,7 +11,7 @@ const Privacy = () => {
         <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-4xl">
             <h1 className="font-headline text-4xl font-bold text-foreground">
-              Privacy Policy – TopPaddle.com
+              Privacy Policy – TopTableTennisPaddle.com
             </h1>
             <p className="font-body mt-4 text-sm text-muted-foreground">
               Last Updated: October 2025
@@ -23,10 +23,10 @@ const Privacy = () => {
                 1. Introduction
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                TopPaddle.com ("we," "our," "us") values your privacy. This Privacy Policy explains how we collect, use, and protect information when you visit our website.
+                TopTableTennisPaddle.com ("we," "our," "us") values your privacy. This Privacy Policy explains how we collect, use, and protect information when you visit our website.
               </p>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                By using TopPaddle.com, you agree to the terms of this policy.
+                By using TopTableTennisPaddle.com, you agree to the terms of this policy.
               </p>
             </section>
 
@@ -91,7 +91,7 @@ const Privacy = () => {
                 4. Affiliate Links
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                TopPaddle.com participates in affiliate programs.
+                TopTableTennisPaddle.com participates in affiliate programs.
               </p>
               <ul className="font-body mt-4 list-inside list-disc space-y-2 text-muted-foreground">
                 <li>We may earn a commission if you purchase products through affiliate links.</li>
@@ -155,7 +155,7 @@ const Privacy = () => {
                 8. Children's Privacy
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                TopPaddle.com is not intended for children under 13.
+                TopTableTennisPaddle.com is not intended for children under 13.
                 We do not knowingly collect personal information from children under 13.
               </p>
             </section>
@@ -201,7 +201,7 @@ const Privacy = () => {
             {/* Copyright */}
             <section className="mt-12 border-t border-border pt-8">
               <p className="font-body text-center text-sm text-muted-foreground">
-                © {currentYear} TopPaddle.com – All rights reserved.
+                © {currentYear} TopTableTennisPaddle.com – All rights reserved.
               </p>
             </section>
           </div>

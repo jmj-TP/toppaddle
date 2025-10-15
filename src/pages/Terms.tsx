@@ -11,7 +11,7 @@ const Terms = () => {
         <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-4xl">
             <h1 className="font-headline text-4xl font-bold text-foreground">
-              Terms & Disclaimer – TopPaddle.com
+              Terms & Disclaimer – TopTableTennisPaddle.com
             </h1>
             <p className="font-body mt-4 text-sm text-muted-foreground">
               Last Updated: October 2025
@@ -23,7 +23,7 @@ const Terms = () => {
                 Affiliate Disclosure
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                TopPaddle.com is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.
+                TopTableTennisPaddle.com is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.
               </p>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
                 As an Amazon Associate, we earn from qualifying purchases. This means that when you click on an Amazon product link on our website and make a purchase, we may receive a small commission at no additional cost to you. These commissions help us maintain and improve our service, including our free table tennis equipment quiz.
@@ -51,7 +51,7 @@ const Terms = () => {
                 Limitation of Liability
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                TopPaddle.com provides content "as is".
+                TopTableTennisPaddle.com provides content "as is".
                 We are not responsible for:
               </p>
               <ul className="font-body mt-4 list-inside list-disc space-y-2 text-muted-foreground">
@@ -71,7 +71,7 @@ const Terms = () => {
                 Use of Service
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                By using TopPaddle.com:
+                By using TopTableTennisPaddle.com:
               </p>
               <ul className="font-body mt-4 list-inside list-disc space-y-2 text-muted-foreground">
                 <li>You acknowledge recommendations are advisory only</li>
@@ -97,11 +97,11 @@ const Terms = () => {
                 Intellectual Property & Code Ownership
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                All content, including text, graphics, images, algorithms, and code, is the intellectual property of TopPaddle.com.
+                All content, including text, graphics, images, algorithms, and code, is the intellectual property of TopTableTennisPaddle.com.
               </p>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
                 Some portions of code/algorithm were developed with AI tools (e.g., Lovable).
-                All custom logic and configuration belong exclusively to TopPaddle.com.
+                All custom logic and configuration belong exclusively to TopTableTennisPaddle.com.
               </p>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
                 You may not copy, reproduce, distribute, or modify any part of this site without written permission.
@@ -135,7 +135,7 @@ const Terms = () => {
             {/* Copyright */}
             <section className="mt-12 border-t border-border pt-8">
               <p className="font-body text-center text-sm text-muted-foreground">
-                © {currentYear} TopPaddle.com – All rights reserved. Unauthorized copying is prohibited.
+                © {currentYear} TopTableTennisPaddle.com – All rights reserved. Unauthorized copying is prohibited.
               </p>
             </section>
           </div>

@@ -26,7 +26,7 @@ export default function ShareButton({ racketName, score, price, isCustom, classN
   const formattedPrice = `$${price.toFixed(2)}`;
   const setupType = isCustom ? "Custom Setup" : "Ready-to-Play Racket";
   
-  const shareText = `🏓 Check out my table tennis recommendation!\n\n${setupType}: ${racketName}\n✅ ${matchScore}% Match Score\n💰 ${formattedPrice}\n\nFind your perfect racket at TopPaddle.com`;
+  const shareText = `🏓 Check out my table tennis recommendation!\n\n${setupType}: ${racketName}\n✅ ${matchScore}% Match Score\n💰 ${formattedPrice}\n\nFind your perfect racket at TopTableTennisPaddle.com`;
   
   const shareUrl = window.location.origin;
 

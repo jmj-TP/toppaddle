@@ -295,7 +295,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               {/* Blade */}
               <div className="border rounded-lg p-4 bg-card">
                 <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  🏏 Blade: {setup.blade.Blade_Name}
+                  🏓 Blade: {setup.blade.Blade_Name}
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
