@@ -17,6 +17,8 @@ interface SlotMachineProps {
   onBackhandChange: (rubber: Rubber) => void;
   onRacketChange: (racket: PreAssembledRacket) => void;
   spinTrigger: number;
+  selectedGrip: string;
+  selectedThickness: string;
 }
 
 const SlotMachine = ({
@@ -30,6 +32,8 @@ const SlotMachine = ({
   onBackhandChange,
   onRacketChange,
   spinTrigger,
+  selectedGrip,
+  selectedThickness,
 }: SlotMachineProps) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [showInfo, setShowInfo] = useState<string | null>(null);
@@ -76,12 +80,14 @@ const SlotMachine = ({
     selected, 
     onChange, 
     label,
+    sublabel,
     delay = 0 
   }: { 
     items: any[]; 
     selected: any; 
     onChange: (item: any) => void; 
     label: string;
+    sublabel?: string;
     delay?: number;
   }) => {
     const getName = (item: any) => {
@@ -122,13 +128,15 @@ const SlotMachine = ({
 
     return (
       <div className="flex flex-col items-center">
-        <h3 className="text-lg font-semibold text-primary mb-2">{label}</h3>
-        <div className="relative">
-          {/* Navigation Arrows */}
+        <div className="relative border-4 border-primary rounded-lg overflow-hidden shadow-xl bg-secondary/30">
+          {/* Top decorative bar */}
+          <div className="h-8 bg-primary" />
+          
+          {/* Navigation Arrow */}
           <button
             onClick={handlePrev}
             disabled={isSpinning}
-            className="absolute -top-8 left-1/2 -translate-x-1/2 text-2xl hover:text-accent disabled:opacity-30 transition-colors z-10"
+            className="absolute top-12 left-1/2 -translate-x-1/2 text-2xl text-foreground hover:text-accent disabled:opacity-30 transition-colors z-10"
           >
             ▲
           </button>
@@ -137,17 +145,17 @@ const SlotMachine = ({
           <div 
             ref={wheelRef}
             onWheel={handleScroll}
-            className="relative h-32 w-64 bg-gradient-to-b from-secondary/50 via-card to-secondary/50 rounded-lg border-4 border-primary/20 overflow-hidden shadow-inner"
+            className="relative h-64 w-56 bg-secondary/60 overflow-hidden flex items-center justify-center"
           >
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${getName(selected)}-${isSpinning}`}
                 initial={{ y: isSpinning ? -100 : 0, opacity: isSpinning ? 0 : 1 }}
                 animate={{ 
-                  y: isSpinning ? [0, -300, -600, -900, 0] : 0,
+                  y: isSpinning ? [0, -400, -800, -1200, 0] : 0,
                   opacity: 1,
                   transition: {
-                    duration: isSpinning ? 1.5 : 0.3,
+                    duration: isSpinning ? 1.8 : 0.3,
                     delay: delay,
                     ease: isSpinning ? [0.34, 1.56, 0.64, 1] : "easeOut"
                   }
@@ -156,37 +164,33 @@ const SlotMachine = ({
                 className="absolute inset-0 flex flex-col items-center justify-center p-4"
               >
                 <div className="text-center">
-                  <p className="font-bold text-lg text-foreground leading-tight line-clamp-2">
-                    {getName(selected)}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    ${selected.Blade_Price || selected.Rubber_Price || selected.Racket_Price}
-                  </p>
+                  <div className="w-40 h-40 bg-card rounded-lg flex items-center justify-center mb-3 shadow-md">
+                    <p className="font-bold text-sm text-foreground leading-tight line-clamp-3 px-2">
+                      {getName(selected)}
+                    </p>
+                  </div>
                 </div>
               </motion.div>
             </AnimatePresence>
-            
-            {/* Highlight border */}
-            <div className="absolute inset-0 border-2 border-accent/50 rounded-lg pointer-events-none" />
           </div>
 
+          {/* Navigation Arrow */}
           <button
             onClick={handleNext}
             disabled={isSpinning}
-            className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-2xl hover:text-accent disabled:opacity-30 transition-colors z-10"
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 text-2xl text-foreground hover:text-accent disabled:opacity-30 transition-colors z-10"
           >
             ▼
           </button>
 
-          {/* Info Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowInfo(getName(selected))}
-            className="absolute -right-12 top-1/2 -translate-y-1/2"
-          >
-            <Info className="h-4 w-4" />
-          </Button>
+          {/* Bottom decorative bar */}
+          <div className="h-8 bg-primary" />
+        </div>
+        
+        {/* Label below slot */}
+        <div className="mt-3 text-center">
+          <p className="text-sm font-medium text-foreground">{label}</p>
+          {sublabel && <p className="text-xs text-muted-foreground">{sublabel}</p>}
         </div>
       </div>
     );
@@ -200,30 +204,30 @@ const SlotMachine = ({
             items={preAssembledRackets}
             selected={selectedRacket}
             onChange={onRacketChange}
-            label="Racket"
+            label={`Grip: ${selectedGrip}`}
           />
         </div>
       ) : (
-        <div className="grid md:grid-cols-3 gap-8 md:gap-4">
+        <div className="grid md:grid-cols-3 gap-6 justify-items-center">
           <SlotWheel
             items={rubbers}
             selected={selectedForehand}
             onChange={onForehandChange}
-            label="FH Rubber"
+            label={`Sponge Size: ${selectedThickness}`}
             delay={0}
           />
           <SlotWheel
             items={blades}
             selected={selectedBlade}
             onChange={onBladeChange}
-            label="Blade"
+            label={`Grip: ${selectedGrip}`}
             delay={0.5}
           />
           <SlotWheel
             items={rubbers}
             selected={selectedBackhand}
             onChange={onBackhandChange}
-            label="BH Rubber"
+            label={`Sponge Size: ${selectedThickness}`}
             delay={1}
           />
         </div>

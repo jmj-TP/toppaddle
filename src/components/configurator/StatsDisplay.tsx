@@ -20,6 +20,7 @@ interface StatsDisplayProps {
   forehand: Rubber | null;
   backhand: Rubber | null;
   racket: PreAssembledRacket | null;
+  onRandomReroll: () => void;
 }
 
 const StatsDisplay = ({
@@ -31,14 +32,18 @@ const StatsDisplay = ({
   forehand,
   backhand,
   racket,
+  onRandomReroll,
 }: StatsDisplayProps) => {
-  const StatBar = ({ label, value, color = "primary" }: { label: string; value: number; color?: string }) => (
-    <div className="space-y-2">
-      <div className="flex justify-between items-center">
-        <span className="text-sm font-medium text-foreground">{label}</span>
-        <span className="text-sm font-bold text-accent">{value}</span>
+  const StatBar = ({ label, value, icon }: { label: string; value: number; icon: string }) => (
+    <div className="flex items-center gap-4">
+      <span className="text-2xl">{icon}</span>
+      <div className="flex-1">
+        <div className="flex justify-between items-center mb-1">
+          <span className="text-sm font-medium text-foreground">{label}:</span>
+          <span className="text-sm font-bold text-foreground">{value}</span>
+        </div>
+        <Progress value={value} className="h-3" />
       </div>
-      <Progress value={value} className="h-2" />
     </div>
   );
 
@@ -55,50 +60,48 @@ const StatsDisplay = ({
 
   return (
     <div className="space-y-6">
-      {/* Main Stats */}
-      <Card className="p-6 space-y-4">
-        <h3 className="text-xl font-bold text-primary mb-4">Performance Stats</h3>
-        <StatBar label="Speed" value={stats.speed} />
-        <StatBar label="Spin" value={stats.spin} />
-        <StatBar label="Control" value={stats.control} />
-        <StatBar label="Power" value={stats.power} />
-      </Card>
-
-      {/* Details */}
-      <Card className="p-6">
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div>
-            <p className="text-sm text-muted-foreground">Price</p>
-            <p className="text-2xl font-bold text-accent">${stats.price}</p>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Level</p>
-            <Badge variant="secondary" className="text-base">{level}</Badge>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Grip</p>
-            <p className="font-semibold text-foreground">{grip}</p>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Sponge</p>
-            <p className="font-semibold text-foreground">{thickness}</p>
-          </div>
+      {/* Price and Level */}
+      <div className="flex items-center gap-8 justify-center mb-4">
+        <div className="text-center">
+          <span className="text-sm text-muted-foreground">Price:</span>
+          <span className="ml-2 text-2xl font-bold text-foreground">${stats.price}</span>
         </div>
+        <div className="h-8 w-px bg-border" />
+        <div className="text-center">
+          <span className="text-sm text-muted-foreground">Level:</span>
+          <span className="ml-2 text-xl font-semibold text-foreground">{level}</span>
+        </div>
+      </div>
 
+      {/* Main Stats */}
+      <div className="space-y-4">
+        <StatBar label="Speed" value={stats.speed} icon="💨" />
+        <StatBar label="Spin" value={stats.spin} icon="🌀" />
+        <StatBar label="Control" value={stats.control} icon="🎯" />
+        <StatBar label="Power" value={stats.power} icon="⚡" />
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex gap-4 mt-6">
         <Button
           onClick={handleBuyClick}
-          variant="accent"
+          className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-6"
           size="lg"
-          className="w-full gap-2"
         >
-          <ExternalLink className="h-5 w-5" />
-          Buy Now (Amazon)
+          Add to cart
         </Button>
-      </Card>
+        <Button
+          onClick={onRandomReroll}
+          className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground text-lg py-6"
+          size="lg"
+        >
+          Random Reroll
+        </Button>
+      </div>
 
       {/* Component Details */}
       {!racket && blade && forehand && backhand && (
-        <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-4 mt-8">
           <h3 className="text-lg font-semibold text-primary mb-3">Components</h3>
           
           <div className="space-y-3">

@@ -84,89 +84,70 @@ const Configurator = () => {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1 bg-gradient-to-b from-background to-secondary/30 py-12">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-7xl">
           {/* Header */}
           <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold text-primary mb-4">
-              🏓 Racket Configurator
+            <h1 className="text-5xl font-bold text-foreground mb-4">
+              Configurator
             </h1>
-            <p className="text-muted-foreground text-lg">
-              Build your perfect setup or spin for a surprise
-            </p>
           </div>
 
           {/* Mode Toggle */}
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <Label htmlFor="preassembled-mode" className="text-base font-medium">
-              Custom Setup
-            </Label>
-            <Switch
-              id="preassembled-mode"
-              checked={isPreassembled}
-              onCheckedChange={setIsPreassembled}
-            />
-            <Label htmlFor="preassembled-mode" className="text-base font-medium">
+          <div className="flex items-start mb-8">
+            <Button
+              onClick={() => setIsPreassembled(!isPreassembled)}
+              variant={isPreassembled ? "default" : "outline"}
+              className="rounded-full px-6"
+            >
               Preassembled
-            </Label>
+            </Button>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-4 gap-8">
             {/* Left Panel - Filters */}
             <div className="lg:col-span-1">
-                <FilterPanel
-                  selectedGrip={selectedGrip}
-                  setSelectedGrip={setSelectedGrip}
-                  selectedThickness={selectedThickness}
-                  setSelectedThickness={setSelectedThickness}
-                  priceRange={priceRange}
-                  setPriceRange={setPriceRange}
-                  availableGrips={isPreassembled ? ["ST", "FL", "AN"] : (selectedBlade.Blade_Grip || ["ST", "FL"])}
-                />
+              <FilterPanel
+                selectedGrip={selectedGrip}
+                setSelectedGrip={setSelectedGrip}
+                selectedThickness={selectedThickness}
+                setSelectedThickness={setSelectedThickness}
+                priceRange={priceRange}
+                setPriceRange={setPriceRange}
+                availableGrips={isPreassembled ? ["ST", "FL", "AN"] : (selectedBlade.Blade_Grip || ["ST", "FL"])}
+              />
             </div>
 
-            {/* Center - Slot Machine */}
-            <div className="lg:col-span-2">
-              <div className="bg-card rounded-xl shadow-xl p-8 border border-border">
-                {/* Random Reroll Button */}
-                <div className="flex justify-center mb-6">
-                  <Button
-                    onClick={handleRandomReroll}
-                    variant="accent"
-                    size="lg"
-                    className="gap-2"
-                  >
-                    <Shuffle className="h-5 w-5" />
-                    Random Spin
-                  </Button>
-                </div>
+            {/* Center - Slot Machine and Stats */}
+            <div className="lg:col-span-3">
+              {/* Slot Machine */}
+              <SlotMachine
+                isPreassembled={isPreassembled}
+                selectedBlade={selectedBlade}
+                selectedForehand={selectedForehand}
+                selectedBackhand={selectedBackhand}
+                selectedRacket={selectedRacket}
+                onBladeChange={setSelectedBlade}
+                onForehandChange={setSelectedForehand}
+                onBackhandChange={setSelectedBackhand}
+                onRacketChange={setSelectedRacket}
+                spinTrigger={spinTrigger}
+                selectedGrip={selectedGrip}
+                selectedThickness={selectedThickness}
+              />
 
-                {/* Slot Machine */}
-                <SlotMachine
-                  isPreassembled={isPreassembled}
-                  selectedBlade={selectedBlade}
-                  selectedForehand={selectedForehand}
-                  selectedBackhand={selectedBackhand}
-                  selectedRacket={selectedRacket}
-                  onBladeChange={setSelectedBlade}
-                  onForehandChange={setSelectedForehand}
-                  onBackhandChange={setSelectedBackhand}
-                  onRacketChange={setSelectedRacket}
-                  spinTrigger={spinTrigger}
+              {/* Stats Display */}
+              <div className="mt-8">
+                <StatsDisplay
+                  stats={stats}
+                  grip={selectedGrip}
+                  thickness={selectedThickness}
+                  level={isPreassembled ? selectedRacket.Racket_Level : selectedBlade.Blade_Level}
+                  blade={isPreassembled ? null : selectedBlade}
+                  forehand={isPreassembled ? null : selectedForehand}
+                  backhand={isPreassembled ? null : selectedBackhand}
+                  racket={isPreassembled ? selectedRacket : null}
+                  onRandomReroll={handleRandomReroll}
                 />
-
-                {/* Stats Display */}
-                <div className="mt-8">
-                  <StatsDisplay
-                    stats={stats}
-                    grip={selectedGrip}
-                    thickness={selectedThickness}
-                    level={isPreassembled ? selectedRacket.Racket_Level : selectedBlade.Blade_Level}
-                    blade={isPreassembled ? null : selectedBlade}
-                    forehand={isPreassembled ? null : selectedForehand}
-                    backhand={isPreassembled ? null : selectedBackhand}
-                    racket={isPreassembled ? selectedRacket : null}
-                  />
-                </div>
               </div>
             </div>
           </div>
