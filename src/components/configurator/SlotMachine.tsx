@@ -139,22 +139,22 @@ const SlotMachine = ({
 
     return (
       <div className="flex flex-col items-center">
-        <div className="mb-3">
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{label}</p>
-        </div>
-        
         <div 
           ref={wheelRef}
           onWheel={handleWheel}
-          className="relative w-64 h-96 bg-card rounded-2xl overflow-hidden shadow-xl border-2 border-border"
+          className="relative w-80 h-[500px] bg-gradient-to-br from-purple-200/60 to-purple-300/60 rounded-xl overflow-hidden shadow-2xl border-4 border-black"
           style={{ perspective: '1000px' }}
         >
-          {/* Gradient overlays for fade effect */}
-          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-card to-transparent z-10 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-card to-transparent z-10 pointer-events-none" />
+          {/* Top decorative bar */}
+          <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-blue-600 to-blue-700 z-10 pointer-events-none rounded-t-lg" 
+               style={{ clipPath: 'polygon(0 0, 100% 0, 90% 100%, 10% 100%)' }} />
+          
+          {/* Bottom decorative bar */}
+          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-blue-600 to-blue-700 z-10 pointer-events-none rounded-b-lg" 
+               style={{ clipPath: 'polygon(10% 0, 90% 0, 100% 100%, 0 100%)' }} />
           
           {/* Center highlight */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-24 border-y-2 border-primary/30 bg-primary/5 z-0 pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-32 border-y-4 border-black/20 bg-white/10 z-0 pointer-events-none" />
 
           {/* Items container */}
           <div className="relative h-full flex flex-col items-center justify-center py-8">
@@ -174,9 +174,9 @@ const SlotMachine = ({
                         ease: [0.22, 1, 0.36, 1],
                         delay: delay / 1000,
                       }}
-                      className="h-20 w-full flex items-center justify-center px-6"
+                       className="h-24 w-full flex items-center justify-center px-8"
                     >
-                      <p className="text-sm font-medium text-foreground text-center line-clamp-2">
+                      <p className="text-base font-semibold text-foreground text-center line-clamp-3">
                         {getName(items[i % items.length])}
                       </p>
                     </motion.div>
@@ -192,9 +192,10 @@ const SlotMachine = ({
                 >
                   {getVisibleItems().map(({ item, offset }, idx) => {
                     const distance = Math.abs(offset);
-                    const opacity = offset === 0 ? 1 : Math.max(0.2, 1 - distance * 0.3);
-                    const scale = offset === 0 ? 1 : Math.max(0.8, 1 - distance * 0.1);
-                    const yPos = offset * 80; // 80px spacing between items
+                    const opacity = offset === 0 ? 1 : Math.max(0.3, 1 - distance * 0.35);
+                    const scale = offset === 0 ? 1.1 : Math.max(0.75, 1 - distance * 0.15);
+                    const yPos = offset * 100; // 100px spacing between items
+                    const rotateX = offset === 0 ? 0 : offset * 8; // 3D tilt effect
 
                     return (
                       <motion.div
@@ -206,16 +207,19 @@ const SlotMachine = ({
                           stiffness: 300,
                           damping: 30,
                         }}
-                        className="absolute top-1/2 left-0 right-0 h-20 flex items-center justify-center px-6"
+                        className="absolute top-1/2 left-0 right-0 h-24 flex items-center justify-center px-8"
                         style={{
-                          transform: `translateY(calc(-50% + ${yPos}px)) scale(${scale})`,
+                          transform: `translateY(calc(-50% + ${yPos}px)) scale(${scale}) rotateX(${rotateX}deg)`,
                           opacity,
+                          transformStyle: 'preserve-3d',
                         }}
                         onClick={() => offset !== 0 && onChange(item)}
                       >
                         <p 
-                          className={`text-sm font-medium text-center line-clamp-2 transition-colors cursor-pointer ${
-                            offset === 0 ? 'text-foreground text-base font-semibold' : 'text-muted-foreground'
+                          className={`text-center line-clamp-3 transition-colors cursor-pointer ${
+                            offset === 0 
+                              ? 'text-foreground text-lg font-bold' 
+                              : 'text-muted-foreground text-sm font-medium'
                           }`}
                         >
                           {getName(item)}
@@ -232,7 +236,7 @@ const SlotMachine = ({
           <button
             onClick={() => handleSwipe('up')}
             disabled={isSpinning}
-            className="absolute top-4 left-1/2 -translate-x-1/2 text-2xl text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors z-20 bg-card/80 rounded-full w-10 h-10 flex items-center justify-center shadow-md"
+            className="absolute top-20 left-1/2 -translate-x-1/2 text-2xl text-white hover:text-gray-200 disabled:opacity-30 transition-colors z-20 bg-black/20 rounded-full w-12 h-12 flex items-center justify-center"
             aria-label="Previous item"
           >
             ▲
@@ -241,11 +245,18 @@ const SlotMachine = ({
           <button
             onClick={() => handleSwipe('down')}
             disabled={isSpinning}
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 text-2xl text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors z-20 bg-card/80 rounded-full w-10 h-10 flex items-center justify-center shadow-md"
+            className="absolute bottom-20 left-1/2 -translate-x-1/2 text-2xl text-white hover:text-gray-200 disabled:opacity-30 transition-colors z-20 bg-black/20 rounded-full w-12 h-12 flex items-center justify-center"
             aria-label="Next item"
           >
             ▼
           </button>
+        </div>
+        
+        {/* Label below wheel */}
+        <div className="mt-4 text-center">
+          <p className="text-lg font-bold text-foreground">
+            {label === "Blade" ? `Grip: ${selectedGrip}` : `Sponge Size: ${selectedThickness}`}
+          </p>
         </div>
       </div>
     );
@@ -263,7 +274,7 @@ const SlotMachine = ({
           />
         </div>
       ) : (
-        <div className="grid md:grid-cols-3 gap-8 justify-items-center py-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center py-8 max-w-7xl mx-auto">
           <SlotWheel
             items={rubbers}
             selected={selectedForehand}

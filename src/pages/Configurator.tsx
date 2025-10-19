@@ -86,46 +86,56 @@ const Configurator = () => {
       <main className="flex-1 bg-gradient-to-b from-background to-secondary/30 py-12">
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Header */}
-          <div className="mb-12 text-center">
-            <h1 className="text-5xl font-bold text-foreground mb-6">
-              Configurator
-            </h1>
-            <div className="flex items-center justify-center gap-4">
-              <Button
-                onClick={() => setIsPreassembled(false)}
-                variant={!isPreassembled ? "default" : "outline"}
-                className="rounded-full px-8 py-2"
-              >
-                Build Your Own
-              </Button>
+          <div className="mb-8 relative">
+            <div className="absolute left-0 top-0">
               <Button
                 onClick={() => setIsPreassembled(true)}
                 variant={isPreassembled ? "default" : "outline"}
-                className="rounded-full px-8 py-2"
+                className="rounded-full px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white border-none"
               >
                 Preassembled
               </Button>
             </div>
+            <h1 className="text-6xl font-bold text-foreground text-center">
+              Configurator
+            </h1>
           </div>
 
-          {/* Slot Machine */}
-          <SlotMachine
-            isPreassembled={isPreassembled}
-            selectedBlade={selectedBlade}
-            selectedForehand={selectedForehand}
-            selectedBackhand={selectedBackhand}
-            selectedRacket={selectedRacket}
-            onBladeChange={setSelectedBlade}
-            onForehandChange={setSelectedForehand}
-            onBackhandChange={setSelectedBackhand}
-            onRacketChange={setSelectedRacket}
-            spinTrigger={spinTrigger}
-            selectedGrip={selectedGrip}
-            selectedThickness={selectedThickness}
-          />
+          {/* Slot Machine and Stats - Single Container */}
+          <div className="max-w-7xl mx-auto">
+            <SlotMachine
+              isPreassembled={isPreassembled}
+              selectedBlade={selectedBlade}
+              selectedForehand={selectedForehand}
+              selectedBackhand={selectedBackhand}
+              selectedRacket={selectedRacket}
+              onBladeChange={setSelectedBlade}
+              onForehandChange={setSelectedForehand}
+              onBackhandChange={setSelectedBackhand}
+              onRacketChange={setSelectedRacket}
+              spinTrigger={spinTrigger}
+              selectedGrip={selectedGrip}
+              selectedThickness={selectedThickness}
+            />
 
-          {/* Filters Section */}
-          <div className="mt-12 max-w-4xl mx-auto">
+            {/* Stats Display Below Slots */}
+            <div className="mt-8">
+              <StatsDisplay
+                stats={stats}
+                grip={selectedGrip}
+                thickness={selectedThickness}
+                level={isPreassembled ? selectedRacket.Racket_Level : selectedBlade.Blade_Level}
+                blade={isPreassembled ? null : selectedBlade}
+                forehand={isPreassembled ? null : selectedForehand}
+                backhand={isPreassembled ? null : selectedBackhand}
+                racket={isPreassembled ? selectedRacket : null}
+                onRandomReroll={handleRandomReroll}
+              />
+            </div>
+          </div>
+
+          {/* Filters Section - Below Everything */}
+          <div className="mt-16 max-w-4xl mx-auto">
             <FilterPanel
               selectedGrip={selectedGrip}
               setSelectedGrip={setSelectedGrip}
@@ -134,21 +144,6 @@ const Configurator = () => {
               priceRange={priceRange}
               setPriceRange={setPriceRange}
               availableGrips={isPreassembled ? ["ST", "FL", "AN"] : (selectedBlade.Blade_Grip || ["ST", "FL"])}
-            />
-          </div>
-
-          {/* Stats Display */}
-          <div className="mt-12 max-w-4xl mx-auto">
-            <StatsDisplay
-              stats={stats}
-              grip={selectedGrip}
-              thickness={selectedThickness}
-              level={isPreassembled ? selectedRacket.Racket_Level : selectedBlade.Blade_Level}
-              blade={isPreassembled ? null : selectedBlade}
-              forehand={isPreassembled ? null : selectedForehand}
-              backhand={isPreassembled ? null : selectedBackhand}
-              racket={isPreassembled ? selectedRacket : null}
-              onRandomReroll={handleRandomReroll}
             />
           </div>
         </div>
