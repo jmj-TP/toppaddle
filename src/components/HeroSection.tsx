@@ -30,16 +30,28 @@ const HeroSection = ({ onStartQuiz }: HeroSectionProps) => {
             Custom recommendations based on your style, skill, and budget — fast, accurate, and fun.
           </p>
 
-          {/* CTA Button */}
-          <Button
-            onClick={onStartQuiz}
-            size="lg"
-            variant="accent"
-            className="px-10 py-6 text-lg font-semibold rounded-full hover:scale-105 transition-all duration-300 shadow-[var(--shadow-accent)] animate-fade-in"
-          >
-            Take the Quiz
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <Button
+              onClick={onStartQuiz}
+              size="lg"
+              variant="accent"
+              className="px-10 py-6 text-lg font-semibold rounded-full hover:scale-105 transition-all duration-300 shadow-[var(--shadow-accent)] animate-fade-in"
+            >
+              Take the Quiz
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            
+            <Button
+              onClick={() => window.location.href = '/configurator'}
+              size="lg"
+              variant="outline"
+              className="px-10 py-6 text-lg font-semibold rounded-full hover:scale-105 transition-all duration-300 animate-fade-in"
+            >
+              Try Configurator
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
 
           {/* Sub-CTA Text */}
           <p className="mt-4 text-sm text-muted-foreground animate-fade-in">
