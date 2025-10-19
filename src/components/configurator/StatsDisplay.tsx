@@ -59,22 +59,39 @@ const StatsDisplay = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Price and Level */}
-      <div className="flex items-center gap-8 justify-center mb-4">
-        <div className="text-center">
-          <span className="text-sm text-muted-foreground">Price:</span>
-          <span className="ml-2 text-2xl font-bold text-foreground">${stats.price}</span>
-        </div>
-        <div className="h-8 w-px bg-border" />
-        <div className="text-center">
-          <span className="text-sm text-muted-foreground">Level:</span>
-          <span className="ml-2 text-xl font-semibold text-foreground">{level}</span>
+      <div className="bg-card rounded-2xl p-6 shadow-lg border border-border">
+        <div className="flex items-center gap-8 justify-center">
+          <div className="text-center">
+            <span className="text-sm text-muted-foreground block mb-1">Price</span>
+            <span className="text-3xl font-bold text-foreground">${stats.price}</span>
+          </div>
+          <div className="h-12 w-px bg-border" />
+          <div className="text-center">
+            <span className="text-sm text-muted-foreground block mb-1">Level</span>
+            <span className="text-2xl font-semibold text-foreground">{level}</span>
+          </div>
+          <div className="h-12 w-px bg-border" />
+          <div className="text-center">
+            <span className="text-sm text-muted-foreground block mb-1">Grip</span>
+            <span className="text-2xl font-semibold text-foreground">{grip}</span>
+          </div>
+          {thickness && (
+            <>
+              <div className="h-12 w-px bg-border" />
+              <div className="text-center">
+                <span className="text-sm text-muted-foreground block mb-1">Sponge</span>
+                <span className="text-2xl font-semibold text-foreground">{thickness}</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
       {/* Main Stats */}
-      <div className="space-y-4">
+      <div className="bg-card rounded-2xl p-8 shadow-lg border border-border space-y-5">
+        <h3 className="text-lg font-semibold text-foreground mb-4">Combined Stats</h3>
         <StatBar label="Speed" value={stats.speed} icon="💨" />
         <StatBar label="Spin" value={stats.spin} icon="🌀" />
         <StatBar label="Control" value={stats.control} icon="🎯" />
@@ -82,18 +99,20 @@ const StatsDisplay = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-4 mt-6">
+      <div className="grid md:grid-cols-2 gap-4">
         <Button
           onClick={handleBuyClick}
-          className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-6"
+          variant="accent"
           size="lg"
+          className="w-full text-lg py-7 font-semibold shadow-lg hover:shadow-xl transition-all"
         >
-          Add to cart
+          Add to Cart
         </Button>
         <Button
           onClick={onRandomReroll}
-          className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground text-lg py-6"
+          variant="default"
           size="lg"
+          className="w-full text-lg py-7 font-semibold shadow-lg hover:shadow-xl transition-all"
         >
           Random Reroll
         </Button>

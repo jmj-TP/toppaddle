@@ -86,70 +86,70 @@ const Configurator = () => {
       <main className="flex-1 bg-gradient-to-b from-background to-secondary/30 py-12">
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Header */}
-          <div className="mb-8 text-center">
-            <h1 className="text-5xl font-bold text-foreground mb-4">
+          <div className="mb-12 text-center">
+            <h1 className="text-5xl font-bold text-foreground mb-6">
               Configurator
             </h1>
+            <div className="flex items-center justify-center gap-4">
+              <Button
+                onClick={() => setIsPreassembled(false)}
+                variant={!isPreassembled ? "default" : "outline"}
+                className="rounded-full px-8 py-2"
+              >
+                Build Your Own
+              </Button>
+              <Button
+                onClick={() => setIsPreassembled(true)}
+                variant={isPreassembled ? "default" : "outline"}
+                className="rounded-full px-8 py-2"
+              >
+                Preassembled
+              </Button>
+            </div>
           </div>
 
-          {/* Mode Toggle */}
-          <div className="flex items-start mb-8">
-            <Button
-              onClick={() => setIsPreassembled(!isPreassembled)}
-              variant={isPreassembled ? "default" : "outline"}
-              className="rounded-full px-6"
-            >
-              Preassembled
-            </Button>
+          {/* Slot Machine */}
+          <SlotMachine
+            isPreassembled={isPreassembled}
+            selectedBlade={selectedBlade}
+            selectedForehand={selectedForehand}
+            selectedBackhand={selectedBackhand}
+            selectedRacket={selectedRacket}
+            onBladeChange={setSelectedBlade}
+            onForehandChange={setSelectedForehand}
+            onBackhandChange={setSelectedBackhand}
+            onRacketChange={setSelectedRacket}
+            spinTrigger={spinTrigger}
+            selectedGrip={selectedGrip}
+            selectedThickness={selectedThickness}
+          />
+
+          {/* Filters Section */}
+          <div className="mt-12 max-w-4xl mx-auto">
+            <FilterPanel
+              selectedGrip={selectedGrip}
+              setSelectedGrip={setSelectedGrip}
+              selectedThickness={selectedThickness}
+              setSelectedThickness={setSelectedThickness}
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+              availableGrips={isPreassembled ? ["ST", "FL", "AN"] : (selectedBlade.Blade_Grip || ["ST", "FL"])}
+            />
           </div>
 
-          <div className="grid lg:grid-cols-4 gap-8">
-            {/* Left Panel - Filters */}
-            <div className="lg:col-span-1">
-              <FilterPanel
-                selectedGrip={selectedGrip}
-                setSelectedGrip={setSelectedGrip}
-                selectedThickness={selectedThickness}
-                setSelectedThickness={setSelectedThickness}
-                priceRange={priceRange}
-                setPriceRange={setPriceRange}
-                availableGrips={isPreassembled ? ["ST", "FL", "AN"] : (selectedBlade.Blade_Grip || ["ST", "FL"])}
-              />
-            </div>
-
-            {/* Center - Slot Machine and Stats */}
-            <div className="lg:col-span-3">
-              {/* Slot Machine */}
-              <SlotMachine
-                isPreassembled={isPreassembled}
-                selectedBlade={selectedBlade}
-                selectedForehand={selectedForehand}
-                selectedBackhand={selectedBackhand}
-                selectedRacket={selectedRacket}
-                onBladeChange={setSelectedBlade}
-                onForehandChange={setSelectedForehand}
-                onBackhandChange={setSelectedBackhand}
-                onRacketChange={setSelectedRacket}
-                spinTrigger={spinTrigger}
-                selectedGrip={selectedGrip}
-                selectedThickness={selectedThickness}
-              />
-
-              {/* Stats Display */}
-              <div className="mt-8">
-                <StatsDisplay
-                  stats={stats}
-                  grip={selectedGrip}
-                  thickness={selectedThickness}
-                  level={isPreassembled ? selectedRacket.Racket_Level : selectedBlade.Blade_Level}
-                  blade={isPreassembled ? null : selectedBlade}
-                  forehand={isPreassembled ? null : selectedForehand}
-                  backhand={isPreassembled ? null : selectedBackhand}
-                  racket={isPreassembled ? selectedRacket : null}
-                  onRandomReroll={handleRandomReroll}
-                />
-              </div>
-            </div>
+          {/* Stats Display */}
+          <div className="mt-12 max-w-4xl mx-auto">
+            <StatsDisplay
+              stats={stats}
+              grip={selectedGrip}
+              thickness={selectedThickness}
+              level={isPreassembled ? selectedRacket.Racket_Level : selectedBlade.Blade_Level}
+              blade={isPreassembled ? null : selectedBlade}
+              forehand={isPreassembled ? null : selectedForehand}
+              backhand={isPreassembled ? null : selectedBackhand}
+              racket={isPreassembled ? selectedRacket : null}
+              onRandomReroll={handleRandomReroll}
+            />
           </div>
         </div>
       </main>

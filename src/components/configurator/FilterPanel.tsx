@@ -29,65 +29,81 @@ const FilterPanel = ({
   ];
 
   const thicknessOptions = [
-    { value: "1.5mm", label: "1.5mm (Thin)" },
-    { value: "2.0mm", label: "2.0mm (Medium)" },
-    { value: "2.2mm", label: "2.2mm (Thick)" },
+    { value: "1.5mm", label: "1.5mm" },
+    { value: "2.0mm", label: "2.0mm" },
+    { value: "2.2mm", label: "2.2mm" },
     { value: "MAX", label: "MAX" },
   ];
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-primary mb-4">Grip Type</h3>
-        <RadioGroup value={selectedGrip} onValueChange={setSelectedGrip}>
+    <Card className="p-8 space-y-8 shadow-lg border border-border rounded-2xl bg-card">
+      <h3 className="text-xl font-semibold text-foreground">Customize Your Setup</h3>
+
+      {/* Grip Type */}
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Grip Type</Label>
+        <RadioGroup value={selectedGrip} onValueChange={setSelectedGrip} className="grid grid-cols-3 gap-3">
           {gripTypes.map((grip) => (
-            <div key={grip.value} className="flex items-center space-x-2">
+            <div key={grip.value}>
               <RadioGroupItem 
                 value={grip.value} 
                 id={grip.value}
                 disabled={!availableGrips.includes(grip.value)}
+                className="peer sr-only"
               />
               <Label 
                 htmlFor={grip.value}
-                className={!availableGrips.includes(grip.value) ? "text-muted-foreground" : ""}
+                className={`flex items-center justify-center rounded-lg border-2 border-border bg-background px-4 py-3 hover:bg-secondary cursor-pointer transition-all
+                  peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5
+                  ${!availableGrips.includes(grip.value) ? "opacity-50 cursor-not-allowed" : ""}`}
               >
-                {grip.label}
+                <span className="text-sm font-medium">{grip.value}</span>
               </Label>
             </div>
           ))}
         </RadioGroup>
-      </Card>
+      </div>
 
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-primary mb-4">Sponge Thickness</h3>
-        <RadioGroup value={selectedThickness} onValueChange={setSelectedThickness}>
+      {/* Sponge Thickness */}
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Sponge Thickness</Label>
+        <RadioGroup value={selectedThickness} onValueChange={setSelectedThickness} className="grid grid-cols-4 gap-3">
           {thicknessOptions.map((thickness) => (
-            <div key={thickness.value} className="flex items-center space-x-2">
-              <RadioGroupItem value={thickness.value} id={thickness.value} />
-              <Label htmlFor={thickness.value}>{thickness.label}</Label>
+            <div key={thickness.value}>
+              <RadioGroupItem 
+                value={thickness.value} 
+                id={thickness.value}
+                className="peer sr-only"
+              />
+              <Label 
+                htmlFor={thickness.value}
+                className="flex items-center justify-center rounded-lg border-2 border-border bg-background px-3 py-3 hover:bg-secondary cursor-pointer transition-all
+                  peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5"
+              >
+                <span className="text-sm font-medium">{thickness.label}</span>
+              </Label>
             </div>
           ))}
         </RadioGroup>
-      </Card>
+      </div>
 
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-primary mb-4">Price Range</h3>
-        <div className="space-y-4">
-          <Slider
-            min={0}
-            max={500}
-            step={10}
-            value={[priceRange[0], priceRange[1]]}
-            onValueChange={(value) => setPriceRange([value[0], value[1]])}
-            className="w-full"
-          />
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>${priceRange[0]}</span>
-            <span>${priceRange[1]}</span>
-          </div>
+      {/* Price Range */}
+      <div className="space-y-4">
+        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Price Range</Label>
+        <Slider
+          min={0}
+          max={500}
+          step={10}
+          value={[priceRange[0], priceRange[1]]}
+          onValueChange={(value) => setPriceRange([value[0], value[1]])}
+          className="w-full"
+        />
+        <div className="flex justify-between">
+          <span className="text-lg font-semibold text-foreground">${priceRange[0]}</span>
+          <span className="text-lg font-semibold text-foreground">${priceRange[1]}</span>
         </div>
-      </Card>
-    </div>
+      </div>
+    </Card>
   );
 };
 
