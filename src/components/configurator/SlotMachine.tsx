@@ -108,6 +108,7 @@ const SlotMachine = ({
     const handleWheel = (e: React.WheelEvent) => {
       if (isSpinning) return;
       e.preventDefault();
+      e.stopPropagation();
       
       const delta = e.deltaY;
       const newIndex = delta > 0 
@@ -145,14 +146,6 @@ const SlotMachine = ({
           className="relative w-80 h-[500px] bg-gradient-to-br from-purple-200/60 to-purple-300/60 rounded-xl overflow-hidden shadow-2xl border-4 border-black"
           style={{ perspective: '1000px' }}
         >
-          {/* Top decorative bar */}
-          <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-blue-600 to-blue-700 z-10 pointer-events-none rounded-t-lg" 
-               style={{ clipPath: 'polygon(0 0, 100% 0, 90% 100%, 10% 100%)' }} />
-          
-          {/* Bottom decorative bar */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-blue-600 to-blue-700 z-10 pointer-events-none rounded-b-lg" 
-               style={{ clipPath: 'polygon(10% 0, 90% 0, 100% 100%, 0 100%)' }} />
-          
           {/* Center highlight */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-32 border-y-4 border-black/20 bg-white/10 z-0 pointer-events-none" />
 

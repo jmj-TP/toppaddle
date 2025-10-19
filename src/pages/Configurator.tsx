@@ -4,13 +4,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SlotMachine from "@/components/configurator/SlotMachine";
 import StatsDisplay from "@/components/configurator/StatsDisplay";
-import FilterPanel from "@/components/configurator/FilterPanel";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
-import { Shuffle } from "lucide-react";
 
 const Configurator = () => {
   const [searchParams] = useSearchParams();
@@ -130,21 +126,10 @@ const Configurator = () => {
                 backhand={isPreassembled ? null : selectedBackhand}
                 racket={isPreassembled ? selectedRacket : null}
                 onRandomReroll={handleRandomReroll}
+                onGripChange={setSelectedGrip}
+                onThicknessChange={setSelectedThickness}
               />
             </div>
-          </div>
-
-          {/* Filters Section - Below Everything */}
-          <div className="mt-16 max-w-4xl mx-auto">
-            <FilterPanel
-              selectedGrip={selectedGrip}
-              setSelectedGrip={setSelectedGrip}
-              selectedThickness={selectedThickness}
-              setSelectedThickness={setSelectedThickness}
-              priceRange={priceRange}
-              setPriceRange={setPriceRange}
-              availableGrips={isPreassembled ? ["ST", "FL", "AN"] : (selectedBlade.Blade_Grip || ["ST", "FL"])}
-            />
           </div>
         </div>
       </main>

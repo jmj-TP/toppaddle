@@ -2,7 +2,9 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Gauge, Target, Shield, Star } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 
 interface StatsDisplayProps {
@@ -21,6 +23,8 @@ interface StatsDisplayProps {
   backhand: Rubber | null;
   racket: PreAssembledRacket | null;
   onRandomReroll: () => void;
+  onGripChange: (grip: string) => void;
+  onThicknessChange: (thickness: string) => void;
 }
 
 const StatsDisplay = ({
@@ -33,19 +37,31 @@ const StatsDisplay = ({
   backhand,
   racket,
   onRandomReroll,
+  onGripChange,
+  onThicknessChange,
 }: StatsDisplayProps) => {
-  const StatBar = ({ label, value, icon }: { label: string; value: number; icon: string }) => (
-    <div className="flex items-center gap-4">
-      <span className="text-2xl">{icon}</span>
-      <div className="flex-1">
-        <div className="flex justify-between items-center mb-1">
-          <span className="text-sm font-medium text-foreground">{label}:</span>
-          <span className="text-sm font-bold text-foreground">{value}</span>
-        </div>
-        <Progress value={value} className="h-3" />
+  const StatBar = ({ label, value, Icon }: { label: string; value: number; Icon: any }) => (
+    <div className="flex items-center gap-2 mb-3">
+      <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+      <span className="text-sm font-medium min-w-[60px]">{label}:</span>
+      <div className="flex-1 bg-muted rounded-full h-2">
+        <div 
+          className="bg-primary rounded-full h-2 transition-all duration-500" 
+          style={{ width: `${value}%` }}
+        />
       </div>
+      <span className="text-sm font-semibold min-w-[30px]">{value}</span>
     </div>
   );
+
+  // Get available grips from blade
+  const availableGrips = blade?.Blade_Grip || [];
+  
+  // Get available sponge sizes from rubbers
+  const availableSponges = [...new Set([
+    ...(forehand?.Rubber_Sponge_Sizes || []),
+    ...(backhand?.Rubber_Sponge_Sizes || [])
+  ])].sort();
 
   const handleBuyClick = () => {
     if (racket) {
@@ -61,12 +77,12 @@ const StatsDisplay = ({
   return (
     <>
       <div className="grid md:grid-cols-[2fr_1fr] gap-8 items-start">
-        {/* Left Column - Stats */}
+        {/* Left Column - Price, Level, and Stats */}
         <div className="space-y-6">
           {/* Price and Level Row */}
           <div className="flex items-center gap-6">
             <div>
-              <span className="text-xl font-bold text-foreground">Price: ${stats.price}</span>
+              <span className="text-xl font-bold text-foreground">Price: ${stats.price.toFixed(2)}</span>
             </div>
             <div className="h-6 w-px bg-border" />
             <div>
@@ -75,12 +91,47 @@ const StatsDisplay = ({
           </div>
 
           {/* Stats Bars */}
-          <div className="space-y-4">
-            <StatBar label="Speed" value={stats.speed} icon="💨" />
-            <StatBar label="Spin" value={stats.spin} icon="🌀" />
-            <StatBar label="Control" value={stats.control} icon="🎯" />
-            <StatBar label="Power" value={stats.power} icon="⚡" />
+          <div className="space-y-2">
+            <StatBar label="Speed" value={stats.speed} Icon={Gauge} />
+            <StatBar label="Spin" value={stats.spin} Icon={Target} />
+            <StatBar label="Control" value={stats.control} Icon={Shield} />
+            <StatBar label="Power" value={stats.power} Icon={Star} />
           </div>
+
+          {/* Grip and Sponge Selectors */}
+          {!racket && blade && (
+            <div className="grid grid-cols-2 gap-4 pt-4">
+              {/* Grip Selection */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Grip Type</Label>
+                <RadioGroup value={grip} onValueChange={onGripChange} className="flex flex-col gap-2">
+                  {availableGrips.map((gripType) => (
+                    <div key={gripType} className="flex items-center space-x-2">
+                      <RadioGroupItem value={gripType} id={`grip-${gripType}`} />
+                      <Label htmlFor={`grip-${gripType}`} className="text-sm cursor-pointer">
+                        {gripType}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+
+              {/* Sponge Size Selection */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Sponge Size</Label>
+                <RadioGroup value={thickness} onValueChange={onThicknessChange} className="flex flex-col gap-2">
+                  {availableSponges.map((size) => (
+                    <div key={size} className="flex items-center space-x-2">
+                      <RadioGroupItem value={size} id={`sponge-${size}`} />
+                      <Label htmlFor={`sponge-${size}`} className="text-sm cursor-pointer">
+                        {size}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right Column - Buttons */}

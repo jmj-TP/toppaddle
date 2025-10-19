@@ -43,6 +43,7 @@ export interface Rubber {
   Rubber_Level: 'Beginner' | 'Intermediate' | 'Advanced';
   Rubber_Style: 'Normal' | 'Short Pimples' | 'Long Pimples' | 'Anti';
   Rubber_Weight?: number; // grams (when applied to blade - optional, will be estimated)
+  Rubber_Sponge_Sizes?: string[]; // Available sponge thickness options
   Rubber_Affiliate_Link: string;
 }
 
@@ -500,6 +501,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 46,
+    "Rubber_Sponge_Sizes": ["1.5mm", "1.7mm", "1.9mm", "2.1mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/3W8ekZR"
   },
   {
@@ -512,6 +514,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 44,
+    "Rubber_Sponge_Sizes": ["1.5mm", "1.7mm", "1.9mm", "2.1mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/4n6Dx1I"
   },
   {
@@ -524,6 +527,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 49,
+    "Rubber_Sponge_Sizes": ["1.5mm", "1.7mm", "1.9mm", "2.1mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/3W5GmFu"
   },
   {
@@ -536,6 +540,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 48.5,
+    "Rubber_Sponge_Sizes": ["1.5mm", "1.7mm", "1.9mm", "2.1mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/48vnqr2"
   },
   {
@@ -548,6 +553,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 49.1,
+    "Rubber_Sponge_Sizes": ["1.5mm", "1.7mm", "1.9mm", "2.1mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/42B0eny"
   },
   {
@@ -560,6 +566,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 47,
+    "Rubber_Sponge_Sizes": ["1.5mm", "1.7mm", "1.9mm", "2.1mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/4n6DOlg"
   },
   {
@@ -572,6 +579,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 42,
+    "Rubber_Sponge_Sizes": ["1.5mm", "1.7mm", "1.9mm", "2.1mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/3J8oAOR"
   },
   {
@@ -584,6 +592,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 39,
+    "Rubber_Sponge_Sizes": ["1.5mm", "1.7mm", "1.9mm", "2.1mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/46PNax0"
   },
   {
@@ -596,6 +605,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Long Pimples",
     "Rubber_Weight": 49,
+    "Rubber_Sponge_Sizes": ["0.5mm", "1.0mm", "1.5mm", "OX"],
     "Rubber_Affiliate_Link": "https://amzn.to/4oiuPhZ"
   },
   {
@@ -608,6 +618,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 48,
+    "Rubber_Sponge_Sizes": ["1.5mm", "1.8mm", "2.0mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/4n3Prtm"
   },
   {
@@ -620,6 +631,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 56,
+    "Rubber_Sponge_Sizes": ["1.5mm", "1.8mm", "2.0mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/3JbIBUD"
   },
   {
@@ -632,6 +644,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 46,
+    "Rubber_Sponge_Sizes": ["1.5mm", "1.8mm", "2.0mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/4oEHKev"
   },
   {
@@ -644,6 +657,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 46,
+    "Rubber_Sponge_Sizes": ["1.5mm", "1.8mm", "2.0mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/4ooPyAW"
   },
   {
@@ -656,6 +670,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 51,
+    "Rubber_Sponge_Sizes": ["1.7mm", "2.0mm", "2.3mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/3W5JQrm"
   },
   {
@@ -668,6 +683,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 48,
+    "Rubber_Sponge_Sizes": ["1.7mm", "2.0mm", "2.3mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/48uHCcD"
   },
   {
@@ -680,6 +696,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 46,
+    "Rubber_Sponge_Sizes": ["1.7mm", "2.0mm", "2.3mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/3JbyajW"
   },
   {
@@ -692,6 +709,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 49,
+    "Rubber_Sponge_Sizes": ["1.7mm", "2.0mm", "2.3mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/4n3b3pG"
   },
   {
@@ -704,6 +722,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 48,
+    "Rubber_Sponge_Sizes": ["1.7mm", "2.0mm", "2.3mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/4nYMFHe"
   },
   {
@@ -716,6 +735,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Intermediate",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 43,
+    "Rubber_Sponge_Sizes": ["1.7mm", "2.0mm", "2.3mm", "MAX"],
     "Rubber_Affiliate_Link": "https://amzn.to/4nR9hcB"
   },
   {
@@ -728,6 +748,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 46,
+    "Rubber_Sponge_Sizes": ["2.1mm", "2.15mm", "2.2mm"],
     "Rubber_Affiliate_Link": "https://amzn.to/4hfcUGG"
   },
   {
@@ -740,6 +761,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 50,
+    "Rubber_Sponge_Sizes": ["2.1mm", "2.15mm", "2.2mm"],
     "Rubber_Affiliate_Link": "https://amzn.to/3W1KG8F"
   },
   {
@@ -752,6 +774,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 48,
+    "Rubber_Sponge_Sizes": ["2.1mm", "2.15mm", "2.2mm"],
     "Rubber_Affiliate_Link": "https://amzn.to/48vfMwJ"
   },
   {
@@ -764,6 +787,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 52,
+    "Rubber_Sponge_Sizes": ["2.0mm", "2.1mm", "2.2mm"],
     "Rubber_Affiliate_Link": "https://amzn.to/3WEYVQQ"
   },
   {
@@ -776,6 +800,7 @@ export const rubbers: Rubber[] = [
     "Rubber_Level": "Advanced",
     "Rubber_Style": "Normal",
     "Rubber_Weight": 49,
+    "Rubber_Sponge_Sizes": ["2.0mm", "2.1mm", "2.2mm"],
     "Rubber_Affiliate_Link": "https://amzn.to/3W29LQP"
   }
 ];
