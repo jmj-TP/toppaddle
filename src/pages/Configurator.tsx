@@ -83,11 +83,18 @@ const Configurator = () => {
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Header */}
           <div className="mb-8 relative">
-            <div className="absolute left-0 top-0">
+            <div className="absolute left-0 top-0 flex gap-2">
+              <Button
+                onClick={() => setIsPreassembled(false)}
+                variant={!isPreassembled ? "default" : "outline"}
+                className="rounded-full px-6 py-2"
+              >
+                Custom
+              </Button>
               <Button
                 onClick={() => setIsPreassembled(true)}
                 variant={isPreassembled ? "default" : "outline"}
-                className="rounded-full px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white border-none"
+                className="rounded-full px-6 py-2"
               >
                 Preassembled
               </Button>
