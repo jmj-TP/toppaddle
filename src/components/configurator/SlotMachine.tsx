@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { ProductFilter, type ProductFilters } from "./ProductFilter";
+import { Info } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface SlotMachineProps {
   isPreassembled: boolean;
@@ -121,7 +123,9 @@ const SlotMachine = ({
     label,
     delay = 0,
     selectorComponent,
-    filterComponent
+    filterComponent,
+    filters,
+    allItems
   }: { 
     items: any[]; 
     selected: any; 
@@ -130,14 +134,44 @@ const SlotMachine = ({
     delay?: number;
     selectorComponent?: React.ReactNode;
     filterComponent?: React.ReactNode;
+    filters?: ProductFilters;
+    allItems?: any[];
   }) => {
     const getName = (item: any) => {
       return item.Blade_Name || item.Rubber_Name || item.Racket_Name;
+    };
+
+    // Check if selected item matches current filters
+    const isSelectedAvailable = () => {
+      if (!filters || !allItems) return true;
+      return items.some(item => getName(item) === getName(selected));
+    };
+
+    // Generate explanation for unavailable item
+    const getUnavailabilityReason = () => {
+      if (!filters || !selected) return "";
+      const reasons = [];
+      
+      if (selected.Blade_Price > filters.maxPrice || selected.Rubber_Price > filters.maxPrice) {
+        reasons.push(`Price exceeds your max budget of $${filters.maxPrice === 999999 ? 'unlimited' : filters.maxPrice}`);
+      }
+      if (filters.level !== "All" && (selected.Blade_Level !== filters.level && selected.Rubber_Level !== filters.level)) {
+        reasons.push(`Level doesn't match your filter (${filters.level})`);
+      }
+      if (filters.style !== "All" && (selected.Blade_Style !== filters.style && selected.Rubber_Style !== filters.style)) {
+        reasons.push(`Style doesn't match your filter (${filters.style})`);
+      }
+
+      if (reasons.length === 0) return "";
+      
+      return `This product is currently filtered out:\n• ${reasons.join('\n• ')}\n\nTo make it available again, adjust the filters above.`;
     };
     
     const [currentIndex, setCurrentIndex] = useState(items.findIndex(item => getName(item) === getName(selected)));
     const [localSpinning, setLocalSpinning] = useState(false);
     const wheelRef = useRef<HTMLDivElement>(null);
+    const selectedAvailable = isSelectedAvailable();
+    const unavailabilityReason = getUnavailabilityReason();
 
     useEffect(() => {
       const newIndex = items.findIndex(item => getName(item) === getName(selected));
@@ -190,17 +224,43 @@ const SlotMachine = ({
       <div className="flex flex-col items-center">
         {/* Header with title and settings */}
         <div className="flex items-center justify-between w-80 mb-4">
-          <h3 className="text-xl font-bold text-foreground">{label}</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-xl font-bold text-foreground">{label}</h3>
+            {!selectedAvailable && unavailabilityReason && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="text-destructive hover:text-destructive/80 transition-colors">
+                    <Info className="w-5 h-5" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-4 bg-card border-2 border-destructive/50" align="start">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-destructive flex items-center gap-2">
+                      <Info className="w-4 h-4" />
+                      Product Unavailable
+                    </h4>
+                    <p className="text-sm text-muted-foreground whitespace-pre-line">
+                      {unavailabilityReason}
+                    </p>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
+          </div>
           {filterComponent}
         </div>
         <div
           ref={wheelRef}
           onWheel={handleWheel}
-          className="relative w-80 h-[500px] bg-gradient-to-br from-purple-200/60 to-purple-300/60 rounded-xl overflow-hidden shadow-2xl border-4 border-black"
+          className={`relative w-80 h-[500px] bg-gradient-to-br from-purple-200/60 to-purple-300/60 rounded-xl overflow-hidden shadow-2xl border-4 ${
+            !selectedAvailable ? 'border-destructive/50' : 'border-black'
+          } ${!selectedAvailable ? 'opacity-60' : ''}`}
           style={{ perspective: '1000px' }}
         >
           {/* Center highlight */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-32 border-y-4 border-black/20 bg-white/10 z-0 pointer-events-none" />
+          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-32 border-y-4 ${
+            !selectedAvailable ? 'border-destructive/30' : 'border-black/20'
+          } bg-white/10 z-0 pointer-events-none`} />
 
           {/* Items container */}
           <div className="relative h-full flex flex-col items-center justify-center py-8">
@@ -264,7 +324,9 @@ const SlotMachine = ({
                         <p 
                           className={`text-center line-clamp-3 transition-colors cursor-pointer ${
                             offset === 0 
-                              ? 'text-foreground text-lg font-bold' 
+                              ? !selectedAvailable 
+                                ? 'text-destructive text-lg font-bold line-through opacity-70' 
+                                : 'text-foreground text-lg font-bold'
                               : 'text-muted-foreground text-sm font-medium'
                           }`}
                         >
@@ -378,6 +440,8 @@ const SlotMachine = ({
             onChange={onForehandChange}
             label="Forehand Rubber"
             delay={0}
+            filters={forehandFilters}
+            allItems={rubbers}
             selectorComponent={
               <SpongeSelector 
                 rubber={selectedForehand} 
@@ -400,6 +464,8 @@ const SlotMachine = ({
             onChange={onBladeChange}
             label="Blade"
             delay={600}
+            filters={bladeFilters}
+            allItems={blades}
             selectorComponent={<GripSelector />}
             filterComponent={
               <ProductFilter
@@ -416,6 +482,8 @@ const SlotMachine = ({
             onChange={onBackhandChange}
             label="Backhand Rubber"
             delay={1200}
+            filters={backhandFilters}
+            allItems={rubbers}
             selectorComponent={
               <SpongeSelector 
                 rubber={selectedBackhand} 

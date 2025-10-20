@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -55,18 +55,23 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
   const styleOptions = type === "blade" ? BLADE_STYLE_OPTIONS : RUBBER_STYLE_OPTIONS;
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <Popover>
+      <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           <Settings className="w-4 h-4" />
           Settings
         </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{title} Filters</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4 py-4">
+      </PopoverTrigger>
+      <PopoverContent 
+        className="w-80 p-6 bg-card border-2 border-border shadow-xl" 
+        align="end"
+        side="bottom"
+      >
+        <div className="space-y-4">
+          <div className="pb-3 border-b border-border">
+            <h4 className="font-semibold text-lg text-foreground">{title} Filters</h4>
+          </div>
+
           <div className="space-y-2">
             <Label>Max Price</Label>
             <Select
@@ -130,7 +135,7 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
             </Select>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </PopoverContent>
+    </Popover>
   );
 };
