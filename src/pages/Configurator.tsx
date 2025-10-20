@@ -57,11 +57,28 @@ const Configurator = () => {
   };
 
   const handlePreferencesChange = (preferences: UserPreferences) => {
+    // Helper function to check level compatibility (same logic as quiz)
+    const isLevelCompatible = (productLevel: string, userLevel: string): boolean => {
+      if (userLevel === productLevel) return true;
+      if (userLevel === 'Advanced' && productLevel === 'Intermediate') return true;
+      if (userLevel === 'Beginner' && productLevel === 'Intermediate') return true;
+      // Filter out incompatible levels
+      if (userLevel === 'Advanced' && productLevel === 'Beginner') return false;
+      if (userLevel === 'Beginner' && productLevel === 'Advanced') return false;
+      return false;
+    };
+
     // Find best matching products based on preferences
     if (isPreassembled) {
       // Find best matching preassembled racket
       const matchingRackets = preAssembledRackets
-        .filter(racket => racket.Racket_Price <= preferences.budget)
+        .filter(racket => {
+          // Filter by budget
+          if (racket.Racket_Price > preferences.budget) return false;
+          // Filter by level compatibility
+          if (!isLevelCompatible(racket.Racket_Level, preferences.level)) return false;
+          return true;
+        })
         .map(racket => {
           const scoreDiff = 
             Math.abs(racket.Racket_Speed - preferences.speed) +
@@ -73,15 +90,16 @@ const Configurator = () => {
         .sort((a, b) => a.scoreDiff - b.scoreDiff);
 
       if (matchingRackets.length > 0) {
-        const bestMatch = matchingRackets.find(r => r.racket.Racket_Level === preferences.level);
-        setSelectedRacket(bestMatch ? bestMatch.racket : matchingRackets[0].racket);
+        setSelectedRacket(matchingRackets[0].racket);
       }
     } else {
-      // Find best matching blade + rubbers
+      // Find best matching blade + rubbers with proper budget and level filtering
       const matchingBlades = blades
         .filter(blade => {
-          const estimatedPrice = blade.Blade_Price + 40; // estimate rubber cost
-          return estimatedPrice <= preferences.budget && blade.Blade_Level === preferences.level;
+          // Filter by level compatibility
+          if (!isLevelCompatible(blade.Blade_Level, preferences.level)) return false;
+          // Need room for rubbers in budget
+          return blade.Blade_Price < preferences.budget;
         })
         .map(blade => {
           const scoreDiff = 
@@ -92,10 +110,18 @@ const Configurator = () => {
         })
         .sort((a, b) => a.scoreDiff - b.scoreDiff);
 
+      if (matchingBlades.length === 0) return;
+
+      const selectedBlade = matchingBlades[0].blade;
+      const remainingBudget = preferences.budget - selectedBlade.Blade_Price;
+
+      // Find matching forehand rubbers that fit in remaining budget
       const matchingForehandRubbers = rubbers
         .filter(rubber => {
-          const estimatedPrice = (matchingBlades[0]?.blade.Blade_Price || 0) + rubber.Rubber_Price + 20;
-          return estimatedPrice <= preferences.budget;
+          // Filter by level compatibility
+          if (!isLevelCompatible(rubber.Rubber_Level, preferences.level)) return false;
+          // Need room for backhand rubber too
+          return rubber.Rubber_Price < remainingBudget;
         })
         .map(rubber => {
           const scoreDiff = 
@@ -106,11 +132,19 @@ const Configurator = () => {
         })
         .sort((a, b) => a.scoreDiff - b.scoreDiff);
 
+      if (matchingForehandRubbers.length === 0) return;
+
+      const selectedForehandRubber = matchingForehandRubbers[0].rubber;
+      const finalRemainingBudget = remainingBudget - selectedForehandRubber.Rubber_Price;
+
+      // Find matching backhand rubbers that fit in final remaining budget
       const matchingBackhandRubbers = rubbers
         .filter(rubber => {
-          const estimatedPrice = (matchingBlades[0]?.blade.Blade_Price || 0) + 
-            (matchingForehandRubbers[0]?.rubber.Rubber_Price || 0) + rubber.Rubber_Price;
-          return estimatedPrice <= preferences.budget;
+          // Filter by level compatibility
+          if (!isLevelCompatible(rubber.Rubber_Level, preferences.level)) return false;
+          // Must fit in remaining budget
+          const totalPrice = selectedBlade.Blade_Price + selectedForehandRubber.Rubber_Price + rubber.Rubber_Price;
+          return totalPrice <= preferences.budget;
         })
         .map(rubber => {
           const scoreDiff = 
@@ -121,15 +155,12 @@ const Configurator = () => {
         })
         .sort((a, b) => a.scoreDiff - b.scoreDiff);
 
-      if (matchingBlades.length > 0) {
-        setSelectedBlade(matchingBlades[0].blade);
-      }
-      if (matchingForehandRubbers.length > 0) {
-        setSelectedForehand(matchingForehandRubbers[0].rubber);
-      }
-      if (matchingBackhandRubbers.length > 0) {
-        setSelectedBackhand(matchingBackhandRubbers[0].rubber);
-      }
+      if (matchingBackhandRubbers.length === 0) return;
+
+      // Update all selections
+      setSelectedBlade(selectedBlade);
+      setSelectedForehand(selectedForehandRubber);
+      setSelectedBackhand(matchingBackhandRubbers[0].rubber);
     }
   };
 
