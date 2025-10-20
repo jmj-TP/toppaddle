@@ -62,6 +62,16 @@ const SlotMachine = ({
   const [showBladeStats, setShowBladeStats] = useState(false);
   const [showBackhandStats, setShowBackhandStats] = useState(false);
 
+  // Helper function to extract brand from product name
+  const extractBrand = (productName: string): string => {
+    const name = productName.toUpperCase();
+    if (name.startsWith('BUTTERFLY')) return 'Butterfly';
+    if (name.startsWith('JOOLA')) return 'JOOLA';
+    if (name.startsWith('ANDRO')) return 'ANDRO';
+    if (name.startsWith('DHS')) return 'DHS';
+    return 'Other';
+  };
+
   // Filter products based on filters
   const filterBlades = (filters: ProductFilters) => {
     return blades.filter(blade => {
@@ -70,6 +80,9 @@ const SlotMachine = ({
       if (filters.style !== "All" && blade.Blade_Style !== filters.style) return false;
       if (filters.gripType && filters.gripType !== "All") {
         if (!blade.Blade_Grip || !blade.Blade_Grip.includes(filters.gripType)) return false;
+      }
+      if (filters.brand && filters.brand !== "All") {
+        if (extractBrand(blade.Blade_Name) !== filters.brand) return false;
       }
       return true;
     });
@@ -82,6 +95,9 @@ const SlotMachine = ({
       if (filters.style !== "All" && rubber.Rubber_Style !== filters.style) return false;
       if (filters.spongeSize && filters.spongeSize !== "All") {
         if (!rubber.Rubber_Sponge_Sizes || !rubber.Rubber_Sponge_Sizes.includes(filters.spongeSize)) return false;
+      }
+      if (filters.brand && filters.brand !== "All") {
+        if (extractBrand(rubber.Rubber_Name) !== filters.brand) return false;
       }
       return true;
     });

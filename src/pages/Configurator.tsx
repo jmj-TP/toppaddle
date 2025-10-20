@@ -32,20 +32,33 @@ const Configurator = () => {
     maxPrice: 999999,
     level: "All",
     style: "All",
-    spongeSize: "All"
+    spongeSize: "All",
+    brand: "All"
   });
   const [bladeFilters, setBladeFilters] = useState<ProductFilters>({
     maxPrice: 999999,
     level: "All",
     style: "All",
-    gripType: "All"
+    gripType: "All",
+    brand: "All"
   });
   const [backhandFilters, setBackhandFilters] = useState<ProductFilters>({
     maxPrice: 999999,
     level: "All",
     style: "All",
-    spongeSize: "All"
+    spongeSize: "All",
+    brand: "All"
   });
+
+  // Helper function to extract brand from product name
+  const extractBrand = (productName: string): string => {
+    const name = productName.toUpperCase();
+    if (name.startsWith('BUTTERFLY')) return 'Butterfly';
+    if (name.startsWith('JOOLA')) return 'JOOLA';
+    if (name.startsWith('ANDRO')) return 'ANDRO';
+    if (name.startsWith('DHS')) return 'DHS';
+    return 'Other';
+  };
 
   // Validation functions for filters
   const validateFilters = (filters: ProductFilters, type: 'blade' | 'rubber'): boolean => {
@@ -57,6 +70,9 @@ const Configurator = () => {
         if (filters.gripType && filters.gripType !== "All") {
           if (!blade.Blade_Grip || !blade.Blade_Grip.includes(filters.gripType)) return false;
         }
+        if (filters.brand && filters.brand !== "All") {
+          if (extractBrand(blade.Blade_Name) !== filters.brand) return false;
+        }
         return true;
       });
       return filtered.length > 0;
@@ -67,6 +83,9 @@ const Configurator = () => {
         if (filters.style !== "All" && rubber.Rubber_Style !== filters.style) return false;
         if (filters.spongeSize && filters.spongeSize !== "All") {
           if (!rubber.Rubber_Sponge_Sizes || !rubber.Rubber_Sponge_Sizes.includes(filters.spongeSize)) return false;
+        }
+        if (filters.brand && filters.brand !== "All") {
+          if (extractBrand(rubber.Rubber_Name) !== filters.brand) return false;
         }
         return true;
       });
@@ -193,6 +212,9 @@ const Configurator = () => {
         if (blade.Blade_Price > bladeFilters.maxPrice) return false;
         if (bladeFilters.level !== "All" && blade.Blade_Level !== bladeFilters.level) return false;
         if (bladeFilters.style !== "All" && blade.Blade_Style !== bladeFilters.style) return false;
+        if (bladeFilters.brand && bladeFilters.brand !== "All") {
+          if (extractBrand(blade.Blade_Name) !== bladeFilters.brand) return false;
+        }
         return true;
       };
 
@@ -200,6 +222,9 @@ const Configurator = () => {
         if (rubber.Rubber_Price > forehandFilters.maxPrice) return false;
         if (forehandFilters.level !== "All" && rubber.Rubber_Level !== forehandFilters.level) return false;
         if (forehandFilters.style !== "All" && rubber.Rubber_Style !== forehandFilters.style) return false;
+        if (forehandFilters.brand && forehandFilters.brand !== "All") {
+          if (extractBrand(rubber.Rubber_Name) !== forehandFilters.brand) return false;
+        }
         return true;
       };
 
@@ -207,6 +232,9 @@ const Configurator = () => {
         if (rubber.Rubber_Price > backhandFilters.maxPrice) return false;
         if (backhandFilters.level !== "All" && rubber.Rubber_Level !== backhandFilters.level) return false;
         if (backhandFilters.style !== "All" && rubber.Rubber_Style !== backhandFilters.style) return false;
+        if (backhandFilters.brand && backhandFilters.brand !== "All") {
+          if (extractBrand(rubber.Rubber_Name) !== backhandFilters.brand) return false;
+        }
         return true;
       };
 

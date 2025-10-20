@@ -10,6 +10,7 @@ export interface ProductFilters {
   style: string;
   spongeSize?: string;
   gripType?: string;
+  brand?: string;
 }
 
 interface ProductFilterProps {
@@ -68,6 +69,14 @@ const GRIP_TYPE_OPTIONS = [
   { value: "ST", label: "Straight (ST)" },
   { value: "FL", label: "Flared (FL)" },
   { value: "AN", label: "Anatomic (AN)" },
+];
+
+const BRAND_OPTIONS = [
+  { value: "All", label: "All Brands" },
+  { value: "Butterfly", label: "Butterfly" },
+  { value: "JOOLA", label: "JOOLA" },
+  { value: "ANDRO", label: "ANDRO" },
+  { value: "DHS", label: "DHS" },
 ];
 
 export const ProductFilter = ({ filters, onFiltersChange, type, title }: ProductFilterProps) => {
@@ -204,6 +213,28 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
               </Select>
             </div>
           )}
+
+          {/* Brand Filter */}
+          <div className="space-y-2">
+            <Label>Brand</Label>
+            <Select
+              value={filters.brand || "All"}
+              onValueChange={(value) =>
+                handleFilterChange({ ...filters, brand: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {BRAND_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </PopoverContent>
     </Popover>
