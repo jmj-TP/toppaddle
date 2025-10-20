@@ -138,6 +138,9 @@ const Configurator = () => {
       return false;
     };
 
+    // Check if component-specific preferences are provided
+    const hasComponentPreferences = preferences.forehandSpeed !== undefined;
+
     // Find best matching products based on preferences
     if (isPreassembled) {
       // Find best matching preassembled racket
@@ -217,17 +220,42 @@ const Configurator = () => {
             
             // Only include combinations within budget
             if (totalPrice <= preferences.budget) {
-              // Calculate how close this combination is to preferences
-              const avgSpeed = Math.round((blade.Blade_Speed + forehandRubber.Rubber_Speed + backhandRubber.Rubber_Speed) / 3);
-              const avgSpin = Math.round((blade.Blade_Spin + forehandRubber.Rubber_Spin + backhandRubber.Rubber_Spin) / 3);
-              const avgControl = Math.round((blade.Blade_Control + forehandRubber.Rubber_Control + backhandRubber.Rubber_Control) / 3);
-              const avgPower = Math.round((avgSpeed + avgSpin) / 2);
+              let scoreDiff = 0;
               
-              const scoreDiff = 
-                Math.abs(avgSpeed - preferences.speed) +
-                Math.abs(avgSpin - preferences.spin) +
-                Math.abs(avgControl - preferences.control) +
-                Math.abs(avgPower - preferences.power);
+              if (hasComponentPreferences) {
+                // Use component-specific preferences for more precise matching
+                const forehandDiff = 
+                  Math.abs(forehandRubber.Rubber_Speed - (preferences.forehandSpeed || preferences.speed)) +
+                  Math.abs(forehandRubber.Rubber_Spin - (preferences.forehandSpin || preferences.spin)) +
+                  Math.abs(forehandRubber.Rubber_Control - (preferences.forehandControl || preferences.control)) +
+                  Math.abs(forehandRubber.Rubber_Power - (preferences.forehandPower || preferences.power));
+                
+                const bladeDiff = 
+                  Math.abs(blade.Blade_Speed - (preferences.bladeSpeed || preferences.speed)) +
+                  Math.abs(blade.Blade_Spin - (preferences.bladeSpin || preferences.spin)) +
+                  Math.abs(blade.Blade_Control - (preferences.bladeControl || preferences.control)) +
+                  Math.abs(blade.Blade_Power - (preferences.bladePower || preferences.power));
+                
+                const backhandDiff = 
+                  Math.abs(backhandRubber.Rubber_Speed - (preferences.backhandSpeed || preferences.speed)) +
+                  Math.abs(backhandRubber.Rubber_Spin - (preferences.backhandSpin || preferences.spin)) +
+                  Math.abs(backhandRubber.Rubber_Control - (preferences.backhandControl || preferences.control)) +
+                  Math.abs(backhandRubber.Rubber_Power - (preferences.backhandPower || preferences.power));
+                
+                scoreDiff = forehandDiff + bladeDiff + backhandDiff;
+              } else {
+                // Use overall average preferences
+                const avgSpeed = Math.round((blade.Blade_Speed + forehandRubber.Rubber_Speed + backhandRubber.Rubber_Speed) / 3);
+                const avgSpin = Math.round((blade.Blade_Spin + forehandRubber.Rubber_Spin + backhandRubber.Rubber_Spin) / 3);
+                const avgControl = Math.round((blade.Blade_Control + forehandRubber.Rubber_Control + backhandRubber.Rubber_Control) / 3);
+                const avgPower = Math.round((avgSpeed + avgSpin) / 2);
+                
+                scoreDiff = 
+                  Math.abs(avgSpeed - preferences.speed) +
+                  Math.abs(avgSpin - preferences.spin) +
+                  Math.abs(avgControl - preferences.control) +
+                  Math.abs(avgPower - preferences.power);
+              }
               
               validCombinations.push({
                 blade,

@@ -15,6 +15,19 @@ export interface UserPreferences {
   spin: number;
   control: number;
   power: number;
+  // Component-specific preferences
+  forehandSpeed?: number;
+  forehandSpin?: number;
+  forehandControl?: number;
+  forehandPower?: number;
+  bladeSpeed?: number;
+  bladeSpin?: number;
+  bladeControl?: number;
+  bladePower?: number;
+  backhandSpeed?: number;
+  backhandSpin?: number;
+  backhandControl?: number;
+  backhandPower?: number;
 }
 
 interface StatsDisplayProps {
@@ -45,24 +58,61 @@ const StatsDisplay = ({
   onPreferencesChange,
 }: StatsDisplayProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [editBudget, setEditBudget] = useState<number>(250);
   const [editLevel, setEditLevel] = useState(level);
   const [editSpeed, setEditSpeed] = useState(stats.speed);
   const [editSpin, setEditSpin] = useState(stats.spin);
   const [editControl, setEditControl] = useState(stats.control);
   const [editPower, setEditPower] = useState(stats.power);
+  
+  // Advanced component-specific preferences
+  const [editForehandSpeed, setEditForehandSpeed] = useState(forehand?.Rubber_Speed || 50);
+  const [editForehandSpin, setEditForehandSpin] = useState(forehand?.Rubber_Spin || 50);
+  const [editForehandControl, setEditForehandControl] = useState(forehand?.Rubber_Control || 50);
+  const [editForehandPower, setEditForehandPower] = useState(forehand?.Rubber_Power || 50);
+  
+  const [editBladeSpeed, setEditBladeSpeed] = useState(blade?.Blade_Speed || 50);
+  const [editBladeSpin, setEditBladeSpin] = useState(blade?.Blade_Spin || 50);
+  const [editBladeControl, setEditBladeControl] = useState(blade?.Blade_Control || 50);
+  const [editBladePower, setEditBladePower] = useState(blade?.Blade_Power || 50);
+  
+  const [editBackhandSpeed, setEditBackhandSpeed] = useState(backhand?.Rubber_Speed || 50);
+  const [editBackhandSpin, setEditBackhandSpin] = useState(backhand?.Rubber_Spin || 50);
+  const [editBackhandControl, setEditBackhandControl] = useState(backhand?.Rubber_Control || 50);
+  const [editBackhandPower, setEditBackhandPower] = useState(backhand?.Rubber_Power || 50);
+  
   const handleSavePreferences = () => {
     if (onPreferencesChange) {
-      onPreferencesChange({
+      const preferences: UserPreferences = {
         budget: editBudget,
         level: editLevel,
         speed: editSpeed,
         spin: editSpin,
         control: editControl,
         power: editPower,
-      });
+      };
+      
+      // Include component-specific preferences if advanced mode is enabled
+      if (showAdvanced) {
+        preferences.forehandSpeed = editForehandSpeed;
+        preferences.forehandSpin = editForehandSpin;
+        preferences.forehandControl = editForehandControl;
+        preferences.forehandPower = editForehandPower;
+        preferences.bladeSpeed = editBladeSpeed;
+        preferences.bladeSpin = editBladeSpin;
+        preferences.bladeControl = editBladeControl;
+        preferences.bladePower = editBladePower;
+        preferences.backhandSpeed = editBackhandSpeed;
+        preferences.backhandSpin = editBackhandSpin;
+        preferences.backhandControl = editBackhandControl;
+        preferences.backhandPower = editBackhandPower;
+      }
+      
+      onPreferencesChange(preferences);
     }
     setIsEditMode(false);
+    setShowAdvanced(false);
   };
 
   const StatBar = ({ label, value, Icon }: { label: string; value: number; Icon: any }) => (
@@ -196,6 +246,59 @@ const StatsDisplay = ({
                 <StatSlider label="Spin" value={editSpin} Icon={Target} onChange={setEditSpin} />
                 <StatSlider label="Control" value={editControl} Icon={Shield} onChange={setEditControl} />
                 <StatSlider label="Power" value={editPower} Icon={Star} onChange={setEditPower} />
+                
+                {/* Advanced Button */}
+                {!racket && (
+                  <div className="pt-4 flex justify-center">
+                    <Button
+                      onClick={() => setShowAdvanced(!showAdvanced)}
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      {showAdvanced ? "Hide Component Preferences" : "Advanced: Component Preferences"}
+                    </Button>
+                  </div>
+                )}
+                
+                {/* Advanced Component-Specific Stats */}
+                {showAdvanced && !racket && (
+                  <div className="mt-6 space-y-6 pt-6 border-t-2 border-border">
+                    {/* Forehand Rubber */}
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold text-primary flex items-center gap-2">
+                        <span className="text-red-500">🔴</span> Forehand Rubber Preferences
+                      </h4>
+                      <StatSlider label="Speed" value={editForehandSpeed} Icon={Gauge} onChange={setEditForehandSpeed} />
+                      <StatSlider label="Spin" value={editForehandSpin} Icon={Target} onChange={setEditForehandSpin} />
+                      <StatSlider label="Control" value={editForehandControl} Icon={Shield} onChange={setEditForehandControl} />
+                      <StatSlider label="Power" value={editForehandPower} Icon={Star} onChange={setEditForehandPower} />
+                    </div>
+                    
+                    {/* Blade */}
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold text-primary flex items-center gap-2">
+                        <span>🏓</span> Blade Preferences
+                      </h4>
+                      <StatSlider label="Speed" value={editBladeSpeed} Icon={Gauge} onChange={setEditBladeSpeed} />
+                      <StatSlider label="Spin" value={editBladeSpin} Icon={Target} onChange={setEditBladeSpin} />
+                      <StatSlider label="Control" value={editBladeControl} Icon={Shield} onChange={setEditBladeControl} />
+                      <StatSlider label="Power" value={editBladePower} Icon={Star} onChange={setEditBladePower} />
+                    </div>
+                    
+                    {/* Backhand Rubber */}
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold text-primary flex items-center gap-2">
+                        <span className="text-blue-500">🔵</span> Backhand Rubber Preferences
+                      </h4>
+                      <StatSlider label="Speed" value={editBackhandSpeed} Icon={Gauge} onChange={setEditBackhandSpeed} />
+                      <StatSlider label="Spin" value={editBackhandSpin} Icon={Target} onChange={setEditBackhandSpin} />
+                      <StatSlider label="Control" value={editBackhandControl} Icon={Shield} onChange={setEditBackhandControl} />
+                      <StatSlider label="Power" value={editBackhandPower} Icon={Star} onChange={setEditBackhandPower} />
+                    </div>
+                  </div>
+                )}
               </>
             ) : (
               <>
