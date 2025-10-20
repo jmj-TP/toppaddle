@@ -238,8 +238,8 @@ const SlotMachine = ({
 
     return (
       <div className="flex flex-col items-center">
-        {/* Header with title and settings */}
-        <div className="flex items-center justify-between w-80 mb-3">
+      {/* Header with title and settings */}
+        <div className="flex items-center justify-center w-80 mb-3">
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-semibold text-foreground tracking-tight">{label}</h3>
             {!selectedAvailable && unavailabilityReason && (
@@ -268,8 +268,8 @@ const SlotMachine = ({
         <div
           ref={wheelRef}
           onWheel={handleWheel}
-          className={`relative w-80 h-[350px] bg-gradient-to-br from-purple-200/60 to-purple-300/60 rounded-xl overflow-hidden shadow-2xl border-4 ${
-            !selectedAvailable ? 'border-destructive/50' : 'border-black'
+          className={`relative w-80 h-[350px] bg-card rounded-xl overflow-hidden shadow-2xl border-4 ${
+            !selectedAvailable ? 'border-destructive/50' : 'border-border'
           } ${!selectedAvailable ? 'opacity-60' : ''}`}
           style={{ perspective: '1000px' }}
         >
@@ -433,14 +433,14 @@ const SlotMachine = ({
   const GripSelector = () => {
     const availableGrips = selectedBlade.Blade_Grip || [];
     return (
-      <div className="bg-card p-4 rounded-lg border-2 border-border">
-        <p className="text-sm font-semibold mb-2 text-center">Grip Type</p>
-        <div className="flex flex-wrap gap-2 justify-center">
+      <div className="bg-card p-2 rounded-lg border border-border">
+        <p className="text-xs font-medium mb-1.5 text-center text-muted-foreground">Grip Type</p>
+        <div className="flex flex-wrap gap-1.5 justify-center">
           {availableGrips.map((gripType) => (
             <button
               key={gripType}
               onClick={() => onGripChange(gripType)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                 selectedGrip === gripType
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
@@ -515,7 +515,8 @@ const SlotMachine = ({
               <Button
                 onClick={() => setShowForehandStats(!showForehandStats)}
                 size="sm"
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white border-2 border-black rounded-lg font-semibold"
+                variant="outline"
+                className="w-full border-2 border-border hover:bg-secondary"
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
                 {showForehandStats ? "Hide Stats" : "View Stats"}
@@ -555,7 +556,8 @@ const SlotMachine = ({
               <Button
                 onClick={() => setShowBladeStats(!showBladeStats)}
                 size="sm"
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white border-2 border-black rounded-lg font-semibold"
+                variant="outline"
+                className="w-full border-2 border-border hover:bg-secondary"
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
                 {showBladeStats ? "Hide Stats" : "View Stats"}
@@ -591,7 +593,8 @@ const SlotMachine = ({
               <Button
                 onClick={() => setShowBackhandStats(!showBackhandStats)}
                 size="sm"
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white border-2 border-black rounded-lg font-semibold"
+                variant="outline"
+                className="w-full border-2 border-border hover:bg-secondary"
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
                 {showBackhandStats ? "Hide Stats" : "View Stats"}

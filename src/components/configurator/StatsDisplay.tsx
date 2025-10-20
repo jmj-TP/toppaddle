@@ -2,7 +2,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { ExternalLink, Gauge, Target, Shield, Star, Settings } from "lucide-react";
+import { ExternalLink, Gauge, Target, Shield, Star, Settings, DollarSign, Scale } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
@@ -82,6 +82,10 @@ const StatsDisplay = ({
   const [editBackhandControl, setEditBackhandControl] = useState(backhand?.Rubber_Control || 50);
   const [editBackhandPower, setEditBackhandPower] = useState(backhand?.Rubber_Power || 50);
   
+  const handleEditPreferences = () => {
+    setIsEditMode(true);
+  };
+
   const handleSavePreferences = () => {
     if (onPreferencesChange) {
       const preferences: UserPreferences = {
@@ -113,6 +117,13 @@ const StatsDisplay = ({
     }
     setIsEditMode(false);
     setShowAdvanced(false);
+  };
+
+  const calculateTotalWeight = () => {
+    if (racket) {
+      return '~180g';
+    }
+    return `${(blade?.Blade_Weight || 85) + (forehand?.Rubber_Weight || 45) + (backhand?.Rubber_Weight || 45)}g`;
   };
 
   const StatBar = ({ label, value, Icon }: { label: string; value: number; Icon: any }) => (
@@ -173,8 +184,8 @@ const StatsDisplay = ({
       <div className="grid md:grid-cols-[2fr_1fr] gap-8 items-start">
         {/* Left Column - Price, Level, and Stats */}
         <div className="space-y-6">
-          {/* Price, Level, Weight, and Change Preferences Button Row */}
-          <div className="flex items-center gap-4 flex-wrap">
+          {/* Meta Stats Row */}
+          <div className="flex flex-wrap items-center gap-4 mb-4">
             {isEditMode ? (
               <>
                 <div className="flex items-center gap-2">
@@ -201,7 +212,6 @@ const StatsDisplay = ({
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="h-6 w-px bg-border" />
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">Level:</span>
                   <Select value={editLevel} onValueChange={setEditLevel}>
@@ -218,58 +228,70 @@ const StatsDisplay = ({
               </>
             ) : (
               <>
-                <div>
-                  <span className="text-xl font-bold text-foreground">Price: ${stats.price.toFixed(2)}</span>
+                <div className="flex items-center gap-2">
+                  <DollarSign className="w-5 h-5 text-muted-foreground" />
+                  <span className="font-semibold">${stats.price.toFixed(2)}</span>
                 </div>
-                <div className="h-6 w-px bg-border" />
-                <div>
-                  <span className="text-xl font-bold text-foreground">Level: {level}</span>
+                <div className="flex items-center gap-2">
+                  <Gauge className="w-5 h-5 text-muted-foreground" />
+                  <span className="font-semibold">Level: {level}</span>
                 </div>
-                <div className="h-6 w-px bg-border" />
-                <div>
-                  <span className="text-xl font-bold text-foreground">
-                    Weight: {racket ? '~180g' : `${(blade?.Blade_Weight || 85) + (forehand?.Rubber_Weight || 45) + (backhand?.Rubber_Weight || 45)}g`}
-                  </span>
+                <div className="flex items-center gap-2">
+                  <Scale className="w-5 h-5 text-muted-foreground" />
+                  <span className="font-semibold">Weight: {calculateTotalWeight()}</span>
                 </div>
               </>
             )}
-            <Button
-              onClick={isEditMode ? handleSavePreferences : () => setIsEditMode(true)}
-              variant="outline"
-              size="sm"
-              className="ml-auto"
-            >
-              <Settings className="w-4 h-4 mr-2" />
-              {isEditMode ? "Save Preferences" : "Change Preferences"}
-            </Button>
+            
+            {!isEditMode && (
+              <Button
+                onClick={handleEditPreferences}
+                variant="outline"
+                size="sm"
+                className="ml-auto"
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                Change Preferences
+              </Button>
+            )}
           </div>
 
           {/* Stats Bars or Sliders */}
-          <div className="space-y-2">
-            {isEditMode ? (
-              <>
-                <StatSlider label="Speed" value={editSpeed} Icon={Gauge} onChange={setEditSpeed} />
-                <StatSlider label="Spin" value={editSpin} Icon={Target} onChange={setEditSpin} />
-                <StatSlider label="Control" value={editControl} Icon={Shield} onChange={setEditControl} />
-                <StatSlider label="Power" value={editPower} Icon={Star} onChange={setEditPower} />
-                
-                {/* Advanced Button */}
-                {!racket && (
-                  <div className="pt-4 flex justify-center">
-                    <Button
-                      onClick={() => setShowAdvanced(!showAdvanced)}
-                      variant="outline"
-                      size="sm"
-                      className="w-full"
-                    >
-                      <Settings className="w-4 h-4 mr-2" />
-                      {showAdvanced ? "Hide Component Preferences" : "Advanced: Component Preferences"}
-                    </Button>
-                  </div>
-                )}
-                
-                {/* Advanced Component-Specific Stats */}
-                {showAdvanced && !racket && (
+          {isEditMode ? (
+            <div className="space-y-2">
+              <div className="flex items-center gap-4 mb-4">
+                <Button
+                  onClick={handleSavePreferences}
+                  variant="default"
+                  size="sm"
+                >
+                  <Settings className="mr-2 h-4 w-4" />
+                  Save Preferences
+                </Button>
+              </div>
+              
+              <StatSlider label="Speed" value={editSpeed} Icon={Gauge} onChange={setEditSpeed} />
+              <StatSlider label="Spin" value={editSpin} Icon={Target} onChange={setEditSpin} />
+              <StatSlider label="Control" value={editControl} Icon={Shield} onChange={setEditControl} />
+              <StatSlider label="Power" value={editPower} Icon={Star} onChange={setEditPower} />
+              
+              {/* Advanced Button */}
+              {!racket && (
+                <div className="pt-4 flex justify-center">
+                  <Button
+                    onClick={() => setShowAdvanced(!showAdvanced)}
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                  >
+                    <Settings className="w-4 h-4 mr-2" />
+                    {showAdvanced ? "Hide Component Preferences" : "Advanced: Component Preferences"}
+                  </Button>
+                </div>
+              )}
+              
+              {/* Advanced Component-Specific Stats */}
+              {showAdvanced && !racket && (
                   <div className="mt-6 space-y-6 pt-6 border-t-2 border-border">
                     {/* Forehand Rubber */}
                     <div className="space-y-2">
@@ -305,16 +327,15 @@ const StatsDisplay = ({
                     </div>
                   </div>
                 )}
-              </>
+              </div>
             ) : (
-              <>
+              <div className="space-y-2">
                 <StatBar label="Speed" value={stats.speed} Icon={Gauge} />
                 <StatBar label="Spin" value={stats.spin} Icon={Target} />
                 <StatBar label="Control" value={stats.control} Icon={Shield} />
                 <StatBar label="Power" value={stats.power} Icon={Star} />
-              </>
+              </div>
             )}
-          </div>
         </div>
 
         {/* Right Column - Buttons */}
