@@ -3,9 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ExternalLink, Gauge, Target, Shield, Star, Settings } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
@@ -48,7 +45,7 @@ const StatsDisplay = ({
   onPreferencesChange,
 }: StatsDisplayProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editBudget, setEditBudget] = useState(stats.price);
+  const [editBudget, setEditBudget] = useState<number>(250);
   const [editLevel, setEditLevel] = useState(level);
   const [editSpeed, setEditSpeed] = useState(stats.speed);
   const [editSpin, setEditSpin] = useState(stats.spin);
@@ -132,12 +129,27 @@ const StatsDisplay = ({
               <>
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">Budget:</span>
-                  <Input
-                    type="number"
-                    value={editBudget}
-                    onChange={(e) => setEditBudget(parseFloat(e.target.value) || 0)}
-                    className="w-24 h-8"
-                  />
+                  <Select 
+                    value={editBudget.toString()} 
+                    onValueChange={(value) => setEditBudget(parseFloat(value))}
+                  >
+                    <SelectTrigger className="w-32 h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="50">&lt;$50</SelectItem>
+                      <SelectItem value="90">&lt;$90</SelectItem>
+                      <SelectItem value="120">&lt;$120</SelectItem>
+                      <SelectItem value="140">&lt;$140</SelectItem>
+                      <SelectItem value="160">&lt;$160</SelectItem>
+                      <SelectItem value="180">&lt;$180</SelectItem>
+                      <SelectItem value="200">&lt;$200</SelectItem>
+                      <SelectItem value="230">&lt;$230</SelectItem>
+                      <SelectItem value="250">&lt;$250</SelectItem>
+                      <SelectItem value="300">&lt;$300</SelectItem>
+                      <SelectItem value="999999">No Limit</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="h-6 w-px bg-border" />
                 <div className="flex items-center gap-2">
