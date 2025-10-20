@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SlotMachine from "@/components/configurator/SlotMachine";
-import StatsDisplay from "@/components/configurator/StatsDisplay";
+import StatsDisplay, { type UserPreferences } from "@/components/configurator/StatsDisplay";
 import { Button } from "@/components/ui/button";
 import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
@@ -54,6 +54,83 @@ const Configurator = () => {
 
   const handleRandomReroll = () => {
     setSpinTrigger(prev => prev + 1);
+  };
+
+  const handlePreferencesChange = (preferences: UserPreferences) => {
+    // Find best matching products based on preferences
+    if (isPreassembled) {
+      // Find best matching preassembled racket
+      const matchingRackets = preAssembledRackets
+        .filter(racket => racket.Racket_Price <= preferences.budget)
+        .map(racket => {
+          const scoreDiff = 
+            Math.abs(racket.Racket_Speed - preferences.speed) +
+            Math.abs(racket.Racket_Spin - preferences.spin) +
+            Math.abs(racket.Racket_Control - preferences.control) +
+            Math.abs((racket.Racket_Speed + racket.Racket_Spin) / 2 - preferences.power);
+          return { racket, scoreDiff };
+        })
+        .sort((a, b) => a.scoreDiff - b.scoreDiff);
+
+      if (matchingRackets.length > 0) {
+        const bestMatch = matchingRackets.find(r => r.racket.Racket_Level === preferences.level);
+        setSelectedRacket(bestMatch ? bestMatch.racket : matchingRackets[0].racket);
+      }
+    } else {
+      // Find best matching blade + rubbers
+      const matchingBlades = blades
+        .filter(blade => {
+          const estimatedPrice = blade.Blade_Price + 40; // estimate rubber cost
+          return estimatedPrice <= preferences.budget && blade.Blade_Level === preferences.level;
+        })
+        .map(blade => {
+          const scoreDiff = 
+            Math.abs(blade.Blade_Speed - preferences.speed) +
+            Math.abs(blade.Blade_Spin - preferences.spin) +
+            Math.abs(blade.Blade_Control - preferences.control);
+          return { blade, scoreDiff };
+        })
+        .sort((a, b) => a.scoreDiff - b.scoreDiff);
+
+      const matchingForehandRubbers = rubbers
+        .filter(rubber => {
+          const estimatedPrice = (matchingBlades[0]?.blade.Blade_Price || 0) + rubber.Rubber_Price + 20;
+          return estimatedPrice <= preferences.budget;
+        })
+        .map(rubber => {
+          const scoreDiff = 
+            Math.abs(rubber.Rubber_Speed - preferences.speed) +
+            Math.abs(rubber.Rubber_Spin - preferences.spin) +
+            Math.abs(rubber.Rubber_Control - preferences.control);
+          return { rubber, scoreDiff };
+        })
+        .sort((a, b) => a.scoreDiff - b.scoreDiff);
+
+      const matchingBackhandRubbers = rubbers
+        .filter(rubber => {
+          const estimatedPrice = (matchingBlades[0]?.blade.Blade_Price || 0) + 
+            (matchingForehandRubbers[0]?.rubber.Rubber_Price || 0) + rubber.Rubber_Price;
+          return estimatedPrice <= preferences.budget;
+        })
+        .map(rubber => {
+          const scoreDiff = 
+            Math.abs(rubber.Rubber_Speed - preferences.speed) +
+            Math.abs(rubber.Rubber_Spin - preferences.spin) +
+            Math.abs(rubber.Rubber_Control - preferences.control);
+          return { rubber, scoreDiff };
+        })
+        .sort((a, b) => a.scoreDiff - b.scoreDiff);
+
+      if (matchingBlades.length > 0) {
+        setSelectedBlade(matchingBlades[0].blade);
+      }
+      if (matchingForehandRubbers.length > 0) {
+        setSelectedForehand(matchingForehandRubbers[0].rubber);
+      }
+      if (matchingBackhandRubbers.length > 0) {
+        setSelectedBackhand(matchingBackhandRubbers[0].rubber);
+      }
+    }
   };
 
   const calculateCustomStats = () => {
@@ -135,6 +212,7 @@ const Configurator = () => {
                 backhand={isPreassembled ? null : selectedBackhand}
                 racket={isPreassembled ? selectedRacket : null}
                 onRandomReroll={handleRandomReroll}
+                onPreferencesChange={handlePreferencesChange}
               />
             </div>
           </div>

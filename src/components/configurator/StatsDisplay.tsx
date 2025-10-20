@@ -2,10 +2,23 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { ExternalLink, Gauge, Target, Shield, Star } from "lucide-react";
+import { ExternalLink, Gauge, Target, Shield, Star, Settings } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { useState } from "react";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
+
+export interface UserPreferences {
+  budget: number;
+  level: string;
+  speed: number;
+  spin: number;
+  control: number;
+  power: number;
+}
 
 interface StatsDisplayProps {
   stats: {
@@ -21,6 +34,7 @@ interface StatsDisplayProps {
   backhand: Rubber | null;
   racket: PreAssembledRacket | null;
   onRandomReroll: () => void;
+  onPreferencesChange?: (preferences: UserPreferences) => void;
 }
 
 const StatsDisplay = ({
@@ -31,7 +45,29 @@ const StatsDisplay = ({
   backhand,
   racket,
   onRandomReroll,
+  onPreferencesChange,
 }: StatsDisplayProps) => {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editBudget, setEditBudget] = useState(stats.price);
+  const [editLevel, setEditLevel] = useState(level);
+  const [editSpeed, setEditSpeed] = useState(stats.speed);
+  const [editSpin, setEditSpin] = useState(stats.spin);
+  const [editControl, setEditControl] = useState(stats.control);
+  const [editPower, setEditPower] = useState(stats.power);
+  const handleSavePreferences = () => {
+    if (onPreferencesChange) {
+      onPreferencesChange({
+        budget: editBudget,
+        level: editLevel,
+        speed: editSpeed,
+        spin: editSpin,
+        control: editControl,
+        power: editPower,
+      });
+    }
+    setIsEditMode(false);
+  };
+
   const StatBar = ({ label, value, Icon }: { label: string; value: number; Icon: any }) => (
     <div className="flex items-center gap-2 mb-3">
       <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
@@ -40,6 +76,34 @@ const StatsDisplay = ({
         <div 
           className="bg-primary rounded-full h-2 transition-all duration-500" 
           style={{ width: `${value}%` }}
+        />
+      </div>
+      <span className="text-sm font-semibold min-w-[30px]">{value}</span>
+    </div>
+  );
+
+  const StatSlider = ({ 
+    label, 
+    value, 
+    Icon, 
+    onChange 
+  }: { 
+    label: string; 
+    value: number; 
+    Icon: any; 
+    onChange: (value: number) => void;
+  }) => (
+    <div className="flex items-center gap-2 mb-3">
+      <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+      <span className="text-sm font-medium min-w-[60px]">{label}:</span>
+      <div className="flex-1">
+        <Slider
+          value={[value]}
+          onValueChange={(values) => onChange(values[0])}
+          min={1}
+          max={100}
+          step={1}
+          className="w-full"
         />
       </div>
       <span className="text-sm font-semibold min-w-[30px]">{value}</span>
@@ -62,23 +126,73 @@ const StatsDisplay = ({
       <div className="grid md:grid-cols-[2fr_1fr] gap-8 items-start">
         {/* Left Column - Price, Level, and Stats */}
         <div className="space-y-6">
-          {/* Price and Level Row */}
-          <div className="flex items-center gap-6">
-            <div>
-              <span className="text-xl font-bold text-foreground">Price: ${stats.price.toFixed(2)}</span>
-            </div>
-            <div className="h-6 w-px bg-border" />
-            <div>
-              <span className="text-xl font-bold text-foreground">Level: {level}</span>
-            </div>
+          {/* Price, Level, and Change Preferences Button Row */}
+          <div className="flex items-center gap-4">
+            {isEditMode ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">Budget:</span>
+                  <Input
+                    type="number"
+                    value={editBudget}
+                    onChange={(e) => setEditBudget(parseFloat(e.target.value) || 0)}
+                    className="w-24 h-8"
+                  />
+                </div>
+                <div className="h-6 w-px bg-border" />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">Level:</span>
+                  <Select value={editLevel} onValueChange={setEditLevel}>
+                    <SelectTrigger className="w-32 h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Beginner">Beginner</SelectItem>
+                      <SelectItem value="Intermediate">Intermediate</SelectItem>
+                      <SelectItem value="Advanced">Advanced</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <span className="text-xl font-bold text-foreground">Price: ${stats.price.toFixed(2)}</span>
+                </div>
+                <div className="h-6 w-px bg-border" />
+                <div>
+                  <span className="text-xl font-bold text-foreground">Level: {level}</span>
+                </div>
+              </>
+            )}
+            <Button
+              onClick={isEditMode ? handleSavePreferences : () => setIsEditMode(true)}
+              variant="outline"
+              size="sm"
+              className="ml-auto"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              {isEditMode ? "Save Preferences" : "Change Preferences"}
+            </Button>
           </div>
 
-          {/* Stats Bars */}
+          {/* Stats Bars or Sliders */}
           <div className="space-y-2">
-            <StatBar label="Speed" value={stats.speed} Icon={Gauge} />
-            <StatBar label="Spin" value={stats.spin} Icon={Target} />
-            <StatBar label="Control" value={stats.control} Icon={Shield} />
-            <StatBar label="Power" value={stats.power} Icon={Star} />
+            {isEditMode ? (
+              <>
+                <StatSlider label="Speed" value={editSpeed} Icon={Gauge} onChange={setEditSpeed} />
+                <StatSlider label="Spin" value={editSpin} Icon={Target} onChange={setEditSpin} />
+                <StatSlider label="Control" value={editControl} Icon={Shield} onChange={setEditControl} />
+                <StatSlider label="Power" value={editPower} Icon={Star} onChange={setEditPower} />
+              </>
+            ) : (
+              <>
+                <StatBar label="Speed" value={stats.speed} Icon={Gauge} />
+                <StatBar label="Spin" value={stats.spin} Icon={Target} />
+                <StatBar label="Control" value={stats.control} Icon={Shield} />
+                <StatBar label="Power" value={stats.power} Icon={Star} />
+              </>
+            )}
           </div>
         </div>
 
