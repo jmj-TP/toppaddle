@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { ProductFilter, type ProductFilters } from "./ProductFilter";
-import { Info, BarChart3 } from "lucide-react";
+import { Info, BarChart3, ChevronUp, ChevronDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import ComponentStatsCard from "./ComponentStatsCard";
@@ -245,31 +245,33 @@ const SlotMachine = ({
     return (
       <div className="flex flex-col items-center">
       {/* Header with title and filter button */}
-        <div className="flex items-center justify-between w-80 mb-3">
-          <div className="flex items-center gap-2">
-            <h3 className="text-lg font-semibold text-foreground tracking-tight">{label}</h3>
-            {!selectedAvailable && unavailabilityReason && (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button className="text-destructive hover:text-destructive/80 transition-colors">
-                    <Info className="w-5 h-5" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80 p-4 bg-card border-2 border-destructive/50" align="start">
-                  <div className="space-y-2">
-                    <h4 className="font-semibold text-destructive flex items-center gap-2">
-                      <Info className="w-4 h-4" />
-                      Product Unavailable
-                    </h4>
-                    <p className="text-sm text-muted-foreground whitespace-pre-line">
-                      {unavailabilityReason}
-                    </p>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            )}
-          </div>
-          {filterComponent}
+        <div className="relative w-80 mb-3">
+          <h3 className="text-lg font-semibold text-foreground tracking-tight text-center">{label}</h3>
+          {filterComponent && (
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2">
+              {!selectedAvailable && unavailabilityReason && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="text-destructive hover:text-destructive/80 transition-colors">
+                      <Info className="w-5 h-5" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-4 bg-card border-2 border-destructive/50" align="start">
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-destructive flex items-center gap-2">
+                        <Info className="w-4 h-4" />
+                        Product Unavailable
+                      </h4>
+                      <p className="text-sm text-muted-foreground whitespace-pre-line">
+                        {unavailabilityReason}
+                      </p>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              )}
+              {filterComponent}
+            </div>
+          )}
         </div>
         <div
           ref={wheelRef}
@@ -280,7 +282,7 @@ const SlotMachine = ({
           style={{ perspective: '1000px' }}
         >
           {/* Center highlight */}
-          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-32 border-y-4 ${
+          <div className={`absolute top-1/2 left-0 right-0 -translate-y-1/2 w-full h-24 border-y-4 ${
             !selectedAvailable ? 'border-destructive/30' : 'border-black/20'
           } bg-white/10 z-0 pointer-events-none`} />
 
@@ -322,7 +324,7 @@ const SlotMachine = ({
                     const distance = Math.abs(offset);
                     const opacity = offset === 0 ? 1 : Math.max(0.3, 1 - distance * 0.35);
                     const scale = offset === 0 ? 1.1 : Math.max(0.75, 1 - distance * 0.15);
-                    const yPos = offset * 100; // 100px spacing between items
+                    const yPos = offset * 80; // 80px spacing between items
                     const rotateX = offset === 0 ? 0 : offset * 8; // 3D tilt effect
 
                     return (
@@ -405,23 +407,23 @@ const SlotMachine = ({
             </AnimatePresence>
           </div>
 
-          {/* Swipe buttons for mobile */}
+          {/* Swipe buttons */}
           <button
             onClick={() => handleSwipe('up')}
             disabled={isSpinning}
-            className="absolute top-20 left-1/2 -translate-x-1/2 text-2xl text-white hover:text-gray-200 disabled:opacity-30 transition-colors z-20 bg-black/20 rounded-full w-12 h-12 flex items-center justify-center"
+            className="absolute top-4 left-1/2 -translate-x-1/2 text-foreground hover:text-primary disabled:opacity-30 transition-colors z-20 bg-card/90 backdrop-blur-sm border-2 border-border rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:scale-110"
             aria-label="Previous item"
           >
-            ▲
+            <ChevronUp className="w-6 h-6" />
           </button>
           
           <button
             onClick={() => handleSwipe('down')}
             disabled={isSpinning}
-            className="absolute bottom-20 left-1/2 -translate-x-1/2 text-2xl text-white hover:text-gray-200 disabled:opacity-30 transition-colors z-20 bg-black/20 rounded-full w-12 h-12 flex items-center justify-center"
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 text-foreground hover:text-primary disabled:opacity-30 transition-colors z-20 bg-card/90 backdrop-blur-sm border-2 border-border rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:scale-110"
             aria-label="Next item"
           >
-            ▼
+            <ChevronDown className="w-6 h-6" />
           </button>
         </div>
         
