@@ -239,9 +239,9 @@ const SlotMachine = ({
     return (
       <div className="flex flex-col items-center">
         {/* Header with title and settings */}
-        <div className="flex items-center justify-between w-80 mb-4">
+        <div className="flex items-center justify-between w-80 mb-3">
           <div className="flex items-center gap-2">
-            <h3 className="text-xl font-bold text-foreground">{label}</h3>
+            <h3 className="text-lg font-semibold text-foreground tracking-tight">{label}</h3>
             {!selectedAvailable && unavailabilityReason && (
               <Popover>
                 <PopoverTrigger asChild>
@@ -268,7 +268,7 @@ const SlotMachine = ({
         <div
           ref={wheelRef}
           onWheel={handleWheel}
-          className={`relative w-80 h-[500px] bg-gradient-to-br from-purple-200/60 to-purple-300/60 rounded-xl overflow-hidden shadow-2xl border-4 ${
+          className={`relative w-80 h-[350px] bg-gradient-to-br from-purple-200/60 to-purple-300/60 rounded-xl overflow-hidden shadow-2xl border-4 ${
             !selectedAvailable ? 'border-destructive/50' : 'border-black'
           } ${!selectedAvailable ? 'opacity-60' : ''}`}
           style={{ perspective: '1000px' }}
@@ -457,14 +457,14 @@ const SlotMachine = ({
   const SpongeSelector = ({ rubber, selectedThickness, onChange }: { rubber: Rubber; selectedThickness: string; onChange: (thickness: string) => void }) => {
     const availableSponges = rubber.Rubber_Sponge_Sizes || [];
     return (
-      <div className="bg-card p-4 rounded-lg border-2 border-border">
-        <p className="text-sm font-semibold mb-2 text-center">Sponge Size</p>
-        <div className="flex flex-wrap gap-2 justify-center">
+      <div className="bg-card p-2 rounded-lg border border-border">
+        <p className="text-xs font-medium mb-1.5 text-center text-muted-foreground">Sponge Size</p>
+        <div className="flex flex-wrap gap-1.5 justify-center">
           {availableSponges.map((size) => (
             <button
               key={size}
               onClick={() => onChange(size)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                 selectedThickness === size
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
@@ -502,13 +502,6 @@ const SlotMachine = ({
               delay={0}
               filters={forehandFilters}
               allItems={rubbers}
-              selectorComponent={
-                <SpongeSelector 
-                  rubber={selectedForehand} 
-                  selectedThickness={selectedForehandThickness} 
-                  onChange={onForehandThicknessChange}
-                />
-              }
               filterComponent={
                 <ProductFilter
                   filters={forehandFilters}
@@ -521,9 +514,8 @@ const SlotMachine = ({
             <div className="mt-2">
               <Button
                 onClick={() => setShowForehandStats(!showForehandStats)}
-                variant="outline"
                 size="sm"
-                className="w-full"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white border-2 border-black rounded-lg font-semibold"
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
                 {showForehandStats ? "Hide Stats" : "View Stats"}
@@ -531,6 +523,13 @@ const SlotMachine = ({
               {showForehandStats && (
                 <ComponentStatsCard component={selectedForehand} type="rubber" />
               )}
+            </div>
+            <div className="mt-2">
+              <SpongeSelector 
+                rubber={selectedForehand} 
+                selectedThickness={selectedForehandThickness} 
+                onChange={onForehandThicknessChange}
+              />
             </div>
           </div>
           
@@ -543,7 +542,6 @@ const SlotMachine = ({
               delay={600}
               filters={bladeFilters}
               allItems={blades}
-              selectorComponent={<GripSelector />}
               filterComponent={
                 <ProductFilter
                   filters={bladeFilters}
@@ -556,9 +554,8 @@ const SlotMachine = ({
             <div className="mt-2">
               <Button
                 onClick={() => setShowBladeStats(!showBladeStats)}
-                variant="outline"
                 size="sm"
-                className="w-full"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white border-2 border-black rounded-lg font-semibold"
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
                 {showBladeStats ? "Hide Stats" : "View Stats"}
@@ -566,6 +563,9 @@ const SlotMachine = ({
               {showBladeStats && (
                 <ComponentStatsCard component={selectedBlade} type="blade" />
               )}
+            </div>
+            <div className="mt-2">
+              <GripSelector />
             </div>
           </div>
           
@@ -578,13 +578,6 @@ const SlotMachine = ({
               delay={1200}
               filters={backhandFilters}
               allItems={rubbers}
-              selectorComponent={
-                <SpongeSelector 
-                  rubber={selectedBackhand} 
-                  selectedThickness={selectedBackhandThickness} 
-                  onChange={onBackhandThicknessChange}
-                />
-              }
               filterComponent={
                 <ProductFilter
                   filters={backhandFilters}
@@ -597,9 +590,8 @@ const SlotMachine = ({
             <div className="mt-2">
               <Button
                 onClick={() => setShowBackhandStats(!showBackhandStats)}
-                variant="outline"
                 size="sm"
-                className="w-full"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white border-2 border-black rounded-lg font-semibold"
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
                 {showBackhandStats ? "Hide Stats" : "View Stats"}
@@ -607,6 +599,13 @@ const SlotMachine = ({
               {showBackhandStats && (
                 <ComponentStatsCard component={selectedBackhand} type="rubber" />
               )}
+            </div>
+            <div className="mt-2">
+              <SpongeSelector 
+                rubber={selectedBackhand} 
+                selectedThickness={selectedBackhandThickness} 
+                onChange={onBackhandThicknessChange}
+              />
             </div>
           </div>
         </div>

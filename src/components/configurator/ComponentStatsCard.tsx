@@ -45,7 +45,7 @@ const ComponentStatsCard = ({ component, type }: ComponentStatsCardProps) => {
       };
 
   return (
-    <Card className="p-3 mt-2 bg-card/90 backdrop-blur-sm">
+    <Card className="p-3 mt-2 bg-gradient-to-br from-purple-100/80 to-purple-200/80 backdrop-blur-sm border-2 border-black">
       <div className="space-y-1">
         <StatBar label="Speed" value={stats.speed} Icon={Gauge} />
         <StatBar label="Spin" value={stats.spin} Icon={Target} />

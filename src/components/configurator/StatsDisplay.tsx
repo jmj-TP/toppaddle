@@ -173,8 +173,8 @@ const StatsDisplay = ({
       <div className="grid md:grid-cols-[2fr_1fr] gap-8 items-start">
         {/* Left Column - Price, Level, and Stats */}
         <div className="space-y-6">
-          {/* Price, Level, and Change Preferences Button Row */}
-          <div className="flex items-center gap-4">
+          {/* Price, Level, Weight, and Change Preferences Button Row */}
+          <div className="flex items-center gap-4 flex-wrap">
             {isEditMode ? (
               <>
                 <div className="flex items-center gap-2">
@@ -224,6 +224,12 @@ const StatsDisplay = ({
                 <div className="h-6 w-px bg-border" />
                 <div>
                   <span className="text-xl font-bold text-foreground">Level: {level}</span>
+                </div>
+                <div className="h-6 w-px bg-border" />
+                <div>
+                  <span className="text-xl font-bold text-foreground">
+                    Weight: {racket ? '~180g' : `${(blade?.Blade_Weight || 85) + (forehand?.Rubber_Weight || 45) + (backhand?.Rubber_Weight || 45)}g`}
+                  </span>
                 </div>
               </>
             )}
