@@ -7,6 +7,7 @@ import StatsDisplay, { type UserPreferences } from "@/components/configurator/St
 import { Button } from "@/components/ui/button";
 import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
+import { toast } from "sonner";
 
 const Configurator = () => {
   const [searchParams] = useSearchParams();
@@ -91,6 +92,10 @@ const Configurator = () => {
 
       if (matchingRackets.length > 0) {
         setSelectedRacket(matchingRackets[0].racket);
+      } else {
+        toast.error("No preassembled racket matches your preferences", {
+          description: "Try adjusting your budget, level, or performance preferences."
+        });
       }
     } else {
       // Find ALL valid combinations that fit budget and level requirements
@@ -151,6 +156,10 @@ const Configurator = () => {
         setSelectedBlade(best.blade);
         setSelectedForehand(best.forehand);
         setSelectedBackhand(best.backhand);
+      } else {
+        toast.error("No custom racket configuration matches your preferences", {
+          description: "Try increasing your budget or adjusting your level and performance preferences."
+        });
       }
     }
   };
