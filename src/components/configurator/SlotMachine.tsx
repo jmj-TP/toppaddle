@@ -324,7 +324,7 @@ const SlotMachine = ({
                     const distance = Math.abs(offset);
                     const opacity = offset === 0 ? 1 : Math.max(0.3, 1 - distance * 0.35);
                     const scale = offset === 0 ? 1.1 : Math.max(0.75, 1 - distance * 0.15);
-                    const yPos = offset * 80 - 15; // 80px spacing between items, shifted up 15px for better centering
+                    const yPos = offset * 80 - 50; // 80px spacing between items, shifted up 50px to move wheel higher
                     const rotateX = offset === 0 ? 0 : offset * 8; // 3D tilt effect
 
                     return (
