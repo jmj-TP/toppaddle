@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
+import { ProductFilter, type ProductFilters } from "./ProductFilter";
 
 interface SlotMachineProps {
   isPreassembled: boolean;
@@ -20,6 +21,12 @@ interface SlotMachineProps {
   onGripChange: (grip: string) => void;
   onForehandThicknessChange: (thickness: string) => void;
   onBackhandThicknessChange: (thickness: string) => void;
+  forehandFilters: ProductFilters;
+  bladeFilters: ProductFilters;
+  backhandFilters: ProductFilters;
+  onForehandFiltersChange: (filters: ProductFilters) => void;
+  onBladeFiltersChange: (filters: ProductFilters) => void;
+  onBackhandFiltersChange: (filters: ProductFilters) => void;
 }
 
 const SlotMachine = ({
@@ -39,8 +46,37 @@ const SlotMachine = ({
   onGripChange,
   onForehandThicknessChange,
   onBackhandThicknessChange,
+  forehandFilters,
+  bladeFilters,
+  backhandFilters,
+  onForehandFiltersChange,
+  onBladeFiltersChange,
+  onBackhandFiltersChange,
 }: SlotMachineProps) => {
   const [isSpinning, setIsSpinning] = useState(false);
+
+  // Filter products based on filters
+  const filterBlades = (filters: ProductFilters) => {
+    return blades.filter(blade => {
+      if (blade.Blade_Price > filters.maxPrice) return false;
+      if (filters.level !== "All" && blade.Blade_Level !== filters.level) return false;
+      if (filters.style !== "All" && blade.Blade_Style !== filters.style) return false;
+      return true;
+    });
+  };
+
+  const filterRubbers = (filters: ProductFilters) => {
+    return rubbers.filter(rubber => {
+      if (rubber.Rubber_Price > filters.maxPrice) return false;
+      if (filters.level !== "All" && rubber.Rubber_Level !== filters.level) return false;
+      if (filters.style !== "All" && rubber.Rubber_Style !== filters.style) return false;
+      return true;
+    });
+  };
+
+  const filteredBlades = filterBlades(bladeFilters);
+  const filteredForehandRubbers = filterRubbers(forehandFilters);
+  const filteredBackhandRubbers = filterRubbers(backhandFilters);
 
   useEffect(() => {
     if (spinTrigger > 0) {
@@ -56,19 +92,19 @@ const SlotMachine = ({
       const randomRacket = preAssembledRackets[Math.floor(Math.random() * preAssembledRackets.length)];
       onRacketChange(randomRacket);
     } else {
-      // Staggered spin completion
+      // Staggered spin completion - use filtered products
       setTimeout(() => {
-        const randomForehand = rubbers[Math.floor(Math.random() * rubbers.length)];
+        const randomForehand = filteredForehandRubbers[Math.floor(Math.random() * filteredForehandRubbers.length)];
         onForehandChange(randomForehand);
       }, 1200);
 
       setTimeout(() => {
-        const randomBlade = blades[Math.floor(Math.random() * blades.length)];
+        const randomBlade = filteredBlades[Math.floor(Math.random() * filteredBlades.length)];
         onBladeChange(randomBlade);
       }, 1800);
 
       setTimeout(() => {
-        const randomBackhand = rubbers[Math.floor(Math.random() * rubbers.length)];
+        const randomBackhand = filteredBackhandRubbers[Math.floor(Math.random() * filteredBackhandRubbers.length)];
         onBackhandChange(randomBackhand);
       }, 2400);
 
@@ -84,7 +120,8 @@ const SlotMachine = ({
     onChange, 
     label,
     delay = 0,
-    selectorComponent
+    selectorComponent,
+    filterComponent
   }: { 
     items: any[]; 
     selected: any; 
@@ -92,6 +129,7 @@ const SlotMachine = ({
     label: string;
     delay?: number;
     selectorComponent?: React.ReactNode;
+    filterComponent?: React.ReactNode;
   }) => {
     const getName = (item: any) => {
       return item.Blade_Name || item.Rubber_Name || item.Racket_Name;
@@ -150,7 +188,12 @@ const SlotMachine = ({
 
     return (
       <div className="flex flex-col items-center">
-        <div 
+        {/* Header with title and settings */}
+        <div className="flex items-center justify-between w-80 mb-4">
+          <h3 className="text-xl font-bold text-foreground">{label}</h3>
+          {filterComponent}
+        </div>
+        <div
           ref={wheelRef}
           onWheel={handleWheel}
           className="relative w-80 h-[500px] bg-gradient-to-br from-purple-200/60 to-purple-300/60 rounded-xl overflow-hidden shadow-2xl border-4 border-black"
@@ -330,7 +373,7 @@ const SlotMachine = ({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center py-8 max-w-7xl mx-auto">
           <SlotWheel
-            items={rubbers}
+            items={filteredForehandRubbers}
             selected={selectedForehand}
             onChange={onForehandChange}
             label="Forehand Rubber"
@@ -342,17 +385,33 @@ const SlotMachine = ({
                 onChange={onForehandThicknessChange}
               />
             }
+            filterComponent={
+              <ProductFilter
+                filters={forehandFilters}
+                onFiltersChange={onForehandFiltersChange}
+                type="rubber"
+                title="Forehand Rubber"
+              />
+            }
           />
           <SlotWheel
-            items={blades}
+            items={filteredBlades}
             selected={selectedBlade}
             onChange={onBladeChange}
             label="Blade"
             delay={600}
             selectorComponent={<GripSelector />}
+            filterComponent={
+              <ProductFilter
+                filters={bladeFilters}
+                onFiltersChange={onBladeFiltersChange}
+                type="blade"
+                title="Blade"
+              />
+            }
           />
           <SlotWheel
-            items={rubbers}
+            items={filteredBackhandRubbers}
             selected={selectedBackhand}
             onChange={onBackhandChange}
             label="Backhand Rubber"
@@ -362,6 +421,14 @@ const SlotMachine = ({
                 rubber={selectedBackhand} 
                 selectedThickness={selectedBackhandThickness} 
                 onChange={onBackhandThicknessChange}
+              />
+            }
+            filterComponent={
+              <ProductFilter
+                filters={backhandFilters}
+                onFiltersChange={onBackhandFiltersChange}
+                type="rubber"
+                title="Backhand Rubber"
               />
             }
           />

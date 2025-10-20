@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { toast } from "sonner";
+import type { ProductFilters } from "@/components/configurator/ProductFilter";
 
 const Configurator = () => {
   const [searchParams] = useSearchParams();
@@ -25,6 +26,23 @@ const Configurator = () => {
   const [selectedGrip, setSelectedGrip] = useState<string>("ST");
   const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("2.0mm");
   const [selectedBackhandThickness, setSelectedBackhandThickness] = useState<string>("2.0mm");
+  
+  // Product filters for each component
+  const [forehandFilters, setForehandFilters] = useState<ProductFilters>({
+    maxPrice: 999999,
+    level: "All",
+    style: "All"
+  });
+  const [bladeFilters, setBladeFilters] = useState<ProductFilters>({
+    maxPrice: 999999,
+    level: "All",
+    style: "All"
+  });
+  const [backhandFilters, setBackhandFilters] = useState<ProductFilters>({
+    maxPrice: 999999,
+    level: "All",
+    style: "All"
+  });
   
   // Spin trigger for random reroll
   const [spinTrigger, setSpinTrigger] = useState(0);
@@ -107,18 +125,43 @@ const Configurator = () => {
         scoreDiff: number;
       }> = [];
 
-      // Filter compatible blades and rubbers first
+      // Apply product filters first
+      const filterBlades = (blade: Blade) => {
+        if (blade.Blade_Price > bladeFilters.maxPrice) return false;
+        if (bladeFilters.level !== "All" && blade.Blade_Level !== bladeFilters.level) return false;
+        if (bladeFilters.style !== "All" && blade.Blade_Style !== bladeFilters.style) return false;
+        return true;
+      };
+
+      const filterForehandRubbers = (rubber: Rubber) => {
+        if (rubber.Rubber_Price > forehandFilters.maxPrice) return false;
+        if (forehandFilters.level !== "All" && rubber.Rubber_Level !== forehandFilters.level) return false;
+        if (forehandFilters.style !== "All" && rubber.Rubber_Style !== forehandFilters.style) return false;
+        return true;
+      };
+
+      const filterBackhandRubbers = (rubber: Rubber) => {
+        if (rubber.Rubber_Price > backhandFilters.maxPrice) return false;
+        if (backhandFilters.level !== "All" && rubber.Rubber_Level !== backhandFilters.level) return false;
+        if (backhandFilters.style !== "All" && rubber.Rubber_Style !== backhandFilters.style) return false;
+        return true;
+      };
+
+      // Filter compatible blades and rubbers with both preference level and product filters
       const compatibleBlades = blades.filter(blade => 
-        isLevelCompatible(blade.Blade_Level, preferences.level)
+        isLevelCompatible(blade.Blade_Level, preferences.level) && filterBlades(blade)
       );
-      const compatibleRubbers = rubbers.filter(rubber => 
-        isLevelCompatible(rubber.Rubber_Level, preferences.level)
+      const compatibleForehandRubbers = rubbers.filter(rubber => 
+        isLevelCompatible(rubber.Rubber_Level, preferences.level) && filterForehandRubbers(rubber)
+      );
+      const compatibleBackhandRubbers = rubbers.filter(rubber => 
+        isLevelCompatible(rubber.Rubber_Level, preferences.level) && filterBackhandRubbers(rubber)
       );
 
       // Build all valid combinations
       for (const blade of compatibleBlades) {
-        for (const forehandRubber of compatibleRubbers) {
-          for (const backhandRubber of compatibleRubbers) {
+        for (const forehandRubber of compatibleForehandRubbers) {
+          for (const backhandRubber of compatibleBackhandRubbers) {
             const totalPrice = blade.Blade_Price + forehandRubber.Rubber_Price + backhandRubber.Rubber_Price;
             
             // Only include combinations within budget
@@ -231,6 +274,12 @@ const Configurator = () => {
               onGripChange={setSelectedGrip}
               onForehandThicknessChange={setSelectedForehandThickness}
               onBackhandThicknessChange={setSelectedBackhandThickness}
+              forehandFilters={forehandFilters}
+              bladeFilters={bladeFilters}
+              backhandFilters={backhandFilters}
+              onForehandFiltersChange={setForehandFilters}
+              onBladeFiltersChange={setBladeFilters}
+              onBackhandFiltersChange={setBackhandFilters}
             />
 
             {/* Stats Display Below Slots */}
