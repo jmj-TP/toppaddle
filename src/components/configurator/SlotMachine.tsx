@@ -287,7 +287,7 @@ const SlotMachine = ({
           } bg-white/10 z-0 pointer-events-none`} />
 
           {/* Items container */}
-          <div className="relative h-full flex flex-col items-center justify-center py-8">
+          <div className="relative h-full flex flex-col items-center justify-center">
             <AnimatePresence mode="wait">
               {localSpinning ? (
                 <motion.div
