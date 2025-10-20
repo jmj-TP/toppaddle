@@ -3,14 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Badge } from "@/components/ui/badge";
 
 export interface ProductFilters {
   maxPrice: number;
-  level: string;
-  style: string;
+  level: string[];
+  style: string[];
   spongeSize?: string;
   gripType?: string;
-  brand?: string;
+  brand?: string[];
 }
 
 interface ProductFilterProps {
@@ -126,44 +128,48 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
 
           <div className="space-y-2">
             <Label>Level</Label>
-            <Select
+            <ToggleGroup 
+              type="multiple" 
               value={filters.level}
-              onValueChange={(value) =>
-                handleFilterChange({ ...filters, level: value })
-              }
+              onValueChange={(value) => {
+                const newLevel = value.length > 0 ? value : ["All"];
+                handleFilterChange({ ...filters, level: newLevel });
+              }}
+              className="flex flex-wrap gap-2 justify-start"
             >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {LEVEL_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              {LEVEL_OPTIONS.map((option) => (
+                <ToggleGroupItem 
+                  key={option.value} 
+                  value={option.value}
+                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                >
+                  {option.label}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
           </div>
 
           <div className="space-y-2">
             <Label>Style</Label>
-            <Select
+            <ToggleGroup 
+              type="multiple" 
               value={filters.style}
-              onValueChange={(value) =>
-                handleFilterChange({ ...filters, style: value })
-              }
+              onValueChange={(value) => {
+                const newStyle = value.length > 0 ? value : ["All"];
+                handleFilterChange({ ...filters, style: newStyle });
+              }}
+              className="flex flex-wrap gap-2 justify-start"
             >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {styleOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              {styleOptions.map((option) => (
+                <ToggleGroupItem 
+                  key={option.value} 
+                  value={option.value}
+                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                >
+                  {option.label}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
           </div>
 
           {/* Sponge Size for Rubbers */}
@@ -217,23 +223,25 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
           {/* Brand Filter */}
           <div className="space-y-2">
             <Label>Brand</Label>
-            <Select
-              value={filters.brand || "All"}
-              onValueChange={(value) =>
-                handleFilterChange({ ...filters, brand: value })
-              }
+            <ToggleGroup 
+              type="multiple" 
+              value={filters.brand || ["All"]}
+              onValueChange={(value) => {
+                const newBrand = value.length > 0 ? value : ["All"];
+                handleFilterChange({ ...filters, brand: newBrand });
+              }}
+              className="flex flex-wrap gap-2 justify-start"
             >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {BRAND_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              {BRAND_OPTIONS.map((option) => (
+                <ToggleGroupItem 
+                  key={option.value} 
+                  value={option.value}
+                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                >
+                  {option.label}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
           </div>
         </div>
       </PopoverContent>

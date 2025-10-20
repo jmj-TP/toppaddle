@@ -76,13 +76,13 @@ const SlotMachine = ({
   const filterBlades = (filters: ProductFilters) => {
     return blades.filter(blade => {
       if (blade.Blade_Price > filters.maxPrice) return false;
-      if (filters.level !== "All" && blade.Blade_Level !== filters.level) return false;
-      if (filters.style !== "All" && blade.Blade_Style !== filters.style) return false;
+      if (!filters.level.includes("All") && !filters.level.includes(blade.Blade_Level)) return false;
+      if (!filters.style.includes("All") && !filters.style.includes(blade.Blade_Style)) return false;
       if (filters.gripType && filters.gripType !== "All") {
         if (!blade.Blade_Grip || !blade.Blade_Grip.includes(filters.gripType)) return false;
       }
-      if (filters.brand && filters.brand !== "All") {
-        if (extractBrand(blade.Blade_Name) !== filters.brand) return false;
+      if (filters.brand && !filters.brand.includes("All")) {
+        if (!filters.brand.includes(extractBrand(blade.Blade_Name))) return false;
       }
       return true;
     });
@@ -91,13 +91,13 @@ const SlotMachine = ({
   const filterRubbers = (filters: ProductFilters) => {
     return rubbers.filter(rubber => {
       if (rubber.Rubber_Price > filters.maxPrice) return false;
-      if (filters.level !== "All" && rubber.Rubber_Level !== filters.level) return false;
-      if (filters.style !== "All" && rubber.Rubber_Style !== filters.style) return false;
+      if (!filters.level.includes("All") && !filters.level.includes(rubber.Rubber_Level)) return false;
+      if (!filters.style.includes("All") && !filters.style.includes(rubber.Rubber_Style)) return false;
       if (filters.spongeSize && filters.spongeSize !== "All") {
         if (!rubber.Rubber_Sponge_Sizes || !rubber.Rubber_Sponge_Sizes.includes(filters.spongeSize)) return false;
       }
-      if (filters.brand && filters.brand !== "All") {
-        if (extractBrand(rubber.Rubber_Name) !== filters.brand) return false;
+      if (filters.brand && !filters.brand.includes("All")) {
+        if (!filters.brand.includes(extractBrand(rubber.Rubber_Name))) return false;
       }
       return true;
     });
@@ -193,11 +193,11 @@ const SlotMachine = ({
       if (selected.Blade_Price > filters.maxPrice || selected.Rubber_Price > filters.maxPrice) {
         reasons.push(`Price exceeds your max budget of $${filters.maxPrice === 999999 ? 'unlimited' : filters.maxPrice}`);
       }
-      if (filters.level !== "All" && (selected.Blade_Level !== filters.level && selected.Rubber_Level !== filters.level)) {
-        reasons.push(`Level doesn't match your filter (${filters.level})`);
+      if (!filters.level.includes("All") && (!filters.level.includes(selected.Blade_Level || '') && !filters.level.includes(selected.Rubber_Level || ''))) {
+        reasons.push(`Level doesn't match your filter (${filters.level.join(', ')})`);
       }
-      if (filters.style !== "All" && (selected.Blade_Style !== filters.style && selected.Rubber_Style !== filters.style)) {
-        reasons.push(`Style doesn't match your filter (${filters.style})`);
+      if (!filters.style.includes("All") && (!filters.style.includes(selected.Blade_Style || '') && !filters.style.includes(selected.Rubber_Style || ''))) {
+        reasons.push(`Style doesn't match your filter (${filters.style.join(', ')})`);
       }
 
       if (reasons.length === 0) return "";
