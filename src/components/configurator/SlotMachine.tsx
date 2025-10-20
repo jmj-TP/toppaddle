@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { ProductFilter, type ProductFilters } from "./ProductFilter";
-import { Info } from "lucide-react";
+import { Info, BarChart3 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import ComponentStatsCard from "./ComponentStatsCard";
 
 interface SlotMachineProps {
   isPreassembled: boolean;
@@ -56,6 +58,9 @@ const SlotMachine = ({
   onBackhandFiltersChange,
 }: SlotMachineProps) => {
   const [isSpinning, setIsSpinning] = useState(false);
+  const [showForehandStats, setShowForehandStats] = useState(false);
+  const [showBladeStats, setShowBladeStats] = useState(false);
+  const [showBackhandStats, setShowBackhandStats] = useState(false);
 
   // Filter products based on filters
   const filterBlades = (filters: ProductFilters) => {
@@ -488,72 +493,122 @@ const SlotMachine = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center py-8 max-w-7xl mx-auto">
-          <SlotWheel
-            items={safeFilteredForehandRubbers}
-            selected={selectedForehand}
-            onChange={onForehandChange}
-            label="Forehand Rubber"
-            delay={0}
-            filters={forehandFilters}
-            allItems={rubbers}
-            selectorComponent={
-              <SpongeSelector 
-                rubber={selectedForehand} 
-                selectedThickness={selectedForehandThickness} 
-                onChange={onForehandThicknessChange}
-              />
-            }
-            filterComponent={
-              <ProductFilter
-                filters={forehandFilters}
-                onFiltersChange={onForehandFiltersChange}
-                type="rubber"
-                title="Forehand Rubber"
-              />
-            }
-          />
-          <SlotWheel
-            items={safeFilteredBlades}
-            selected={selectedBlade}
-            onChange={onBladeChange}
-            label="Blade"
-            delay={600}
-            filters={bladeFilters}
-            allItems={blades}
-            selectorComponent={<GripSelector />}
-            filterComponent={
-              <ProductFilter
-                filters={bladeFilters}
-                onFiltersChange={onBladeFiltersChange}
-                type="blade"
-                title="Blade"
-              />
-            }
-          />
-          <SlotWheel
-            items={safeFilteredBackhandRubbers}
-            selected={selectedBackhand}
-            onChange={onBackhandChange}
-            label="Backhand Rubber"
-            delay={1200}
-            filters={backhandFilters}
-            allItems={rubbers}
-            selectorComponent={
-              <SpongeSelector 
-                rubber={selectedBackhand} 
-                selectedThickness={selectedBackhandThickness} 
-                onChange={onBackhandThicknessChange}
-              />
-            }
-            filterComponent={
-              <ProductFilter
-                filters={backhandFilters}
-                onFiltersChange={onBackhandFiltersChange}
-                type="rubber"
-                title="Backhand Rubber"
-              />
-            }
-          />
+          <div className="w-full max-w-md">
+            <SlotWheel
+              items={safeFilteredForehandRubbers}
+              selected={selectedForehand}
+              onChange={onForehandChange}
+              label="Forehand Rubber"
+              delay={0}
+              filters={forehandFilters}
+              allItems={rubbers}
+              selectorComponent={
+                <SpongeSelector 
+                  rubber={selectedForehand} 
+                  selectedThickness={selectedForehandThickness} 
+                  onChange={onForehandThicknessChange}
+                />
+              }
+              filterComponent={
+                <ProductFilter
+                  filters={forehandFilters}
+                  onFiltersChange={onForehandFiltersChange}
+                  type="rubber"
+                  title="Forehand Rubber"
+                />
+              }
+            />
+            <div className="mt-2">
+              <Button
+                onClick={() => setShowForehandStats(!showForehandStats)}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                {showForehandStats ? "Hide Stats" : "View Stats"}
+              </Button>
+              {showForehandStats && (
+                <ComponentStatsCard component={selectedForehand} type="rubber" />
+              )}
+            </div>
+          </div>
+          
+          <div className="w-full max-w-md">
+            <SlotWheel
+              items={safeFilteredBlades}
+              selected={selectedBlade}
+              onChange={onBladeChange}
+              label="Blade"
+              delay={600}
+              filters={bladeFilters}
+              allItems={blades}
+              selectorComponent={<GripSelector />}
+              filterComponent={
+                <ProductFilter
+                  filters={bladeFilters}
+                  onFiltersChange={onBladeFiltersChange}
+                  type="blade"
+                  title="Blade"
+                />
+              }
+            />
+            <div className="mt-2">
+              <Button
+                onClick={() => setShowBladeStats(!showBladeStats)}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                {showBladeStats ? "Hide Stats" : "View Stats"}
+              </Button>
+              {showBladeStats && (
+                <ComponentStatsCard component={selectedBlade} type="blade" />
+              )}
+            </div>
+          </div>
+          
+          <div className="w-full max-w-md">
+            <SlotWheel
+              items={safeFilteredBackhandRubbers}
+              selected={selectedBackhand}
+              onChange={onBackhandChange}
+              label="Backhand Rubber"
+              delay={1200}
+              filters={backhandFilters}
+              allItems={rubbers}
+              selectorComponent={
+                <SpongeSelector 
+                  rubber={selectedBackhand} 
+                  selectedThickness={selectedBackhandThickness} 
+                  onChange={onBackhandThicknessChange}
+                />
+              }
+              filterComponent={
+                <ProductFilter
+                  filters={backhandFilters}
+                  onFiltersChange={onBackhandFiltersChange}
+                  type="rubber"
+                  title="Backhand Rubber"
+                />
+              }
+            />
+            <div className="mt-2">
+              <Button
+                onClick={() => setShowBackhandStats(!showBackhandStats)}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                {showBackhandStats ? "Hide Stats" : "View Stats"}
+              </Button>
+              {showBackhandStats && (
+                <ComponentStatsCard component={selectedBackhand} type="rubber" />
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
