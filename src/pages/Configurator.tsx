@@ -296,9 +296,38 @@ const Configurator = () => {
   };
 
   const calculateCustomStats = () => {
-    const speed = Math.round((selectedBlade.Blade_Speed + selectedForehand.Rubber_Speed + selectedBackhand.Rubber_Speed) / 3);
-    const spin = Math.round((selectedBlade.Blade_Spin + selectedForehand.Rubber_Spin + selectedBackhand.Rubber_Spin) / 3);
-    const control = Math.round((selectedBlade.Blade_Control + selectedForehand.Rubber_Control + selectedBackhand.Rubber_Control) / 3);
+    // Helper function to get sponge thickness multiplier
+    const getSpongeMultiplier = (thickness: string): { control: number; power: number; speed: number; spin: number } => {
+      const thicknessValue = parseFloat(thickness);
+      
+      // Thinner sponges (< 1.8mm): more control, less power/speed/spin
+      if (thicknessValue < 1.8) {
+        return { control: 1.05, power: 0.95, speed: 0.95, spin: 0.95 };
+      }
+      // Medium sponges (1.8-2.0mm): balanced
+      else if (thicknessValue >= 1.8 && thicknessValue <= 2.0) {
+        return { control: 1.0, power: 1.0, speed: 1.0, spin: 1.0 };
+      }
+      // Thicker sponges (> 2.0mm): less control, more power/speed/spin
+      else {
+        return { control: 0.95, power: 1.05, speed: 1.05, spin: 1.05 };
+      }
+    };
+    
+    const fhMultiplier = getSpongeMultiplier(selectedForehandThickness);
+    const bhMultiplier = getSpongeMultiplier(selectedBackhandThickness);
+    
+    // Apply sponge multipliers to rubber stats
+    const fhSpeed = selectedForehand.Rubber_Speed * fhMultiplier.speed;
+    const bhSpeed = selectedBackhand.Rubber_Speed * bhMultiplier.speed;
+    const fhSpin = selectedForehand.Rubber_Spin * fhMultiplier.spin;
+    const bhSpin = selectedBackhand.Rubber_Spin * bhMultiplier.spin;
+    const fhControl = selectedForehand.Rubber_Control * fhMultiplier.control;
+    const bhControl = selectedBackhand.Rubber_Control * bhMultiplier.control;
+    
+    const speed = Math.round((selectedBlade.Blade_Speed + fhSpeed + bhSpeed) / 3);
+    const spin = Math.round((selectedBlade.Blade_Spin + fhSpin + bhSpin) / 3);
+    const control = Math.round((selectedBlade.Blade_Control + fhControl + bhControl) / 3);
     const power = Math.round((speed + spin) / 2);
     const totalPrice = selectedBlade.Blade_Price + selectedForehand.Rubber_Price + selectedBackhand.Rubber_Price;
     
