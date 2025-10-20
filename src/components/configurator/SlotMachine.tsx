@@ -337,8 +337,9 @@ const SlotMachine = ({
                           stiffness: 300,
                           damping: 30,
                         }}
-                        className="absolute top-1/2 left-0 right-0 h-24 flex items-center justify-center px-8"
+                        className="absolute left-0 right-0 h-24 flex items-center justify-center px-8"
                         style={{
+                          top: '50%',
                           transform: `translateY(calc(-50% + ${yPos}px)) scale(${scale}) rotateX(${rotateX}deg)`,
                           opacity,
                           transformStyle: 'preserve-3d',
