@@ -89,7 +89,7 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
   };
 
   return (
-    <Popover>
+    <Popover modal={false}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="icon" className="h-8 w-8" title="Filter">
           <Settings className="w-4 h-4" />
@@ -99,6 +99,9 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
         className="w-80 p-6 bg-card border-2 border-border shadow-xl" 
         align="end"
         side="bottom"
+        onInteractOutside={(e) => {
+          // Allow closing only when clicking outside
+        }}
       >
         <div className="space-y-4">
           <div className="pb-3 border-b border-border">
