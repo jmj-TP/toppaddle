@@ -347,13 +347,13 @@ const SlotMachine = ({
                           </p>
                           {offset === 0 && (
                             <TooltipProvider>
-                              <Tooltip>
+                              <Tooltip delayDuration={200}>
                                 <TooltipTrigger asChild onClick={(e) => e.stopPropagation()}>
                                   <button className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0">
                                     <Info className="w-4 h-4" />
                                   </button>
                                 </TooltipTrigger>
-                                <TooltipContent className="max-w-xs bg-card border-2 border-border p-4" side="right">
+                                <TooltipContent className="max-w-xs bg-card border-2 border-border p-4 z-[9999]" side="right" sideOffset={10}>
                                   <div className="space-y-2 text-xs">
                                     <h4 className="font-semibold text-sm text-foreground">{getName(item)}</h4>
                                     <div className="grid grid-cols-2 gap-2">
