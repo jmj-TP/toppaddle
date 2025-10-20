@@ -31,17 +31,20 @@ const Configurator = () => {
   const [forehandFilters, setForehandFilters] = useState<ProductFilters>({
     maxPrice: 999999,
     level: "All",
-    style: "All"
+    style: "All",
+    spongeSize: "All"
   });
   const [bladeFilters, setBladeFilters] = useState<ProductFilters>({
     maxPrice: 999999,
     level: "All",
-    style: "All"
+    style: "All",
+    gripType: "All"
   });
   const [backhandFilters, setBackhandFilters] = useState<ProductFilters>({
     maxPrice: 999999,
     level: "All",
-    style: "All"
+    style: "All",
+    spongeSize: "All"
   });
 
   // Validation functions for filters
@@ -51,6 +54,9 @@ const Configurator = () => {
         if (blade.Blade_Price > filters.maxPrice) return false;
         if (filters.level !== "All" && blade.Blade_Level !== filters.level) return false;
         if (filters.style !== "All" && blade.Blade_Style !== filters.style) return false;
+        if (filters.gripType && filters.gripType !== "All") {
+          if (!blade.Blade_Grip || !blade.Blade_Grip.includes(filters.gripType)) return false;
+        }
         return true;
       });
       return filtered.length > 0;
@@ -59,6 +65,9 @@ const Configurator = () => {
         if (rubber.Rubber_Price > filters.maxPrice) return false;
         if (filters.level !== "All" && rubber.Rubber_Level !== filters.level) return false;
         if (filters.style !== "All" && rubber.Rubber_Style !== filters.style) return false;
+        if (filters.spongeSize && filters.spongeSize !== "All") {
+          if (!rubber.Rubber_Sponge_Sizes || !rubber.Rubber_Sponge_Sizes.includes(filters.spongeSize)) return false;
+        }
         return true;
       });
       return filtered.length > 0;

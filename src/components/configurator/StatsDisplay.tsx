@@ -341,18 +341,19 @@ const StatsDisplay = ({
         {/* Right Column - Buttons */}
         <div className="flex flex-col gap-4">
           <Button
+            onClick={onRandomReroll}
+            size="lg"
+            variant="outline"
+            className="w-full text-xl py-8 font-bold shadow-lg hover:shadow-xl transition-all border-4 border-border rounded-2xl"
+          >
+            Random Reroll
+          </Button>
+          <Button
             onClick={handleBuyClick}
             size="lg"
             className="w-full text-xl py-8 font-bold shadow-lg hover:shadow-xl transition-all bg-orange-500 hover:bg-orange-600 text-white border-4 border-black rounded-2xl"
           >
             Add to cart
-          </Button>
-          <Button
-            onClick={onRandomReroll}
-            size="lg"
-            className="w-full text-xl py-8 font-bold shadow-lg hover:shadow-xl transition-all bg-blue-600 hover:bg-blue-700 text-white border-4 border-black rounded-2xl"
-          >
-            Random Reroll
           </Button>
         </div>
       </div>

@@ -8,6 +8,8 @@ export interface ProductFilters {
   maxPrice: number;
   level: string;
   style: string;
+  spongeSize?: string;
+  gripType?: string;
 }
 
 interface ProductFilterProps {
@@ -49,6 +51,23 @@ const RUBBER_STYLE_OPTIONS = [
   { value: "Short Pimples", label: "Short Pimples" },
   { value: "Long Pimples", label: "Long Pimples" },
   { value: "Anti", label: "Anti" },
+];
+
+const SPONGE_SIZE_OPTIONS = [
+  { value: "All", label: "All Sizes" },
+  { value: "1.5mm", label: "1.5mm" },
+  { value: "1.8mm", label: "1.8mm" },
+  { value: "2.0mm", label: "2.0mm" },
+  { value: "2.1mm", label: "2.1mm" },
+  { value: "2.2mm", label: "2.2mm" },
+  { value: "MAX", label: "MAX" },
+];
+
+const GRIP_TYPE_OPTIONS = [
+  { value: "All", label: "All Grips" },
+  { value: "ST", label: "Straight (ST)" },
+  { value: "FL", label: "Flared (FL)" },
+  { value: "AN", label: "Anatomic (AN)" },
 ];
 
 export const ProductFilter = ({ filters, onFiltersChange, type, title }: ProductFilterProps) => {
@@ -138,6 +157,54 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
               </SelectContent>
             </Select>
           </div>
+
+          {/* Sponge Size for Rubbers */}
+          {type === "rubber" && (
+            <div className="space-y-2">
+              <Label>Sponge Size</Label>
+              <Select
+                value={filters.spongeSize || "All"}
+                onValueChange={(value) =>
+                  handleFilterChange({ ...filters, spongeSize: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {SPONGE_SIZE_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* Grip Type for Blades */}
+          {type === "blade" && (
+            <div className="space-y-2">
+              <Label>Grip Type</Label>
+              <Select
+                value={filters.gripType || "All"}
+                onValueChange={(value) =>
+                  handleFilterChange({ ...filters, gripType: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {GRIP_TYPE_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
       </PopoverContent>
     </Popover>

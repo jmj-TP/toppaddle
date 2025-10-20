@@ -68,6 +68,9 @@ const SlotMachine = ({
       if (blade.Blade_Price > filters.maxPrice) return false;
       if (filters.level !== "All" && blade.Blade_Level !== filters.level) return false;
       if (filters.style !== "All" && blade.Blade_Style !== filters.style) return false;
+      if (filters.gripType && filters.gripType !== "All") {
+        if (!blade.Blade_Grip || !blade.Blade_Grip.includes(filters.gripType)) return false;
+      }
       return true;
     });
   };
@@ -77,6 +80,9 @@ const SlotMachine = ({
       if (rubber.Rubber_Price > filters.maxPrice) return false;
       if (filters.level !== "All" && rubber.Rubber_Level !== filters.level) return false;
       if (filters.style !== "All" && rubber.Rubber_Style !== filters.style) return false;
+      if (filters.spongeSize && filters.spongeSize !== "All") {
+        if (!rubber.Rubber_Sponge_Sizes || !rubber.Rubber_Sponge_Sizes.includes(filters.spongeSize)) return false;
+      }
       return true;
     });
   };
@@ -238,8 +244,8 @@ const SlotMachine = ({
 
     return (
       <div className="flex flex-col items-center">
-      {/* Header with title and settings */}
-        <div className="flex items-center justify-center w-80 mb-3">
+      {/* Header with title and filter button */}
+        <div className="flex items-center justify-between w-80 mb-3">
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-semibold text-foreground tracking-tight">{label}</h3>
             {!selectedAvailable && unavailabilityReason && (
@@ -268,7 +274,7 @@ const SlotMachine = ({
         <div
           ref={wheelRef}
           onWheel={handleWheel}
-          className={`relative w-80 h-[350px] bg-card rounded-xl overflow-hidden shadow-2xl border-4 ${
+          className={`relative w-80 h-[280px] bg-card rounded-xl overflow-hidden shadow-2xl border-4 ${
             !selectedAvailable ? 'border-destructive/50' : 'border-border'
           } ${!selectedAvailable ? 'opacity-60' : ''}`}
           style={{ perspective: '1000px' }}
