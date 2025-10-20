@@ -80,9 +80,8 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button variant="outline" size="icon" className="h-8 w-8" title="Filter">
           <Settings className="w-4 h-4" />
-          Filter
         </Button>
       </PopoverTrigger>
       <PopoverContent 
