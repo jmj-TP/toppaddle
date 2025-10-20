@@ -131,6 +131,11 @@ const SlotMachine = ({
         if (safeFilteredForehandRubbers.length > 0) {
           const randomForehand = safeFilteredForehandRubbers[Math.floor(Math.random() * safeFilteredForehandRubbers.length)];
           onForehandChange(randomForehand);
+          // Randomly select sponge size for forehand
+          if (randomForehand.Rubber_Sponge_Sizes && randomForehand.Rubber_Sponge_Sizes.length > 0) {
+            const randomThickness = randomForehand.Rubber_Sponge_Sizes[Math.floor(Math.random() * randomForehand.Rubber_Sponge_Sizes.length)];
+            onForehandThicknessChange(randomThickness);
+          }
         }
       }, 1200);
 
@@ -138,6 +143,11 @@ const SlotMachine = ({
         if (safeFilteredBlades.length > 0) {
           const randomBlade = safeFilteredBlades[Math.floor(Math.random() * safeFilteredBlades.length)];
           onBladeChange(randomBlade);
+          // Randomly select grip type for blade
+          if (randomBlade.Blade_Grip && randomBlade.Blade_Grip.length > 0) {
+            const randomGrip = randomBlade.Blade_Grip[Math.floor(Math.random() * randomBlade.Blade_Grip.length)];
+            onGripChange(randomGrip);
+          }
         }
       }, 1800);
 
@@ -145,6 +155,11 @@ const SlotMachine = ({
         if (safeFilteredBackhandRubbers.length > 0) {
           const randomBackhand = safeFilteredBackhandRubbers[Math.floor(Math.random() * safeFilteredBackhandRubbers.length)];
           onBackhandChange(randomBackhand);
+          // Randomly select sponge size for backhand
+          if (randomBackhand.Rubber_Sponge_Sizes && randomBackhand.Rubber_Sponge_Sizes.length > 0) {
+            const randomThickness = randomBackhand.Rubber_Sponge_Sizes[Math.floor(Math.random() * randomBackhand.Rubber_Sponge_Sizes.length)];
+            onBackhandThicknessChange(randomThickness);
+          }
         }
       }, 2400);
 
