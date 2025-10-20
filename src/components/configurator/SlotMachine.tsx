@@ -5,6 +5,7 @@ import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { ProductFilter, type ProductFilters } from "./ProductFilter";
 import { Info } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface SlotMachineProps {
   isPreassembled: boolean;
@@ -332,17 +333,62 @@ const SlotMachine = ({
                         }}
                         onClick={() => offset !== 0 && onChange(item)}
                       >
-                        <p 
-                          className={`text-center line-clamp-3 transition-colors cursor-pointer ${
-                            offset === 0 
-                              ? !selectedAvailable 
-                                ? 'text-destructive text-lg font-bold line-through opacity-70' 
-                                : 'text-foreground text-lg font-bold'
-                              : 'text-muted-foreground text-sm font-medium'
-                          }`}
-                        >
-                          {getName(item)}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p 
+                            className={`text-center line-clamp-3 transition-colors cursor-pointer ${
+                              offset === 0 
+                                ? !selectedAvailable 
+                                  ? 'text-destructive text-lg font-bold line-through opacity-70' 
+                                  : 'text-foreground text-lg font-bold'
+                                : 'text-muted-foreground text-sm font-medium'
+                            }`}
+                          >
+                            {getName(item)}
+                          </p>
+                          {offset === 0 && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                  <button className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0">
+                                    <Info className="w-4 h-4" />
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs bg-card border-2 border-border p-4" side="right">
+                                  <div className="space-y-2 text-xs">
+                                    <h4 className="font-semibold text-sm text-foreground">{getName(item)}</h4>
+                                    <div className="grid grid-cols-2 gap-2">
+                                      {item.Blade_Speed !== undefined && (
+                                        <>
+                                          <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{item.Blade_Speed}</span></div>
+                                          <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{item.Blade_Spin}</span></div>
+                                          <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{item.Blade_Control}</span></div>
+                                          <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{item.Blade_Power}</span></div>
+                                          <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${item.Blade_Price}</span></div>
+                                          <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{item.Blade_Level}</span></div>
+                                          {item.Blade_Style && <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{item.Blade_Style}</span></div>}
+                                          {item.Blade_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{item.Blade_Weight}g</span></div>}
+                                        </>
+                                      )}
+                                      {item.Rubber_Speed !== undefined && (
+                                        <>
+                                          <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{item.Rubber_Speed}</span></div>
+                                          <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{item.Rubber_Spin}</span></div>
+                                          <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{item.Rubber_Control}</span></div>
+                                          <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{item.Rubber_Power}</span></div>
+                                          <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${item.Rubber_Price}</span></div>
+                                          <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{item.Rubber_Level}</span></div>
+                                          <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{item.Rubber_Style}</span></div>
+                                          {item.Rubber_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{item.Rubber_Weight}g</span></div>}
+                                          {item.Rubber_Sponge_Sizes && <div className="col-span-2"><span className="text-muted-foreground">Sponge:</span> <span className="font-medium">{item.Rubber_Sponge_Sizes.join(", ")}</span></div>}
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                        </div>
                       </motion.div>
                     );
                   })}
