@@ -15,7 +15,11 @@ interface SlotMachineProps {
   onRacketChange: (racket: PreAssembledRacket) => void;
   spinTrigger: number;
   selectedGrip: string;
-  selectedThickness: string;
+  selectedForehandThickness: string;
+  selectedBackhandThickness: string;
+  onGripChange: (grip: string) => void;
+  onForehandThicknessChange: (thickness: string) => void;
+  onBackhandThicknessChange: (thickness: string) => void;
 }
 
 const SlotMachine = ({
@@ -30,7 +34,11 @@ const SlotMachine = ({
   onRacketChange,
   spinTrigger,
   selectedGrip,
-  selectedThickness,
+  selectedForehandThickness,
+  selectedBackhandThickness,
+  onGripChange,
+  onForehandThicknessChange,
+  onBackhandThicknessChange,
 }: SlotMachineProps) => {
   const [isSpinning, setIsSpinning] = useState(false);
 
@@ -75,13 +83,15 @@ const SlotMachine = ({
     selected, 
     onChange, 
     label,
-    delay = 0 
+    delay = 0,
+    selectorComponent
   }: { 
     items: any[]; 
     selected: any; 
     onChange: (item: any) => void; 
     label: string;
     delay?: number;
+    selectorComponent?: React.ReactNode;
   }) => {
     const getName = (item: any) => {
       return item.Blade_Name || item.Rubber_Name || item.Racket_Name;
@@ -245,11 +255,60 @@ const SlotMachine = ({
           </button>
         </div>
         
-        {/* Label below wheel */}
-        <div className="mt-4 text-center">
-          <p className="text-lg font-bold text-foreground">
-            {label === "Blade" ? `Grip: ${selectedGrip}` : `Sponge Size: ${selectedThickness}`}
-          </p>
+        {/* Selector below wheel */}
+        {selectorComponent && (
+          <div className="mt-4">
+            {selectorComponent}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Selector components
+  const GripSelector = () => {
+    const availableGrips = selectedBlade.Blade_Grip || [];
+    return (
+      <div className="bg-card p-4 rounded-lg border-2 border-border">
+        <p className="text-sm font-semibold mb-2 text-center">Grip Type</p>
+        <div className="flex flex-wrap gap-2 justify-center">
+          {availableGrips.map((gripType) => (
+            <button
+              key={gripType}
+              onClick={() => onGripChange(gripType)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                selectedGrip === gripType
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              }`}
+            >
+              {gripType}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const SpongeSelector = ({ rubber, selectedThickness, onChange }: { rubber: Rubber; selectedThickness: string; onChange: (thickness: string) => void }) => {
+    const availableSponges = rubber.Rubber_Sponge_Sizes || [];
+    return (
+      <div className="bg-card p-4 rounded-lg border-2 border-border">
+        <p className="text-sm font-semibold mb-2 text-center">Sponge Size</p>
+        <div className="flex flex-wrap gap-2 justify-center">
+          {availableSponges.map((size) => (
+            <button
+              key={size}
+              onClick={() => onChange(size)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                selectedThickness === size
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              }`}
+            >
+              {size}
+            </button>
+          ))}
         </div>
       </div>
     );
@@ -259,12 +318,14 @@ const SlotMachine = ({
     <div className="w-full">
       {isPreassembled ? (
         <div className="flex justify-center py-8">
-          <SlotWheel
-            items={preAssembledRackets}
-            selected={selectedRacket}
-            onChange={onRacketChange}
-            label="Preassembled Racket"
-          />
+          <div className="w-full max-w-[1000px]">
+            <SlotWheel
+              items={preAssembledRackets}
+              selected={selectedRacket}
+              onChange={onRacketChange}
+              label="Preassembled Racket"
+            />
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center py-8 max-w-7xl mx-auto">
@@ -274,6 +335,13 @@ const SlotMachine = ({
             onChange={onForehandChange}
             label="Forehand Rubber"
             delay={0}
+            selectorComponent={
+              <SpongeSelector 
+                rubber={selectedForehand} 
+                selectedThickness={selectedForehandThickness} 
+                onChange={onForehandThicknessChange}
+              />
+            }
           />
           <SlotWheel
             items={blades}
@@ -281,6 +349,7 @@ const SlotMachine = ({
             onChange={onBladeChange}
             label="Blade"
             delay={600}
+            selectorComponent={<GripSelector />}
           />
           <SlotWheel
             items={rubbers}
@@ -288,6 +357,13 @@ const SlotMachine = ({
             onChange={onBackhandChange}
             label="Backhand Rubber"
             delay={1200}
+            selectorComponent={
+              <SpongeSelector 
+                rubber={selectedBackhand} 
+                selectedThickness={selectedBackhandThickness} 
+                onChange={onBackhandThicknessChange}
+              />
+            }
           />
         </div>
       )}

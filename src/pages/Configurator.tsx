@@ -22,8 +22,8 @@ const Configurator = () => {
   
   // Filters
   const [selectedGrip, setSelectedGrip] = useState<string>("ST");
-  const [selectedThickness, setSelectedThickness] = useState<string>("2.0mm");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
+  const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("2.0mm");
+  const [selectedBackhandThickness, setSelectedBackhandThickness] = useState<string>("2.0mm");
   
   // Spin trigger for random reroll
   const [spinTrigger, setSpinTrigger] = useState(0);
@@ -118,23 +118,23 @@ const Configurator = () => {
               onRacketChange={setSelectedRacket}
               spinTrigger={spinTrigger}
               selectedGrip={selectedGrip}
-              selectedThickness={selectedThickness}
+              selectedForehandThickness={selectedForehandThickness}
+              selectedBackhandThickness={selectedBackhandThickness}
+              onGripChange={setSelectedGrip}
+              onForehandThicknessChange={setSelectedForehandThickness}
+              onBackhandThicknessChange={setSelectedBackhandThickness}
             />
 
             {/* Stats Display Below Slots */}
             <div className="mt-8">
               <StatsDisplay
                 stats={stats}
-                grip={selectedGrip}
-                thickness={selectedThickness}
                 level={isPreassembled ? selectedRacket.Racket_Level : selectedBlade.Blade_Level}
                 blade={isPreassembled ? null : selectedBlade}
                 forehand={isPreassembled ? null : selectedForehand}
                 backhand={isPreassembled ? null : selectedBackhand}
                 racket={isPreassembled ? selectedRacket : null}
                 onRandomReroll={handleRandomReroll}
-                onGripChange={setSelectedGrip}
-                onThicknessChange={setSelectedThickness}
               />
             </div>
           </div>

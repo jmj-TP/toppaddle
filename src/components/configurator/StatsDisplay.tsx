@@ -15,30 +15,22 @@ interface StatsDisplayProps {
     power: number;
     price: number;
   };
-  grip: string;
-  thickness: string;
   level: string;
   blade: Blade | null;
   forehand: Rubber | null;
   backhand: Rubber | null;
   racket: PreAssembledRacket | null;
   onRandomReroll: () => void;
-  onGripChange: (grip: string) => void;
-  onThicknessChange: (thickness: string) => void;
 }
 
 const StatsDisplay = ({
   stats,
-  grip,
-  thickness,
   level,
   blade,
   forehand,
   backhand,
   racket,
   onRandomReroll,
-  onGripChange,
-  onThicknessChange,
 }: StatsDisplayProps) => {
   const StatBar = ({ label, value, Icon }: { label: string; value: number; Icon: any }) => (
     <div className="flex items-center gap-2 mb-3">
@@ -53,15 +45,6 @@ const StatsDisplay = ({
       <span className="text-sm font-semibold min-w-[30px]">{value}</span>
     </div>
   );
-
-  // Get available grips from blade
-  const availableGrips = blade?.Blade_Grip || [];
-  
-  // Get available sponge sizes from rubbers
-  const availableSponges = [...new Set([
-    ...(forehand?.Rubber_Sponge_Sizes || []),
-    ...(backhand?.Rubber_Sponge_Sizes || [])
-  ])].sort();
 
   const handleBuyClick = () => {
     if (racket) {
@@ -97,41 +80,6 @@ const StatsDisplay = ({
             <StatBar label="Control" value={stats.control} Icon={Shield} />
             <StatBar label="Power" value={stats.power} Icon={Star} />
           </div>
-
-          {/* Grip and Sponge Selectors */}
-          {!racket && blade && (
-            <div className="grid grid-cols-2 gap-4 pt-4">
-              {/* Grip Selection */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Grip Type</Label>
-                <RadioGroup value={grip} onValueChange={onGripChange} className="flex flex-col gap-2">
-                  {availableGrips.map((gripType) => (
-                    <div key={gripType} className="flex items-center space-x-2">
-                      <RadioGroupItem value={gripType} id={`grip-${gripType}`} />
-                      <Label htmlFor={`grip-${gripType}`} className="text-sm cursor-pointer">
-                        {gripType}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </div>
-
-              {/* Sponge Size Selection */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Sponge Size</Label>
-                <RadioGroup value={thickness} onValueChange={onThicknessChange} className="flex flex-col gap-2">
-                  {availableSponges.map((size) => (
-                    <div key={size} className="flex items-center space-x-2">
-                      <RadioGroupItem value={size} id={`sponge-${size}`} />
-                      <Label htmlFor={`sponge-${size}`} className="text-sm cursor-pointer">
-                        {size}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Right Column - Buttons */}
