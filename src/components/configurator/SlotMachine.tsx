@@ -80,6 +80,11 @@ const SlotMachine = ({
   const filteredForehandRubbers = filterRubbers(forehandFilters);
   const filteredBackhandRubbers = filterRubbers(backhandFilters);
 
+  // Ensure we always have at least one item in each array to prevent crashes
+  const safeFilteredBlades = filteredBlades.length > 0 ? filteredBlades : blades;
+  const safeFilteredForehandRubbers = filteredForehandRubbers.length > 0 ? filteredForehandRubbers : rubbers;
+  const safeFilteredBackhandRubbers = filteredBackhandRubbers.length > 0 ? filteredBackhandRubbers : rubbers;
+
   useEffect(() => {
     if (spinTrigger > 0) {
       handleSpin();
@@ -94,20 +99,26 @@ const SlotMachine = ({
       const randomRacket = preAssembledRackets[Math.floor(Math.random() * preAssembledRackets.length)];
       onRacketChange(randomRacket);
     } else {
-      // Staggered spin completion - use filtered products
+      // Staggered spin completion - use safe filtered products
       setTimeout(() => {
-        const randomForehand = filteredForehandRubbers[Math.floor(Math.random() * filteredForehandRubbers.length)];
-        onForehandChange(randomForehand);
+        if (safeFilteredForehandRubbers.length > 0) {
+          const randomForehand = safeFilteredForehandRubbers[Math.floor(Math.random() * safeFilteredForehandRubbers.length)];
+          onForehandChange(randomForehand);
+        }
       }, 1200);
 
       setTimeout(() => {
-        const randomBlade = filteredBlades[Math.floor(Math.random() * filteredBlades.length)];
-        onBladeChange(randomBlade);
+        if (safeFilteredBlades.length > 0) {
+          const randomBlade = safeFilteredBlades[Math.floor(Math.random() * safeFilteredBlades.length)];
+          onBladeChange(randomBlade);
+        }
       }, 1800);
 
       setTimeout(() => {
-        const randomBackhand = filteredBackhandRubbers[Math.floor(Math.random() * filteredBackhandRubbers.length)];
-        onBackhandChange(randomBackhand);
+        if (safeFilteredBackhandRubbers.length > 0) {
+          const randomBackhand = safeFilteredBackhandRubbers[Math.floor(Math.random() * safeFilteredBackhandRubbers.length)];
+          onBackhandChange(randomBackhand);
+        }
       }, 2400);
 
       await new Promise(resolve => setTimeout(resolve, 2600));
@@ -435,7 +446,7 @@ const SlotMachine = ({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center py-8 max-w-7xl mx-auto">
           <SlotWheel
-            items={filteredForehandRubbers}
+            items={safeFilteredForehandRubbers}
             selected={selectedForehand}
             onChange={onForehandChange}
             label="Forehand Rubber"
@@ -459,7 +470,7 @@ const SlotMachine = ({
             }
           />
           <SlotWheel
-            items={filteredBlades}
+            items={safeFilteredBlades}
             selected={selectedBlade}
             onChange={onBladeChange}
             label="Blade"
@@ -477,7 +488,7 @@ const SlotMachine = ({
             }
           />
           <SlotWheel
-            items={filteredBackhandRubbers}
+            items={safeFilteredBackhandRubbers}
             selected={selectedBackhand}
             onChange={onBackhandChange}
             label="Backhand Rubber"

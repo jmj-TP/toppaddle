@@ -54,6 +54,10 @@ const RUBBER_STYLE_OPTIONS = [
 export const ProductFilter = ({ filters, onFiltersChange, type, title }: ProductFilterProps) => {
   const styleOptions = type === "blade" ? BLADE_STYLE_OPTIONS : RUBBER_STYLE_OPTIONS;
 
+  const handleFilterChange = (newFilters: ProductFilters) => {
+    onFiltersChange(newFilters);
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -77,7 +81,7 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
             <Select
               value={filters.maxPrice.toString()}
               onValueChange={(value) =>
-                onFiltersChange({ ...filters, maxPrice: parseInt(value) })
+                handleFilterChange({ ...filters, maxPrice: parseInt(value) })
               }
             >
               <SelectTrigger>
@@ -98,7 +102,7 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
             <Select
               value={filters.level}
               onValueChange={(value) =>
-                onFiltersChange({ ...filters, level: value })
+                handleFilterChange({ ...filters, level: value })
               }
             >
               <SelectTrigger>
@@ -119,7 +123,7 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
             <Select
               value={filters.style}
               onValueChange={(value) =>
-                onFiltersChange({ ...filters, style: value })
+                handleFilterChange({ ...filters, style: value })
               }
             >
               <SelectTrigger>

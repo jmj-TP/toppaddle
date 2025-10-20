@@ -43,6 +43,57 @@ const Configurator = () => {
     level: "All",
     style: "All"
   });
+
+  // Validation functions for filters
+  const validateFilters = (filters: ProductFilters, type: 'blade' | 'rubber'): boolean => {
+    if (type === 'blade') {
+      const filtered = blades.filter(blade => {
+        if (blade.Blade_Price > filters.maxPrice) return false;
+        if (filters.level !== "All" && blade.Blade_Level !== filters.level) return false;
+        if (filters.style !== "All" && blade.Blade_Style !== filters.style) return false;
+        return true;
+      });
+      return filtered.length > 0;
+    } else {
+      const filtered = rubbers.filter(rubber => {
+        if (rubber.Rubber_Price > filters.maxPrice) return false;
+        if (filters.level !== "All" && rubber.Rubber_Level !== filters.level) return false;
+        if (filters.style !== "All" && rubber.Rubber_Style !== filters.style) return false;
+        return true;
+      });
+      return filtered.length > 0;
+    }
+  };
+
+  const handleForehandFiltersChange = (newFilters: ProductFilters) => {
+    if (!validateFilters(newFilters, 'rubber')) {
+      toast.error("No products match these filter criteria", {
+        description: "Please adjust your filters to see available products."
+      });
+      return;
+    }
+    setForehandFilters(newFilters);
+  };
+
+  const handleBladeFiltersChange = (newFilters: ProductFilters) => {
+    if (!validateFilters(newFilters, 'blade')) {
+      toast.error("No products match these filter criteria", {
+        description: "Please adjust your filters to see available products."
+      });
+      return;
+    }
+    setBladeFilters(newFilters);
+  };
+
+  const handleBackhandFiltersChange = (newFilters: ProductFilters) => {
+    if (!validateFilters(newFilters, 'rubber')) {
+      toast.error("No products match these filter criteria", {
+        description: "Please adjust your filters to see available products."
+      });
+      return;
+    }
+    setBackhandFilters(newFilters);
+  };
   
   // Spin trigger for random reroll
   const [spinTrigger, setSpinTrigger] = useState(0);
@@ -277,9 +328,9 @@ const Configurator = () => {
               forehandFilters={forehandFilters}
               bladeFilters={bladeFilters}
               backhandFilters={backhandFilters}
-              onForehandFiltersChange={setForehandFilters}
-              onBladeFiltersChange={setBladeFilters}
-              onBackhandFiltersChange={setBackhandFilters}
+              onForehandFiltersChange={handleForehandFiltersChange}
+              onBladeFiltersChange={handleBladeFiltersChange}
+              onBackhandFiltersChange={handleBackhandFiltersChange}
             />
 
             {/* Stats Display Below Slots */}
