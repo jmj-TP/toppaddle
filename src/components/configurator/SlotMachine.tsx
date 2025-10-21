@@ -134,11 +134,11 @@ const SlotMachine = ({
     setIsSpinning(true);
 
     if (isPreassembled) {
-      await new Promise(resolve => setTimeout(resolve, 3500));
+      await new Promise(resolve => setTimeout(resolve, 2500));
       const randomRacket = preAssembledRackets[Math.floor(Math.random() * preAssembledRackets.length)];
       onRacketChange(randomRacket);
     } else {
-      // Staggered spin completion - use safe filtered products
+      // First wheel stops at 2500ms
       setTimeout(() => {
         if (safeFilteredForehandRubbers.length > 0) {
           const randomForehand = safeFilteredForehandRubbers[Math.floor(Math.random() * safeFilteredForehandRubbers.length)];
@@ -149,8 +149,9 @@ const SlotMachine = ({
             onForehandThicknessChange(randomThickness);
           }
         }
-      }, 3200);
+      }, 2500);
 
+      // Second wheel stops at 3500ms (1 second after first)
       setTimeout(() => {
         if (safeFilteredBlades.length > 0) {
           const randomBlade = safeFilteredBlades[Math.floor(Math.random() * safeFilteredBlades.length)];
@@ -161,8 +162,9 @@ const SlotMachine = ({
             onGripChange(randomGrip);
           }
         }
-      }, 3700);
+      }, 3500);
 
+      // Third wheel stops at 4500ms (1 second after second)
       setTimeout(() => {
         if (safeFilteredBackhandRubbers.length > 0) {
           const randomBackhand = safeFilteredBackhandRubbers[Math.floor(Math.random() * safeFilteredBackhandRubbers.length)];
@@ -173,9 +175,9 @@ const SlotMachine = ({
             onBackhandThicknessChange(randomThickness);
           }
         }
-      }, 4200);
+      }, 4500);
 
-      await new Promise(resolve => setTimeout(resolve, 4500));
+      await new Promise(resolve => setTimeout(resolve, 4700));
     }
 
     setIsSpinning(false);
@@ -246,12 +248,14 @@ const SlotMachine = ({
     useEffect(() => {
       if (isSpinning) {
         setLocalSpinning(true);
-        const spinDuration = 3000 + delay;
-        setTimeout(() => {
+      } else {
+        // When spinning stops, wait a bit before stopping local animation
+        const timer = setTimeout(() => {
           setLocalSpinning(false);
-        }, spinDuration);
+        }, 100);
+        return () => clearTimeout(timer);
       }
-    }, [isSpinning, delay]);
+    }, [isSpinning]);
 
     const handleWheel = (e: React.WheelEvent) => {
       if (isSpinning) return;
@@ -339,7 +343,7 @@ const SlotMachine = ({
             <AnimatePresence mode="wait">
               {localSpinning ? (
                 <motion.div
-                  key="spinning"
+                  key={`spinning-${delay}`}
                   className="absolute inset-0 overflow-hidden"
                   style={{ willChange: 'transform' }}
                 >
@@ -350,8 +354,12 @@ const SlotMachine = ({
                       y: -3600,
                     }}
                     transition={{
-                      duration: 3 + (delay / 1000),
+                      duration: 2.5 + (delay / 1000),
                       ease: [0.33, 0, 0.2, 1],
+                    }}
+                    onAnimationComplete={() => {
+                      // Animation completed naturally
+                      setLocalSpinning(false);
                     }}
                     style={{ 
                       willChange: 'transform'
@@ -620,7 +628,7 @@ const SlotMachine = ({
               selected={selectedBlade}
               onChange={onBladeChange}
               label="Blade"
-              delay={600}
+              delay={1000}
               filters={bladeFilters}
               allItems={blades}
               filterComponent={
@@ -659,7 +667,7 @@ const SlotMachine = ({
               selected={selectedBackhand}
               onChange={onBackhandChange}
               label="Backhand Rubber"
-              delay={1200}
+              delay={2000}
               filters={backhandFilters}
               allItems={rubbers}
               filterComponent={
