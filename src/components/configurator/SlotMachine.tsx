@@ -236,23 +236,31 @@ const SlotMachine = ({
     
     const [currentIndex, setCurrentIndex] = useState(items.findIndex(item => getName(item) === getName(selected)));
     const [localSpinning, setLocalSpinning] = useState(false);
+    const [animationKey, setAnimationKey] = useState(0);
     const wheelRef = useRef<HTMLDivElement>(null);
     const selectedAvailable = isSelectedAvailable();
     const unavailabilityReason = getUnavailabilityReason();
 
+    // Update current index only when not spinning
     useEffect(() => {
-      const newIndex = items.findIndex(item => getName(item) === getName(selected));
-      setCurrentIndex(newIndex);
-    }, [selected, items]);
+      if (!localSpinning) {
+        const newIndex = items.findIndex(item => getName(item) === getName(selected));
+        setCurrentIndex(newIndex);
+      }
+    }, [selected, items, localSpinning]);
 
+    // Start spinning only once when isSpinning becomes true
     useEffect(() => {
-      if (isSpinning) {
+      if (isSpinning && !localSpinning) {
         setLocalSpinning(true);
-      } else {
-        // When spinning stops, wait a bit before stopping local animation
+        setAnimationKey(prev => prev + 1);
+        
+        // Stop spinning after the animation completes
+        const spinDuration = (2.5 + (delay / 1000)) * 1000;
         const timer = setTimeout(() => {
           setLocalSpinning(false);
-        }, 100);
+        }, spinDuration);
+        
         return () => clearTimeout(timer);
       }
     }, [isSpinning]);
@@ -343,7 +351,7 @@ const SlotMachine = ({
             <AnimatePresence mode="wait">
               {localSpinning ? (
                 <motion.div
-                  key={`spinning-${delay}`}
+                  key={animationKey}
                   className="absolute inset-0 overflow-hidden"
                   style={{ willChange: 'transform' }}
                 >
@@ -355,11 +363,8 @@ const SlotMachine = ({
                     }}
                     transition={{
                       duration: 2.5 + (delay / 1000),
-                      ease: [0.33, 0, 0.2, 1],
-                    }}
-                    onAnimationComplete={() => {
-                      // Animation completed naturally
-                      setLocalSpinning(false);
+                      ease: [0.22, 0.61, 0.36, 1],
+                      type: "tween"
                     }}
                     style={{ 
                       willChange: 'transform'
