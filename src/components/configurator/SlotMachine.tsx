@@ -257,10 +257,10 @@ const SlotMachine = ({
         setLocalSpinning(true);
         setAnimationKey(prev => prev + 1);
         
-        // Stop spinning after 2 seconds
+        // Stop spinning after animation completes (2000ms base + delay)
         const timer = setTimeout(() => {
           setLocalSpinning(false);
-        }, 2000);
+        }, 2000 + delay);
         
         return () => clearTimeout(timer);
       }
@@ -269,7 +269,7 @@ const SlotMachine = ({
       if (!isSpinning) {
         hasSpun.current = false;
       }
-    }, [isSpinning]);
+    }, [isSpinning, delay]);
 
     const handleWheel = (e: React.WheelEvent) => {
       if (isSpinning) return;
@@ -368,7 +368,7 @@ const SlotMachine = ({
                       y: -3600,
                     }}
                     transition={{
-                      duration: 2,
+                      duration: (2000 + delay) / 1000,
                       ease: [0.22, 0.61, 0.36, 1],
                       type: "tween"
                     }}
