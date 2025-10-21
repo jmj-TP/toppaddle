@@ -99,7 +99,7 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onO
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-80 p-6 bg-card border-2 border-border shadow-xl" 
+        className="w-80 p-6 bg-card border-2 border-border shadow-xl will-change-contents" 
         align="end"
         side="bottom"
         onOpenAutoFocus={(e) => e.preventDefault()}
@@ -108,11 +108,9 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onO
           onOpenChange(false);
         }}
         onPointerDownOutside={(e) => {
-          // Close on outside click
           onOpenChange(false);
         }}
         onInteractOutside={(e) => {
-          // Prevent default interaction outside behavior
           e.preventDefault();
         }}
       >
@@ -168,6 +166,13 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onO
                   newLevel = ["All"];
                 }
                 
+                // If all specific options are selected, switch to "All"
+                const specificOptions = LEVEL_OPTIONS.filter(opt => opt.value !== "All");
+                const allSpecificSelected = specificOptions.every(opt => newLevel.includes(opt.value));
+                if (allSpecificSelected && newLevel.length === specificOptions.length) {
+                  newLevel = ["All"];
+                }
+                
                 handleFilterChange({ ...filters, level: newLevel });
               }}
               className="flex flex-wrap gap-2 justify-start"
@@ -199,6 +204,13 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onO
                 
                 // If only "All" was clicked while other options exist, clear everything else
                 if (value.includes("All") && !filters.style.includes("All")) {
+                  newStyle = ["All"];
+                }
+                
+                // If all specific options are selected, switch to "All"
+                const specificOptions = styleOptions.filter(opt => opt.value !== "All");
+                const allSpecificSelected = specificOptions.every(opt => newStyle.includes(opt.value));
+                if (allSpecificSelected && newStyle.length === specificOptions.length) {
                   newStyle = ["All"];
                 }
                 
@@ -282,6 +294,13 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onO
                 
                 // If only "All" was clicked while other options exist, clear everything else
                 if (value.includes("All") && !(filters.brand || ["All"]).includes("All")) {
+                  newBrand = ["All"];
+                }
+                
+                // If all specific options are selected, switch to "All"
+                const specificOptions = BRAND_OPTIONS.filter(opt => opt.value !== "All");
+                const allSpecificSelected = specificOptions.every(opt => newBrand.includes(opt.value));
+                if (allSpecificSelected && newBrand.length === specificOptions.length) {
                   newBrand = ["All"];
                 }
                 

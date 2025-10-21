@@ -336,24 +336,49 @@ const SlotMachine = ({
                 <motion.div
                   key="spinning"
                   className="absolute inset-0 flex flex-col items-center justify-start overflow-hidden"
+                  style={{ willChange: 'transform' }}
                 >
-                  {Array.from({ length: 20 }).map((_, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ y: -100 }}
-                      animate={{ y: 2000 }}
-                      transition={{
-                        duration: 2,
-                        ease: [0.22, 1, 0.36, 1],
-                        delay: delay / 1000,
-                      }}
-                       className="h-24 w-full flex items-center justify-center px-8"
-                    >
-                      <p className="text-base font-semibold text-foreground text-center line-clamp-3">
-                        {getName(items[i % items.length])}
-                      </p>
-                    </motion.div>
-                  ))}
+                  {Array.from({ length: 35 }).map((_, i) => {
+                    const itemIndex = i % items.length;
+                    const progress = i / 35;
+                    
+                    return (
+                      <motion.div
+                        key={i}
+                        initial={{ y: -140, opacity: 0 }}
+                        animate={{ 
+                          y: [
+                            -140,
+                            2800
+                          ],
+                          opacity: [0, 1, 1, 1, 0],
+                          filter: [
+                            'blur(4px)',
+                            'blur(0px)',
+                            'blur(0px)',
+                            'blur(0px)',
+                            'blur(4px)'
+                          ]
+                        }}
+                        transition={{
+                          duration: 2.2,
+                          ease: [0.16, 1, 0.3, 1],
+                          delay: (delay / 1000) + (i * 0.005),
+                          times: [0, 0.1, 0.5, 0.9, 1]
+                        }}
+                        className="h-24 w-full flex items-center justify-center px-8"
+                        style={{ 
+                          transformStyle: 'preserve-3d',
+                          backfaceVisibility: 'hidden',
+                          willChange: 'transform, opacity, filter'
+                        }}
+                      >
+                        <p className="text-base font-semibold text-foreground text-center line-clamp-3">
+                          {getName(items[itemIndex])}
+                        </p>
+                      </motion.div>
+                    );
+                  })}
                 </motion.div>
               ) : (
                 <motion.div
@@ -377,8 +402,9 @@ const SlotMachine = ({
                         animate={{ y: yPos, opacity, scale }}
                         transition={{
                           type: "spring",
-                          stiffness: 300,
-                          damping: 30,
+                          stiffness: 400,
+                          damping: 35,
+                          mass: 0.8,
                         }}
                         className="absolute left-0 right-0 h-24 flex items-center justify-center px-8"
                         style={{
@@ -386,6 +412,8 @@ const SlotMachine = ({
                           transform: `translateY(calc(-50% + ${yPos}px)) scale(${scale}) rotateX(${rotateX}deg)`,
                           opacity,
                           transformStyle: 'preserve-3d',
+                          backfaceVisibility: 'hidden',
+                          willChange: 'transform, opacity',
                         }}
                         onClick={() => offset !== 0 && onChange(item)}
                       >
