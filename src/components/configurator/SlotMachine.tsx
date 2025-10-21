@@ -134,7 +134,7 @@ const SlotMachine = ({
     setIsSpinning(true);
 
     if (isPreassembled) {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 3500));
       const randomRacket = preAssembledRackets[Math.floor(Math.random() * preAssembledRackets.length)];
       onRacketChange(randomRacket);
     } else {
@@ -149,7 +149,7 @@ const SlotMachine = ({
             onForehandThicknessChange(randomThickness);
           }
         }
-      }, 1200);
+      }, 3200);
 
       setTimeout(() => {
         if (safeFilteredBlades.length > 0) {
@@ -161,7 +161,7 @@ const SlotMachine = ({
             onGripChange(randomGrip);
           }
         }
-      }, 1800);
+      }, 3700);
 
       setTimeout(() => {
         if (safeFilteredBackhandRubbers.length > 0) {
@@ -173,9 +173,9 @@ const SlotMachine = ({
             onBackhandThicknessChange(randomThickness);
           }
         }
-      }, 2400);
+      }, 4200);
 
-      await new Promise(resolve => setTimeout(resolve, 2600));
+      await new Promise(resolve => setTimeout(resolve, 4500));
     }
 
     setIsSpinning(false);
@@ -246,9 +246,10 @@ const SlotMachine = ({
     useEffect(() => {
       if (isSpinning) {
         setLocalSpinning(true);
+        const spinDuration = 3000 + delay;
         setTimeout(() => {
           setLocalSpinning(false);
-        }, delay);
+        }, spinDuration);
       }
     }, [isSpinning, delay]);
 
@@ -326,8 +327,12 @@ const SlotMachine = ({
         >
           {/* Center highlight */}
           <div className={`absolute top-1/2 left-0 right-0 -translate-y-1/2 w-full h-24 border-y-4 ${
-            !selectedAvailable ? 'border-destructive/30' : 'border-black/20'
-          } bg-white/10 z-0 pointer-events-none`} />
+            !selectedAvailable ? 'border-destructive/30' : 'border-primary/40'
+          } bg-primary/5 z-0 pointer-events-none shadow-[inset_0_0_20px_rgba(0,0,0,0.1)]`} />
+          
+          {/* Top and bottom gradients for depth */}
+          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-card to-transparent z-10 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-card to-transparent z-10 pointer-events-none" />
 
           {/* Items container */}
           <div className="relative h-full flex flex-col items-center justify-center">
@@ -335,50 +340,43 @@ const SlotMachine = ({
               {localSpinning ? (
                 <motion.div
                   key="spinning"
-                  className="absolute inset-0 flex flex-col items-center justify-start overflow-hidden"
+                  className="absolute inset-0 overflow-hidden"
                   style={{ willChange: 'transform' }}
                 >
-                  {Array.from({ length: 35 }).map((_, i) => {
-                    const itemIndex = i % items.length;
-                    const progress = i / 35;
-                    
-                    return (
-                      <motion.div
-                        key={i}
-                        initial={{ y: -140, opacity: 0 }}
-                        animate={{ 
-                          y: [
-                            -140,
-                            2800
-                          ],
-                          opacity: [0, 1, 1, 1, 0],
-                          filter: [
-                            'blur(4px)',
-                            'blur(0px)',
-                            'blur(0px)',
-                            'blur(0px)',
-                            'blur(4px)'
-                          ]
-                        }}
-                        transition={{
-                          duration: 2.2,
-                          ease: [0.16, 1, 0.3, 1],
-                          delay: (delay / 1000) + (i * 0.005),
-                          times: [0, 0.1, 0.5, 0.9, 1]
-                        }}
-                        className="h-24 w-full flex items-center justify-center px-8"
-                        style={{ 
-                          transformStyle: 'preserve-3d',
-                          backfaceVisibility: 'hidden',
-                          willChange: 'transform, opacity, filter'
-                        }}
-                      >
-                        <p className="text-base font-semibold text-foreground text-center line-clamp-3">
-                          {getName(items[itemIndex])}
-                        </p>
-                      </motion.div>
-                    );
-                  })}
+                  <motion.div
+                    className="flex flex-col items-center"
+                    initial={{ y: 140 }}
+                    animate={{ 
+                      y: -3600,
+                    }}
+                    transition={{
+                      duration: 3 + (delay / 1000),
+                      ease: [0.33, 0, 0.2, 1],
+                    }}
+                    style={{ 
+                      willChange: 'transform'
+                    }}
+                  >
+                    {/* Generate enough items for smooth scrolling */}
+                    {Array.from({ length: 50 }).map((_, i) => {
+                      const itemIndex = i % items.length;
+                      
+                      return (
+                        <motion.div
+                          key={`spin-${i}`}
+                          className="h-24 w-full flex items-center justify-center px-8 flex-shrink-0 border-b border-border/20"
+                          style={{ 
+                            transformStyle: 'preserve-3d',
+                            backfaceVisibility: 'hidden',
+                          }}
+                        >
+                          <p className="text-base font-semibold text-foreground text-center line-clamp-3">
+                            {getName(items[itemIndex])}
+                          </p>
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
                 </motion.div>
               ) : (
                 <motion.div
