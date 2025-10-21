@@ -91,9 +91,11 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
   };
 
   return (
-    <Popover open={open} onOpenChange={(newOpen) => {
-      // Only allow closing via X button or outside click
-      setOpen(newOpen);
+    <Popover open={open} onOpenChange={(isOpen) => {
+      // Only allow opening, closing is controlled manually
+      if (isOpen) {
+        setOpen(true);
+      }
     }} modal={false}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="icon" className="h-8 w-8" title="Filter">
@@ -105,7 +107,18 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
         align="end"
         side="bottom"
         onOpenAutoFocus={(e) => e.preventDefault()}
-        onPointerDownOutside={() => setOpen(false)}
+        onEscapeKeyDown={(e) => {
+          e.preventDefault();
+          setOpen(false);
+        }}
+        onPointerDownOutside={(e) => {
+          // Close on outside click
+          setOpen(false);
+        }}
+        onInteractOutside={(e) => {
+          // Prevent default interaction outside behavior
+          e.preventDefault();
+        }}
       >
         <div className="space-y-4">
           <div className="pb-3 border-b border-border flex justify-between items-center">
