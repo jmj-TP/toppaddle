@@ -383,26 +383,26 @@ const Configurator = () => {
       <main className="flex-1 bg-gradient-to-b from-background to-secondary/30 py-12">
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Header */}
-          <div className="mb-8 relative">
-            <div className="absolute left-0 top-0 flex gap-2">
+          <div className="mb-8 space-y-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground text-center">
+              Configurator
+            </h1>
+            <div className="flex justify-center gap-2">
               <Button
                 onClick={() => setIsPreassembled(false)}
                 variant={!isPreassembled ? "default" : "outline"}
-                className="rounded-full px-6 py-2"
+                className="rounded-full px-4 sm:px-6 py-2 text-sm sm:text-base"
               >
                 Custom
               </Button>
               <Button
                 onClick={() => setIsPreassembled(true)}
                 variant={isPreassembled ? "default" : "outline"}
-                className="rounded-full px-6 py-2"
+                className="rounded-full px-4 sm:px-6 py-2 text-sm sm:text-base"
               >
                 Preassembled
               </Button>
             </div>
-            <h1 className="text-6xl font-bold text-foreground text-center">
-              Configurator
-            </h1>
           </div>
 
           {/* Slot Machine and Stats - Single Container */}

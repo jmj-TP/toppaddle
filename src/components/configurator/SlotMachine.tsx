@@ -589,8 +589,8 @@ const SlotMachine = ({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center py-8 max-w-7xl mx-auto">
-          <div className="w-full max-w-md">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 justify-items-center py-8 max-w-7xl mx-auto">
+          <div className="w-full max-w-md md:max-w-xs lg:max-w-sm xl:max-w-md">
             <SlotWheel
               items={safeFilteredForehandRubbers}
               selected={selectedForehand}
@@ -633,7 +633,7 @@ const SlotMachine = ({
             </div>
           </div>
           
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-md md:max-w-xs lg:max-w-sm xl:max-w-md">
             <SlotWheel
               items={safeFilteredBlades}
               selected={selectedBlade}
@@ -672,7 +672,7 @@ const SlotMachine = ({
             </div>
           </div>
           
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-md md:max-w-xs lg:max-w-sm xl:max-w-md">
             <SlotWheel
               items={safeFilteredBackhandRubbers}
               selected={selectedBackhand}
