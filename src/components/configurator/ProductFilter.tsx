@@ -1,6 +1,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
+import { Settings, X } from "lucide-react";
+import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -82,6 +83,7 @@ const BRAND_OPTIONS = [
 ];
 
 export const ProductFilter = ({ filters, onFiltersChange, type, title }: ProductFilterProps) => {
+  const [open, setOpen] = useState(false);
   const styleOptions = type === "blade" ? BLADE_STYLE_OPTIONS : RUBBER_STYLE_OPTIONS;
 
   const handleFilterChange = (newFilters: ProductFilters) => {
@@ -89,7 +91,7 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
   };
 
   return (
-    <Popover modal={false}>
+    <Popover open={open} onOpenChange={setOpen} modal={false}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="icon" className="h-8 w-8" title="Filter">
           <Settings className="w-4 h-4" />
@@ -104,8 +106,16 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
         }}
       >
         <div className="space-y-4">
-          <div className="pb-3 border-b border-border">
+          <div className="pb-3 border-b border-border flex justify-between items-center">
             <h4 className="font-semibold text-lg text-foreground">{title} Filters</h4>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8"
+              onClick={() => setOpen(false)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </div>
 
           <div className="space-y-2">
@@ -135,7 +145,18 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
               type="multiple" 
               value={filters.level}
               onValueChange={(value) => {
-                const newLevel = value.length > 0 ? value : ["All"];
+                let newLevel = value.length > 0 ? value : ["All"];
+                
+                // If "All" is selected along with other options, remove "All"
+                if (newLevel.includes("All") && newLevel.length > 1) {
+                  newLevel = newLevel.filter(v => v !== "All");
+                }
+                
+                // If only "All" was clicked while other options exist, clear everything else
+                if (value.includes("All") && !filters.level.includes("All")) {
+                  newLevel = ["All"];
+                }
+                
                 handleFilterChange({ ...filters, level: newLevel });
               }}
               className="flex flex-wrap gap-2 justify-start"
@@ -158,7 +179,18 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
               type="multiple" 
               value={filters.style}
               onValueChange={(value) => {
-                const newStyle = value.length > 0 ? value : ["All"];
+                let newStyle = value.length > 0 ? value : ["All"];
+                
+                // If "All" is selected along with other options, remove "All"
+                if (newStyle.includes("All") && newStyle.length > 1) {
+                  newStyle = newStyle.filter(v => v !== "All");
+                }
+                
+                // If only "All" was clicked while other options exist, clear everything else
+                if (value.includes("All") && !filters.style.includes("All")) {
+                  newStyle = ["All"];
+                }
+                
                 handleFilterChange({ ...filters, style: newStyle });
               }}
               className="flex flex-wrap gap-2 justify-start"
@@ -230,7 +262,18 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
               type="multiple" 
               value={filters.brand || ["All"]}
               onValueChange={(value) => {
-                const newBrand = value.length > 0 ? value : ["All"];
+                let newBrand = value.length > 0 ? value : ["All"];
+                
+                // If "All" is selected along with other options, remove "All"
+                if (newBrand.includes("All") && newBrand.length > 1) {
+                  newBrand = newBrand.filter(v => v !== "All");
+                }
+                
+                // If only "All" was clicked while other options exist, clear everything else
+                if (value.includes("All") && !(filters.brand || ["All"]).includes("All")) {
+                  newBrand = ["All"];
+                }
+                
                 handleFilterChange({ ...filters, brand: newBrand });
               }}
               className="flex flex-wrap gap-2 justify-start"
