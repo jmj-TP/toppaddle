@@ -21,6 +21,8 @@ interface ProductFilterProps {
   onFiltersChange: (filters: ProductFilters) => void;
   type: "blade" | "rubber";
   title: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 const PRICE_OPTIONS = [
@@ -82,8 +84,7 @@ const BRAND_OPTIONS = [
   { value: "DHS", label: "DHS" },
 ];
 
-export const ProductFilter = ({ filters, onFiltersChange, type, title }: ProductFilterProps) => {
-  const [open, setOpen] = useState(false);
+export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onOpenChange }: ProductFilterProps) => {
   const styleOptions = type === "blade" ? BLADE_STYLE_OPTIONS : RUBBER_STYLE_OPTIONS;
 
   const handleFilterChange = (newFilters: ProductFilters) => {
@@ -91,12 +92,7 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
   };
 
   return (
-    <Popover open={open} onOpenChange={(isOpen) => {
-      // Only allow opening, closing is controlled manually
-      if (isOpen) {
-        setOpen(true);
-      }
-    }} modal={false}>
+    <Popover open={open} onOpenChange={onOpenChange} modal={false}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="icon" className="h-8 w-8" title="Filter">
           <Settings className="w-4 h-4" />
@@ -109,11 +105,11 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
         onOpenAutoFocus={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => {
           e.preventDefault();
-          setOpen(false);
+          onOpenChange(false);
         }}
         onPointerDownOutside={(e) => {
           // Close on outside click
-          setOpen(false);
+          onOpenChange(false);
         }}
         onInteractOutside={(e) => {
           // Prevent default interaction outside behavior
@@ -127,7 +123,7 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title }: Product
               variant="ghost" 
               size="icon" 
               className="h-8 w-8"
-              onClick={() => setOpen(false)}
+              onClick={() => onOpenChange(false)}
             >
               <X className="h-4 w-4" />
             </Button>

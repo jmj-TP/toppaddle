@@ -27,6 +27,11 @@ const Configurator = () => {
   const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("2.0mm");
   const [selectedBackhandThickness, setSelectedBackhandThickness] = useState<string>("2.0mm");
   
+  // Filter popover open states
+  const [forehandFilterOpen, setForehandFilterOpen] = useState(false);
+  const [bladeFilterOpen, setBladeFilterOpen] = useState(false);
+  const [backhandFilterOpen, setBackhandFilterOpen] = useState(false);
+  
   // Product filters for each component
   const [forehandFilters, setForehandFilters] = useState<ProductFilters>({
     maxPrice: 999999,
@@ -425,6 +430,12 @@ const Configurator = () => {
               onForehandFiltersChange={handleForehandFiltersChange}
               onBladeFiltersChange={handleBladeFiltersChange}
               onBackhandFiltersChange={handleBackhandFiltersChange}
+              forehandFilterOpen={forehandFilterOpen}
+              bladeFilterOpen={bladeFilterOpen}
+              backhandFilterOpen={backhandFilterOpen}
+              onForehandFilterOpenChange={setForehandFilterOpen}
+              onBladeFilterOpenChange={setBladeFilterOpen}
+              onBackhandFilterOpenChange={setBackhandFilterOpen}
             />
 
             {/* Stats Display Below Slots */}

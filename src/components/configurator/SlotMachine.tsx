@@ -31,6 +31,12 @@ interface SlotMachineProps {
   onForehandFiltersChange: (filters: ProductFilters) => void;
   onBladeFiltersChange: (filters: ProductFilters) => void;
   onBackhandFiltersChange: (filters: ProductFilters) => void;
+  forehandFilterOpen: boolean;
+  bladeFilterOpen: boolean;
+  backhandFilterOpen: boolean;
+  onForehandFilterOpenChange: (open: boolean) => void;
+  onBladeFilterOpenChange: (open: boolean) => void;
+  onBackhandFilterOpenChange: (open: boolean) => void;
 }
 
 const SlotMachine = ({
@@ -56,6 +62,12 @@ const SlotMachine = ({
   onForehandFiltersChange,
   onBladeFiltersChange,
   onBackhandFiltersChange,
+  forehandFilterOpen,
+  bladeFilterOpen,
+  backhandFilterOpen,
+  onForehandFilterOpenChange,
+  onBladeFilterOpenChange,
+  onBackhandFilterOpenChange,
 }: SlotMachineProps) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [showForehandStats, setShowForehandStats] = useState(false);
@@ -548,6 +560,8 @@ const SlotMachine = ({
                   onFiltersChange={onForehandFiltersChange}
                   type="rubber"
                   title="Forehand Rubber"
+                  open={forehandFilterOpen}
+                  onOpenChange={onForehandFilterOpenChange}
                 />
               }
             />
@@ -589,6 +603,8 @@ const SlotMachine = ({
                   onFiltersChange={onBladeFiltersChange}
                   type="blade"
                   title="Blade"
+                  open={bladeFilterOpen}
+                  onOpenChange={onBladeFilterOpenChange}
                 />
               }
             />
@@ -626,6 +642,8 @@ const SlotMachine = ({
                   onFiltersChange={onBackhandFiltersChange}
                   type="rubber"
                   title="Backhand Rubber"
+                  open={backhandFilterOpen}
+                  onOpenChange={onBackhandFilterOpenChange}
                 />
               }
             />
