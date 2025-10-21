@@ -134,11 +134,11 @@ const SlotMachine = ({
     setIsSpinning(true);
 
     if (isPreassembled) {
-      await new Promise(resolve => setTimeout(resolve, 2500));
+      await new Promise(resolve => setTimeout(resolve, 2000));
       const randomRacket = preAssembledRackets[Math.floor(Math.random() * preAssembledRackets.length)];
       onRacketChange(randomRacket);
     } else {
-      // First wheel stops at 2500ms
+      // First wheel stops at 2000ms
       setTimeout(() => {
         if (safeFilteredForehandRubbers.length > 0) {
           const randomForehand = safeFilteredForehandRubbers[Math.floor(Math.random() * safeFilteredForehandRubbers.length)];
@@ -149,9 +149,9 @@ const SlotMachine = ({
             onForehandThicknessChange(randomThickness);
           }
         }
-      }, 2500);
+      }, 2000);
 
-      // Second wheel stops at 3500ms (1 second after first)
+      // Second wheel stops at 3000ms (1 second after first)
       setTimeout(() => {
         if (safeFilteredBlades.length > 0) {
           const randomBlade = safeFilteredBlades[Math.floor(Math.random() * safeFilteredBlades.length)];
@@ -162,9 +162,9 @@ const SlotMachine = ({
             onGripChange(randomGrip);
           }
         }
-      }, 3500);
+      }, 3000);
 
-      // Third wheel stops at 4500ms (1 second after second)
+      // Third wheel stops at 4000ms (1 second after second)
       setTimeout(() => {
         if (safeFilteredBackhandRubbers.length > 0) {
           const randomBackhand = safeFilteredBackhandRubbers[Math.floor(Math.random() * safeFilteredBackhandRubbers.length)];
@@ -175,9 +175,9 @@ const SlotMachine = ({
             onBackhandThicknessChange(randomThickness);
           }
         }
-      }, 4500);
+      }, 4000);
 
-      await new Promise(resolve => setTimeout(resolve, 4700));
+      await new Promise(resolve => setTimeout(resolve, 4200));
     }
 
     setIsSpinning(false);
@@ -238,6 +238,7 @@ const SlotMachine = ({
     const [localSpinning, setLocalSpinning] = useState(false);
     const [animationKey, setAnimationKey] = useState(0);
     const wheelRef = useRef<HTMLDivElement>(null);
+    const hasSpun = useRef(false);
     const selectedAvailable = isSelectedAvailable();
     const unavailabilityReason = getUnavailabilityReason();
 
@@ -251,17 +252,22 @@ const SlotMachine = ({
 
     // Start spinning only once when isSpinning becomes true
     useEffect(() => {
-      if (isSpinning && !localSpinning) {
+      if (isSpinning && !hasSpun.current) {
+        hasSpun.current = true;
         setLocalSpinning(true);
         setAnimationKey(prev => prev + 1);
         
-        // Stop spinning after the animation completes
-        const spinDuration = (2.5 + (delay / 1000)) * 1000;
+        // Stop spinning after 2 seconds
         const timer = setTimeout(() => {
           setLocalSpinning(false);
-        }, spinDuration);
+        }, 2000);
         
         return () => clearTimeout(timer);
+      }
+      
+      // Reset ref when spinning stops
+      if (!isSpinning) {
+        hasSpun.current = false;
       }
     }, [isSpinning]);
 
@@ -362,7 +368,7 @@ const SlotMachine = ({
                       y: -3600,
                     }}
                     transition={{
-                      duration: 2.5 + (delay / 1000),
+                      duration: 2,
                       ease: [0.22, 0.61, 0.36, 1],
                       type: "tween"
                     }}
