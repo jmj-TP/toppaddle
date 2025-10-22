@@ -240,6 +240,7 @@ const SlotMachine = ({
     const wheelRef = useRef<HTMLDivElement>(null);
     const hasSpun = useRef(false);
     const timers = useRef<{ start?: NodeJS.Timeout; stop?: NodeJS.Timeout }>({});
+    const isAnimating = useRef(false);
     const selectedAvailable = isSelectedAvailable();
     const unavailabilityReason = getUnavailabilityReason();
 
@@ -255,6 +256,7 @@ const SlotMachine = ({
     useEffect(() => {
       if (isSpinning && !hasSpun.current) {
         hasSpun.current = true;
+        isAnimating.current = true;
         
         // Calculate animation duration based on delay
         const animationDuration = delay === 0 ? 1500 : delay === 1500 ? 2000 : 2500;
@@ -267,21 +269,24 @@ const SlotMachine = ({
           // Stop spinning after animation completes
           timers.current.stop = setTimeout(() => {
             setLocalSpinning(false);
+            isAnimating.current = false;
           }, animationDuration);
         }, delay);
-        
-        // Cleanup function to clear both timers
-        return () => {
-          if (timers.current.start) clearTimeout(timers.current.start);
-          if (timers.current.stop) clearTimeout(timers.current.stop);
-        };
       }
       
-      // Reset ref when spinning stops
-      if (!isSpinning) {
+      // Reset when spinning stops
+      if (!isSpinning && !isAnimating.current) {
         hasSpun.current = false;
         setLocalSpinning(false);
       }
+      
+      // Only cleanup on unmount, not on re-renders during animation
+      return () => {
+        if (!isAnimating.current) {
+          if (timers.current.start) clearTimeout(timers.current.start);
+          if (timers.current.stop) clearTimeout(timers.current.stop);
+        }
+      };
     }, [isSpinning, delay]);
 
     const handleWheel = (e: React.WheelEvent) => {
