@@ -255,10 +255,20 @@ const SlotMachine = ({
       if (isSpinning && !hasSpun.current) {
         hasSpun.current = true;
         
+        // Calculate animation duration based on delay
+        const animationDuration = delay === 0 ? 1500 : delay === 1500 ? 2000 : 2500;
+        
         // Start animation after delay
         const startTimer = setTimeout(() => {
           setLocalSpinning(true);
           setAnimationKey(prev => prev + 1);
+          
+          // Stop spinning after animation completes
+          const stopTimer = setTimeout(() => {
+            setLocalSpinning(false);
+          }, animationDuration);
+          
+          return () => clearTimeout(stopTimer);
         }, delay);
         
         return () => clearTimeout(startTimer);
@@ -371,9 +381,6 @@ const SlotMachine = ({
                       duration: delay === 0 ? 1.5 : delay === 1500 ? 2.0 : 2.5,
                       ease: [0.33, 1, 0.68, 1],
                       type: "tween"
-                    }}
-                    onAnimationComplete={() => {
-                      setLocalSpinning(false);
                     }}
                     style={{ 
                       willChange: 'transform'
