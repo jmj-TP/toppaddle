@@ -350,58 +350,6 @@ const StatsDisplay = ({
         </div>
       </div>
 
-      {/* Component Details Below */}
-      <div className="mt-12">
-        {!racket && blade && forehand && backhand && (
-          <Card className="p-6 space-y-4">
-            <h3 className="text-lg font-semibold text-primary mb-3">Components</h3>
-            
-            <div className="space-y-3">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <p className="text-sm text-muted-foreground">🏓 Blade</p>
-                  <p className="font-medium text-foreground">{blade.Blade_Name}</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => window.open(blade.Blade_Affiliate_Link, "_blank")}
-                >
-                  <ExternalLink className="h-4 w-4" />
-                </Button>
-              </div>
-
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <p className="text-sm text-muted-foreground">🔴 Forehand</p>
-                  <p className="font-medium text-foreground">{forehand.Rubber_Name}</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => window.open(forehand.Rubber_Affiliate_Link, "_blank")}
-                >
-                  <ExternalLink className="h-4 w-4" />
-                </Button>
-              </div>
-
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <p className="text-sm text-muted-foreground">🔵 Backhand</p>
-                  <p className="font-medium text-foreground">{backhand.Rubber_Name}</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => window.open(backhand.Rubber_Affiliate_Link, "_blank")}
-                >
-                  <ExternalLink className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </Card>
-        )}
-      </div>
     </>
   );
 };

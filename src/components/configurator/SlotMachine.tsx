@@ -318,7 +318,7 @@ const SlotMachine = ({
     return (
       <div className="flex flex-col items-center">
       {/* Header with title and filter button */}
-        <div className="relative w-full max-w-[280px] md:max-w-[180px] lg:max-w-[240px] xl:max-w-[320px] mb-2 md:mb-3">
+        <div className="relative w-full max-w-[400px] md:max-w-[300px] lg:max-w-[380px] xl:max-w-[450px] mb-2 md:mb-3">
           <h3 className="text-base md:text-sm lg:text-base xl:text-lg font-semibold text-foreground tracking-tight text-center">{label}</h3>
           {filterComponent && (
             <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2">
@@ -349,7 +349,7 @@ const SlotMachine = ({
         <div
           ref={wheelRef}
           onWheel={handleWheel}
-          className={`relative w-full max-w-[280px] md:max-w-[180px] lg:max-w-[240px] xl:max-w-[320px] h-[240px] md:h-[180px] lg:h-[240px] xl:h-[280px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 md:border-3 lg:border-4 ${
+          className={`relative w-full max-w-[400px] md:max-w-[300px] lg:max-w-[380px] xl:max-w-[450px] h-[240px] md:h-[180px] lg:h-[240px] xl:h-[280px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 md:border-3 lg:border-4 ${
             !selectedAvailable ? 'border-destructive/50' : 'border-border'
           } ${!selectedAvailable ? 'opacity-60' : ''}`}
           style={{ perspective: '1000px' }}
