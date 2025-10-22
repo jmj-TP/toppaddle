@@ -5,10 +5,26 @@ import { blogPosts } from "@/data/blogPosts";
 import { ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
+import StructuredData from "@/components/StructuredData";
 
 const Blog = () => {
   return (
     <div className="flex min-h-screen flex-col">
+      <SEO
+        title="Table Tennis Blog - Expert Tips, Reviews & Guides"
+        description="Expert table tennis advice, equipment reviews, and tips. 8 years of experience helping players improve their game with honest recommendations."
+        canonical="https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/blog"
+      />
+      <StructuredData
+        data={{
+          type: 'BreadcrumbList',
+          items: [
+            { name: 'Home', url: 'https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/' },
+            { name: 'Blog', url: 'https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/blog' }
+          ]
+        }}
+      />
       <Header />
       <main className="flex-1 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">

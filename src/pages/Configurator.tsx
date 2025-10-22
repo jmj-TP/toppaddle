@@ -9,6 +9,8 @@ import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { toast } from "sonner";
 import type { ProductFilters } from "@/components/configurator/ProductFilter";
+import SEO from "@/components/SEO";
+import StructuredData from "@/components/StructuredData";
 
 const Configurator = () => {
   const [searchParams] = useSearchParams();
@@ -379,6 +381,20 @@ const Configurator = () => {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEO
+        title="Table Tennis Racket Configurator - Build Your Custom Setup"
+        description="Configure your perfect table tennis racket. Choose from professional blades and rubbers or select pre-assembled options. Real-time stats and pricing for all skill levels."
+        canonical="https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/configurator"
+      />
+      <StructuredData
+        data={{
+          type: 'BreadcrumbList',
+          items: [
+            { name: 'Home', url: 'https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/' },
+            { name: 'Configurator', url: 'https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/configurator' }
+          ]
+        }}
+      />
       <Header />
       <main className="flex-1 bg-gradient-to-b from-background to-secondary/30 py-12">
         <div className="container mx-auto px-4 max-w-7xl">

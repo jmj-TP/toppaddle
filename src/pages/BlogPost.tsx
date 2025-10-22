@@ -4,6 +4,8 @@ import { ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { blogPosts } from "@/data/blogPosts";
+import SEO from "@/components/SEO";
+import StructuredData from "@/components/StructuredData";
 
 const BlogPost = () => {
   const { id } = useParams();
@@ -28,6 +30,38 @@ const BlogPost = () => {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEO
+        title={post.title}
+        description={post.excerpt}
+        canonical={`https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/blog/${post.id}`}
+        ogType="article"
+        ogImage={post.thumbnail}
+        article={{
+          publishedTime: post.date,
+          author: post.author,
+          section: 'Table Tennis',
+        }}
+      />
+      <StructuredData
+        data={[
+          {
+            type: 'Article',
+            headline: post.title,
+            description: post.excerpt,
+            image: post.thumbnail,
+            author: post.author,
+            datePublished: post.date,
+          },
+          {
+            type: 'BreadcrumbList',
+            items: [
+              { name: 'Home', url: 'https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/' },
+              { name: 'Blog', url: 'https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/blog' },
+              { name: post.title, url: `https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/blog/${post.id}` }
+            ]
+          }
+        ]}
+      />
       <Header />
       <main className="flex-1 bg-background">
         <article className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">

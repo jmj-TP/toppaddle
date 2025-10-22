@@ -1,11 +1,18 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 const Terms = () => {
   const currentYear = new Date().getFullYear();
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEO
+        title="Terms & Disclaimer - Affiliate Disclosure"
+        description="Read TopPaddle's terms of service, affiliate disclosure, and disclaimer. Transparent information about our Amazon Associates participation and recommendations."
+        canonical="https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/terms"
+        noindex={true}
+      />
       <Header />
       <main className="flex-1 bg-background">
         <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">

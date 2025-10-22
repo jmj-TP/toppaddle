@@ -4,10 +4,26 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
+import StructuredData from "@/components/StructuredData";
 
 const About = () => {
   return (
     <div className="flex min-h-screen flex-col">
+      <SEO
+        title="About TopPaddle - 8 Years of Table Tennis Experience"
+        description="Learn about TopPaddle's mission to help players find the perfect table tennis equipment. 8 years of experience, honest reviews, transparent affiliate disclosure."
+        canonical="https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/about"
+      />
+      <StructuredData
+        data={{
+          type: 'BreadcrumbList',
+          items: [
+            { name: 'Home', url: 'https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/' },
+            { name: 'About', url: 'https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/about' }
+          ]
+        }}
+      />
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
