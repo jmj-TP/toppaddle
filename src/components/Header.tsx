@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import DarkModeToggle from "./DarkModeToggle";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,6 +44,7 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
+            <DarkModeToggle />
           </div>
 
           {/* Mobile menu button */}
@@ -75,6 +77,9 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
+              <div className="px-4 py-2">
+                <DarkModeToggle />
+              </div>
             </div>
           </div>
         )}
