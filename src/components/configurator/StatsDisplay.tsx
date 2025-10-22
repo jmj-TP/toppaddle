@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { ExternalLink, Gauge, Target, Shield, Star, Settings, DollarSign, Scale } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 
 export interface UserPreferences {
@@ -81,6 +81,27 @@ const StatsDisplay = ({
   const [editBackhandSpin, setEditBackhandSpin] = useState(backhand?.Rubber_Spin || 50);
   const [editBackhandControl, setEditBackhandControl] = useState(backhand?.Rubber_Control || 50);
   const [editBackhandPower, setEditBackhandPower] = useState(backhand?.Rubber_Power || 50);
+  
+  // Sync state with props when they change
+  useEffect(() => {
+    setEditLevel(level);
+    setEditSpeed(stats.speed);
+    setEditSpin(stats.spin);
+    setEditControl(stats.control);
+    setEditPower(stats.power);
+    setEditForehandSpeed(forehand?.Rubber_Speed || 50);
+    setEditForehandSpin(forehand?.Rubber_Spin || 50);
+    setEditForehandControl(forehand?.Rubber_Control || 50);
+    setEditForehandPower(forehand?.Rubber_Power || 50);
+    setEditBladeSpeed(blade?.Blade_Speed || 50);
+    setEditBladeSpin(blade?.Blade_Spin || 50);
+    setEditBladeControl(blade?.Blade_Control || 50);
+    setEditBladePower(blade?.Blade_Power || 50);
+    setEditBackhandSpeed(backhand?.Rubber_Speed || 50);
+    setEditBackhandSpin(backhand?.Rubber_Spin || 50);
+    setEditBackhandControl(backhand?.Rubber_Control || 50);
+    setEditBackhandPower(backhand?.Rubber_Power || 50);
+  }, [stats, level, blade, forehand, backhand]);
   
   const handleEditPreferences = () => {
     setIsEditMode(true);
