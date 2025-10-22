@@ -400,7 +400,7 @@ const SlotMachine = ({
                           backfaceVisibility: 'hidden',
                         }}
                       >
-                        <p className="text-sm md:text-xs lg:text-sm xl:text-base font-semibold text-blue-900 dark:text-pink-400 text-center line-clamp-3" style={{ opacity: 1 }}>
+                        <p className="text-sm md:text-xs lg:text-sm xl:text-base font-semibold text-pink-600 dark:text-pink-400 text-center line-clamp-3" style={{ opacity: 1 }}>
                           {getName(items[itemIndex])}
                         </p>
                       </motion.div>
@@ -451,8 +451,8 @@ const SlotMachine = ({
                               offset === 0 
                                 ? !selectedAvailable 
                                   ? 'text-destructive text-base md:text-sm lg:text-base xl:text-lg font-bold line-through' 
-                                  : 'text-blue-900 dark:text-pink-400 text-base md:text-sm lg:text-base xl:text-lg font-bold'
-                                : 'text-blue-700 dark:text-pink-300 text-xs md:text-[10px] lg:text-xs xl:text-sm font-medium'
+                                  : 'text-pink-600 dark:text-pink-400 text-base md:text-sm lg:text-base xl:text-lg font-bold'
+                                : 'text-pink-500 dark:text-pink-300 text-xs md:text-[10px] lg:text-xs xl:text-sm font-medium'
                             }`}
                             style={{ opacity }}
                           >
