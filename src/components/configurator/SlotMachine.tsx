@@ -418,12 +418,12 @@ const SlotMachine = ({
                 >
                   {getVisibleItems().map(({ item, offset }, idx) => {
                     const distance = Math.abs(offset);
-                    // Less aggressive transparency for better visibility of all items
+                    // Minimal transparency for maximum visibility of all items
                     const opacity = offset === 0 
                       ? 1 
                       : isMobile 
-                        ? Math.max(0.75, 1 - distance * 0.1) // Mobile: less fade
-                        : Math.max(0.65, 1 - distance * 0.15); // Desktop: less fade
+                        ? Math.max(0.85, 1 - distance * 0.05) // Mobile: minimal fade
+                        : Math.max(0.80, 1 - distance * 0.08); // Desktop: minimal fade
                     const scale = offset === 0 ? 1.1 : Math.max(0.75, 1 - distance * 0.15);
                     const yPos = offset * 64 - 40; // 64px spacing between items for smaller wheels, shifted up 40px
                     const rotateX = offset === 0 ? 0 : offset * 8; // 3D tilt effect
