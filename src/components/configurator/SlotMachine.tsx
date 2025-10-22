@@ -307,8 +307,8 @@ const SlotMachine = ({
     return (
       <div className="flex flex-col items-center">
       {/* Header with title and filter button */}
-        <div className="relative w-80 mb-3">
-          <h3 className="text-lg font-semibold text-foreground tracking-tight text-center">{label}</h3>
+        <div className="relative w-full max-w-[280px] md:max-w-[180px] lg:max-w-[240px] xl:max-w-[320px] mb-2 md:mb-3">
+          <h3 className="text-base md:text-sm lg:text-base xl:text-lg font-semibold text-foreground tracking-tight text-center">{label}</h3>
           {filterComponent && (
             <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2">
               {!selectedAvailable && unavailabilityReason && (
@@ -338,13 +338,13 @@ const SlotMachine = ({
         <div
           ref={wheelRef}
           onWheel={handleWheel}
-          className={`relative w-80 h-[280px] bg-card rounded-xl overflow-hidden shadow-2xl border-4 ${
+          className={`relative w-full max-w-[280px] md:max-w-[180px] lg:max-w-[240px] xl:max-w-[320px] h-[240px] md:h-[180px] lg:h-[240px] xl:h-[280px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 md:border-3 lg:border-4 ${
             !selectedAvailable ? 'border-destructive/50' : 'border-border'
           } ${!selectedAvailable ? 'opacity-60' : ''}`}
           style={{ perspective: '1000px' }}
         >
           {/* Center highlight */}
-          <div className={`absolute top-1/2 left-0 right-0 -translate-y-1/2 w-full h-24 border-y-4 ${
+          <div className={`absolute top-1/2 left-0 right-0 -translate-y-1/2 w-full h-20 md:h-16 lg:h-20 xl:h-24 border-y-2 md:border-y-3 lg:border-y-4 ${
             !selectedAvailable ? 'border-destructive/30' : 'border-primary/40'
           } bg-primary/5 z-0 pointer-events-none shadow-[inset_0_0_20px_rgba(0,0,0,0.1)]`} />
           
@@ -383,13 +383,13 @@ const SlotMachine = ({
                       return (
                         <motion.div
                           key={`spin-${i}`}
-                          className="h-24 w-full flex items-center justify-center px-8 flex-shrink-0 border-b border-border/20"
+                          className="h-20 md:h-16 lg:h-20 xl:h-24 w-full flex items-center justify-center px-4 md:px-3 lg:px-6 xl:px-8 flex-shrink-0 border-b border-border/20"
                           style={{ 
                             transformStyle: 'preserve-3d',
                             backfaceVisibility: 'hidden',
                           }}
                         >
-                          <p className="text-base font-semibold text-foreground text-center line-clamp-3">
+                          <p className="text-sm md:text-xs lg:text-sm xl:text-base font-semibold text-foreground text-center line-clamp-3">
                             {getName(items[itemIndex])}
                           </p>
                         </motion.div>
@@ -409,7 +409,7 @@ const SlotMachine = ({
                     const distance = Math.abs(offset);
                     const opacity = offset === 0 ? 1 : Math.max(0.3, 1 - distance * 0.35);
                     const scale = offset === 0 ? 1.1 : Math.max(0.75, 1 - distance * 0.15);
-                    const yPos = offset * 80 - 50; // 80px spacing between items, shifted up 50px to move wheel higher
+                    const yPos = offset * 64 - 40; // 64px spacing between items for smaller wheels, shifted up 40px
                     const rotateX = offset === 0 ? 0 : offset * 8; // 3D tilt effect
 
                     return (
@@ -423,7 +423,7 @@ const SlotMachine = ({
                           damping: 35,
                           mass: 0.8,
                         }}
-                        className="absolute left-0 right-0 h-24 flex items-center justify-center px-8"
+                        className="absolute left-0 right-0 h-20 md:h-16 lg:h-20 xl:h-24 flex items-center justify-center px-4 md:px-3 lg:px-6 xl:px-8"
                         style={{
                           top: '50%',
                           transform: `translateY(calc(-50% + ${yPos}px)) scale(${scale}) rotateX(${rotateX}deg)`,
@@ -439,9 +439,9 @@ const SlotMachine = ({
                             className={`text-center line-clamp-3 transition-colors cursor-pointer ${
                               offset === 0 
                                 ? !selectedAvailable 
-                                  ? 'text-destructive text-lg font-bold line-through opacity-70' 
-                                  : 'text-foreground text-lg font-bold'
-                                : 'text-muted-foreground text-sm font-medium'
+                                  ? 'text-destructive text-base md:text-sm lg:text-base xl:text-lg font-bold line-through opacity-70' 
+                                  : 'text-foreground text-base md:text-sm lg:text-base xl:text-lg font-bold'
+                                : 'text-muted-foreground text-xs md:text-[10px] lg:text-xs xl:text-sm font-medium'
                             }`}
                           >
                             {getName(item)}
@@ -589,8 +589,8 @@ const SlotMachine = ({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 justify-items-center py-8 max-w-7xl mx-auto">
-          <div className="w-full max-w-md md:max-w-xs lg:max-w-sm xl:max-w-md">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 lg:gap-6 justify-items-center py-8 max-w-7xl mx-auto px-2">
+          <div className="w-full max-w-[280px] md:max-w-[180px] lg:max-w-[240px] xl:max-w-md">
             <SlotWheel
               items={safeFilteredForehandRubbers}
               selected={selectedForehand}
@@ -633,7 +633,7 @@ const SlotMachine = ({
             </div>
           </div>
           
-          <div className="w-full max-w-md md:max-w-xs lg:max-w-sm xl:max-w-md">
+          <div className="w-full max-w-[280px] md:max-w-[180px] lg:max-w-[240px] xl:max-w-md">
             <SlotWheel
               items={safeFilteredBlades}
               selected={selectedBlade}
@@ -672,7 +672,7 @@ const SlotMachine = ({
             </div>
           </div>
           
-          <div className="w-full max-w-md md:max-w-xs lg:max-w-sm xl:max-w-md">
+          <div className="w-full max-w-[280px] md:max-w-[180px] lg:max-w-[240px] xl:max-w-md">
             <SlotWheel
               items={safeFilteredBackhandRubbers}
               selected={selectedBackhand}
