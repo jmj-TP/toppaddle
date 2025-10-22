@@ -427,7 +427,6 @@ const SlotMachine = ({
                         style={{
                           top: '50%',
                           transform: `translateY(calc(-50% + ${yPos}px)) scale(${scale}) rotateX(${rotateX}deg)`,
-                          opacity,
                           transformStyle: 'preserve-3d',
                           backfaceVisibility: 'hidden',
                           willChange: 'transform, opacity',
@@ -443,7 +442,7 @@ const SlotMachine = ({
                                   : 'text-blue-900 text-base md:text-sm lg:text-base xl:text-lg font-bold'
                                 : 'text-blue-700 text-xs md:text-[10px] lg:text-xs xl:text-sm font-medium'
                             }`}
-                            style={{ opacity: 1 }}
+                            style={{ opacity }}
                           >
                             {getName(item)}
                           </p>
