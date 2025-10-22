@@ -400,8 +400,8 @@ const Configurator = () => {
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Header */}
           <div className="mb-8 space-y-4">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground text-center">
-              Configurator
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent animate-fade-in">
+              Build Your Perfect Racket
             </h1>
             <div className="flex justify-center gap-2">
               <Button

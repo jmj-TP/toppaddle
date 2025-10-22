@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { ProductFilter, type ProductFilters } from "./ProductFilter";
-import { Info, BarChart3, ChevronUp, ChevronDown } from "lucide-react";
+import { Info, BarChart3, ChevronUp, ChevronDown, ExternalLink } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import ComponentStatsCard from "./ComponentStatsCard";
@@ -462,6 +462,24 @@ const SlotMachine = ({
                           >
                             {getName(item)}
                           </p>
+                          {offset === 0 && (
+                            <button 
+                              className="text-muted-foreground hover:text-primary transition-colors flex-shrink-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const affiliateLink = 'Blade_Affiliate_Link' in item 
+                                  ? item.Blade_Affiliate_Link 
+                                  : 'Rubber_Affiliate_Link' in item 
+                                    ? item.Rubber_Affiliate_Link 
+                                    : 'Racket_Affiliate_Link' in item 
+                                      ? item.Racket_Affiliate_Link 
+                                      : '';
+                                if (affiliateLink) window.open(affiliateLink, "_blank");
+                              }}
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                            </button>
+                          )}
                           {offset === 0 && (
                             <Popover>
                               <PopoverTrigger asChild onClick={(e) => e.stopPropagation()}>
