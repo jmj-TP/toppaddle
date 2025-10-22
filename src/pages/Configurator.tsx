@@ -455,7 +455,7 @@ const Configurator = () => {
             />
 
             {/* Stats Display Below Slots */}
-            <div className="mt-8">
+            <div className="mt-5">
               <StatsDisplay
                 stats={stats}
                 level={isPreassembled ? selectedRacket.Racket_Level : selectedBlade.Blade_Level}

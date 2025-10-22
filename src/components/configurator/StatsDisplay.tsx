@@ -242,18 +242,6 @@ const StatsDisplay = ({
                 </div>
               </>
             )}
-            
-            {!isEditMode && (
-              <Button
-                onClick={handleEditPreferences}
-                variant="outline"
-                size="sm"
-                className="ml-auto"
-              >
-                <Settings className="mr-2 h-4 w-4" />
-                Change Preferences
-              </Button>
-            )}
           </div>
 
           {/* Stats Bars or Sliders */}
@@ -339,7 +327,40 @@ const StatsDisplay = ({
         </div>
 
         {/* Right Column - Buttons */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
+          {!isEditMode && (
+            <Button
+              onClick={handleEditPreferences}
+              variant="outline"
+              size="lg"
+              className="w-full md:hidden py-6 font-semibold"
+            >
+              <Settings className="mr-2 h-5 w-5" />
+              Change Preferences
+            </Button>
+          )}
+          {!isEditMode && (
+            <Button
+              onClick={handleEditPreferences}
+              variant="outline"
+              size="sm"
+              className="w-full hidden md:flex lg:hidden"
+            >
+              <Settings className="mr-2 h-4 w-4" />
+              Change Preferences
+            </Button>
+          )}
+          {!isEditMode && (
+            <Button
+              onClick={handleEditPreferences}
+              variant="outline"
+              size="sm"
+              className="w-full hidden lg:block"
+            >
+              <Settings className="mr-2 h-4 w-4" />
+              Change Preferences
+            </Button>
+          )}
           <Button
             onClick={onRandomReroll}
             size="lg"
