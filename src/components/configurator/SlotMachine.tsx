@@ -239,6 +239,7 @@ const SlotMachine = ({
     const [animationKey, setAnimationKey] = useState(0);
     const wheelRef = useRef<HTMLDivElement>(null);
     const hasSpun = useRef(false);
+    const timers = useRef<{ start?: NodeJS.Timeout; stop?: NodeJS.Timeout }>({});
     const selectedAvailable = isSelectedAvailable();
     const unavailabilityReason = getUnavailabilityReason();
 
@@ -259,19 +260,21 @@ const SlotMachine = ({
         const animationDuration = delay === 0 ? 1500 : delay === 1500 ? 2000 : 2500;
         
         // Start animation after delay
-        const startTimer = setTimeout(() => {
+        timers.current.start = setTimeout(() => {
           setLocalSpinning(true);
           setAnimationKey(prev => prev + 1);
           
           // Stop spinning after animation completes
-          const stopTimer = setTimeout(() => {
+          timers.current.stop = setTimeout(() => {
             setLocalSpinning(false);
           }, animationDuration);
-          
-          return () => clearTimeout(stopTimer);
         }, delay);
         
-        return () => clearTimeout(startTimer);
+        // Cleanup function to clear both timers
+        return () => {
+          if (timers.current.start) clearTimeout(timers.current.start);
+          if (timers.current.stop) clearTimeout(timers.current.stop);
+        };
       }
       
       // Reset ref when spinning stops
