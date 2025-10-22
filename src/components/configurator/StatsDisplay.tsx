@@ -151,10 +151,10 @@ const StatsDisplay = ({
     Icon: any; 
     onChange: (value: number) => void;
   }) => (
-    <div className="flex items-center gap-3 mb-4">
+    <div className="flex items-center gap-3 mb-4 py-2">
       <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
       <span className="text-sm font-medium min-w-[60px]">{label}:</span>
-      <div className="flex-1 px-2">
+      <div className="flex-1 px-2 py-2">
         <Slider
           value={[value]}
           onValueChange={(values) => onChange(values[0])}
