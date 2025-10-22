@@ -667,7 +667,7 @@ const SlotMachine = ({
             </div>
           </div>
           
-          <div className="w-full max-w-[280px] md:max-w-[180px] lg:max-w-[240px] xl:max-w-md">
+          <div className="w-full max-w-[380px] md:max-w-[240px] lg:max-w-[280px] xl:max-w-md">
             <SlotWheel
               items={safeFilteredBlades}
               selected={selectedBlade}
@@ -706,7 +706,7 @@ const SlotMachine = ({
             </div>
           </div>
           
-          <div className="w-full max-w-[280px] md:max-w-[180px] lg:max-w-[240px] xl:max-w-md">
+          <div className="w-full max-w-[380px] md:max-w-[240px] lg:max-w-[280px] xl:max-w-md">
             <SlotWheel
               items={safeFilteredBackhandRubbers}
               selected={selectedBackhand}
