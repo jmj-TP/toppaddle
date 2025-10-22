@@ -151,20 +151,20 @@ const StatsDisplay = ({
     Icon: any; 
     onChange: (value: number) => void;
   }) => (
-    <div className="flex items-center gap-2 mb-3">
+    <div className="flex items-center gap-3 mb-4">
       <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
       <span className="text-sm font-medium min-w-[60px]">{label}:</span>
-      <div className="flex-1">
+      <div className="flex-1 px-2">
         <Slider
           value={[value]}
           onValueChange={(values) => onChange(values[0])}
-          min={1}
+          min={0}
           max={100}
           step={1}
           className="w-full"
         />
       </div>
-      <span className="text-sm font-semibold min-w-[30px]">{value}</span>
+      <span className="text-sm font-semibold min-w-[30px] text-right">{value}</span>
     </div>
   );
 
