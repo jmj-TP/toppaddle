@@ -69,7 +69,9 @@ const SlotMachine = ({
   onBladeFilterOpenChange,
   onBackhandFilterOpenChange,
 }: SlotMachineProps) => {
-  const [isSpinning, setIsSpinning] = useState(false);
+  const [forehandSpinKey, setForehandSpinKey] = useState(0);
+  const [bladeSpinKey, setBladeSpinKey] = useState(0);
+  const [backhandSpinKey, setBackhandSpinKey] = useState(0);
   const [showForehandStats, setShowForehandStats] = useState(false);
   const [showBladeStats, setShowBladeStats] = useState(false);
   const [showBackhandStats, setShowBackhandStats] = useState(false);
@@ -131,19 +133,22 @@ const SlotMachine = ({
   }, [spinTrigger]);
 
   const handleSpin = async () => {
-    setIsSpinning(true);
-
     if (isPreassembled) {
+      setForehandSpinKey(prev => prev + 1);
       await new Promise(resolve => setTimeout(resolve, 2000));
       const randomRacket = preAssembledRackets[Math.floor(Math.random() * preAssembledRackets.length)];
       onRacketChange(randomRacket);
     } else {
-      // First wheel (Forehand) stops at 1500ms
+      // Trigger all wheels to start spinning with their animation keys
+      setForehandSpinKey(prev => prev + 1);
+      setTimeout(() => setBladeSpinKey(prev => prev + 1), 1500);
+      setTimeout(() => setBackhandSpinKey(prev => prev + 1), 3500);
+
+      // Update products at the end of each wheel's spin
       setTimeout(() => {
         if (safeFilteredForehandRubbers.length > 0) {
           const randomForehand = safeFilteredForehandRubbers[Math.floor(Math.random() * safeFilteredForehandRubbers.length)];
           onForehandChange(randomForehand);
-          // Randomly select sponge size for forehand
           if (randomForehand.Rubber_Sponge_Sizes && randomForehand.Rubber_Sponge_Sizes.length > 0) {
             const randomThickness = randomForehand.Rubber_Sponge_Sizes[Math.floor(Math.random() * randomForehand.Rubber_Sponge_Sizes.length)];
             onForehandThicknessChange(randomThickness);
@@ -151,12 +156,10 @@ const SlotMachine = ({
         }
       }, 1500);
 
-      // Second wheel (Blade) stops at 3500ms (1500ms + 2000ms)
       setTimeout(() => {
         if (safeFilteredBlades.length > 0) {
           const randomBlade = safeFilteredBlades[Math.floor(Math.random() * safeFilteredBlades.length)];
           onBladeChange(randomBlade);
-          // Randomly select grip type for blade
           if (randomBlade.Blade_Grip && randomBlade.Blade_Grip.length > 0) {
             const randomGrip = randomBlade.Blade_Grip[Math.floor(Math.random() * randomBlade.Blade_Grip.length)];
             onGripChange(randomGrip);
@@ -164,12 +167,10 @@ const SlotMachine = ({
         }
       }, 3500);
 
-      // Third wheel (Backhand) stops at 6000ms (3500ms + 2500ms)
       setTimeout(() => {
         if (safeFilteredBackhandRubbers.length > 0) {
           const randomBackhand = safeFilteredBackhandRubbers[Math.floor(Math.random() * safeFilteredBackhandRubbers.length)];
           onBackhandChange(randomBackhand);
-          // Randomly select sponge size for backhand
           if (randomBackhand.Rubber_Sponge_Sizes && randomBackhand.Rubber_Sponge_Sizes.length > 0) {
             const randomThickness = randomBackhand.Rubber_Sponge_Sizes[Math.floor(Math.random() * randomBackhand.Rubber_Sponge_Sizes.length)];
             onBackhandThicknessChange(randomThickness);
@@ -179,8 +180,6 @@ const SlotMachine = ({
 
       await new Promise(resolve => setTimeout(resolve, 6000));
     }
-
-    setIsSpinning(false);
   };
 
   const SlotWheel = ({ 
@@ -246,48 +245,25 @@ const SlotMachine = ({
 
     // Update current index only when not spinning
     useEffect(() => {
-      if (!localSpinning) {
+      if (!isSpinning) {
         const newIndex = items.findIndex(item => getName(item) === getName(selected));
         setCurrentIndex(newIndex);
       }
-    }, [selected, items, localSpinning]);
+    }, [selected, items, isSpinning]);
 
-    // Start spinning only once when isSpinning becomes true, with delay before starting
+    // Trigger spin when spinKey changes
     useEffect(() => {
-      if (isSpinning && !hasSpun.current) {
-        hasSpun.current = true;
-        isAnimating.current = true;
+      if (spinKey !== prevSpinKey.current && spinKey > 0) {
+        prevSpinKey.current = spinKey;
+        setIsSpinning(true);
         
-        // Calculate animation duration based on delay
-        const animationDuration = delay === 0 ? 1500 : delay === 1500 ? 2000 : 2500;
+        const timer = setTimeout(() => {
+          setIsSpinning(false);
+        }, duration * 1000);
         
-        // Start animation after delay
-        timers.current.start = setTimeout(() => {
-          setLocalSpinning(true);
-          setAnimationKey(prev => prev + 1);
-          
-          // Stop spinning after animation completes
-          timers.current.stop = setTimeout(() => {
-            setLocalSpinning(false);
-            isAnimating.current = false;
-          }, animationDuration);
-        }, delay);
+        return () => clearTimeout(timer);
       }
-      
-      // Reset when spinning stops
-      if (!isSpinning && !isAnimating.current) {
-        hasSpun.current = false;
-        setLocalSpinning(false);
-      }
-      
-      // Only cleanup on unmount, not on re-renders during animation
-      return () => {
-        if (!isAnimating.current) {
-          if (timers.current.start) clearTimeout(timers.current.start);
-          if (timers.current.stop) clearTimeout(timers.current.stop);
-        }
-      };
-    }, [isSpinning, delay]);
+    }, [spinKey, duration]);
 
     const handleWheel = (e: React.WheelEvent) => {
       if (isSpinning) return;
@@ -373,9 +349,9 @@ const SlotMachine = ({
           {/* Items container */}
           <div className="relative h-full flex flex-col items-center justify-center">
             <AnimatePresence mode="wait">
-              {localSpinning ? (
+              {isSpinning ? (
                 <motion.div
-                  key={animationKey}
+                  key={spinKey}
                   className="absolute inset-0 overflow-hidden"
                   style={{ willChange: 'transform' }}
                 >
@@ -386,7 +362,7 @@ const SlotMachine = ({
                       y: -3600,
                     }}
                     transition={{
-                      duration: delay === 0 ? 1.5 : delay === 1500 ? 2.0 : 2.5,
+                      duration: duration,
                       ease: [0.33, 1, 0.68, 1],
                       type: "tween"
                     }}
