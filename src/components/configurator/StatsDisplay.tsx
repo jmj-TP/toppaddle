@@ -130,9 +130,9 @@ const StatsDisplay = ({
     <div className="flex items-center gap-2 mb-3">
       <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
       <span className="text-sm font-medium min-w-[60px]">{label}:</span>
-      <div className="flex-1 bg-secondary/50 dark:bg-secondary/30 rounded-full h-2">
+      <div className="flex-1 bg-muted dark:bg-secondary/30 rounded-full h-2">
         <div 
-          className="bg-accent rounded-full h-2 transition-all duration-500" 
+          className="bg-primary dark:bg-accent rounded-full h-2 transition-all duration-500"
           style={{ width: `${value}%` }}
         />
       </div>

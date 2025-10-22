@@ -20,9 +20,9 @@ const ComponentStatsCard = ({ component, type }: ComponentStatsCardProps) => {
     <div className="flex items-center gap-2 mb-2">
       <Icon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
       <span className="text-xs font-medium min-w-[50px]">{label}:</span>
-      <div className="flex-1 bg-secondary/50 dark:bg-secondary/30 rounded-full h-1.5">
+      <div className="flex-1 bg-muted dark:bg-secondary/30 rounded-full h-1.5">
         <div 
-          className="bg-accent rounded-full h-1.5 transition-all duration-500" 
+          className="bg-primary dark:bg-accent rounded-full h-1.5 transition-all duration-500"
           style={{ width: `${value}%` }}
         />
       </div>
