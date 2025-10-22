@@ -398,6 +398,20 @@ const Configurator = () => {
       <Header />
       <main className="flex-1 bg-gradient-to-b from-background to-secondary/30 py-12">
         <div className="container mx-auto px-4 max-w-7xl">
+          {/* Quiz Recommendation Note */}
+          <div className="mb-8 bg-primary/5 border border-primary/20 rounded-xl p-4 text-center animate-fade-in">
+            <p className="font-body text-sm md:text-base text-foreground/80">
+              <span className="font-semibold text-primary">Don't know what to choose?</span> Try our{" "}
+              <a 
+                href="/" 
+                className="text-primary hover:text-primary/80 underline underline-offset-2 font-semibold transition-colors"
+              >
+                quiz
+              </a>
+              {" "}to get the perfect recommendation tailored to your playing style.
+            </p>
+          </div>
+          
           {/* Header */}
           <div className="mb-8 space-y-4">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent animate-fade-in">
