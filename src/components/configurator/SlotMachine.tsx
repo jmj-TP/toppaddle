@@ -138,7 +138,7 @@ const SlotMachine = ({
       const randomRacket = preAssembledRackets[Math.floor(Math.random() * preAssembledRackets.length)];
       onRacketChange(randomRacket);
     } else {
-      // First wheel stops at 2000ms
+      // First wheel (Forehand) stops at 1500ms
       setTimeout(() => {
         if (safeFilteredForehandRubbers.length > 0) {
           const randomForehand = safeFilteredForehandRubbers[Math.floor(Math.random() * safeFilteredForehandRubbers.length)];
@@ -149,9 +149,9 @@ const SlotMachine = ({
             onForehandThicknessChange(randomThickness);
           }
         }
-      }, 2000);
+      }, 1500);
 
-      // Second wheel stops at 3000ms (1 second after first)
+      // Second wheel (Blade) stops at 3500ms (1500ms + 2000ms)
       setTimeout(() => {
         if (safeFilteredBlades.length > 0) {
           const randomBlade = safeFilteredBlades[Math.floor(Math.random() * safeFilteredBlades.length)];
@@ -162,9 +162,9 @@ const SlotMachine = ({
             onGripChange(randomGrip);
           }
         }
-      }, 3000);
+      }, 3500);
 
-      // Third wheel stops at 4000ms (1 second after second)
+      // Third wheel (Backhand) stops at 6000ms (3500ms + 2500ms)
       setTimeout(() => {
         if (safeFilteredBackhandRubbers.length > 0) {
           const randomBackhand = safeFilteredBackhandRubbers[Math.floor(Math.random() * safeFilteredBackhandRubbers.length)];
@@ -175,9 +175,9 @@ const SlotMachine = ({
             onBackhandThicknessChange(randomThickness);
           }
         }
-      }, 4000);
+      }, 6000);
 
-      await new Promise(resolve => setTimeout(resolve, 4200));
+      await new Promise(resolve => setTimeout(resolve, 6000));
     }
 
     setIsSpinning(false);
@@ -250,24 +250,24 @@ const SlotMachine = ({
       }
     }, [selected, items, localSpinning]);
 
-    // Start spinning only once when isSpinning becomes true
+    // Start spinning only once when isSpinning becomes true, with delay before starting
     useEffect(() => {
       if (isSpinning && !hasSpun.current) {
         hasSpun.current = true;
-        setLocalSpinning(true);
-        setAnimationKey(prev => prev + 1);
         
-        // Stop spinning after animation completes (2000ms base + delay)
-        const timer = setTimeout(() => {
-          setLocalSpinning(false);
-        }, 2000 + delay);
+        // Start animation after delay
+        const startTimer = setTimeout(() => {
+          setLocalSpinning(true);
+          setAnimationKey(prev => prev + 1);
+        }, delay);
         
-        return () => clearTimeout(timer);
+        return () => clearTimeout(startTimer);
       }
       
       // Reset ref when spinning stops
       if (!isSpinning) {
         hasSpun.current = false;
+        setLocalSpinning(false);
       }
     }, [isSpinning, delay]);
 
@@ -368,9 +368,12 @@ const SlotMachine = ({
                       y: -3600,
                     }}
                     transition={{
-                      duration: (2000 + delay) / 1000,
-                      ease: [0.22, 0.61, 0.36, 1],
+                      duration: delay === 0 ? 1.5 : delay === 1500 ? 2.0 : 2.5,
+                      ease: [0.33, 1, 0.68, 1],
                       type: "tween"
+                    }}
+                    onAnimationComplete={() => {
+                      setLocalSpinning(false);
                     }}
                     style={{ 
                       willChange: 'transform'
@@ -639,7 +642,7 @@ const SlotMachine = ({
               selected={selectedBlade}
               onChange={onBladeChange}
               label="Blade"
-              delay={1000}
+              delay={1500}
               filters={bladeFilters}
               allItems={blades}
               filterComponent={
@@ -678,7 +681,7 @@ const SlotMachine = ({
               selected={selectedBackhand}
               onChange={onBackhandChange}
               label="Backhand Rubber"
-              delay={2000}
+              delay={3500}
               filters={backhandFilters}
               allItems={rubbers}
               filterComponent={
