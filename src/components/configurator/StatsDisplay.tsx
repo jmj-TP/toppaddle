@@ -242,6 +242,18 @@ const StatsDisplay = ({
                 </div>
               </>
             )}
+            
+            {!isEditMode && (
+              <Button
+                onClick={handleEditPreferences}
+                variant="outline"
+                size="sm"
+                className="ml-auto hidden lg:flex"
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                Change Preferences
+              </Button>
+            )}
           </div>
 
           {/* Stats Bars or Sliders */}
@@ -333,31 +345,9 @@ const StatsDisplay = ({
               onClick={handleEditPreferences}
               variant="outline"
               size="lg"
-              className="w-full md:hidden py-6 font-semibold"
+              className="w-full lg:hidden py-6 font-semibold"
             >
               <Settings className="mr-2 h-5 w-5" />
-              Change Preferences
-            </Button>
-          )}
-          {!isEditMode && (
-            <Button
-              onClick={handleEditPreferences}
-              variant="outline"
-              size="sm"
-              className="w-full hidden md:flex lg:hidden"
-            >
-              <Settings className="mr-2 h-4 w-4" />
-              Change Preferences
-            </Button>
-          )}
-          {!isEditMode && (
-            <Button
-              onClick={handleEditPreferences}
-              variant="outline"
-              size="sm"
-              className="w-full hidden lg:block"
-            >
-              <Settings className="mr-2 h-4 w-4" />
               Change Preferences
             </Button>
           )}
