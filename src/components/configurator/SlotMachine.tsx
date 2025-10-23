@@ -573,8 +573,14 @@ const SlotMachine = ({
               </span>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild onClick={(e) => e.stopPropagation()}>
-                    <Info className="w-3.5 h-3.5 text-muted-foreground" />
+                  <TooltipTrigger asChild>
+                    <button 
+                      type="button"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex"
+                    >
+                      <Info className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground transition-colors" />
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-xs">
                     <div className="space-y-1.5 text-xs">
@@ -633,8 +639,14 @@ const SlotMachine = ({
               </span>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild onClick={(e) => e.stopPropagation()}>
-                    <Info className="w-3.5 h-3.5 text-muted-foreground" />
+                  <TooltipTrigger asChild>
+                    <button 
+                      type="button"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex"
+                    >
+                      <Info className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground transition-colors" />
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-xs">
                     <div className="space-y-1.5 text-xs">

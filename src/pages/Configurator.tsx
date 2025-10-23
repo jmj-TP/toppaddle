@@ -631,12 +631,12 @@ const Configurator = () => {
       <main className="flex-1 bg-gradient-to-b from-background to-secondary/30 py-12">
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Quiz Recommendation Note */}
-          <div className="mb-8 bg-primary/5 border border-primary/20 rounded-xl p-4 text-center animate-fade-in">
-            <p className="font-body text-sm md:text-base text-foreground/80">
+          <div className="mb-8 bg-primary/10 border-2 border-primary/30 rounded-xl p-4 text-center animate-fade-in shadow-md">
+            <p className="font-body text-sm md:text-base text-foreground">
               <span className="font-semibold text-primary">Don't know what to choose?</span> Try our{" "}
               <a 
                 href="/" 
-                className="text-primary hover:text-primary/80 underline underline-offset-2 font-semibold transition-colors"
+                className="text-primary hover:text-primary/70 underline underline-offset-2 font-bold transition-colors"
               >
                 quiz
               </a>
@@ -741,22 +741,12 @@ const Configurator = () => {
                         <div className="mt-4 pt-4 border-t border-border">
                           <p className="font-semibold text-foreground mb-2">Performance Stats:</p>
                           <div className="grid grid-cols-2 gap-2">
-                            <p>Speed: {selectedRacket.Racket_Speed}/10</p>
-                            <p>Spin: {selectedRacket.Racket_Spin}/10</p>
-                            <p>Control: {selectedRacket.Racket_Control}/10</p>
-                            <p>Power: {Math.round((selectedRacket.Racket_Speed + selectedRacket.Racket_Spin) / 2)}/10</p>
+                            <p>Speed: {selectedRacket.Racket_Speed}/100</p>
+                            <p>Spin: {selectedRacket.Racket_Spin}/100</p>
+                            <p>Control: {selectedRacket.Racket_Control}/100</p>
+                            <p>Power: {Math.round((selectedRacket.Racket_Speed + selectedRacket.Racket_Spin) / 2)}/100</p>
                           </div>
                         </div>
-                        {selectedRacket.Racket_Affiliate_Link && (
-                          <a 
-                            href={selectedRacket.Racket_Affiliate_Link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-block mt-4 text-primary hover:text-primary/80 font-semibold transition-colors"
-                          >
-                            View on Amazon →
-                          </a>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -778,25 +768,18 @@ const Configurator = () => {
                       <p className="text-muted-foreground"><span className="font-semibold text-foreground">Style:</span> {selectedForehand.Rubber_Style}</p>
                       <p className="text-muted-foreground"><span className="font-semibold text-foreground">Sponge:</span> {selectedForehandThickness}</p>
                       <p className="text-muted-foreground"><span className="font-semibold text-foreground">Color:</span> {selectedForehandColor}</p>
+                      {selectedForehand.Rubber_Weight && (
+                        <p className="text-muted-foreground"><span className="font-semibold text-foreground">Weight:</span> {selectedForehand.Rubber_Weight}g</p>
+                      )}
                       <div className="mt-3 pt-3 border-t border-border">
                         <p className="font-semibold text-foreground mb-1 text-xs">Stats:</p>
                         <div className="grid grid-cols-2 gap-1 text-xs text-muted-foreground">
-                          <p>Speed: {selectedForehand.Rubber_Speed}/10</p>
-                          <p>Spin: {selectedForehand.Rubber_Spin}/10</p>
-                          <p>Control: {selectedForehand.Rubber_Control}/10</p>
-                          <p>Power: {selectedForehand.Rubber_Power}/10</p>
+                          <p>Speed: {selectedForehand.Rubber_Speed}/100</p>
+                          <p>Spin: {selectedForehand.Rubber_Spin}/100</p>
+                          <p>Control: {selectedForehand.Rubber_Control}/100</p>
+                          <p>Power: {selectedForehand.Rubber_Power}/100</p>
                         </div>
                       </div>
-                      {selectedForehand.Rubber_Affiliate_Link && (
-                        <a 
-                          href={selectedForehand.Rubber_Affiliate_Link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-block mt-3 text-primary hover:text-primary/80 font-semibold transition-colors text-xs"
-                        >
-                          View on Amazon →
-                        </a>
-                      )}
                     </div>
                   </div>
 
@@ -820,22 +803,12 @@ const Configurator = () => {
                       <div className="mt-3 pt-3 border-t border-border">
                         <p className="font-semibold text-foreground mb-1 text-xs">Stats:</p>
                         <div className="grid grid-cols-2 gap-1 text-xs text-muted-foreground">
-                          <p>Speed: {selectedBlade.Blade_Speed}/10</p>
-                          <p>Spin: {selectedBlade.Blade_Spin}/10</p>
-                          <p>Control: {selectedBlade.Blade_Control}/10</p>
-                          <p>Power: {selectedBlade.Blade_Power}/10</p>
+                          <p>Speed: {selectedBlade.Blade_Speed}/100</p>
+                          <p>Spin: {selectedBlade.Blade_Spin}/100</p>
+                          <p>Control: {selectedBlade.Blade_Control}/100</p>
+                          <p>Power: {selectedBlade.Blade_Power}/100</p>
                         </div>
                       </div>
-                      {selectedBlade.Blade_Affiliate_Link && (
-                        <a 
-                          href={selectedBlade.Blade_Affiliate_Link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-block mt-3 text-primary hover:text-primary/80 font-semibold transition-colors text-xs"
-                        >
-                          View on Amazon →
-                        </a>
-                      )}
                     </div>
                   </div>
 
@@ -854,25 +827,18 @@ const Configurator = () => {
                       <p className="text-muted-foreground"><span className="font-semibold text-foreground">Style:</span> {selectedBackhand.Rubber_Style}</p>
                       <p className="text-muted-foreground"><span className="font-semibold text-foreground">Sponge:</span> {selectedBackhandThickness}</p>
                       <p className="text-muted-foreground"><span className="font-semibold text-foreground">Color:</span> {selectedBackhandColor}</p>
+                      {selectedBackhand.Rubber_Weight && (
+                        <p className="text-muted-foreground"><span className="font-semibold text-foreground">Weight:</span> {selectedBackhand.Rubber_Weight}g</p>
+                      )}
                       <div className="mt-3 pt-3 border-t border-border">
                         <p className="font-semibold text-foreground mb-1 text-xs">Stats:</p>
                         <div className="grid grid-cols-2 gap-1 text-xs text-muted-foreground">
-                          <p>Speed: {selectedBackhand.Rubber_Speed}/10</p>
-                          <p>Spin: {selectedBackhand.Rubber_Spin}/10</p>
-                          <p>Control: {selectedBackhand.Rubber_Control}/10</p>
-                          <p>Power: {selectedBackhand.Rubber_Power}/10</p>
+                          <p>Speed: {selectedBackhand.Rubber_Speed}/100</p>
+                          <p>Spin: {selectedBackhand.Rubber_Spin}/100</p>
+                          <p>Control: {selectedBackhand.Rubber_Control}/100</p>
+                          <p>Power: {selectedBackhand.Rubber_Power}/100</p>
                         </div>
                       </div>
-                      {selectedBackhand.Rubber_Affiliate_Link && (
-                        <a 
-                          href={selectedBackhand.Rubber_Affiliate_Link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-block mt-3 text-primary hover:text-primary/80 font-semibold transition-colors text-xs"
-                        >
-                          View on Amazon →
-                        </a>
-                      )}
                     </div>
                   </div>
                 </div>
