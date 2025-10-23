@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import DarkModeToggle from "./DarkModeToggle";
+import { CartDrawer } from "./CartDrawer";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,16 +45,20 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
+            <CartDrawer />
             <DarkModeToggle />
           </div>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden rounded-md p-2 text-primary-foreground hover:bg-primary/90"
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile menu button and cart */}
+          <div className="md:hidden flex items-center gap-2">
+            <CartDrawer />
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="rounded-md p-2 text-primary-foreground hover:bg-primary/90"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}

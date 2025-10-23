@@ -45,6 +45,7 @@ interface StatsDisplayProps {
   racket: PreAssembledRacket | null;
   onRandomReroll: () => void;
   onPreferencesChange?: (preferences: UserPreferences) => void;
+  onAddToCart?: () => void;
 }
 
 const StatsDisplay = ({
@@ -56,6 +57,7 @@ const StatsDisplay = ({
   racket,
   onRandomReroll,
   onPreferencesChange,
+  onAddToCart,
 }: StatsDisplayProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -379,6 +381,15 @@ const StatsDisplay = ({
           >
             Random Reroll
           </Button>
+          {onAddToCart && (
+            <Button
+              onClick={onAddToCart}
+              size="lg"
+              className="w-full text-xl py-8 font-bold shadow-lg hover:shadow-xl transition-all border-4 border-black rounded-2xl"
+            >
+              Add to Cart
+            </Button>
+          )}
         </div>
       </div>
 

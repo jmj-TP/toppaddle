@@ -11,10 +11,17 @@ import { toast } from "sonner";
 import type { ProductFilters } from "@/components/configurator/ProductFilter";
 import SEO from "@/components/SEO";
 import StructuredData from "@/components/StructuredData";
+import { fetchShopifyProducts, type ShopifyProduct } from "@/lib/shopify";
+import { useCartStore } from "@/stores/cartStore";
 
 const Configurator = () => {
   const [searchParams] = useSearchParams();
   const [isPreassembled, setIsPreassembled] = useState(false);
+  
+  // Shopify products state
+  const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const addItem = useCartStore(state => state.addItem);
   
   // State for custom mode
   const [selectedBlade, setSelectedBlade] = useState<Blade>(blades[0]);
@@ -156,6 +163,24 @@ const Configurator = () => {
       setSelectedBackhand(bh);
     }
   }, [searchParams]);
+
+  // Fetch Shopify products on mount
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const products = await fetchShopifyProducts();
+        setShopifyProducts(products);
+      } catch (error) {
+        console.error("Error loading Shopify products:", error);
+        toast.error("Unable to load products", {
+          description: "Please refresh the page to try again."
+        });
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    };
+    loadProducts();
+  }, []);
 
   const handleRandomReroll = () => {
     setSpinTrigger(prev => prev + 1);
@@ -369,6 +394,170 @@ const Configurator = () => {
     return { speed, spin, control, power, price: totalPrice };
   };
 
+  // Helper function to find matching Shopify variant
+  const findMatchingVariant = (
+    product: ShopifyProduct,
+    options: Array<{ name: string; value: string }>
+  ): string | null => {
+    const variants = product.node.variants.edges;
+    
+    for (const variant of variants) {
+      const variantOptions = variant.node.selectedOptions;
+      
+      // Check if all required options match
+      const allMatch = options.every(requiredOption => 
+        variantOptions.some(variantOption => 
+          variantOption.name === requiredOption.name && 
+          variantOption.value === requiredOption.value
+        )
+      );
+      
+      if (allMatch && variant.node.availableForSale) {
+        return variant.node.id;
+      }
+    }
+    
+    return null;
+  };
+
+  // Add to cart handler
+  const handleAddToCart = () => {
+    if (isLoadingProducts) {
+      toast.error("Products are still loading", {
+        description: "Please wait a moment and try again."
+      });
+      return;
+    }
+
+    if (shopifyProducts.length === 0) {
+      toast.error("No products available", {
+        description: "Please make sure products are created in your Shopify store."
+      });
+      return;
+    }
+
+    try {
+      if (isPreassembled) {
+        // For preassembled rackets - find matching product
+        const racketProduct = shopifyProducts.find(p => 
+          p.node.title.toLowerCase().includes(selectedRacket.Racket_Name.toLowerCase())
+        );
+
+        if (!racketProduct) {
+          toast.error("Product not found in store", {
+            description: `${selectedRacket.Racket_Name} is not available in the Shopify store yet.`
+          });
+          return;
+        }
+
+        const variant = racketProduct.node.variants.edges[0];
+        if (!variant) {
+          toast.error("No variant available");
+          return;
+        }
+
+        addItem({
+          product: racketProduct,
+          variantId: variant.node.id,
+          variantTitle: variant.node.title,
+          price: variant.node.price,
+          quantity: 1,
+          selectedOptions: variant.node.selectedOptions
+        });
+
+        toast.success("Added to cart", {
+          description: `${selectedRacket.Racket_Name} added to your cart`
+        });
+      } else {
+        // For custom rackets - find blade and both rubbers with their variants
+        const bladeProduct = shopifyProducts.find(p => 
+          p.node.title.toLowerCase().includes(selectedBlade.Blade_Name.toLowerCase())
+        );
+        const forehandProduct = shopifyProducts.find(p => 
+          p.node.title.toLowerCase().includes(selectedForehand.Rubber_Name.toLowerCase())
+        );
+        const backhandProduct = shopifyProducts.find(p => 
+          p.node.title.toLowerCase().includes(selectedBackhand.Rubber_Name.toLowerCase())
+        );
+
+        if (!bladeProduct || !forehandProduct || !backhandProduct) {
+          const missing = [];
+          if (!bladeProduct) missing.push(selectedBlade.Blade_Name);
+          if (!forehandProduct) missing.push(selectedForehand.Rubber_Name);
+          if (!backhandProduct) missing.push(selectedBackhand.Rubber_Name);
+          
+          toast.error("Products not found in store", {
+            description: `The following products are not available: ${missing.join(", ")}`
+          });
+          return;
+        }
+
+        // Find matching variants for each component
+        const bladeVariantId = findMatchingVariant(bladeProduct, [
+          { name: "Grip Type", value: selectedGrip }
+        ]);
+
+        const forehandVariantId = findMatchingVariant(forehandProduct, [
+          { name: "Sponge Thickness", value: selectedForehandThickness },
+          { name: "Color", value: "Red" } // Default to red for forehand
+        ]);
+
+        const backhandVariantId = findMatchingVariant(backhandProduct, [
+          { name: "Sponge Thickness", value: selectedBackhandThickness },
+          { name: "Color", value: "Black" } // Default to black for backhand
+        ]);
+
+        if (!bladeVariantId || !forehandVariantId || !backhandVariantId) {
+          toast.error("Variant not available", {
+            description: "The selected configuration is not available in the store."
+          });
+          return;
+        }
+
+        // Add all three items to cart
+        const bladeVariant = bladeProduct.node.variants.edges.find(v => v.node.id === bladeVariantId)!;
+        const forehandVariant = forehandProduct.node.variants.edges.find(v => v.node.id === forehandVariantId)!;
+        const backhandVariant = backhandProduct.node.variants.edges.find(v => v.node.id === backhandVariantId)!;
+
+        addItem({
+          product: bladeProduct,
+          variantId: bladeVariantId,
+          variantTitle: bladeVariant.node.title,
+          price: bladeVariant.node.price,
+          quantity: 1,
+          selectedOptions: bladeVariant.node.selectedOptions
+        });
+
+        addItem({
+          product: forehandProduct,
+          variantId: forehandVariantId,
+          variantTitle: forehandVariant.node.title,
+          price: forehandVariant.node.price,
+          quantity: 1,
+          selectedOptions: forehandVariant.node.selectedOptions
+        });
+
+        addItem({
+          product: backhandProduct,
+          variantId: backhandVariantId,
+          variantTitle: backhandVariant.node.title,
+          price: backhandVariant.node.price,
+          quantity: 1,
+          selectedOptions: backhandVariant.node.selectedOptions
+        });
+
+        toast.success("Custom racket added to cart", {
+          description: "3 items added: blade and 2 rubbers with your selected options"
+        });
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Failed to add to cart", {
+        description: "Please try again."
+      });
+    }
+  };
+
   const stats = isPreassembled 
     ? {
         speed: selectedRacket.Racket_Speed,
@@ -479,6 +668,7 @@ const Configurator = () => {
                 racket={isPreassembled ? selectedRacket : null}
                 onRandomReroll={handleRandomReroll}
                 onPreferencesChange={handlePreferencesChange}
+                onAddToCart={handleAddToCart}
               />
             </div>
           </div>
