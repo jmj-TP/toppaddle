@@ -31,8 +31,8 @@ const Configurator = () => {
   // State for preassembled mode
   const [selectedRacket, setSelectedRacket] = useState<PreAssembledRacket>(preAssembledRackets[0]);
   
-  // Filters - using values that match Shopify variants
-  const [selectedGrip, setSelectedGrip] = useState<string>("ST (Straight)");
+  // Filters - using values that match products.ts and Shopify
+  const [selectedGrip, setSelectedGrip] = useState<string>("Straight");
   const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("2.1mm");
   const [selectedBackhandThickness, setSelectedBackhandThickness] = useState<string>("2.1mm");
   
