@@ -33,10 +33,23 @@ const Configurator = () => {
   
   // Filters - using values that match products.ts and Shopify
   const [selectedGrip, setSelectedGrip] = useState<string>("FL");
-  const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("1.7mm");
-  const [selectedBackhandThickness, setSelectedBackhandThickness] = useState<string>("1.7mm");
+  const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("");
+  const [selectedBackhandThickness, setSelectedBackhandThickness] = useState<string>("");
   const [selectedForehandColor, setSelectedForehandColor] = useState<string>("Red");
   const [selectedBackhandColor, setSelectedBackhandColor] = useState<string>("Black");
+  
+  // Initialize default thicknesses based on selected rubbers
+  useEffect(() => {
+    if (selectedForehand.Rubber_Sponge_Sizes && selectedForehand.Rubber_Sponge_Sizes.length > 0) {
+      setSelectedForehandThickness(selectedForehand.Rubber_Sponge_Sizes[0]);
+    }
+  }, [selectedForehand]);
+  
+  useEffect(() => {
+    if (selectedBackhand.Rubber_Sponge_Sizes && selectedBackhand.Rubber_Sponge_Sizes.length > 0) {
+      setSelectedBackhandThickness(selectedBackhand.Rubber_Sponge_Sizes[0]);
+    }
+  }, [selectedBackhand]);
   
   // Handler for forehand color that auto-switches backhand if colors match
   const handleForehandColorChange = (color: string) => {
