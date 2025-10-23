@@ -97,7 +97,7 @@ export const blades: Blade[] = [
     Blade_Price: 70.0,
     Blade_Level: "Intermediate",
     Blade_Weight: 88.0,
-    Blade_Affiliate_Link: "https://amzn.to/4qbHLIg",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Allround",
   },
   {
@@ -110,7 +110,7 @@ export const blades: Blade[] = [
     Blade_Price: 104.0,
     Blade_Level: "Intermediate",
     Blade_Weight: 88.0,
-    Blade_Affiliate_Link: "https://amzn.to/46Sqjky",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -123,7 +123,7 @@ export const blades: Blade[] = [
     Blade_Price: 62.0,
     Blade_Level: "Intermediate",
     Blade_Weight: 91.0,
-    Blade_Affiliate_Link: "https://amzn.to/4hbWfns",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Allround",
   },
   {
@@ -136,7 +136,7 @@ export const blades: Blade[] = [
     Blade_Price: 166.0,
     Blade_Level: "Advanced",
     Blade_Weight: 87.0,
-    Blade_Affiliate_Link: "https://amzn.to/4opbtI9",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -149,7 +149,7 @@ export const blades: Blade[] = [
     Blade_Price: 166.0,
     Blade_Level: "Advanced",
     Blade_Weight: 86.0,
-    Blade_Affiliate_Link: "https://amzn.to/4nNGcOV",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -162,7 +162,7 @@ export const blades: Blade[] = [
     Blade_Price: 243.0,
     Blade_Level: "Advanced",
     Blade_Weight: 84.0,
-    Blade_Affiliate_Link: "https://amzn.to/48vRWB1",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -175,7 +175,7 @@ export const blades: Blade[] = [
     Blade_Price: 58.0,
     Blade_Level: "Intermediate",
     Blade_Weight: 88.0,
-    Blade_Affiliate_Link: "https://amzn.to/4hjF7ME",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Allround",
   },
   {
@@ -188,7 +188,7 @@ export const blades: Blade[] = [
     Blade_Price: 65.99,
     Blade_Level: "Intermediate",
     Blade_Weight: 82.0,
-    Blade_Affiliate_Link: "https://amzn.to/43dV94F",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Allround",
   },
   {
@@ -201,7 +201,7 @@ export const blades: Blade[] = [
     Blade_Price: 66.59,
     Blade_Level: "Intermediate",
     Blade_Weight: 87.0,
-    Blade_Affiliate_Link: "https://amzn.to/42FtDNm",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Allround",
   },
   {
@@ -214,7 +214,7 @@ export const blades: Blade[] = [
     Blade_Price: 94.49,
     Blade_Level: "Advanced",
     Blade_Weight: 82.0,
-    Blade_Affiliate_Link: "https://amzn.to/4haHuBl",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -227,7 +227,7 @@ export const blades: Blade[] = [
     Blade_Price: 192.84,
     Blade_Level: "Advanced",
     Blade_Weight: 90.0,
-    Blade_Affiliate_Link: "https://amzn.to/4n5bZtF",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -240,7 +240,7 @@ export const blades: Blade[] = [
     Blade_Price: 149.72,
     Blade_Level: "Advanced",
     Blade_Weight: 85.0,
-    Blade_Affiliate_Link: "https://amzn.to/4935tAc",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -253,8 +253,7 @@ export const blades: Blade[] = [
     Blade_Price: 55.52,
     Blade_Level: "Intermediate",
     Blade_Weight: 90.0,
-    Blade_Affiliate_Link:
-      "https://www.amazon.com/JOOLA-Weixing-Flared-Table-Tennis/dp/B00589C40M?dib=eyJ2IjoiMSJ9.EMg6Lq73yBIuQzH0T33Axd9s83UWwWxyNJOBz-kDgGh3IxJGkydsikBtAn56DAKTSB_AjrUjcUd9V_7pqIDHOcpYxIN7cd0Mrb8Z6FzlKtw.jOKuYme2lk-lpGD9ExZIpbRSWirzx399pE1s_9ryMZk&dib_tag=se&keywords=JOOLA+CWX+blade&qid=1760026698&sr=8-3",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Defensive",
   },
   {
@@ -267,7 +266,7 @@ export const blades: Blade[] = [
     Blade_Price: 41.09,
     Blade_Level: "Intermediate",
     Blade_Weight: 84.0,
-    Blade_Affiliate_Link: "https://www.amazon.ca/Andro-Inizio-Table-Tennis-Blade/dp/B07N8NT7FG",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -280,7 +279,7 @@ export const blades: Blade[] = [
     Blade_Price: 89.95,
     Blade_Level: "Advanced",
     Blade_Weight: 90.0,
-    Blade_Affiliate_Link: "https://amzn.to/3JbGzDZ",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -293,7 +292,7 @@ export const blades: Blade[] = [
     Blade_Price: 89.95,
     Blade_Level: "Intermediate",
     Blade_Weight: 90.0,
-    Blade_Affiliate_Link: "https://amzn.to/47obMwW",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -306,7 +305,7 @@ export const blades: Blade[] = [
     Blade_Price: 89.95,
     Blade_Level: "Advanced",
     Blade_Weight: 90.0,
-    Blade_Affiliate_Link: "https://amzn.to/4n3evQY",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -319,7 +318,7 @@ export const blades: Blade[] = [
     Blade_Price: 49.95,
     Blade_Level: "Intermediate",
     Blade_Weight: 83.0,
-    Blade_Affiliate_Link: "https://amzn.to/4ofWEHB",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Allround",
   },
   {
@@ -332,7 +331,7 @@ export const blades: Blade[] = [
     Blade_Price: 49.95,
     Blade_Level: "Intermediate",
     Blade_Weight: 83.0,
-    Blade_Affiliate_Link: "https://amzn.to/4n9rkJQ",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -345,7 +344,7 @@ export const blades: Blade[] = [
     Blade_Price: 42.95,
     Blade_Level: "Intermediate",
     Blade_Weight: 89.0,
-    Blade_Affiliate_Link: "https://www.megaspin.net/store/default.asp?pid=dhs-power-g7",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -358,7 +357,7 @@ export const blades: Blade[] = [
     Blade_Price: 44.95,
     Blade_Level: "Intermediate",
     Blade_Weight: 89.0,
-    Blade_Affiliate_Link: "https://www.megaspin.net/store/default.asp?pid=dhs-power-g5x",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -371,7 +370,7 @@ export const blades: Blade[] = [
     Blade_Price: 198.0,
     Blade_Level: "Advanced",
     Blade_Weight: 95.0,
-    Blade_Affiliate_Link: "https://amzn.to/4n0VXBb",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -384,7 +383,7 @@ export const blades: Blade[] = [
     Blade_Price: 89.95,
     Blade_Level: "Advanced",
     Blade_Weight: 89.0,
-    Blade_Affiliate_Link: "https://www.megaspin.net/store/default.asp?pid=dhs-hurricane-301",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -397,7 +396,7 @@ export const blades: Blade[] = [
     Blade_Price: 165.95,
     Blade_Level: "Advanced",
     Blade_Weight: 87.0,
-    Blade_Affiliate_Link: "https://www.megaspin.net/store/default.asp?pid=dhs-hurricane-king-3",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -410,7 +409,7 @@ export const blades: Blade[] = [
     Blade_Price: 76.95,
     Blade_Level: "Intermediate",
     Blade_Weight: 90.0,
-    Blade_Affiliate_Link: "https://www.megaspin.net/store/default.asp?pid=dhs-fang-bo-b2",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
   {
@@ -423,7 +422,7 @@ export const blades: Blade[] = [
     Blade_Price: 89.95,
     Blade_Level: "Advanced",
     Blade_Weight: 68.0,
-    Blade_Affiliate_Link: "https://amzn.to/3KNDs5M",
+    Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Offensive",
   },
 ];
@@ -441,7 +440,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 46,
     Rubber_Sponge_Sizes: ["1.7mm", "1.9mm", "2.1mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/3W8ekZR",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Butterfly Tenergy 05 FX",
@@ -454,7 +453,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 44,
     Rubber_Sponge_Sizes: ["1.7mm", "1.9mm", "2.1mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/4n6Dx1I",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Butterfly Tenergy 05 Hard",
@@ -467,7 +466,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 49,
     Rubber_Sponge_Sizes: ["1.9mm", "2.1mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/3W5GmFu",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Butterfly Dignics 05",
@@ -480,7 +479,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 48.5,
     Rubber_Sponge_Sizes: ["1.9mm", "2.1mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/48vnqr2",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Butterfly Dignics 09C",
@@ -493,7 +492,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 49.1,
     Rubber_Sponge_Sizes: ["1.9mm", "2.1mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/42B0eny",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Butterfly Rozena",
@@ -506,7 +505,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 47,
     Rubber_Sponge_Sizes: ["1.7mm", "1.9mm", "2.1mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/4n6DOlg",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Butterfly Sriver",
@@ -519,7 +518,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 42,
     Rubber_Sponge_Sizes: ["1.5mm", "1.7mm", "1.9mm", "2.1mm", "Max"],
-    Rubber_Affiliate_Link: "https://amzn.to/3J8oAOR",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Butterfly Sriver FX",
@@ -532,7 +531,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 39,
     Rubber_Sponge_Sizes: ["1.9mm", "2.1mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/46PNax0",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Butterfly Feint Long II (long pips)",
@@ -545,7 +544,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Long Pimples",
     Rubber_Weight: 49,
     Rubber_Sponge_Sizes: ["OX", "0.5mm", "1.1mm", "1.3mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/4oiuPhZ",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "JOOLA Dynaryz CMD",
@@ -558,7 +557,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 48,
     Rubber_Sponge_Sizes: ["2.0mm", "Max"],
-    Rubber_Affiliate_Link: "https://amzn.to/4n3Prtm",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "JOOLA Dynaryz ZGR",
@@ -571,7 +570,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 56,
     Rubber_Sponge_Sizes: ["2.0mm", "Max"],
-    Rubber_Affiliate_Link: "https://amzn.to/3JbIBUD",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "JOOLA Dynaryz AGR",
@@ -584,7 +583,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 46,
     Rubber_Sponge_Sizes: ["2.0mm", "Max"],
-    Rubber_Affiliate_Link: "https://amzn.to/4oEHKev",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "JOOLA Dynaryz ACC",
@@ -597,7 +596,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 46,
     Rubber_Sponge_Sizes: ["2.0mm", "Max"],
-    Rubber_Affiliate_Link: "https://amzn.to/4ooPyAW",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Andro Rasanter R50",
@@ -610,7 +609,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 51,
     Rubber_Sponge_Sizes: ["1.7mm", "2.0mm", "2.3mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/3W5JQrm",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Andro Rasanter R47",
@@ -623,7 +622,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 48,
     Rubber_Sponge_Sizes: ["1.7mm", "2.0mm", "2.3mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/48uHCcD",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Andro Rasanter R42",
@@ -636,7 +635,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 46,
     Rubber_Sponge_Sizes: ["1.7mm", "2.0mm", "2.3mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/3JbyajW",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Andro Rasanter R45",
@@ -649,7 +648,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 49,
     Rubber_Sponge_Sizes: ["1.7mm", "2.0mm", "Ultramax"],
-    Rubber_Affiliate_Link: "https://amzn.to/4n3b3pG",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Andro Hexer PowerGrip SFX",
@@ -662,7 +661,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 48,
     Rubber_Sponge_Sizes: ["1.9mm", "2.1mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/4nYMFHe",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "Andro Hexer Duro",
@@ -675,7 +674,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 43,
     Rubber_Sponge_Sizes: ["1.9mm", "2.1mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/4nR9hcB",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "DHS Hurricane 3 Neo (Provincial)",
@@ -688,7 +687,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 46,
     Rubber_Sponge_Sizes: ["2.15mm", "2.2mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/4hfcUGG",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "DHS Hurricane 3 Neo (Blue Sponge / National)",
@@ -701,7 +700,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 50,
     Rubber_Sponge_Sizes: ["2.15mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/3W1KG8F",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "DHS Hurricane 3-50",
@@ -714,7 +713,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 48,
     Rubber_Sponge_Sizes: ["2.15mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/48vfMwJ",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "DHS Hurricane 8",
@@ -727,7 +726,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 52,
     Rubber_Sponge_Sizes: ["2.0mm", "2.1mm", "2.2mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/3WEYVQQ",
+    Rubber_Description: "Professional rubber description coming soon",
   },
   {
     Rubber_Name: "DHS Gold Arc 8",
@@ -740,7 +739,7 @@ export const rubbers: Rubber[] = [
     Rubber_Style: "Normal",
     Rubber_Weight: 49,
     Rubber_Sponge_Sizes: ["2.0mm", "2.1mm", "2.2mm"],
-    Rubber_Affiliate_Link: "https://amzn.to/3W29LQP",
+    Rubber_Description: "Professional rubber description coming soon",
   },
 ];
 
@@ -760,7 +759,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Grip: ["FL", "ST"],
     Racket_Price: 39.95,
     Racket_Level: "Advanced",
-    Racket_Affiliate_Link: "https://amzn.to/3IWc2Kr",
+    Racket_Description: "Professional racket description coming soon",
   },
   {
     Racket_Name: "JOOLA Infinity Carbon",
@@ -776,7 +775,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Grip: ["FL"],
     Racket_Price: 89.95,
     Racket_Level: "Advanced",
-    Racket_Affiliate_Link: "https://amzn.to/4qfLu7K",
+    Racket_Description: "Professional racket description coming soon",
   },
   {
     Racket_Name: "JOOLA Match Pro",
@@ -792,7 +791,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Grip: ["FL"],
     Racket_Price: 19.95,
     Racket_Level: "Beginner",
-    Racket_Affiliate_Link: "https://amzn.to/3KNlAb7",
+    Racket_Description: "Professional racket description coming soon",
   },
   {
     Racket_Name: "Butterfly B302FL",
@@ -808,7 +807,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Grip: ["FL"],
     Racket_Price: 24.83,
     Racket_Level: "Beginner",
-    Racket_Affiliate_Link: "https://amzn.to/4n2PUvK",
+    Racket_Description: "Professional racket description coming soon",
   },
   {
     Racket_Name: "Butterfly 401",
@@ -824,7 +823,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Grip: ["FL"],
     Racket_Price: 37.99,
     Racket_Level: "Beginner",
-    Racket_Affiliate_Link: "https://amzn.to/3WF04b6",
+    Racket_Description: "Professional racket description coming soon",
   },
   {
     Racket_Name: "DHS 9002",
@@ -840,7 +839,7 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Grip: ["FL"],
     Racket_Price: 83.99,
     Racket_Level: "Advanced",
-    Racket_Affiliate_Link: "https://amzn.to/3KRP2g8",
+    Racket_Description: "Professional racket description coming soon",
   },
   {
     Racket_Name: "DHS 5002",
@@ -856,6 +855,6 @@ export const preAssembledRackets: PreAssembledRacket[] = [
     Racket_Grip: ["FL"],
     Racket_Price: 59.99,
     Racket_Level: "Intermediate",
-    Racket_Affiliate_Link: "https://amzn.to/3W6t3EK",
+    Racket_Description: "Professional racket description coming soon",
   },
 ];
