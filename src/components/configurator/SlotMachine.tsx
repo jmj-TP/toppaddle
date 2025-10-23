@@ -7,7 +7,6 @@ import { Info, BarChart3, ChevronUp, ChevronDown, ChevronRight } from "lucide-re
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import ComponentStatsCard from "./ComponentStatsCard";
 
 interface SlotMachineProps {
@@ -551,6 +550,7 @@ const SlotMachine = ({
   // Selector components
   const GripSelector = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [infoOpen, setInfoOpen] = useState(false);
     const availableGrips = selectedBlade.Blade_Grip || [];
     
     const gripDescriptions = {
@@ -571,27 +571,33 @@ const SlotMachine = ({
               <span className="text-xs font-medium">
                 {isOpen ? 'Choose Grip Type' : `Grip: ${selectedGrip}`}
               </span>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button 
-                      type="button"
-                      onClick={(e) => e.stopPropagation()}
-                      className="inline-flex"
-                    >
-                      <Info className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground transition-colors" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-xs">
-                    <div className="space-y-1.5 text-xs">
-                      <p className="font-semibold">Grip Types:</p>
-                      {Object.entries(gripDescriptions).map(([key, desc]) => (
-                        <p key={key} className="text-muted-foreground">{desc}</p>
-                      ))}
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Popover open={infoOpen} onOpenChange={setInfoOpen}>
+                <PopoverTrigger asChild>
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setInfoOpen(!infoOpen);
+                    }}
+                    className="inline-flex p-1 hover:bg-secondary rounded-md transition-colors"
+                  >
+                    <Info className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground transition-colors" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent 
+                  side="top" 
+                  align="center"
+                  className="w-[90vw] max-w-sm p-4 bg-card border-2 border-border"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="space-y-2 text-xs">
+                    <p className="font-bold text-foreground text-sm">Grip Types:</p>
+                    {Object.entries(gripDescriptions).map(([key, desc]) => (
+                      <p key={key} className="text-muted-foreground leading-relaxed">{desc}</p>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             <ChevronRight className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
           </Button>
@@ -624,6 +630,7 @@ const SlotMachine = ({
 
   const SpongeSelector = ({ rubber, selectedThickness, onChange }: { rubber: Rubber; selectedThickness: string; onChange: (thickness: string) => void }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [infoOpen, setInfoOpen] = useState(false);
     const availableSponges = rubber.Rubber_Sponge_Sizes || [];
     
     return (
@@ -637,27 +644,33 @@ const SlotMachine = ({
               <span className="text-xs font-medium">
                 {isOpen ? 'Choose Sponge Size' : `Sponge: ${selectedThickness}`}
               </span>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button 
-                      type="button"
-                      onClick={(e) => e.stopPropagation()}
-                      className="inline-flex"
-                    >
-                      <Info className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground transition-colors" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-xs">
-                    <div className="space-y-1.5 text-xs">
-                      <p className="font-semibold">Sponge Size Impact:</p>
-                      <p className="text-muted-foreground"><strong>Thinner (&lt;1.8mm):</strong> More control, better feel. Less speed and power. Ideal for defensive play.</p>
-                      <p className="text-muted-foreground"><strong>Medium (1.8-2.0mm):</strong> Balanced performance. Good mix of control, speed, and spin for all-around play.</p>
-                      <p className="text-muted-foreground"><strong>Thicker (&gt;2.0mm):</strong> Maximum speed and power. Less control. Best for aggressive offensive play.</p>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Popover open={infoOpen} onOpenChange={setInfoOpen}>
+                <PopoverTrigger asChild>
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setInfoOpen(!infoOpen);
+                    }}
+                    className="inline-flex p-1 hover:bg-secondary rounded-md transition-colors"
+                  >
+                    <Info className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground transition-colors" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent 
+                  side="top" 
+                  align="center"
+                  className="w-[90vw] max-w-sm p-4 bg-card border-2 border-border"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="space-y-2 text-xs">
+                    <p className="font-bold text-foreground text-sm">Sponge Size Impact:</p>
+                    <p className="text-muted-foreground leading-relaxed"><strong className="text-foreground">Thinner (&lt;1.8mm):</strong> More control, better feel. Less speed and power. Ideal for defensive play.</p>
+                    <p className="text-muted-foreground leading-relaxed"><strong className="text-foreground">Medium (1.8-2.0mm):</strong> Balanced performance. Good mix of control, speed, and spin for all-around play.</p>
+                    <p className="text-muted-foreground leading-relaxed"><strong className="text-foreground">Thicker (&gt;2.0mm):</strong> Maximum speed and power. Less control. Best for aggressive offensive play.</p>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             <ChevronRight className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
           </Button>
