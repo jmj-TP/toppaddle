@@ -1,12 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import DarkModeToggle from "./DarkModeToggle";
 import { CartDrawer } from "./CartDrawer";
+import logoLight from "@/assets/logo-light.png";
+import logoDark from "@/assets/logo-dark.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { theme } = useTheme();
 
   const navigation = [
     { name: "Quiz", href: "/" },
@@ -23,10 +27,12 @@ const Header = () => {
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center space-x-2">
-            <span className="font-headline text-xl font-bold text-primary-foreground">
-              TopPaddle
-            </span>
+          <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center">
+            <img 
+              src={theme === 'dark' ? logoDark : logoLight} 
+              alt="TopPaddle - Find Your Perfect Racket" 
+              className="h-10 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
