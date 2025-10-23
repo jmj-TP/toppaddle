@@ -804,7 +804,7 @@ const Configurator = () => {
                       <div className="space-y-2 text-sm text-muted-foreground">
                         <p><span className="font-semibold text-foreground">Price:</span> ${selectedRacket.Racket_Price}</p>
                         <p><span className="font-semibold text-foreground">Level:</span> {selectedRacket.Racket_Level}</p>
-                        <div className="mt-4 pt-4 border-t border-border">
+                       <div className="mt-4 pt-4 border-t border-border">
                           <p className="font-semibold text-foreground mb-2">Performance Stats:</p>
                           <div className="grid grid-cols-2 gap-2">
                             <p>Speed: {selectedRacket.Racket_Speed}/100</p>
@@ -813,6 +813,12 @@ const Configurator = () => {
                             <p>Power: {Math.round((selectedRacket.Racket_Speed + selectedRacket.Racket_Spin) / 2)}/100</p>
                           </div>
                         </div>
+                        {selectedRacket.Racket_Description && (
+                          <div className="mt-4 pt-4 border-t border-border">
+                            <p className="font-semibold text-foreground mb-2">Description:</p>
+                            <p className="text-sm text-muted-foreground">{selectedRacket.Racket_Description}</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -846,6 +852,12 @@ const Configurator = () => {
                           <p>Power: {selectedForehand.Rubber_Power}/100</p>
                         </div>
                       </div>
+                      {selectedForehand.Rubber_Description && (
+                        <div className="mt-3 pt-3 border-t border-border">
+                          <p className="font-semibold text-foreground mb-1 text-xs">Description:</p>
+                          <p className="text-xs text-muted-foreground">{selectedForehand.Rubber_Description}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -875,6 +887,12 @@ const Configurator = () => {
                           <p>Power: {selectedBlade.Blade_Power}/100</p>
                         </div>
                       </div>
+                      {selectedBlade.Blade_Description && (
+                        <div className="mt-3 pt-3 border-t border-border">
+                          <p className="font-semibold text-foreground mb-1 text-xs">Description:</p>
+                          <p className="text-xs text-muted-foreground">{selectedBlade.Blade_Description}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -905,6 +923,12 @@ const Configurator = () => {
                           <p>Power: {selectedBackhand.Rubber_Power}/100</p>
                         </div>
                       </div>
+                      {selectedBackhand.Rubber_Description && (
+                        <div className="mt-3 pt-3 border-t border-border">
+                          <p className="font-semibold text-foreground mb-1 text-xs">Description:</p>
+                          <p className="text-xs text-muted-foreground">{selectedBackhand.Rubber_Description}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
