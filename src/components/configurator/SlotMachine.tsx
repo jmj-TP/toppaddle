@@ -567,26 +567,45 @@ const SlotMachine = ({
 
   // Selector components
   const GripSelector = () => {
+    const [isOpen, setIsOpen] = useState(false);
     const availableGrips = selectedBlade.Blade_Grip || [];
+    
     return (
-      <div className="bg-card p-2 rounded-lg border border-border">
-        <p className="text-xs font-medium mb-1.5 text-center text-muted-foreground">Grip Type</p>
-        <div className="flex flex-wrap gap-1.5 justify-center">
-          {availableGrips.map((gripType) => (
-            <button
-              key={gripType}
-              onClick={() => onGripChange(gripType)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                selectedGrip === gripType
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-              }`}
-            >
-              {gripType}
-            </button>
-          ))}
-        </div>
-      </div>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CollapsibleTrigger asChild>
+          <Button 
+            variant="outline" 
+            className="w-full justify-between border-border hover:bg-secondary"
+          >
+            <span className="text-xs font-medium">
+              {isOpen ? 'Choose Grip Type' : `Grip: ${selectedGrip}`}
+            </span>
+            <ChevronRight className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div className="bg-card p-2 mt-2 rounded-lg border border-border">
+            <div className="flex flex-wrap gap-1.5 justify-center">
+              {availableGrips.map((gripType) => (
+                <button
+                  key={gripType}
+                  onClick={() => {
+                    onGripChange(gripType);
+                    setIsOpen(false);
+                  }}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                    selectedGrip === gripType
+                      ? 'bg-primary text-primary-foreground shadow-lg border-2 border-primary/50'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/70 border-2 border-transparent'
+                  }`}
+                >
+                  {gripType}
+                </button>
+              ))}
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     );
   };
 
@@ -619,8 +638,8 @@ const SlotMachine = ({
                   }}
                   className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                     selectedThickness === size
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                      ? 'bg-primary text-primary-foreground shadow-lg border-2 border-primary/50'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/70 border-2 border-transparent'
                   }`}
                 >
                   {size}
@@ -662,8 +681,8 @@ const SlotMachine = ({
                   }}
                   className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                     selectedColor === color
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                      ? 'bg-primary text-primary-foreground shadow-lg border-2 border-primary/50'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/70 border-2 border-transparent'
                   }`}
                 >
                   {color}
