@@ -27,7 +27,7 @@ export const blogPosts: BlogPost[] = [
 
 <p>When you combine rubber type and sponge thickness, you get endless possibilities. That is why players experiment so much. If you are not sure where to start, the Yasaka Mark V is a classic, balanced rubber suitable for most skill levels. For advanced loopers, Butterfly Tenergy 05 or Donic Bluefire M2 are modern favorites that offer outstanding spin and speed.</p>
 
-<p>To maintain your rubbers and keep them performing at their best, it is important to clean them regularly with proper equipment. The <a href="https://amzn.to/493ZtHs" target="_blank" rel="noopener noreferrer">JOOLA Pro Table Tennis Cleaning Set</a> includes everything you need to keep your rubbers clean and tacky, extending their lifespan and ensuring consistent performance.</p>
+<p>To maintain your rubbers and keep them performing at their best, it is important to clean them regularly with proper equipment. A quality cleaning set includes everything you need to keep your rubbers clean and tacky, extending their lifespan and ensuring consistent performance.</p>
 
 <p>If you want help choosing the right rubber combination for your playstyle, you can take the TopPaddle quiz. It matches you with a setup that fits your spin, speed, and control preferences in just a couple of minutes.</p>`,
     relatedQuizLink: "/",
@@ -69,11 +69,11 @@ export const blogPosts: BlogPost[] = [
 
 <p>Today, almost all players use water-based table tennis glues because they are safe, easy to use, and approved by the ITTF. There are two particularly popular options that stand out.</p>
 
-<p>The <a href="https://amzn.to/4nL5r4B" target="_blank" rel="noopener noreferrer">Butterfly Free Chack II Table Tennis Racket Glue</a> is one of the most common and beginner-friendly choices. It spreads smoothly, dries evenly, and works perfectly for both new and experienced players.</p>
+<p>Butterfly Free Chack II is one of the most common and beginner-friendly choices. It spreads smoothly, dries evenly, and works perfectly for both new and experienced players.</p>
 
-<p>For intermediate to advanced players who want a slightly stronger bond and cleaner removal, the <a href="https://amzn.to/3WBLOjl" target="_blank" rel="noopener noreferrer">NITTAKU NTA-NL9624 Table Tennis Fine Zip Value</a> is often considered one of the best options available. It provides excellent adhesion and a professional finish without adding unnecessary weight to the racket.</p>
+<p>For intermediate to advanced players who want a slightly stronger bond and cleaner removal, NITTAKU Fine Zip is often considered one of the best options available. It provides excellent adhesion and a professional finish without adding unnecessary weight to the racket.</p>
 
-<p>You can use a small sponge applicator to spread the glue evenly across both surfaces. The <a href="https://amzn.to/4oojdu0" target="_blank" rel="noopener noreferrer">Butterfly Table Tennis Clip Sponge II</a> is made specifically for this purpose and allows for a smooth, even layer every time.</p>
+<p>You can use a small sponge applicator to spread the glue evenly across both surfaces. A quality clip sponge is made specifically for this purpose and allows for a smooth, even layer every time.</p>
 
 <h2>Step 3: Apply the Glue</h2>
 
@@ -119,13 +119,13 @@ export const blogPosts: BlogPost[] = [
 
 <h2>Best Choice for Advanced and Competitive Players</h2>
 
-<p>If you are serious about match performance, you need a ball that behaves the same way every single time you hit it. The <a href="https://amzn.to/42IcAKB" target="_blank" rel="noopener noreferrer">NITTAKU 3-Star Premium 40+ Table Tennis Balls</a> are widely regarded as some of the best competition balls available.</p>
+<p>If you are serious about match performance, you need a ball that behaves the same way every single time you hit it. NITTAKU 3-Star Premium 40+ balls are widely regarded as some of the best competition balls available.</p>
 
 <p>These balls are ITTF-approved and used in professional tournaments around the world. They offer consistent bounce, perfect roundness, and excellent spin response. Every ball in the pack feels identical, which is exactly what serious players need for competition preparation.</p>
 
 <h2>Best Choice for Training and Practice</h2>
 
-<p>For everyday training sessions, robot practice, or multi-ball drills, the <a href="https://amzn.to/4o0QUBV" target="_blank" rel="noopener noreferrer">Butterfly 40+ Training Balls</a> are an excellent choice. They deliver reliable bounce and durability at a fraction of the cost of 3-star balls.</p>
+<p>For everyday training sessions, robot practice, or multi-ball drills, Butterfly 40+ Training Balls are an excellent choice. They deliver reliable bounce and durability at a fraction of the cost of 3-star balls.</p>
 
 <p>While they may not have the exact precision of premium competition balls, they are more than good enough for practice and casual matches. Many clubs and training centers rely on these balls because they offer great value without sacrificing too much quality.</p>
 

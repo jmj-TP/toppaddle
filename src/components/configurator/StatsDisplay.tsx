@@ -2,9 +2,11 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { ExternalLink, Gauge, Target, Shield, Star, Settings, DollarSign, Scale } from "lucide-react";
+import { ExternalLink, Gauge, Target, Shield, Star, Settings, DollarSign, Scale, Wrench } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 
@@ -46,6 +48,9 @@ interface StatsDisplayProps {
   onRandomReroll: () => void;
   onPreferencesChange?: (preferences: UserPreferences) => void;
   onAddToCart?: () => void;
+  isPreassembled: boolean;
+  assembleForMe: boolean;
+  onAssembleChange: (value: boolean) => void;
 }
 
 const StatsDisplay = ({
@@ -58,6 +63,9 @@ const StatsDisplay = ({
   onRandomReroll,
   onPreferencesChange,
   onAddToCart,
+  isPreassembled,
+  assembleForMe,
+  onAssembleChange,
 }: StatsDisplayProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -376,13 +384,41 @@ const StatsDisplay = ({
             Random Reroll
           </Button>
           {onAddToCart && (
-            <Button
-              onClick={onAddToCart}
-              size="lg"
-              className="w-full text-xl py-8 font-bold shadow-lg hover:shadow-xl transition-all border-4 border-black rounded-2xl"
-            >
-              Add to Cart
-            </Button>
+            <>
+              {!isPreassembled && (
+                <div className="bg-accent/10 border-2 border-accent/20 rounded-xl p-4 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Wrench className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
+                    <div className="flex-1 space-y-2">
+                      <h4 className="font-semibold text-sm">Free Professional Assembly</h4>
+                      <p className="text-xs text-muted-foreground">
+                        TopPaddle offers complimentary professional racket assembly. We'll expertly glue your chosen rubbers to your blade for perfect performance.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 pt-2">
+                    <Checkbox 
+                      id="assemble" 
+                      checked={assembleForMe}
+                      onCheckedChange={onAssembleChange}
+                    />
+                    <Label 
+                      htmlFor="assemble" 
+                      className="text-sm font-medium cursor-pointer"
+                    >
+                      Assemble my racket for me (Free)
+                    </Label>
+                  </div>
+                </div>
+              )}
+              <Button
+                onClick={onAddToCart}
+                size="lg"
+                className="w-full text-xl py-8 font-bold shadow-lg hover:shadow-xl transition-all border-4 border-black rounded-2xl"
+              >
+                Add to Cart
+              </Button>
+            </>
           )}
         </div>
       </div>

@@ -31,6 +31,9 @@ const Configurator = () => {
   // State for preassembled mode
   const [selectedRacket, setSelectedRacket] = useState<PreAssembledRacket>(preAssembledRackets[0]);
   
+  // Assembly option state
+  const [assembleForMe, setAssembleForMe] = useState(false);
+  
   // Filters - using values that match products.ts and Shopify
   const [selectedGrip, setSelectedGrip] = useState<string>("FL");
   const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("");
@@ -619,8 +622,36 @@ const Configurator = () => {
           selectedOptions: backhandVariant.node.selectedOptions
         });
 
+        // Add assembly service if requested
+        if (assembleForMe) {
+          // Find assembly service product in Shopify
+          const assemblyProduct = shopifyProducts.find(p => 
+            p.node.title.toLowerCase().includes("racket assembly service") ||
+            p.node.title.toLowerCase().includes("assembly service")
+          );
+
+          if (assemblyProduct) {
+            const assemblyVariant = assemblyProduct.node.variants.edges[0];
+            if (assemblyVariant) {
+              addItem({
+                product: assemblyProduct,
+                variantId: assemblyVariant.node.id,
+                variantTitle: assemblyVariant.node.title,
+                price: assemblyVariant.node.price,
+                quantity: 1,
+                selectedOptions: assemblyVariant.node.selectedOptions
+              });
+            }
+          }
+        }
+
+        const itemCount = assembleForMe ? 4 : 3;
+        const description = assembleForMe 
+          ? `${itemCount} items added: blade, 2 rubbers, and free assembly service`
+          : "3 items added: blade and 2 rubbers with your selected options";
+
         toast.success("Custom racket added to cart", {
-          description: "3 items added: blade and 2 rubbers with your selected options"
+          description
         });
       }
     } catch (error) {
@@ -746,6 +777,9 @@ const Configurator = () => {
                 onRandomReroll={handleRandomReroll}
                 onPreferencesChange={handlePreferencesChange}
                 onAddToCart={handleAddToCart}
+                isPreassembled={isPreassembled}
+                assembleForMe={assembleForMe}
+                onAssembleChange={setAssembleForMe}
               />
             </div>
 

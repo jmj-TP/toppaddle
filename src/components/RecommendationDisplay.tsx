@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { Star, Target, Gauge, Shield, Info, Weight, ChevronDown, ChevronUp, Settings, DollarSign, Package, ShoppingCart, Wrench } from "lucide-react";
 import type { Recommendation, CustomSetup, QuizAnswers } from "@/utils/ratingSystem";
 import { estimateBladeWeight, estimateRubberWeight } from "@/data/products";
@@ -36,6 +38,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   const [showPreferenceEditor, setShowPreferenceEditor] = useState(false);
   const [tempBudget, setTempBudget] = useState(currentAnswers?.Budget || "<100$");
   const [tempBrands, setTempBrands] = useState<string[]>(currentAnswers?.Brand || []);
+  const [assembleCustom1, setAssembleCustom1] = useState(false);
+  const [assembleCustom2, setAssembleCustom2] = useState(false);
 
   // Load Shopify products
   useEffect(() => {
@@ -165,10 +169,36 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           });
         }
 
+        // Add assembly service if requested
+        const shouldAssemble = (item.type === 'custom1' && assembleCustom1) || (item.type === 'custom2' && assembleCustom2);
+        if (shouldAssemble) {
+          const assemblyProduct = shopifyProducts.find(p => 
+            p.node.title.toLowerCase().includes("racket assembly service") ||
+            p.node.title.toLowerCase().includes("assembly service")
+          );
+
+          if (assemblyProduct) {
+            const assemblyVariant = assemblyProduct.node.variants.edges[0].node;
+            addItem({
+              product: assemblyProduct,
+              variantId: assemblyVariant.id,
+              variantTitle: assemblyVariant.title,
+              price: assemblyVariant.price,
+              quantity: 1,
+              selectedOptions: assemblyVariant.selectedOptions
+            });
+          }
+        }
+
         const addedCount = [bladeProduct, fhProduct, bhProduct].filter(Boolean).length;
+        const itemCountWithAssembly = shouldAssemble ? addedCount + 1 : addedCount;
+        const description = shouldAssemble 
+          ? `${itemCountWithAssembly} items added with free assembly service`
+          : "Custom setup components added";
+
         if (addedCount > 0) {
           toast.success(`Added ${addedCount} items to cart!`, { 
-            description: "Custom setup components added" 
+            description
           });
         } else {
           toast.error("Products not found in store", { 
@@ -434,6 +464,31 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     )}
                   </Button>
                 </CollapsibleTrigger>
+                
+                {/* Free Assembly Option */}
+                <div className="bg-accent/10 border border-accent/20 rounded-lg p-3 space-y-2">
+                  <div className="flex items-start gap-2">
+                    <Wrench className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-xs text-muted-foreground">
+                        TopPaddle offers free professional assembly. We'll expertly glue your rubbers to your blade.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`assemble-${rank}`}
+                      checked={rank === 1 ? assembleCustom1 : assembleCustom2}
+                      onCheckedChange={(checked) => rank === 1 ? setAssembleCustom1(!!checked) : setAssembleCustom2(!!checked)}
+                    />
+                    <Label 
+                      htmlFor={`assemble-${rank}`}
+                      className="text-xs font-medium cursor-pointer"
+                    >
+                      Assemble my racket for me (Free)
+                    </Label>
+                  </div>
+                </div>
                 
                 <div className="grid grid-cols-2 gap-2">
                   <Button 
