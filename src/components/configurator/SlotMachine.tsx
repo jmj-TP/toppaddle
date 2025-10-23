@@ -22,9 +22,13 @@ interface SlotMachineProps {
   selectedGrip: string;
   selectedForehandThickness: string;
   selectedBackhandThickness: string;
+  selectedForehandColor: string;
+  selectedBackhandColor: string;
   onGripChange: (grip: string) => void;
   onForehandThicknessChange: (thickness: string) => void;
   onBackhandThicknessChange: (thickness: string) => void;
+  onForehandColorChange: (color: string) => void;
+  onBackhandColorChange: (color: string) => void;
   forehandFilters: ProductFilters;
   bladeFilters: ProductFilters;
   backhandFilters: ProductFilters;
@@ -53,9 +57,13 @@ const SlotMachine = ({
   selectedGrip,
   selectedForehandThickness,
   selectedBackhandThickness,
+  selectedForehandColor,
+  selectedBackhandColor,
   onGripChange,
   onForehandThicknessChange,
   onBackhandThicknessChange,
+  onForehandColorChange,
+  onBackhandColorChange,
   forehandFilters,
   bladeFilters,
   backhandFilters,
@@ -605,6 +613,30 @@ const SlotMachine = ({
     );
   };
 
+  const ColorSelector = ({ selectedColor, onChange }: { selectedColor: string; onChange: (color: string) => void }) => {
+    const colors = ['Red', 'Black'];
+    return (
+      <div className="bg-card p-2 rounded-lg border border-border">
+        <p className="text-xs font-medium mb-1.5 text-center text-muted-foreground">Color</p>
+        <div className="flex flex-wrap gap-1.5 justify-center">
+          {colors.map((color) => (
+            <button
+              key={color}
+              onClick={() => onChange(color)}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                selectedColor === color
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              }`}
+            >
+              {color}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="w-full">
       {isPreassembled ? (
@@ -654,11 +686,15 @@ const SlotMachine = ({
                 <ComponentStatsCard component={selectedForehand} type="rubber" />
               )}
             </div>
-            <div className="mt-2">
+            <div className="mt-2 space-y-2">
               <SpongeSelector 
                 rubber={selectedForehand} 
                 selectedThickness={selectedForehandThickness} 
                 onChange={onForehandThicknessChange}
+              />
+              <ColorSelector 
+                selectedColor={selectedForehandColor} 
+                onChange={onForehandColorChange}
               />
             </div>
           </div>
@@ -736,11 +772,15 @@ const SlotMachine = ({
                 <ComponentStatsCard component={selectedBackhand} type="rubber" />
               )}
             </div>
-            <div className="mt-2">
+            <div className="mt-2 space-y-2">
               <SpongeSelector 
                 rubber={selectedBackhand} 
                 selectedThickness={selectedBackhandThickness} 
                 onChange={onBackhandThicknessChange}
+              />
+              <ColorSelector 
+                selectedColor={selectedBackhandColor} 
+                onChange={onBackhandColorChange}
               />
             </div>
           </div>

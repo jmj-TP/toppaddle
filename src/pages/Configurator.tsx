@@ -35,6 +35,8 @@ const Configurator = () => {
   const [selectedGrip, setSelectedGrip] = useState<string>("FL");
   const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("1.7mm");
   const [selectedBackhandThickness, setSelectedBackhandThickness] = useState<string>("1.7mm");
+  const [selectedForehandColor, setSelectedForehandColor] = useState<string>("Red");
+  const [selectedBackhandColor, setSelectedBackhandColor] = useState<string>("Black");
   
   // Filter popover open states
   const [forehandFilterOpen, setForehandFilterOpen] = useState(false);
@@ -515,12 +517,12 @@ const Configurator = () => {
 
         const forehandVariantId = findMatchingVariant(forehandProduct, [
           { name: "Sponge Thickness", value: selectedForehandThickness },
-          { name: "Color", value: "Red" } // Default to red for forehand
+          { name: "Color", value: selectedForehandColor }
         ]);
 
         const backhandVariantId = findMatchingVariant(backhandProduct, [
           { name: "Sponge Thickness", value: selectedBackhandThickness },
-          { name: "Color", value: "Black" } // Default to black for backhand
+          { name: "Color", value: selectedBackhandColor }
         ]);
 
         if (!bladeVariantId || !forehandVariantId || !backhandVariantId) {
@@ -660,12 +662,16 @@ const Configurator = () => {
               onBackhandChange={setSelectedBackhand}
               onRacketChange={setSelectedRacket}
               spinTrigger={spinTrigger}
-              selectedGrip={selectedGrip}
-              selectedForehandThickness={selectedForehandThickness}
-              selectedBackhandThickness={selectedBackhandThickness}
-              onGripChange={setSelectedGrip}
-              onForehandThicknessChange={setSelectedForehandThickness}
-              onBackhandThicknessChange={setSelectedBackhandThickness}
+            selectedGrip={selectedGrip}
+            selectedForehandThickness={selectedForehandThickness}
+            selectedBackhandThickness={selectedBackhandThickness}
+            selectedForehandColor={selectedForehandColor}
+            selectedBackhandColor={selectedBackhandColor}
+            onGripChange={setSelectedGrip}
+            onForehandThicknessChange={setSelectedForehandThickness}
+            onBackhandThicknessChange={setSelectedBackhandThickness}
+            onForehandColorChange={setSelectedForehandColor}
+            onBackhandColorChange={setSelectedBackhandColor}
               forehandFilters={forehandFilters}
               bladeFilters={bladeFilters}
               backhandFilters={backhandFilters}
