@@ -22,8 +22,11 @@ const HeroSection = ({ onStartQuiz }: HeroSectionProps) => {
           <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent animate-fade-in">
             Find Your Perfect Table Tennis Paddle
           </h1>
-          <p className="font-body text-lg text-muted-foreground sm:text-xl md:text-2xl max-w-3xl mx-auto mb-4">
+          <p className="font-body text-lg text-muted-foreground sm:text-xl md:text-2xl max-w-3xl mx-auto mb-2">
             Whether you're just starting out or fine-tuning your setup
+          </p>
+          <p className="font-body text-base text-accent/90 sm:text-lg max-w-2xl mx-auto mb-4 font-medium">
+            ✨ Free racket assembly service included - we'll assemble your custom paddle for you!
           </p>
         </div>
 

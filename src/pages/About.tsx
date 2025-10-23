@@ -12,7 +12,7 @@ const About = () => {
     <div className="flex min-h-screen flex-col">
       <SEO
         title="About TopPaddle - 8 Years of Table Tennis Experience"
-        description="Learn about TopPaddle's mission to help players find the perfect table tennis equipment. 8 years of experience, honest reviews, transparent affiliate disclosure."
+        description="Learn about TopPaddle's mission to help players find the perfect table tennis equipment. 8 years of experience and honest recommendations."
         canonical="https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/about"
       />
       <StructuredData
@@ -116,36 +116,10 @@ const About = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="font-body text-sm text-muted-foreground">
-                    Clear affiliate disclosure and honest reviews
+                    Honest reviews and recommendations
                   </p>
                 </CardContent>
               </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Affiliate Transparency */}
-        <section className="py-16">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-3xl rounded-lg border border-border bg-card p-8">
-              <div className="flex items-start space-x-4">
-                <Shield className="mt-1 h-6 w-6 flex-shrink-0 text-accent" />
-                <div>
-                  <h3 className="font-headline text-xl font-semibold text-foreground">
-                    Our Commitment to Transparency
-                  </h3>
-                  <p className="font-body mt-4 text-muted-foreground">
-                    We participate in affiliate programs, which means we may earn a small 
-                    commission when you purchase through our links. However, this never 
-                    influences our recommendations. We only suggest products we genuinely 
-                    believe will benefit your game.
-                  </p>
-                  <p className="font-body mt-4 text-muted-foreground">
-                    Your trust is our priority. Every recommendation is based on real 
-                    experience, thorough research, and honest assessment of equipment quality.
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         </section>

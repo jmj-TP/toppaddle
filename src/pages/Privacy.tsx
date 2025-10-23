@@ -9,7 +9,7 @@ const Privacy = () => {
     <div className="flex min-h-screen flex-col">
       <SEO
         title="Privacy Policy - How We Protect Your Data"
-        description="Learn how TopPaddle collects, uses, and protects your information. Our privacy policy covers cookies, analytics, and affiliate link tracking."
+        description="Learn how TopPaddle collects, uses, and protects your information. Our privacy policy covers cookies and analytics."
         canonical="https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/privacy"
         noindex={true}
       />
@@ -92,28 +92,10 @@ const Privacy = () => {
               </p>
             </section>
 
-            {/* Affiliate Links */}
-            <section className="mt-12">
-              <h2 className="font-headline text-2xl font-semibold text-foreground">
-                4. Affiliate Links
-              </h2>
-              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                TopTableTennisPaddle.com participates in affiliate programs.
-              </p>
-              <ul className="font-body mt-4 list-inside list-disc space-y-2 text-muted-foreground">
-                <li>We may earn a commission if you purchase products through affiliate links.</li>
-                <li>Commissions do not affect the price you pay.</li>
-                <li>We recommend products based on quality and relevance, not affiliate earnings.</li>
-              </ul>
-              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                Important: Currently, we may use generic affiliate links or placeholder links until official programs (e.g., Amazon Associates) are approved.
-              </p>
-            </section>
-
             {/* Third-Party Websites */}
             <section className="mt-12">
               <h2 className="font-headline text-2xl font-semibold text-foreground">
-                5. Third-Party Websites
+                4. Third-Party Websites
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
                 Our site contains links to third-party retailers.
@@ -127,7 +109,7 @@ const Privacy = () => {
             {/* How We Use Your Information */}
             <section className="mt-12">
               <h2 className="font-headline text-2xl font-semibold text-foreground">
-                6. How We Use Your Information
+                5. How We Use Your Information
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
                 We may use your information to:
@@ -146,7 +128,7 @@ const Privacy = () => {
             {/* Data Security */}
             <section className="mt-12">
               <h2 className="font-headline text-2xl font-semibold text-foreground">
-                7. Data Security
+                6. Data Security
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
                 We implement reasonable administrative, technical, and physical safeguards to protect your data.
@@ -159,7 +141,7 @@ const Privacy = () => {
             {/* Children's Privacy */}
             <section className="mt-12">
               <h2 className="font-headline text-2xl font-semibold text-foreground">
-                8. Children's Privacy
+                7. Children's Privacy
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
                 TopTableTennisPaddle.com is not intended for children under 13.
@@ -170,7 +152,7 @@ const Privacy = () => {
             {/* Your Rights */}
             <section className="mt-12">
               <h2 className="font-headline text-2xl font-semibold text-foreground">
-                9. Your Rights
+                8. Your Rights
               </h2>
               <ul className="font-body mt-4 list-inside list-disc space-y-2 text-muted-foreground">
                 <li>Opt-out of newsletters or marketing emails at any time.</li>
@@ -182,7 +164,7 @@ const Privacy = () => {
             {/* Updates to Privacy Policy */}
             <section className="mt-12">
               <h2 className="font-headline text-2xl font-semibold text-foreground">
-                10. Updates to Privacy Policy
+                9. Updates to Privacy Policy
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
                 We may update this Privacy Policy at any time.
@@ -195,7 +177,7 @@ const Privacy = () => {
             {/* Contact */}
             <section className="mt-12">
               <h2 className="font-headline text-2xl font-semibold text-foreground">
-                11. Contact Us
+                10. Contact Us
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
                 For questions about this Privacy Policy or your data:{" "}

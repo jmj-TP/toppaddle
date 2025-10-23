@@ -35,12 +35,6 @@ const TrustSection = () => {
               </CardContent>
             </Card>
           </div>
-
-          <div className="bg-muted/50 border border-border rounded-lg p-6 max-w-2xl mx-auto">
-            <p className="font-body text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">Affiliate Disclosure:</span> TopTableTennisPaddle.com is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com. As an Amazon Associate, we earn from qualifying purchases at no additional cost to you. Our recommendations are always honest and based on real experience.
-            </p>
-          </div>
         </div>
       </div>
     </section>
