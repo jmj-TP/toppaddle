@@ -32,9 +32,9 @@ const Configurator = () => {
   const [selectedRacket, setSelectedRacket] = useState<PreAssembledRacket>(preAssembledRackets[0]);
   
   // Filters - using values that match products.ts and Shopify
-  const [selectedGrip, setSelectedGrip] = useState<string>("Straight");
-  const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("2.1mm");
-  const [selectedBackhandThickness, setSelectedBackhandThickness] = useState<string>("2.1mm");
+  const [selectedGrip, setSelectedGrip] = useState<string>("FL");
+  const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("1.7mm");
+  const [selectedBackhandThickness, setSelectedBackhandThickness] = useState<string>("1.7mm");
   
   // Filter popover open states
   const [forehandFilterOpen, setForehandFilterOpen] = useState(false);
