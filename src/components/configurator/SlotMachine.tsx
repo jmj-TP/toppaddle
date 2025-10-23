@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { ProductFilter, type ProductFilters } from "./ProductFilter";
-import { Info, BarChart3, ChevronUp, ChevronDown, ExternalLink } from "lucide-react";
+import { Info, BarChart3, ChevronUp, ChevronDown, ExternalLink, ChevronRight } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import ComponentStatsCard from "./ComponentStatsCard";
 
 interface SlotMachineProps {
@@ -590,50 +591,88 @@ const SlotMachine = ({
   };
 
   const SpongeSelector = ({ rubber, selectedThickness, onChange }: { rubber: Rubber; selectedThickness: string; onChange: (thickness: string) => void }) => {
+    const [isOpen, setIsOpen] = useState(false);
     const availableSponges = rubber.Rubber_Sponge_Sizes || [];
+    
     return (
-      <div className="bg-card p-2 rounded-lg border border-border">
-        <p className="text-xs font-medium mb-1.5 text-center text-muted-foreground">Sponge Size</p>
-        <div className="flex flex-wrap gap-1.5 justify-center">
-          {availableSponges.map((size) => (
-            <button
-              key={size}
-              onClick={() => onChange(size)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                selectedThickness === size
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-              }`}
-            >
-              {size}
-            </button>
-          ))}
-        </div>
-      </div>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CollapsibleTrigger asChild>
+          <Button 
+            variant="outline" 
+            className="w-full justify-between border-border hover:bg-secondary"
+          >
+            <span className="text-xs font-medium">
+              {isOpen ? 'Choose Sponge Size' : `Sponge: ${selectedThickness}`}
+            </span>
+            <ChevronRight className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div className="bg-card p-2 mt-2 rounded-lg border border-border">
+            <div className="flex flex-wrap gap-1.5 justify-center">
+              {availableSponges.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => {
+                    onChange(size);
+                    setIsOpen(false);
+                  }}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                    selectedThickness === size
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     );
   };
 
   const ColorSelector = ({ selectedColor, onChange }: { selectedColor: string; onChange: (color: string) => void }) => {
+    const [isOpen, setIsOpen] = useState(false);
     const colors = ['Red', 'Black'];
+    
     return (
-      <div className="bg-card p-2 rounded-lg border border-border">
-        <p className="text-xs font-medium mb-1.5 text-center text-muted-foreground">Color</p>
-        <div className="flex flex-wrap gap-1.5 justify-center">
-          {colors.map((color) => (
-            <button
-              key={color}
-              onClick={() => onChange(color)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                selectedColor === color
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-              }`}
-            >
-              {color}
-            </button>
-          ))}
-        </div>
-      </div>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CollapsibleTrigger asChild>
+          <Button 
+            variant="outline" 
+            className="w-full justify-between border-border hover:bg-secondary"
+          >
+            <span className="text-xs font-medium">
+              {isOpen ? 'Choose Color' : `Color: ${selectedColor}`}
+            </span>
+            <ChevronRight className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div className="bg-card p-2 mt-2 rounded-lg border border-border">
+            <div className="flex flex-wrap gap-1.5 justify-center">
+              {colors.map((color) => (
+                <button
+                  key={color}
+                  onClick={() => {
+                    onChange(color);
+                    setIsOpen(false);
+                  }}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                    selectedColor === color
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                  }`}
+                >
+                  {color}
+                </button>
+              ))}
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     );
   };
 

@@ -38,6 +38,24 @@ const Configurator = () => {
   const [selectedForehandColor, setSelectedForehandColor] = useState<string>("Red");
   const [selectedBackhandColor, setSelectedBackhandColor] = useState<string>("Black");
   
+  // Handler for forehand color that auto-switches backhand if colors match
+  const handleForehandColorChange = (color: string) => {
+    setSelectedForehandColor(color);
+    // If backhand has the same color, switch it to the other color
+    if (selectedBackhandColor === color) {
+      setSelectedBackhandColor(color === "Red" ? "Black" : "Red");
+    }
+  };
+  
+  // Handler for backhand color that auto-switches forehand if colors match
+  const handleBackhandColorChange = (color: string) => {
+    setSelectedBackhandColor(color);
+    // If forehand has the same color, switch it to the other color
+    if (selectedForehandColor === color) {
+      setSelectedForehandColor(color === "Red" ? "Black" : "Red");
+    }
+  };
+  
   // Filter popover open states
   const [forehandFilterOpen, setForehandFilterOpen] = useState(false);
   const [bladeFilterOpen, setBladeFilterOpen] = useState(false);
@@ -670,8 +688,8 @@ const Configurator = () => {
             onGripChange={setSelectedGrip}
             onForehandThicknessChange={setSelectedForehandThickness}
             onBackhandThicknessChange={setSelectedBackhandThickness}
-            onForehandColorChange={setSelectedForehandColor}
-            onBackhandColorChange={setSelectedBackhandColor}
+            onForehandColorChange={handleForehandColorChange}
+            onBackhandColorChange={handleBackhandColorChange}
               forehandFilters={forehandFilters}
               bladeFilters={bladeFilters}
               backhandFilters={backhandFilters}
