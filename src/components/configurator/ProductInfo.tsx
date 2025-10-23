@@ -87,9 +87,28 @@ const ProductInfo = ({ product, onClose }: ProductInfoProps) => {
             </div>
           )}
 
-          <p className="text-sm text-muted-foreground italic">
-            Detailed product description coming soon...
-          </p>
+          {'Blade_Description' in product && product.Blade_Description && (
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {product.Blade_Description}
+            </p>
+          )}
+          {'Rubber_Description' in product && product.Rubber_Description && (
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {product.Rubber_Description}
+            </p>
+          )}
+          {'Racket_Description' in product && product.Racket_Description && (
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {product.Racket_Description}
+            </p>
+          )}
+
+          <div className="border-t pt-4 mt-4">
+            <h3 className="font-semibold text-sm mb-2">Customer Reviews</h3>
+            <p className="text-sm text-muted-foreground italic">
+              Reviews coming soon. Be the first to review this product!
+            </p>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

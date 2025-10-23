@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ExternalLink, Star, Target, Gauge, Shield, Info, Weight, ChevronDown, ChevronUp, Settings, DollarSign, Package, ShoppingCart, Wrench } from "lucide-react";
+import { Star, Target, Gauge, Shield, Info, Weight, ChevronDown, ChevronUp, Settings, DollarSign, Package, ShoppingCart, Wrench } from "lucide-react";
 import type { Recommendation, CustomSetup, QuizAnswers } from "@/utils/ratingSystem";
 import { estimateBladeWeight, estimateRubberWeight } from "@/data/products";
 import BrandSelector from "./BrandSelector";
@@ -221,9 +221,9 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
   const getScoreColor = (score: number) => {
-    if (score >= 85) return "text-primary";
-    if (score >= 70) return "text-accent";
-    return "text-destructive";
+    if (score >= 85) return "text-green-500 dark:text-green-400";
+    if (score >= 70) return "text-yellow-500 dark:text-yellow-400";
+    return "text-orange-500 dark:text-orange-400";
   };
 
 
@@ -265,7 +265,6 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               score={racket.score}
               price={racket.Racket_Price}
               isCustom={false}
-              affiliateLink={racket.Racket_Affiliate_Link}
             />
           </div>
         </div>
@@ -305,17 +304,6 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               </div>
             </div>
             
-            <div className="mt-3 p-3 bg-accent/10 border border-accent/30 rounded-md">
-              <div className="flex items-start gap-2">
-                <Info className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
-                <div className="text-xs leading-relaxed">
-                  <span className="font-semibold text-accent">Handle Selection:</span>
-                  <span className="text-foreground"> When purchasing, select </span>
-                  <span className="font-bold text-accent">{handleType}</span>
-                  <span className="text-foreground"> handle in the shop.</span>
-                </div>
-              </div>
-            </div>
             
             <div className="grid grid-cols-2 gap-2">
               <Button 
@@ -325,7 +313,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                 className="w-full"
               >
                 <Wrench className="w-3 h-3 mr-1" />
-                View in Configurator
+                More Info
               </Button>
               <Button 
                 onClick={() => handleAddToCart({ type: 'preAssembled', score: racket.score, data: racket, rank })}
@@ -338,22 +326,6 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                 Add to Cart
               </Button>
             </div>
-            
-            <Button 
-              asChild 
-              variant="accent"
-              className="w-full"
-            >
-              <a 
-                href={racket.Racket_Affiliate_Link} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-2"
-              >
-                <ExternalLink className="w-4 h-4" />
-                Buy on Amazon
-              </a>
-            </Button>
           </div>
         </div>
       </CardContent>
@@ -399,11 +371,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                   score={setup.score}
                   price={setup.totalPrice}
                   isCustom={true}
-                  affiliateLink={setup.blade.Blade_Affiliate_Link}
                   forehandRubberName={setup.forehandRubber.Rubber_Name}
-                  forehandRubberLink={setup.forehandRubber.Rubber_Affiliate_Link}
                   backhandRubberName={setup.backhandRubber.Rubber_Name}
-                  backhandRubberLink={setup.backhandRubber.Rubber_Affiliate_Link}
                 />
               </div>
             </div>
@@ -517,31 +486,34 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     <div className="text-sm">
                       <span className="font-medium">Grip:</span> {handleType}
                     </div>
-                    <div className="mt-3 p-3 bg-accent/10 border border-accent/30 rounded-md">
-                      <div className="flex items-start gap-2">
-                        <Info className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
-                        <div className="text-xs leading-relaxed">
-                          <span className="font-semibold text-accent">Handle Recommendation:</span>
-                          <span className="text-foreground"> When purchasing, make sure to choose </span>
-                          <span className="font-bold text-accent">{handleType}</span>
-                          <span className="text-foreground"> handle in the shop.</span>
-                        </div>
-                      </div>
-                    </div>
                     <div className="text-sm">
                       <span className="font-medium">Price:</span> 
                       <span className="font-bold ml-1">{formatPrice(setup.blade.Blade_Price)}*</span>
                     </div>
-                    <Button size="sm" asChild variant="accent">
-                      <a 
-                        href={setup.blade.Blade_Affiliate_Link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        Buy Blade
-                      </a>
+                    <Button 
+                      size="sm" 
+                      variant="default"
+                      onClick={async () => {
+                        const bladeProduct = findShopifyProduct(setup.blade.Blade_Name);
+                        if (bladeProduct) {
+                          const variant = findVariant(bladeProduct, { handle: handleType }) || bladeProduct.node.variants.edges[0].node;
+                          addItem({
+                            product: bladeProduct,
+                            variantId: variant.id,
+                            variantTitle: variant.title,
+                            price: variant.price,
+                            quantity: 1,
+                            selectedOptions: variant.selectedOptions
+                          });
+                          toast.success("Added to cart!", { description: setup.blade.Blade_Name });
+                        } else {
+                          toast.error("Product not available", { description: "This blade is not in our store yet." });
+                        }
+                      }}
+                      className="w-full"
+                    >
+                      <ShoppingCart className="w-3 h-3 mr-1" />
+                      Add Blade to Cart
                     </Button>
                   </div>
                 </div>
@@ -583,16 +555,30 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                       <span className="font-medium">Price:</span> 
                       <span className="font-bold ml-1">{formatPrice(setup.forehandRubber.Rubber_Price)}*</span>
                     </div>
-                    <Button size="sm" asChild variant="accent">
-                      <a 
-                        href={setup.forehandRubber.Rubber_Affiliate_Link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        Buy FH Rubber
-                      </a>
+                    <Button 
+                      size="sm" 
+                      variant="default"
+                      onClick={async () => {
+                        const fhProduct = findShopifyProduct(setup.forehandRubber.Rubber_Name);
+                        if (fhProduct) {
+                          const variant = findVariant(fhProduct, { thickness: forehandThickness, color: "Red" }) || fhProduct.node.variants.edges[0].node;
+                          addItem({
+                            product: fhProduct,
+                            variantId: variant.id,
+                            variantTitle: variant.title,
+                            price: variant.price,
+                            quantity: 1,
+                            selectedOptions: variant.selectedOptions
+                          });
+                          toast.success("Added to cart!", { description: setup.forehandRubber.Rubber_Name });
+                        } else {
+                          toast.error("Product not available", { description: "This rubber is not in our store yet." });
+                        }
+                      }}
+                      className="w-full"
+                    >
+                      <ShoppingCart className="w-3 h-3 mr-1" />
+                      Add FH Rubber to Cart
                     </Button>
                   </div>
                 </div>
@@ -634,16 +620,30 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                       <span className="font-medium">Price:</span> 
                       <span className="font-bold ml-1">{formatPrice(setup.backhandRubber.Rubber_Price)}*</span>
                     </div>
-                    <Button size="sm" asChild variant="accent">
-                      <a 
-                        href={setup.backhandRubber.Rubber_Affiliate_Link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        Buy BH Rubber
-                      </a>
+                    <Button 
+                      size="sm" 
+                      variant="default"
+                      onClick={async () => {
+                        const bhProduct = findShopifyProduct(setup.backhandRubber.Rubber_Name);
+                        if (bhProduct) {
+                          const variant = findVariant(bhProduct, { thickness: backhandThickness, color: "Black" }) || bhProduct.node.variants.edges[0].node;
+                          addItem({
+                            product: bhProduct,
+                            variantId: variant.id,
+                            variantTitle: variant.title,
+                            price: variant.price,
+                            quantity: 1,
+                            selectedOptions: variant.selectedOptions
+                          });
+                          toast.success("Added to cart!", { description: setup.backhandRubber.Rubber_Name });
+                        } else {
+                          toast.error("Product not available", { description: "This rubber is not in our store yet." });
+                        }
+                      }}
+                      className="w-full"
+                    >
+                      <ShoppingCart className="w-3 h-3 mr-1" />
+                      Add BH Rubber to Cart
                     </Button>
                   </div>
                 </div>

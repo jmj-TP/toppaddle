@@ -10,7 +10,7 @@ export interface Blade {
   Blade_Price: number; // USD, manually added, for sorting only
   Blade_Level: "Beginner" | "Intermediate" | "Advanced";
   Blade_Weight?: number; // grams (optional - will be estimated if not provided)
-  Blade_Affiliate_Link: string;
+  Blade_Description: string; // Detailed product description
   Blade_Style?: "Offensive" | "Defensive" | "All-Round" | "Allround"; // Playing style of the blade
 }
 
@@ -44,7 +44,7 @@ export interface Rubber {
   Rubber_Style: "Normal" | "Short Pimples" | "Long Pimples" | "Anti";
   Rubber_Weight?: number; // grams (when applied to blade - optional, will be estimated)
   Rubber_Sponge_Sizes?: string[]; // Available sponge thickness options
-  Rubber_Affiliate_Link: string;
+  Rubber_Description: string; // Detailed product description
 }
 
 // Estimate rubber weight when applied to blade
@@ -82,7 +82,7 @@ export interface PreAssembledRacket {
   Racket_Grip: string[]; // Array of available grips: e.g., ["FL", "ST"]
   Racket_Price: number; // USD
   Racket_Level: "Beginner" | "Intermediate" | "Advanced";
-  Racket_Affiliate_Link: string;
+  Racket_Description: string; // Detailed product description
 }
 
 // Blades Database

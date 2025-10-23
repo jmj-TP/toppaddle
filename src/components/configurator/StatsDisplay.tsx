@@ -191,15 +191,9 @@ const StatsDisplay = ({
     </div>
   );
 
+  // No longer needed - removed Amazon affiliate functionality
   const handleBuyClick = () => {
-    if (racket) {
-      window.open(racket.Racket_Affiliate_Link, "_blank");
-    } else if (blade && forehand && backhand) {
-      // Open all three links
-      window.open(blade.Blade_Affiliate_Link, "_blank");
-      setTimeout(() => window.open(forehand.Rubber_Affiliate_Link, "_blank"), 500);
-      setTimeout(() => window.open(backhand.Rubber_Affiliate_Link, "_blank"), 1000);
-    }
+    // Functionality removed - customers now use our integrated shop
   };
 
   return (
