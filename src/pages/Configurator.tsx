@@ -718,6 +718,166 @@ const Configurator = () => {
                 onAddToCart={handleAddToCart}
               />
             </div>
+
+            {/* Product Descriptions Section */}
+            <div className="mt-12 space-y-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-center text-foreground">
+                Product Details
+              </h2>
+              
+              {isPreassembled ? (
+                <div className="bg-card border-2 border-border rounded-xl p-6 shadow-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <span className="text-2xl">🏓</span>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-foreground mb-2">{selectedRacket.Racket_Name}</h3>
+                      <div className="space-y-2 text-sm text-muted-foreground">
+                        <p><span className="font-semibold text-foreground">Price:</span> ${selectedRacket.Racket_Price}</p>
+                        <p><span className="font-semibold text-foreground">Level:</span> {selectedRacket.Racket_Level}</p>
+                        <div className="mt-4 pt-4 border-t border-border">
+                          <p className="font-semibold text-foreground mb-2">Performance Stats:</p>
+                          <div className="grid grid-cols-2 gap-2">
+                            <p>Speed: {selectedRacket.Racket_Speed}/10</p>
+                            <p>Spin: {selectedRacket.Racket_Spin}/10</p>
+                            <p>Control: {selectedRacket.Racket_Control}/10</p>
+                            <p>Power: {Math.round((selectedRacket.Racket_Speed + selectedRacket.Racket_Spin) / 2)}/10</p>
+                          </div>
+                        </div>
+                        {selectedRacket.Racket_Affiliate_Link && (
+                          <a 
+                            href={selectedRacket.Racket_Affiliate_Link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block mt-4 text-primary hover:text-primary/80 font-semibold transition-colors"
+                          >
+                            View on Amazon →
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-3 gap-6">
+                  {/* Forehand Rubber */}
+                  <div className="bg-card border-2 border-border rounded-xl p-6 shadow-lg">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-lg bg-red-500/10 flex items-center justify-center">
+                        <span className="text-xl">🔴</span>
+                      </div>
+                      <h3 className="text-lg font-bold text-foreground">Forehand Rubber</h3>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <p className="font-semibold text-foreground">{selectedForehand.Rubber_Name}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Price:</span> ${selectedForehand.Rubber_Price}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Level:</span> {selectedForehand.Rubber_Level}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Style:</span> {selectedForehand.Rubber_Style}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Sponge:</span> {selectedForehandThickness}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Color:</span> {selectedForehandColor}</p>
+                      <div className="mt-3 pt-3 border-t border-border">
+                        <p className="font-semibold text-foreground mb-1 text-xs">Stats:</p>
+                        <div className="grid grid-cols-2 gap-1 text-xs text-muted-foreground">
+                          <p>Speed: {selectedForehand.Rubber_Speed}/10</p>
+                          <p>Spin: {selectedForehand.Rubber_Spin}/10</p>
+                          <p>Control: {selectedForehand.Rubber_Control}/10</p>
+                          <p>Power: {selectedForehand.Rubber_Power}/10</p>
+                        </div>
+                      </div>
+                      {selectedForehand.Rubber_Affiliate_Link && (
+                        <a 
+                          href={selectedForehand.Rubber_Affiliate_Link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block mt-3 text-primary hover:text-primary/80 font-semibold transition-colors text-xs"
+                        >
+                          View on Amazon →
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Blade */}
+                  <div className="bg-card border-2 border-border rounded-xl p-6 shadow-lg">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <span className="text-xl">🏓</span>
+                      </div>
+                      <h3 className="text-lg font-bold text-foreground">Blade</h3>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <p className="font-semibold text-foreground">{selectedBlade.Blade_Name}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Price:</span> ${selectedBlade.Blade_Price}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Level:</span> {selectedBlade.Blade_Level}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Style:</span> {selectedBlade.Blade_Style}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Grip:</span> {selectedGrip}</p>
+                      {selectedBlade.Blade_Weight && (
+                        <p className="text-muted-foreground"><span className="font-semibold text-foreground">Weight:</span> {selectedBlade.Blade_Weight}g</p>
+                      )}
+                      <div className="mt-3 pt-3 border-t border-border">
+                        <p className="font-semibold text-foreground mb-1 text-xs">Stats:</p>
+                        <div className="grid grid-cols-2 gap-1 text-xs text-muted-foreground">
+                          <p>Speed: {selectedBlade.Blade_Speed}/10</p>
+                          <p>Spin: {selectedBlade.Blade_Spin}/10</p>
+                          <p>Control: {selectedBlade.Blade_Control}/10</p>
+                          <p>Power: {selectedBlade.Blade_Power}/10</p>
+                        </div>
+                      </div>
+                      {selectedBlade.Blade_Affiliate_Link && (
+                        <a 
+                          href={selectedBlade.Blade_Affiliate_Link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block mt-3 text-primary hover:text-primary/80 font-semibold transition-colors text-xs"
+                        >
+                          View on Amazon →
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Backhand Rubber */}
+                  <div className="bg-card border-2 border-border rounded-xl p-6 shadow-lg">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-lg bg-gray-900/10 dark:bg-gray-100/10 flex items-center justify-center">
+                        <span className="text-xl">⚫</span>
+                      </div>
+                      <h3 className="text-lg font-bold text-foreground">Backhand Rubber</h3>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <p className="font-semibold text-foreground">{selectedBackhand.Rubber_Name}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Price:</span> ${selectedBackhand.Rubber_Price}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Level:</span> {selectedBackhand.Rubber_Level}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Style:</span> {selectedBackhand.Rubber_Style}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Sponge:</span> {selectedBackhandThickness}</p>
+                      <p className="text-muted-foreground"><span className="font-semibold text-foreground">Color:</span> {selectedBackhandColor}</p>
+                      <div className="mt-3 pt-3 border-t border-border">
+                        <p className="font-semibold text-foreground mb-1 text-xs">Stats:</p>
+                        <div className="grid grid-cols-2 gap-1 text-xs text-muted-foreground">
+                          <p>Speed: {selectedBackhand.Rubber_Speed}/10</p>
+                          <p>Spin: {selectedBackhand.Rubber_Spin}/10</p>
+                          <p>Control: {selectedBackhand.Rubber_Control}/10</p>
+                          <p>Power: {selectedBackhand.Rubber_Power}/10</p>
+                        </div>
+                      </div>
+                      {selectedBackhand.Rubber_Affiliate_Link && (
+                        <a 
+                          href={selectedBackhand.Rubber_Affiliate_Link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block mt-3 text-primary hover:text-primary/80 font-semibold transition-colors text-xs"
+                        >
+                          View on Amazon →
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </main>

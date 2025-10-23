@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { ProductFilter, type ProductFilters } from "./ProductFilter";
-import { Info, BarChart3, ChevronUp, ChevronDown, ExternalLink, ChevronRight } from "lucide-react";
+import { Info, BarChart3, ChevronUp, ChevronDown, ChevronRight } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import ComponentStatsCard from "./ComponentStatsCard";
 
 interface SlotMachineProps {
@@ -468,24 +469,6 @@ const SlotMachine = ({
                             {getName(item)}
                           </p>
                           {offset === 0 && (
-                            <button 
-                              className="text-muted-foreground hover:text-primary transition-colors flex-shrink-0"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const affiliateLink = 'Blade_Affiliate_Link' in item 
-                                  ? item.Blade_Affiliate_Link 
-                                  : 'Rubber_Affiliate_Link' in item 
-                                    ? item.Rubber_Affiliate_Link 
-                                    : 'Racket_Affiliate_Link' in item 
-                                      ? item.Racket_Affiliate_Link 
-                                      : '';
-                                if (affiliateLink) window.open(affiliateLink, "_blank");
-                              }}
-                            >
-                              <ExternalLink className="w-4 h-4" />
-                            </button>
-                          )}
-                          {offset === 0 && (
                             <Popover>
                               <PopoverTrigger asChild onClick={(e) => e.stopPropagation()}>
                                 <button className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0">
@@ -570,6 +553,13 @@ const SlotMachine = ({
     const [isOpen, setIsOpen] = useState(false);
     const availableGrips = selectedBlade.Blade_Grip || [];
     
+    const gripDescriptions = {
+      'FL': 'Flared (FL): The most popular grip. Widens at the end for a secure hold and comfortable control.',
+      'ST': 'Straight (ST): Uniform thickness throughout. Allows quick grip changes and flexible wrist movement.',
+      'AN': 'Anatomic (AN): Ergonomically shaped to fit your hand naturally. Maximum comfort for long sessions.',
+      'CS': 'Chinese Penhold (CS): Traditional Asian style with thumb and index finger grip on one side.'
+    };
+    
     return (
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
@@ -577,9 +567,26 @@ const SlotMachine = ({
             variant="outline" 
             className="w-full justify-between border-border hover:bg-secondary"
           >
-            <span className="text-xs font-medium">
-              {isOpen ? 'Choose Grip Type' : `Grip: ${selectedGrip}`}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium">
+                {isOpen ? 'Choose Grip Type' : `Grip: ${selectedGrip}`}
+              </span>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild onClick={(e) => e.stopPropagation()}>
+                    <Info className="w-3.5 h-3.5 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-xs">
+                    <div className="space-y-1.5 text-xs">
+                      <p className="font-semibold">Grip Types:</p>
+                      {Object.entries(gripDescriptions).map(([key, desc]) => (
+                        <p key={key} className="text-muted-foreground">{desc}</p>
+                      ))}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <ChevronRight className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
           </Button>
         </CollapsibleTrigger>
@@ -620,9 +627,26 @@ const SlotMachine = ({
             variant="outline" 
             className="w-full justify-between border-border hover:bg-secondary"
           >
-            <span className="text-xs font-medium">
-              {isOpen ? 'Choose Sponge Size' : `Sponge: ${selectedThickness}`}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium">
+                {isOpen ? 'Choose Sponge Size' : `Sponge: ${selectedThickness}`}
+              </span>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild onClick={(e) => e.stopPropagation()}>
+                    <Info className="w-3.5 h-3.5 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-xs">
+                    <div className="space-y-1.5 text-xs">
+                      <p className="font-semibold">Sponge Size Impact:</p>
+                      <p className="text-muted-foreground"><strong>Thinner (&lt;1.8mm):</strong> More control, better feel. Less speed and power. Ideal for defensive play.</p>
+                      <p className="text-muted-foreground"><strong>Medium (1.8-2.0mm):</strong> Balanced performance. Good mix of control, speed, and spin for all-around play.</p>
+                      <p className="text-muted-foreground"><strong>Thicker (&gt;2.0mm):</strong> Maximum speed and power. Less control. Best for aggressive offensive play.</p>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <ChevronRight className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
           </Button>
         </CollapsibleTrigger>
