@@ -179,21 +179,38 @@ const Configurator = () => {
     const fhParam = searchParams.get("fh");
     const bhParam = searchParams.get("bh");
     const racketParam = searchParams.get("racket");
+    const handleParam = searchParams.get("handle");
+    const fhThicknessParam = searchParams.get("fhThickness");
+    const bhThicknessParam = searchParams.get("bhThickness");
+    const preassembledParam = searchParams.get("preassembled");
     
-    if (racketParam) {
+    // Set grip/handle type if provided
+    if (handleParam) {
+      setSelectedGrip(handleParam);
+    }
+    
+    if (preassembledParam === "true" && racketParam) {
       const racket = preAssembledRackets.find(r => r.Racket_Name === racketParam);
       if (racket) {
         setIsPreassembled(true);
         setSelectedRacket(racket);
       }
     } else if (bladeParam || fhParam || bhParam) {
-      const blade = blades.find(b => b.Blade_Name === bladeParam) || blades[0];
-      const fh = rubbers.find(r => r.Rubber_Name === fhParam) || rubbers[0];
-      const bh = rubbers.find(r => r.Rubber_Name === bhParam) || rubbers[1];
+      const blade = blades.find(b => b.Blade_Name === bladeParam);
+      const fh = rubbers.find(r => r.Rubber_Name === fhParam);
+      const bh = rubbers.find(r => r.Rubber_Name === bhParam);
       
-      setSelectedBlade(blade);
-      setSelectedForehand(fh);
-      setSelectedBackhand(bh);
+      if (blade) setSelectedBlade(blade);
+      if (fh) setSelectedForehand(fh);
+      if (bh) setSelectedBackhand(bh);
+      
+      // Set sponge thicknesses if provided
+      if (fhThicknessParam && fh?.Rubber_Sponge_Sizes?.includes(fhThicknessParam)) {
+        setSelectedForehandThickness(fhThicknessParam);
+      }
+      if (bhThicknessParam && bh?.Rubber_Sponge_Sizes?.includes(bhThicknessParam)) {
+        setSelectedBackhandThickness(bhThicknessParam);
+      }
     }
   }, [searchParams]);
 

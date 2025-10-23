@@ -1,15 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ExternalLink, Star, Target, Gauge, Shield, Info, Weight, ChevronDown, ChevronUp, Settings, DollarSign, Package } from "lucide-react";
+import { ExternalLink, Star, Target, Gauge, Shield, Info, Weight, ChevronDown, ChevronUp, Settings, DollarSign, Package, ShoppingCart, Wrench } from "lucide-react";
 import type { Recommendation, CustomSetup, QuizAnswers } from "@/utils/ratingSystem";
 import { estimateBladeWeight, estimateRubberWeight } from "@/data/products";
 import BrandSelector from "./BrandSelector";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ShareButton from "./ShareButton";
+import { useCartStore } from "@/stores/cartStore";
+import { fetchShopifyProducts, type ShopifyProduct } from "@/lib/shopify";
+import { toast } from "sonner";
 
 interface RecommendationDisplayProps {
   recommendation: Recommendation;
@@ -24,9 +28,161 @@ interface RecommendationDisplayProps {
 export default function RecommendationDisplay({ recommendation, onRestart, assemblyPreference, budgetAmount, playerLevel, currentAnswers, onUpdatePreferences }: RecommendationDisplayProps) {
   const { preAssembled, preAssembled2, customSetup, customSetup2, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation, handleType, handleTypeExplanation } = recommendation;
   
+  const navigate = useNavigate();
+  const addItem = useCartStore(state => state.addItem);
+  const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  
   const [showPreferenceEditor, setShowPreferenceEditor] = useState(false);
   const [tempBudget, setTempBudget] = useState(currentAnswers?.Budget || "<100$");
   const [tempBrands, setTempBrands] = useState<string[]>(currentAnswers?.Brand || []);
+
+  // Load Shopify products
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const products = await fetchShopifyProducts();
+        setShopifyProducts(products);
+      } catch (error) {
+        console.error("Error loading Shopify products:", error);
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    };
+    loadProducts();
+  }, []);
+
+  // Helper to find Shopify product by name
+  const findShopifyProduct = (productName: string) => {
+    return shopifyProducts.find(p => 
+      p.node.title.toLowerCase().includes(productName.toLowerCase()) ||
+      productName.toLowerCase().includes(p.node.title.toLowerCase())
+    );
+  };
+
+  // Helper to find variant with specific options
+  const findVariant = (product: ShopifyProduct, options: { [key: string]: string }) => {
+    return product.node.variants.edges.find(variant => {
+      return Object.entries(options).every(([key, value]) => {
+        return variant.node.selectedOptions.some(opt => 
+          opt.name.toLowerCase() === key.toLowerCase() && 
+          opt.value.toLowerCase() === value.toLowerCase()
+        );
+      });
+    })?.node;
+  };
+
+  // Navigate to configurator with pre-selected items
+  const handleViewInConfigurator = (item: typeof allRecommendations[0]) => {
+    if (item.type === 'preAssembled' || item.type === 'preAssembled2') {
+      const racket = item.data;
+      navigate(`/configurator?preassembled=true&racket=${encodeURIComponent(racket.Racket_Name)}&handle=${encodeURIComponent(handleType)}`);
+    } else {
+      const setup = item.data as CustomSetup;
+      navigate(`/configurator?blade=${encodeURIComponent(setup.blade.Blade_Name)}&fh=${encodeURIComponent(setup.forehandRubber.Rubber_Name)}&bh=${encodeURIComponent(setup.backhandRubber.Rubber_Name)}&handle=${encodeURIComponent(handleType)}&fhThickness=${encodeURIComponent(forehandThickness)}&bhThickness=${encodeURIComponent(backhandThickness)}`);
+    }
+  };
+
+  // Add to cart with Shopify integration
+  const handleAddToCart = async (item: typeof allRecommendations[0]) => {
+    if (isLoadingProducts) {
+      toast.error("Still loading products", { description: "Please wait a moment..." });
+      return;
+    }
+
+    try {
+      if (item.type === 'preAssembled' || item.type === 'preAssembled2') {
+        const racket = item.data;
+        const shopifyProduct = findShopifyProduct(racket.Racket_Name);
+        
+        if (!shopifyProduct) {
+          toast.error("Product not found in store", { 
+            description: `${racket.Racket_Name} is not available in our store yet.` 
+          });
+          return;
+        }
+
+        const variant = findVariant(shopifyProduct, { handle: handleType }) || shopifyProduct.node.variants.edges[0].node;
+        
+        addItem({
+          product: shopifyProduct,
+          variantId: variant.id,
+          variantTitle: variant.title,
+          price: variant.price,
+          quantity: 1,
+          selectedOptions: variant.selectedOptions
+        });
+
+        toast.success("Added to cart!", { description: racket.Racket_Name });
+      } else {
+        const setup = item.data as CustomSetup;
+        
+        // Find blade
+        const bladeProduct = findShopifyProduct(setup.blade.Blade_Name);
+        if (bladeProduct) {
+          const bladeVariant = findVariant(bladeProduct, { handle: handleType }) || bladeProduct.node.variants.edges[0].node;
+          addItem({
+            product: bladeProduct,
+            variantId: bladeVariant.id,
+            variantTitle: bladeVariant.title,
+            price: bladeVariant.price,
+            quantity: 1,
+            selectedOptions: bladeVariant.selectedOptions
+          });
+        }
+
+        // Find forehand rubber
+        const fhProduct = findShopifyProduct(setup.forehandRubber.Rubber_Name);
+        if (fhProduct) {
+          const fhVariant = findVariant(fhProduct, { 
+            thickness: forehandThickness, 
+            color: "Red" 
+          }) || fhProduct.node.variants.edges[0].node;
+          addItem({
+            product: fhProduct,
+            variantId: fhVariant.id,
+            variantTitle: fhVariant.title,
+            price: fhVariant.price,
+            quantity: 1,
+            selectedOptions: fhVariant.selectedOptions
+          });
+        }
+
+        // Find backhand rubber
+        const bhProduct = findShopifyProduct(setup.backhandRubber.Rubber_Name);
+        if (bhProduct) {
+          const bhVariant = findVariant(bhProduct, { 
+            thickness: backhandThickness, 
+            color: "Black" 
+          }) || bhProduct.node.variants.edges[0].node;
+          addItem({
+            product: bhProduct,
+            variantId: bhVariant.id,
+            variantTitle: bhVariant.title,
+            price: bhVariant.price,
+            quantity: 1,
+            selectedOptions: bhVariant.selectedOptions
+          });
+        }
+
+        const addedCount = [bladeProduct, fhProduct, bhProduct].filter(Boolean).length;
+        if (addedCount > 0) {
+          toast.success(`Added ${addedCount} items to cart!`, { 
+            description: "Custom setup components added" 
+          });
+        } else {
+          toast.error("Products not found in store", { 
+            description: "These items are not available yet." 
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Failed to add to cart", { 
+        description: "Please try again or contact support." 
+      });
+    }
+  };
   
   // Create array of all recommendations sorted by match score
   let allRecommendations = [
@@ -161,6 +317,28 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               </div>
             </div>
             
+            <div className="grid grid-cols-2 gap-2">
+              <Button 
+                onClick={() => handleViewInConfigurator({ type: 'preAssembled', score: racket.score, data: racket, rank })}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
+                <Wrench className="w-3 h-3 mr-1" />
+                View in Configurator
+              </Button>
+              <Button 
+                onClick={() => handleAddToCart({ type: 'preAssembled', score: racket.score, data: racket, rank })}
+                variant="default"
+                size="sm"
+                className="w-full"
+                disabled={isLoadingProducts}
+              >
+                <ShoppingCart className="w-3 h-3 mr-1" />
+                Add to Cart
+              </Button>
+            </div>
+            
             <Button 
               asChild 
               variant="accent"
@@ -287,6 +465,28 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     )}
                   </Button>
                 </CollapsibleTrigger>
+                
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    onClick={() => handleViewInConfigurator({ type: 'custom1', score: setup.score, data: setup, rank })}
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                  >
+                    <Wrench className="w-3 h-3 mr-1" />
+                    View in Configurator
+                  </Button>
+                  <Button 
+                    onClick={() => handleAddToCart({ type: 'custom1', score: setup.score, data: setup, rank })}
+                    variant="default"
+                    size="sm"
+                    className="w-full"
+                    disabled={isLoadingProducts}
+                  >
+                    <ShoppingCart className="w-3 h-3 mr-1" />
+                    Add to Cart
+                  </Button>
+                </div>
               </div>
             </div>
 

@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import TableTennisQuiz from "@/components/TableTennisQuiz";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
@@ -12,22 +12,14 @@ import StructuredData from "@/components/StructuredData";
 import FAQSection from "@/components/FAQSection";
 
 const Index = () => {
-  const [isQuizActive, setIsQuizActive] = useState(false);
-  const quizRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
-  // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const handleStartQuiz = () => {
-    // Scroll to top first
-    window.scrollTo(0, 0);
-    setIsQuizActive(true);
-    // Scroll to quiz after a brief delay to ensure state updates
-    setTimeout(() => {
-      quizRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
+    navigate("/quiz");
   };
 
   const faqs = [
@@ -78,21 +70,12 @@ const Index = () => {
       />
       <Header />
       <main className="flex-1">
-        {!isQuizActive && (
-          <>
-            <HeroSection onStartQuiz={handleStartQuiz} />
-            <HowItWorks />
-            <CTASection onStartQuiz={handleStartQuiz} />
-            <TrustSection />
-            <FAQSection faqs={faqs} />
-            <BlogPreview />
-          </>
-        )}
-        {isQuizActive && (
-          <div ref={quizRef}>
-            <TableTennisQuiz onQuizStatusChange={setIsQuizActive} />
-          </div>
-        )}
+        <HeroSection onStartQuiz={handleStartQuiz} />
+        <HowItWorks />
+        <CTASection onStartQuiz={handleStartQuiz} />
+        <TrustSection />
+        <FAQSection faqs={faqs} />
+        <BlogPreview />
       </main>
       <Footer />
     </div>

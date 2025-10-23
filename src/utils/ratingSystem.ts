@@ -434,9 +434,15 @@ export function findBestPreAssembledRackets(answers: QuizAnswers, topN: number =
       if (racket.Racket_FH_Rubber_Style !== answers.ForehandRubberStyle) return false;
       if (racket.Racket_BH_Rubber_Style !== answers.BackhandRubberStyle) return false;
       
-      // Grip/Handle filter (STRICT - dealbreaker for Anatomic only)
+      // Grip/Handle filter - Check if racket has the recommended handle type
+      const recommendedHandle = calculateHandleType(answers).handleType;
       const productGrip = racket.Racket_Grip || '';
-      if (answers.Grip.includes('Anatomic') && !productGrip.includes('Anatomic')) return false;
+      
+      // Strict filter: racket must have the recommended grip type
+      if (recommendedHandle === 'FL' && !productGrip.includes('FL')) return false;
+      if (recommendedHandle === 'ST' && !productGrip.includes('ST')) return false;
+      if (recommendedHandle === 'Anatomic' && !productGrip.includes('Anatomic')) return false;
+      if (recommendedHandle === 'Penhold' && !productGrip.includes('Penhold')) return false;
       
       return true;
     })
@@ -511,11 +517,15 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
       continue;
     }
     
-    // Grip/Handle filter (STRICT - dealbreaker for Anatomic only)
+    // Grip/Handle filter - Check if blade has the recommended handle type
+    const recommendedHandle = calculateHandleType(answers).handleType;
     const bladeGrip = blade.Blade_Grip || '';
-    if (answers.Grip.includes('Anatomic') && !bladeGrip.includes('Anatomic')) {
-      continue;
-    }
+    
+    // Strict filter: blade must have the recommended grip type
+    if (recommendedHandle === 'FL' && !bladeGrip.includes('FL')) continue;
+    if (recommendedHandle === 'ST' && !bladeGrip.includes('ST')) continue;
+    if (recommendedHandle === 'Anatomic' && !bladeGrip.includes('Anatomic')) continue;
+    if (recommendedHandle === 'Penhold' && !bladeGrip.includes('Penhold')) continue;
     
       for (const fhRubber of forehandRubbers) {
       // Brand filter for forehand rubber (STRICT - dealbreaker)
