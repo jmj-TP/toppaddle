@@ -170,6 +170,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         }
 
         // Add assembly service if requested
+        let assemblyAdded = false;
         const shouldAssemble = (item.type === 'custom1' && assembleCustom1) || (item.type === 'custom2' && assembleCustom2);
         if (shouldAssemble) {
           const assemblyProduct = shopifyProducts.find(p => 
@@ -187,12 +188,13 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               quantity: 1,
               selectedOptions: assemblyVariant.selectedOptions
             });
+            assemblyAdded = true;
           }
         }
 
         const addedCount = [bladeProduct, fhProduct, bhProduct].filter(Boolean).length;
-        const itemCountWithAssembly = shouldAssemble ? addedCount + 1 : addedCount;
-        const description = shouldAssemble 
+        const itemCountWithAssembly = assemblyAdded ? addedCount + 1 : addedCount;
+        const description = assemblyAdded 
           ? `${itemCountWithAssembly} items added with free assembly service`
           : "Custom setup components added";
 

@@ -623,6 +623,7 @@ const Configurator = () => {
         });
 
         // Add assembly service if requested
+        let assemblyAdded = false;
         if (assembleForMe) {
           // Find assembly service product in Shopify
           const assemblyProduct = shopifyProducts.find(p => 
@@ -641,12 +642,13 @@ const Configurator = () => {
                 quantity: 1,
                 selectedOptions: assemblyVariant.node.selectedOptions
               });
+              assemblyAdded = true;
             }
           }
         }
 
-        const itemCount = assembleForMe ? 4 : 3;
-        const description = assembleForMe 
+        const itemCount = assemblyAdded ? 4 : 3;
+        const description = assemblyAdded 
           ? `${itemCount} items added: blade, 2 rubbers, and free assembly service`
           : "3 items added: blade and 2 rubbers with your selected options";
 
