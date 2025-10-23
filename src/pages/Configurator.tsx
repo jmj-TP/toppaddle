@@ -31,10 +31,10 @@ const Configurator = () => {
   // State for preassembled mode
   const [selectedRacket, setSelectedRacket] = useState<PreAssembledRacket>(preAssembledRackets[0]);
   
-  // Filters
-  const [selectedGrip, setSelectedGrip] = useState<string>("ST");
-  const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("2.0mm");
-  const [selectedBackhandThickness, setSelectedBackhandThickness] = useState<string>("2.0mm");
+  // Filters - using values that match Shopify variants
+  const [selectedGrip, setSelectedGrip] = useState<string>("ST (Straight)");
+  const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("2.1mm");
+  const [selectedBackhandThickness, setSelectedBackhandThickness] = useState<string>("2.1mm");
   
   // Filter popover open states
   const [forehandFilterOpen, setForehandFilterOpen] = useState(false);
@@ -401,6 +401,16 @@ const Configurator = () => {
   ): string | null => {
     const variants = product.node.variants.edges;
     
+    console.log(`🔍 Finding variant for ${product.node.title}`, {
+      requestedOptions: options,
+      availableVariants: variants.map(v => ({
+        id: v.node.id,
+        title: v.node.title,
+        options: v.node.selectedOptions,
+        available: v.node.availableForSale
+      }))
+    });
+    
     for (const variant of variants) {
       const variantOptions = variant.node.selectedOptions;
       
@@ -413,10 +423,16 @@ const Configurator = () => {
       );
       
       if (allMatch && variant.node.availableForSale) {
+        console.log(`✅ Found matching variant:`, {
+          variantId: variant.node.id,
+          title: variant.node.title,
+          options: variant.node.selectedOptions
+        });
         return variant.node.id;
       }
     }
     
+    console.log(`❌ No matching variant found for options:`, options);
     return null;
   };
 
@@ -508,8 +524,15 @@ const Configurator = () => {
         ]);
 
         if (!bladeVariantId || !forehandVariantId || !backhandVariantId) {
+          const missingParts = [];
+          if (!bladeVariantId) missingParts.push(`Blade with grip: ${selectedGrip}`);
+          if (!forehandVariantId) missingParts.push(`Forehand rubber with thickness: ${selectedForehandThickness}`);
+          if (!backhandVariantId) missingParts.push(`Backhand rubber with thickness: ${selectedBackhandThickness}`);
+          
+          console.error("Missing variants:", { bladeVariantId, forehandVariantId, backhandVariantId });
+          
           toast.error("Variant not available", {
-            description: "The selected configuration is not available in the store."
+            description: `The following options are not available: ${missingParts.join(", ")}`
           });
           return;
         }
