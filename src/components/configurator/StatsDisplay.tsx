@@ -461,6 +461,18 @@ const StatsDisplay = ({
                   </div>
                 </div>
               )}
+              <div className="bg-blue-50 dark:bg-blue-950/30 border-2 border-blue-200 dark:border-blue-800 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-1">
+                      Pre-launch pricing
+                    </p>
+                    <p className="text-xs text-blue-800 dark:text-blue-200">
+                      Final prices will update after our supplier partnership is confirmed.
+                    </p>
+                  </div>
+                </div>
+              </div>
               <Button
                 onClick={onAddToCart}
                 size="lg"
