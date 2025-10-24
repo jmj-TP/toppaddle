@@ -420,9 +420,9 @@ const StatsDisplay = ({
                   <div className="flex items-start gap-3">
                     <Shield className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                     <div className="flex-1 space-y-2">
-                      <h4 className="font-semibold text-sm">Blade Seals Service ($4.00)</h4>
+                      <h4 className="font-semibold text-sm">Blade Seals Service ($5.49)</h4>
                       <p className="text-xs text-muted-foreground">
-                        Protect your blade edges with professional sealing. This prevents damage and moisture absorption, making your blade future-proof for rubber changes.
+                        Moisture-resistant coating protects wood fibers and makes rubber removal safe and easy.
                       </p>
                     </div>
                   </div>
@@ -436,7 +436,7 @@ const StatsDisplay = ({
                       htmlFor="seals" 
                       className="text-sm font-medium cursor-pointer"
                     >
-                      Add blade seals service (+$4.00)
+                      Add blade seals service (+$5.49)
                     </Label>
                   </div>
                 </div>
