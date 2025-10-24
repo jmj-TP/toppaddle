@@ -182,55 +182,29 @@ const StatsDisplay = ({
     label, 
     value, 
     Icon, 
-    onChange,
-    min = 0,
-    max = 100,
-    step = 1,
-    unit = ""
+    onChange 
   }: { 
     label: string; 
     value: number; 
     Icon: any; 
     onChange: (value: number) => void;
-    min?: number;
-    max?: number;
-    step?: number;
-    unit?: string;
-  }) => {
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = parseInt(e.target.value);
-      if (!isNaN(newValue) && newValue >= min && newValue <= max) {
-        onChange(newValue);
-      }
-    };
-
-    return (
-      <div className="flex items-center gap-3 mb-4 py-2">
-        <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-        <span className="text-sm font-medium min-w-[60px]">{label}:</span>
-        <div className="flex-1 px-2 py-2">
-          <Slider
-            value={[value]}
-            onValueChange={(values) => onChange(values[0])}
-            min={min}
-            max={max}
-            step={step}
-            className="w-full"
-          />
-        </div>
-        <input
-          type="number"
-          value={value}
-          onChange={handleInputChange}
-          min={min}
-          max={max}
-          step={step}
-          className="w-16 px-2 py-1 text-sm font-semibold text-right border border-border rounded bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+  }) => (
+    <div className="flex items-center gap-3 mb-4 py-2">
+      <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+      <span className="text-sm font-medium min-w-[60px]">{label}:</span>
+      <div className="flex-1 px-2 py-2">
+        <Slider
+          value={[value]}
+          onValueChange={(values) => onChange(values[0])}
+          min={0}
+          max={100}
+          step={1}
+          className="w-full"
         />
-        {unit && <span className="text-sm font-semibold text-muted-foreground">{unit}</span>}
       </div>
-    );
-  };
+      <span className="text-sm font-semibold min-w-[30px] text-right">{value}</span>
+    </div>
+  );
 
   // No longer needed - removed Amazon affiliate functionality
   const handleBuyClick = () => {
@@ -334,16 +308,21 @@ const StatsDisplay = ({
               <StatSlider label="Power" value={editPower} Icon={Star} onChange={setEditPower} />
               
               {/* Weight Preference */}
-              <StatSlider 
-                label="Weight" 
-                value={editWeight} 
-                Icon={Scale} 
-                onChange={setEditWeight}
-                min={150}
-                max={210}
-                step={5}
-                unit="g"
-              />
+              <div className="flex items-center gap-3 mb-4 py-2">
+                <Scale className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                <span className="text-sm font-medium min-w-[60px]">Weight:</span>
+                <div className="flex-1 px-2 py-2">
+                  <Slider
+                    value={[editWeight]}
+                    onValueChange={(values) => setEditWeight(values[0])}
+                    min={150}
+                    max={210}
+                    step={5}
+                    className="w-full"
+                  />
+                </div>
+                <span className="text-sm font-semibold min-w-[40px] text-right">{editWeight}g</span>
+              </div>
               
               {/* Advanced Button */}
               {!racket && (
