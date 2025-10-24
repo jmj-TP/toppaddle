@@ -50,10 +50,16 @@ const Privacy = () => {
                 A. Personally Identifiable Information (PII)
               </h3>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                Only collected if you voluntarily provide it (e.g., via contact forms or newsletter sign-ups).
+                We collect personal information when you place an order or voluntarily provide it (e.g., via contact forms or newsletter sign-ups).
               </p>
               <p className="font-body mt-2 leading-relaxed text-muted-foreground">
-                Examples: name, email address.
+                Examples include: name, email address, shipping address, billing address, phone number, and payment information.
+              </p>
+              <p className="font-body mt-2 leading-relaxed text-muted-foreground">
+                When you place an order, your information is collected and processed by Shopify, our e-commerce platform provider, to fulfill your order, process payment, and arrange shipping.
+              </p>
+              <p className="font-body mt-2 leading-relaxed text-muted-foreground">
+                Shopify stores your order information securely and uses it in accordance with their privacy policy. For more information, please review <a href="https://www.shopify.com/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Shopify's Privacy Policy</a>.
               </p>
 
               <h3 className="font-headline text-xl font-semibold text-foreground mt-6">
@@ -115,13 +121,16 @@ const Privacy = () => {
                 We may use your information to:
               </p>
               <ul className="font-body mt-4 list-inside list-disc space-y-2 text-muted-foreground">
+                <li>Process and fulfill your orders</li>
+                <li>Communicate with you about your order status and shipping</li>
                 <li>Improve the website and quiz experience</li>
                 <li>Respond to inquiries or support requests</li>
                 <li>Send newsletters or updates if you opt-in</li>
                 <li>Monitor and analyze traffic patterns</li>
+                <li>Handle returns, refunds, and customer service inquiries</li>
               </ul>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                We do not sell or rent personal information.
+                We do not sell or rent personal information. Your order and payment information is processed securely through Shopify.
               </p>
             </section>
 

@@ -33,6 +33,12 @@ const Terms = () => {
                 By placing an order through TopTableTennisPaddle.com, you agree to purchase the products at the prices displayed at checkout.
                 All orders are subject to acceptance and availability. We reserve the right to refuse or cancel any order for any reason.
               </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                All prices are listed in USD and may change without notice.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                Customers are responsible for providing accurate shipping information.
+              </p>
             </section>
 
             {/* Payment Terms */}
@@ -47,28 +53,102 @@ const Terms = () => {
               </p>
             </section>
 
-            {/* Shipping and Delivery */}
+            {/* Returns & Exchanges */}
             <section className="mt-12">
               <h2 className="font-headline text-2xl font-semibold text-foreground">
-                Shipping and Delivery
+                Returns & Exchanges
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                Shipping times and costs vary by location and product availability.
-                Estimated delivery times are provided at checkout but are not guaranteed.
-                Risk of loss and title for products pass to you upon delivery to the carrier.
+                We accept returns within 14 days of delivery for unused products in their original packaging and condition.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                The customer is responsible for return shipping costs unless the item is defective or we sent the wrong product.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                Once we receive and inspect the item, we'll issue a refund (excluding original shipping costs).
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                Used or damaged items not caused by shipping are not eligible for return.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                Please contact us before returning any item so we can provide the proper return instructions.
               </p>
             </section>
 
-            {/* Returns and Refunds */}
+            {/* Custom Assembled Rackets */}
             <section className="mt-12">
               <h2 className="font-headline text-2xl font-semibold text-foreground">
-                Returns and Refunds
+                Custom Assembled Rackets
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                We accept returns within 30 days of delivery for unused products in original packaging.
-                Custom-assembled rackets may have different return policies.
-                Refunds will be processed to the original payment method within 7-10 business days after we receive the returned item.
-                Shipping costs are non-refundable unless the return is due to our error.
+                Custom-assembled rackets (blade + rubber combinations) are non-returnable and non-refundable unless they arrive damaged or defective.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                Customers should double-check their selections (blade type, handle style, rubbers, sponge thickness) before ordering.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                If your custom racket arrives damaged or defective, contact us within 3 days of delivery with photos or a short video showing the issue.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                We'll arrange a replacement or refund once the claim is verified.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                These policies match those of our assembly partners and ensure product quality for every customer.
+              </p>
+            </section>
+
+            {/* Damaged or Defective Items */}
+            <section className="mt-12">
+              <h2 className="font-headline text-2xl font-semibold text-foreground">
+                Damaged or Defective Items
+              </h2>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                If an item arrives damaged or defective, please contact us within 3 days of delivery.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                Include clear photos or a short video of the damage or defect.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                We'll review your case and work to provide a replacement or refund. Our goal is to make sure every customer receives their product in perfect condition.
+              </p>
+            </section>
+
+            {/* Lost or Missing Shipments */}
+            <section className="mt-12">
+              <h2 className="font-headline text-2xl font-semibold text-foreground">
+                Lost or Missing Shipments
+              </h2>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                If your order hasn't arrived within 15 business days of shipment, please contact us.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                We'll open an investigation with the shipping carrier and keep you updated.
+                If the shipment is confirmed lost, we'll offer a replacement or full refund.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                Please note that shipping times can vary depending on location and carrier delays.
+              </p>
+            </section>
+
+            {/* Shipping Policy */}
+            <section className="mt-12">
+              <h2 className="font-headline text-2xl font-semibold text-foreground">
+                Shipping Policy
+              </h2>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                We currently ship orders within the United States using reliable carriers such as USPS and UPS.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                Orders are usually processed and shipped within 1–3 business days.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                Delivery typically takes 3–7 business days, depending on destination.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                You'll receive tracking information by email once your order ships.
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                We are not responsible for delays caused by carriers, weather, or incorrect shipping information provided by the customer.
               </p>
             </section>
 
@@ -159,13 +239,27 @@ const Terms = () => {
             {/* Contact */}
             <section className="mt-12">
               <h2 className="font-headline text-2xl font-semibold text-foreground">
-                Contact
+                Contact Us
               </h2>
               <p className="font-body mt-4 leading-relaxed text-muted-foreground">
-                Questions? Contact us via{" "}
+                For returns, damaged items, or lost shipments, please email us at{" "}
                 <a href="mailto:toppaddlewebsite@gmail.com" className="text-primary hover:underline">
                   toppaddlewebsite@gmail.com
                 </a>
+              </p>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                We aim to reply within 1–2 business days.
+              </p>
+            </section>
+
+            {/* Thank You */}
+            <section className="mt-12">
+              <h2 className="font-headline text-2xl font-semibold text-foreground">
+                Thank You
+              </h2>
+              <p className="font-body mt-4 leading-relaxed text-muted-foreground">
+                Thank you for shopping with us! We're a small business that loves table tennis and values your trust.
+                We'll always do our best to make sure you're happy with your order.
               </p>
             </section>
 
