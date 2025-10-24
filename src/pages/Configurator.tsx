@@ -347,6 +347,18 @@ const Configurator = () => {
             if (totalPrice <= preferences.budget) {
               let scoreDiff = 0;
               
+              // Calculate weight of this combination
+              const bladeWeight = blade.Blade_Weight || 88;
+              const fhWeight = forehandRubber.Rubber_Weight || 48;
+              const bhWeight = backhandRubber.Rubber_Weight || 48;
+              const totalWeight = bladeWeight + fhWeight + bhWeight;
+              
+              // Add weight preference to scoring if specified
+              let weightDiff = 0;
+              if (preferences.weight) {
+                weightDiff = Math.abs(totalWeight - preferences.weight);
+              }
+              
               if (hasComponentPreferences) {
                 // Use component-specific preferences for more precise matching
                 const forehandDiff = 
@@ -367,7 +379,7 @@ const Configurator = () => {
                   Math.abs(backhandRubber.Rubber_Control - (preferences.backhandControl || preferences.control)) +
                   Math.abs(backhandRubber.Rubber_Power - (preferences.backhandPower || preferences.power));
                 
-                scoreDiff = forehandDiff + bladeDiff + backhandDiff;
+                scoreDiff = forehandDiff + bladeDiff + backhandDiff + (weightDiff * 2); // Weight difference weighted 2x
               } else {
                 // Use overall average preferences
                 const avgSpeed = Math.round((blade.Blade_Speed + forehandRubber.Rubber_Speed + backhandRubber.Rubber_Speed) / 3);
@@ -379,7 +391,8 @@ const Configurator = () => {
                   Math.abs(avgSpeed - preferences.speed) +
                   Math.abs(avgSpin - preferences.spin) +
                   Math.abs(avgControl - preferences.control) +
-                  Math.abs(avgPower - preferences.power);
+                  Math.abs(avgPower - preferences.power) +
+                  (weightDiff * 2); // Weight difference weighted 2x
               }
               
               validCombinations.push({

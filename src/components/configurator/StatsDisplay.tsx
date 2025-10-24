@@ -17,6 +17,7 @@ export interface UserPreferences {
   spin: number;
   control: number;
   power: number;
+  weight?: number; // Preferred total weight in grams (optional)
   // Component-specific preferences
   forehandSpeed?: number;
   forehandSpin?: number;
@@ -79,6 +80,7 @@ const StatsDisplay = ({
   const [editSpin, setEditSpin] = useState(stats.spin);
   const [editControl, setEditControl] = useState(stats.control);
   const [editPower, setEditPower] = useState(stats.power);
+  const [editWeight, setEditWeight] = useState<number>(180); // Default preferred weight in grams
   
   // Advanced component-specific preferences
   const [editForehandSpeed, setEditForehandSpeed] = useState(forehand?.Rubber_Speed || 50);
@@ -130,6 +132,7 @@ const StatsDisplay = ({
         spin: editSpin,
         control: editControl,
         power: editPower,
+        weight: editWeight, // Add weight preference
       };
       
       // Include component-specific preferences if advanced mode is enabled
@@ -303,6 +306,23 @@ const StatsDisplay = ({
               <StatSlider label="Spin" value={editSpin} Icon={Target} onChange={setEditSpin} />
               <StatSlider label="Control" value={editControl} Icon={Shield} onChange={setEditControl} />
               <StatSlider label="Power" value={editPower} Icon={Star} onChange={setEditPower} />
+              
+              {/* Weight Preference */}
+              <div className="flex items-center gap-3 mb-4 py-2">
+                <Scale className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                <span className="text-sm font-medium min-w-[60px]">Weight:</span>
+                <div className="flex-1 px-2 py-2">
+                  <Slider
+                    value={[editWeight]}
+                    onValueChange={(values) => setEditWeight(values[0])}
+                    min={150}
+                    max={210}
+                    step={5}
+                    className="w-full"
+                  />
+                </div>
+                <span className="text-sm font-semibold min-w-[40px] text-right">{editWeight}g</span>
+              </div>
               
               {/* Advanced Button */}
               {!racket && (
