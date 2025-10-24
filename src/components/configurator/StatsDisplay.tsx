@@ -51,6 +51,8 @@ interface StatsDisplayProps {
   isPreassembled: boolean;
   assembleForMe: boolean;
   onAssembleChange: (value: boolean) => void;
+  sealsService: boolean;
+  onSealsChange: (value: boolean) => void;
 }
 
 const StatsDisplay = ({
@@ -66,6 +68,8 @@ const StatsDisplay = ({
   isPreassembled,
   assembleForMe,
   onAssembleChange,
+  sealsService,
+  onSealsChange,
 }: StatsDisplayProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -407,6 +411,32 @@ const StatsDisplay = ({
                       className="text-sm font-medium cursor-pointer"
                     >
                       Assemble my racket for me (Free)
+                    </Label>
+                  </div>
+                </div>
+              )}
+              {!isPreassembled && (
+                <div className="bg-primary/10 border-2 border-primary/20 rounded-xl p-4 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Shield className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                    <div className="flex-1 space-y-2">
+                      <h4 className="font-semibold text-sm">Blade Seals Service ($4.00)</h4>
+                      <p className="text-xs text-muted-foreground">
+                        Protect your blade edges with professional sealing. This prevents damage and moisture absorption, making your blade future-proof for rubber changes.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 pt-2">
+                    <Checkbox 
+                      id="seals" 
+                      checked={sealsService}
+                      onCheckedChange={onSealsChange}
+                    />
+                    <Label 
+                      htmlFor="seals" 
+                      className="text-sm font-medium cursor-pointer"
+                    >
+                      Add blade seals service (+$4.00)
                     </Label>
                   </div>
                 </div>

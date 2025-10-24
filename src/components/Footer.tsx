@@ -15,7 +15,7 @@ const Footer = () => {
               <h3 className="font-headline text-xl font-bold">TopPaddle</h3>
             </div>
             <p className="font-body text-sm text-primary-foreground/70 leading-relaxed">
-              Almost a decade of experience in table tennis.
+              Over 20 years of experience in table tennis.
             </p>
           </div>
 
@@ -30,6 +30,15 @@ const Footer = () => {
                   className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
                 >
                   Quiz
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/configurator"
+                  onClick={() => window.scrollTo(0, 0)}
+                  className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
+                >
+                  Configurator
                 </Link>
               </li>
               <li>

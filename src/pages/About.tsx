@@ -11,8 +11,8 @@ const About = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <SEO
-        title="About TopPaddle - 8 Years of Table Tennis Experience"
-        description="Learn about TopPaddle's mission to help players find the perfect table tennis equipment. 8 years of experience and honest recommendations."
+        title="About TopPaddle - 20+ Years of Table Tennis Experience"
+        description="Learn about TopPaddle's mission to help players find the perfect table tennis equipment. 20+ years of experience and honest recommendations."
         canonical="https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com/about"
       />
       <StructuredData
@@ -34,7 +34,7 @@ const About = () => {
                 About TopPaddle
               </h1>
               <p className="font-body mt-6 text-lg text-primary-foreground/90">
-                Almost a decade of experience in table tennis
+                Over 20 years of experience in table tennis
               </p>
             </div>
           </div>
@@ -48,7 +48,7 @@ const About = () => {
                 Our Mission
               </h2>
               <p className="font-body mt-6 text-lg leading-relaxed text-muted-foreground">
-                With 8 years of table tennis experience, our mission is simple: make 
+                With over 20 years of table tennis experience, our mission is simple: make 
                 it easy for every player, from beginner to advanced, to find the perfect racket 
                 that matches their playing style and skill level.
               </p>
@@ -70,7 +70,7 @@ const About = () => {
                   <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
                     <Award className="h-8 w-8 text-accent" />
                   </div>
-                  <CardTitle className="font-headline text-xl">8 Years Playing</CardTitle>
+                  <CardTitle className="font-headline text-xl">20+ Years Playing</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="font-body text-sm text-muted-foreground">

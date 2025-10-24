@@ -34,6 +34,9 @@ const Configurator = () => {
   // Assembly option state
   const [assembleForMe, setAssembleForMe] = useState(false);
   
+  // Seals service state (for custom blades)
+  const [sealsService, setSealsService] = useState(false);
+  
   // Filters - using values that match products.ts and Shopify
   const [selectedGrip, setSelectedGrip] = useState<string>("FL");
   const [selectedForehandThickness, setSelectedForehandThickness] = useState<string>("");
@@ -647,10 +650,44 @@ const Configurator = () => {
           }
         }
 
-        const itemCount = assemblyAdded ? 4 : 3;
-        const description = assemblyAdded 
-          ? `${itemCount} items added: blade, 2 rubbers, and free assembly service`
-          : "3 items added: blade and 2 rubbers with your selected options";
+        // Add seals service if requested
+        let sealsAdded = false;
+        if (sealsService) {
+          // Find seals service product in Shopify
+          const sealsProduct = shopifyProducts.find(p => 
+            p.node.title.toLowerCase().includes("blade seals service") ||
+            p.node.title.toLowerCase().includes("seals service")
+          );
+
+          if (sealsProduct) {
+            const sealsVariant = sealsProduct.node.variants.edges[0];
+            if (sealsVariant) {
+              addItem({
+                product: sealsProduct,
+                variantId: sealsVariant.node.id,
+                variantTitle: sealsVariant.node.title,
+                price: sealsVariant.node.price,
+                quantity: 1,
+                selectedOptions: sealsVariant.node.selectedOptions
+              });
+              sealsAdded = true;
+            }
+          }
+        }
+
+        let itemCount = 3;
+        let description = "3 items added: blade and 2 rubbers with your selected options";
+        
+        if (assemblyAdded && sealsAdded) {
+          itemCount = 5;
+          description = `${itemCount} items added: blade, 2 rubbers, assembly service, and blade seals service`;
+        } else if (assemblyAdded) {
+          itemCount = 4;
+          description = `${itemCount} items added: blade, 2 rubbers, and free assembly service`;
+        } else if (sealsAdded) {
+          itemCount = 4;
+          description = `${itemCount} items added: blade, 2 rubbers, and blade seals service`;
+        }
 
         toast.success("Custom racket added to cart", {
           description
@@ -782,6 +819,8 @@ const Configurator = () => {
                 isPreassembled={isPreassembled}
                 assembleForMe={assembleForMe}
                 onAssembleChange={setAssembleForMe}
+                sealsService={sealsService}
+                onSealsChange={setSealsService}
               />
             </div>
 
@@ -933,6 +972,16 @@ const Configurator = () => {
                   </div>
                 </div>
               )}
+              
+              {/* Review Section Placeholder */}
+              <div className="mt-8 bg-muted/50 border-2 border-dashed border-border rounded-xl p-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-lg font-bold text-foreground">Customer Reviews</h3>
+                  <p className="text-sm text-muted-foreground">
+                    We're currently working on integrating customer reviews. Check back soon to see what other players think about {isPreassembled ? 'this racket' : 'these products'}!
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
