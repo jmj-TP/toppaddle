@@ -480,10 +480,10 @@ const Configurator = () => {
       }))
     });
     
+    // First try: exact match
     for (const variant of variants) {
       const variantOptions = variant.node.selectedOptions;
       
-      // Check if all required options match
       const allMatch = options.every(requiredOption => 
         variantOptions.some(variantOption => 
           variantOption.name === requiredOption.name && 
@@ -492,7 +492,37 @@ const Configurator = () => {
       );
       
       if (allMatch && variant.node.availableForSale) {
-        console.log(`✅ Found matching variant:`, {
+        console.log(`✅ Found exact matching variant:`, {
+          variantId: variant.node.id,
+          title: variant.node.title,
+          options: variant.node.selectedOptions
+        });
+        return variant.node.id;
+      }
+    }
+    
+    // Second try: flexible match (handles cases like "ST" matching "ST (Straight)")
+    for (const variant of variants) {
+      const variantOptions = variant.node.selectedOptions;
+      
+      const allMatch = options.every(requiredOption => 
+        variantOptions.some(variantOption => {
+          if (variantOption.name !== requiredOption.name) return false;
+          
+          // Case-insensitive flexible matching
+          const shopifyValue = variantOption.value.toLowerCase();
+          const requestedValue = requiredOption.value.toLowerCase();
+          
+          // Check if shopify value starts with requested value followed by space or parenthesis
+          // This handles "ST (Straight)" when looking for "ST"
+          return shopifyValue === requestedValue || 
+                 shopifyValue.startsWith(requestedValue + ' ') ||
+                 shopifyValue.startsWith(requestedValue + '(');
+        })
+      );
+      
+      if (allMatch && variant.node.availableForSale) {
+        console.log(`✅ Found flexible matching variant:`, {
           variantId: variant.node.id,
           title: variant.node.title,
           options: variant.node.selectedOptions
