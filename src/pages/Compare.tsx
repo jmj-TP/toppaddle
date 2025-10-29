@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useComparisonStore } from '@/stores/comparisonStore';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { RadarComparisonChart } from '@/components/comparison/RadarComparisonChart';
+import { RadarComparisonChart, type PerformanceView } from '@/components/comparison/RadarComparisonChart';
 import { BarComparisonChart } from '@/components/comparison/BarComparisonChart';
 import { InsightsSection } from '@/components/comparison/InsightsSection';
 import { Card } from '@/components/ui/card';
@@ -15,6 +15,7 @@ import SEO from '@/components/SEO';
 const Compare = () => {
   const { paddles, removePaddle, clearComparison } = useComparisonStore();
   const [selectedPaddle, setSelectedPaddle] = useState<string | null>(paddles[0]?.id || null);
+  const [performanceView, setPerformanceView] = useState<PerformanceView>('overall');
   const navigate = useNavigate();
 
   // Calculate best overall and best value
@@ -157,13 +158,33 @@ const Compare = () => {
             ))}
           </div>
 
+          {/* Interactive Selection Guide */}
+          <Card className="p-4 bg-primary/5 border-primary/20">
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <p className="text-sm font-medium">
+                  Click on paddle names in the legend below to select and compare
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Selected: <span className="font-semibold text-primary">
+                    {paddles.find(p => p.id === selectedPaddle)?.name || paddles[0]?.name}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </Card>
+
           {/* Radar Chart and Insights Side by Side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="p-6">
               <RadarComparisonChart 
                 paddles={paddles} 
                 selectedPaddle={selectedPaddle}
-                onPaddleSelect={setSelectedPaddle}
+                onPaddleSelect={(id) => {
+                  setSelectedPaddle(id);
+                }}
+                performanceView={performanceView}
+                onPerformanceViewChange={setPerformanceView}
               />
             </Card>
             <InsightsSection paddles={paddles} selectedPaddleId={selectedPaddle} />
@@ -172,16 +193,16 @@ const Compare = () => {
           {/* Bar Charts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="p-4">
-              <BarComparisonChart paddles={paddles} stat="speed" label="Speed" />
+              <BarComparisonChart paddles={paddles} stat="speed" label="Speed" performanceView={performanceView} />
             </Card>
             <Card className="p-4">
-              <BarComparisonChart paddles={paddles} stat="control" label="Control" />
+              <BarComparisonChart paddles={paddles} stat="control" label="Control" performanceView={performanceView} />
             </Card>
             <Card className="p-4">
-              <BarComparisonChart paddles={paddles} stat="power" label="Power" />
+              <BarComparisonChart paddles={paddles} stat="power" label="Power" performanceView={performanceView} />
             </Card>
             <Card className="p-4">
-              <BarComparisonChart paddles={paddles} stat="spin" label="Spin" />
+              <BarComparisonChart paddles={paddles} stat="spin" label="Spin" performanceView={performanceView} />
             </Card>
           </div>
         </main>

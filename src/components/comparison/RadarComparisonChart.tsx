@@ -8,6 +8,8 @@ interface RadarComparisonChartProps {
   paddles: ComparisonPaddle[];
   selectedPaddle?: string | null;
   onPaddleSelect?: (paddleId: string) => void;
+  performanceView?: PerformanceView;
+  onPerformanceViewChange?: (view: PerformanceView) => void;
 }
 
 const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))'];
@@ -21,8 +23,17 @@ const VIEW_LABELS = {
   backhand: 'Backhand Rubber Performance Overview',
 };
 
-export const RadarComparisonChart = ({ paddles, selectedPaddle, onPaddleSelect }: RadarComparisonChartProps) => {
-  const [performanceView, setPerformanceView] = useState<PerformanceView>('overall');
+export const RadarComparisonChart = ({ 
+  paddles, 
+  selectedPaddle, 
+  onPaddleSelect,
+  performanceView: externalPerformanceView,
+  onPerformanceViewChange 
+}: RadarComparisonChartProps) => {
+  const [internalPerformanceView, setInternalPerformanceView] = useState<PerformanceView>('overall');
+  
+  // Use external view if provided, otherwise use internal
+  const performanceView = externalPerformanceView || internalPerformanceView;
 
   if (paddles.length === 0) return null;
 
@@ -30,32 +41,41 @@ export const RadarComparisonChart = ({ paddles, selectedPaddle, onPaddleSelect }
     const views: PerformanceView[] = ['overall', 'forehand', 'blade', 'backhand'];
     const currentIndex = views.indexOf(performanceView);
     const nextIndex = (currentIndex + 1) % views.length;
-    setPerformanceView(views[nextIndex]);
+    const nextView = views[nextIndex];
+    
+    if (onPerformanceViewChange) {
+      onPerformanceViewChange(nextView);
+    } else {
+      setInternalPerformanceView(nextView);
+    }
   };
 
-  // Adjust stats based on view (simplified for demo - you can add more complex logic)
+  // Get stats based on view
   const getViewStats = (paddle: ComparisonPaddle) => {
     switch (performanceView) {
       case 'forehand':
-        return {
-          speed: paddle.speed * 1.1,
-          control: paddle.control * 0.9,
-          power: paddle.power * 1.15,
-          spin: paddle.spin * 1.2,
+        return paddle.forehandStats || {
+          speed: paddle.speed,
+          control: paddle.control,
+          power: paddle.power,
+          spin: paddle.spin,
+          price: paddle.price,
         };
       case 'blade':
-        return {
-          speed: paddle.speed * 0.95,
-          control: paddle.control * 1.1,
-          power: paddle.power * 0.9,
-          spin: paddle.spin * 0.85,
+        return paddle.bladeStats || {
+          speed: paddle.speed,
+          control: paddle.control,
+          power: paddle.power,
+          spin: paddle.spin,
+          price: paddle.price,
         };
       case 'backhand':
-        return {
-          speed: paddle.speed * 0.9,
-          control: paddle.control * 1.2,
-          power: paddle.power * 0.85,
-          spin: paddle.spin * 1.1,
+        return paddle.backhandStats || {
+          speed: paddle.speed,
+          control: paddle.control,
+          power: paddle.power,
+          spin: paddle.spin,
+          price: paddle.price,
         };
       default:
         return {
@@ -63,43 +83,92 @@ export const RadarComparisonChart = ({ paddles, selectedPaddle, onPaddleSelect }
           control: paddle.control,
           power: paddle.power,
           spin: paddle.spin,
+          price: paddle.price,
         };
     }
   };
+
+  // Convert price to radar value (inverse: cheaper = higher score)
+  const priceToRadarValue = (price: number) => {
+    const maxPrice = 500; // Maximum expected price
+    return Math.max(0, Math.min(100, ((maxPrice - price) / maxPrice) * 100));
+  };
+
+  // Convert weight to radar value (optimal weight = 175g)
+  const weightToRadarValue = (weight: number) => {
+    const optimalWeight = 175;
+    const maxDeviation = 50; // Maximum deviation from optimal
+    const deviation = Math.abs(weight - optimalWeight);
+    return Math.max(0, Math.min(100, ((maxDeviation - deviation) / maxDeviation) * 100));
+  };
+
+  // Get display name based on view
+  const getDisplayName = (paddle: ComparisonPaddle) => {
+    switch (performanceView) {
+      case 'forehand':
+        return paddle.forehandRubber || paddle.name;
+      case 'blade':
+        return paddle.blade || paddle.name;
+      case 'backhand':
+        return paddle.backhandRubber || paddle.name;
+      default:
+        return paddle.name;
+    }
+  };
+
+  const includeWeight = performanceView === 'overall';
 
   const data = [
     {
       stat: 'Speed',
       ...paddles.reduce((acc, paddle) => ({
         ...acc,
-        [paddle.name]: Math.min(100, getViewStats(paddle).speed),
+        [getDisplayName(paddle)]: Math.min(100, getViewStats(paddle).speed),
       }), {})
     },
     {
       stat: 'Control',
       ...paddles.reduce((acc, paddle) => ({
         ...acc,
-        [paddle.name]: Math.min(100, getViewStats(paddle).control),
+        [getDisplayName(paddle)]: Math.min(100, getViewStats(paddle).control),
       }), {})
     },
     {
       stat: 'Power',
       ...paddles.reduce((acc, paddle) => ({
         ...acc,
-        [paddle.name]: Math.min(100, getViewStats(paddle).power),
+        [getDisplayName(paddle)]: Math.min(100, getViewStats(paddle).power),
       }), {})
     },
     {
       stat: 'Spin',
       ...paddles.reduce((acc, paddle) => ({
         ...acc,
-        [paddle.name]: Math.min(100, getViewStats(paddle).spin),
+        [getDisplayName(paddle)]: Math.min(100, getViewStats(paddle).spin),
       }), {})
     },
+    {
+      stat: 'Value',
+      ...paddles.reduce((acc, paddle) => {
+        const stats = getViewStats(paddle);
+        const price = stats.price || paddle.price;
+        return {
+          ...acc,
+          [getDisplayName(paddle)]: priceToRadarValue(price),
+        };
+      }, {})
+    },
+    ...(includeWeight ? [{
+      stat: 'Weight',
+      ...paddles.reduce((acc, paddle) => ({
+        ...acc,
+        [getDisplayName(paddle)]: weightToRadarValue(paddle.weight),
+      }), {})
+    }] : []),
   ];
 
   const handleLegendClick = (entry: any) => {
-    const paddle = paddles.find(p => p.name === entry.value);
+    const paddle = paddles.find(p => getDisplayName(p) === entry.value);
     if (paddle && onPaddleSelect) {
       onPaddleSelect(paddle.id);
     }
@@ -127,17 +196,20 @@ export const RadarComparisonChart = ({ paddles, selectedPaddle, onPaddleSelect }
               dataKey="stat" 
               tick={{ fill: 'hsl(var(--foreground))', fontSize: 14, fontWeight: 500 }}
             />
-            {paddles.map((paddle, idx) => (
-              <Radar
-                key={paddle.id}
-                name={paddle.name}
-                dataKey={paddle.name}
-                stroke={COLORS[idx]}
-                fill={COLORS[idx]}
-                fillOpacity={selectedPaddle ? (selectedPaddle === paddle.id ? 0.6 : 0.1) : 0.3}
-                strokeWidth={selectedPaddle === paddle.id ? 3 : 2}
-              />
-            ))}
+            {paddles.map((paddle, idx) => {
+              const displayName = getDisplayName(paddle);
+              return (
+                <Radar
+                  key={paddle.id}
+                  name={displayName}
+                  dataKey={displayName}
+                  stroke={COLORS[idx]}
+                  fill={COLORS[idx]}
+                  fillOpacity={selectedPaddle ? (selectedPaddle === paddle.id ? 0.6 : 0.1) : 0.3}
+                  strokeWidth={selectedPaddle === paddle.id ? 3 : 2}
+                />
+              );
+            })}
             <Legend 
               onClick={handleLegendClick}
               wrapperStyle={{ 
@@ -150,6 +222,11 @@ export const RadarComparisonChart = ({ paddles, selectedPaddle, onPaddleSelect }
           </RadarChart>
         </ResponsiveContainer>
       </div>
+      <p className="text-xs text-center text-muted-foreground">
+        Click on paddle names above to highlight and compare
+      </p>
     </div>
   );
 };
+
+export type { PerformanceView };

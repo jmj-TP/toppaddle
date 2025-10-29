@@ -24,42 +24,43 @@ export const InsightsSection = ({ paddles, selectedPaddleId }: InsightsSectionPr
     const weightDiff = paddle1.weight - paddle2.weight;
     const priceDiff = paddle1.price - paddle2.price;
 
-    if (Math.abs(speedDiff) > 5) {
+    // Show ALL differences, even tiny ones (0.1% threshold)
+    if (Math.abs(speedDiff) > 0.1) {
       insights.push({
-        text: `${Math.abs(speedDiff).toFixed(0)}% ${speedDiff > 0 ? 'higher' : 'lower'} speed`,
+        text: `${Math.abs(speedDiff).toFixed(1)}% ${speedDiff > 0 ? 'higher' : 'lower'} speed`,
         isPositive: speedDiff > 0,
       });
     }
 
-    if (Math.abs(controlDiff) > 5) {
+    if (Math.abs(controlDiff) > 0.1) {
       insights.push({
-        text: `${Math.abs(controlDiff).toFixed(0)}% ${controlDiff > 0 ? 'better' : 'lower'} control`,
+        text: `${Math.abs(controlDiff).toFixed(1)}% ${controlDiff > 0 ? 'better' : 'lower'} control`,
         isPositive: controlDiff > 0,
       });
     }
 
-    if (Math.abs(powerDiff) > 5) {
+    if (Math.abs(powerDiff) > 0.1) {
       insights.push({
-        text: `${Math.abs(powerDiff).toFixed(0)}% ${powerDiff > 0 ? 'more' : 'less'} power`,
+        text: `${Math.abs(powerDiff).toFixed(1)}% ${powerDiff > 0 ? 'more' : 'less'} power`,
         isPositive: powerDiff > 0,
       });
     }
 
-    if (Math.abs(spinDiff) > 5) {
+    if (Math.abs(spinDiff) > 0.1) {
       insights.push({
-        text: `${Math.abs(spinDiff).toFixed(0)}% ${spinDiff > 0 ? 'more' : 'less'} spin`,
+        text: `${Math.abs(spinDiff).toFixed(1)}% ${spinDiff > 0 ? 'more' : 'less'} spin`,
         isPositive: spinDiff > 0,
       });
     }
 
-    if (Math.abs(weightDiff) > 5) {
+    if (Math.abs(weightDiff) > 0.1) {
       insights.push({
-        text: `${Math.abs(weightDiff).toFixed(0)}g ${weightDiff > 0 ? 'heavier' : 'lighter'}`,
+        text: `${Math.abs(weightDiff).toFixed(1)}g ${weightDiff > 0 ? 'heavier' : 'lighter'}`,
         isPositive: weightDiff < 0,
       });
     }
 
-    if (Math.abs(priceDiff) > 10) {
+    if (Math.abs(priceDiff) > 0.1) {
       insights.push({
         text: `$${Math.abs(priceDiff).toFixed(2)} ${priceDiff > 0 ? 'more expensive' : 'cheaper'}`,
         isPositive: priceDiff < 0,

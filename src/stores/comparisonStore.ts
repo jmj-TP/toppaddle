@@ -15,6 +15,28 @@ export interface ComparisonPaddle {
   blade?: string;
   forehandRubber?: string;
   backhandRubber?: string;
+  // Component details for granular comparison
+  bladeStats?: {
+    speed: number;
+    control: number;
+    power: number;
+    spin: number;
+    price: number;
+  };
+  forehandStats?: {
+    speed: number;
+    control: number;
+    power: number;
+    spin: number;
+    price: number;
+  };
+  backhandStats?: {
+    speed: number;
+    control: number;
+    power: number;
+    spin: number;
+    price: number;
+  };
 }
 
 interface ComparisonStore {
