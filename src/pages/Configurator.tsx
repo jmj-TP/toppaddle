@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SlotMachine from "@/components/configurator/SlotMachine";
@@ -13,15 +13,19 @@ import SEO from "@/components/SEO";
 import StructuredData from "@/components/StructuredData";
 import { fetchShopifyProducts, type ShopifyProduct } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
+import { useComparisonStore, type ComparisonPaddle } from "@/stores/comparisonStore";
+import tableTennisImage from "@/assets/table-tennis.png";
 
 const Configurator = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [isPreassembled, setIsPreassembled] = useState(false);
   
   // Shopify products state
   const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const addItem = useCartStore(state => state.addItem);
+  const addPaddle = useComparisonStore(state => state.addPaddle);
   
   // State for custom mode
   const [selectedBlade, setSelectedBlade] = useState<Blade>(blades[0]);
@@ -744,7 +748,53 @@ const Configurator = () => {
     }
   };
 
-  const stats = isPreassembled 
+  const handleAddToCompare = () => {
+    try {
+      const comparisonPaddle: ComparisonPaddle = isPreassembled ? {
+        id: `racket-${selectedRacket.Racket_Name}-${Date.now()}`,
+        name: selectedRacket.Racket_Name,
+        image: tableTennisImage,
+        speed: selectedRacket.Racket_Speed,
+        control: selectedRacket.Racket_Control,
+        power: Math.round((selectedRacket.Racket_Speed + selectedRacket.Racket_Spin) / 2),
+        spin: selectedRacket.Racket_Spin,
+        price: selectedRacket.Racket_Price,
+        weight: 175, // Default weight for pre-assembled racket
+        level: selectedRacket.Racket_Level as "Beginner" | "Intermediate" | "Advanced",
+      } : {
+        id: `custom-${selectedBlade.Blade_Name}-${selectedForehand.Rubber_Name}-${selectedBackhand.Rubber_Name}-${Date.now()}`,
+        name: `${selectedBlade.Blade_Name} (Custom)`,
+        image: tableTennisImage,
+        speed: Math.round((selectedBlade.Blade_Speed + selectedForehand.Rubber_Speed + selectedBackhand.Rubber_Speed) / 3),
+        control: Math.round((selectedBlade.Blade_Control + selectedForehand.Rubber_Control + selectedBackhand.Rubber_Control) / 3),
+        power: Math.round((selectedBlade.Blade_Power + selectedForehand.Rubber_Power + selectedBackhand.Rubber_Power) / 3),
+        spin: Math.round((selectedBlade.Blade_Spin + selectedForehand.Rubber_Spin + selectedBackhand.Rubber_Spin) / 3),
+        price: selectedBlade.Blade_Price + selectedForehand.Rubber_Price + selectedBackhand.Rubber_Price + (sealsService ? 5.49 : 0),
+        weight: (selectedBlade.Blade_Weight || 88) + (selectedForehand.Rubber_Weight || 48) + (selectedBackhand.Rubber_Weight || 48),
+        level: selectedBlade.Blade_Level as "Beginner" | "Intermediate" | "Advanced",
+        blade: selectedBlade.Blade_Name,
+        forehandRubber: selectedForehand.Rubber_Name,
+        backhandRubber: selectedBackhand.Rubber_Name,
+      };
+
+      addPaddle(comparisonPaddle);
+      
+      toast.success("Added to comparison", {
+        description: "View your comparison list",
+        action: {
+          label: "View",
+          onClick: () => navigate("/compare")
+        }
+      });
+    } catch (error) {
+      console.error("Error adding to comparison:", error);
+      toast.error("Failed to add to comparison", {
+        description: "Please try again."
+      });
+    }
+  };
+
+  const stats = isPreassembled
     ? {
         speed: selectedRacket.Racket_Speed,
         spin: selectedRacket.Racket_Spin,
@@ -867,6 +917,7 @@ const Configurator = () => {
                 onRandomReroll={handleRandomReroll}
                 onPreferencesChange={handlePreferencesChange}
                 onAddToCart={handleAddToCart}
+                onAddToCompare={handleAddToCompare}
                 isPreassembled={isPreassembled}
                 assembleForMe={assembleForMe}
                 onAssembleChange={setAssembleForMe}

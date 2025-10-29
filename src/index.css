@@ -41,6 +41,13 @@ All colors MUST be HSL.
     --input: 210 12% 90%;
     --ring: 220 30% 22%;
     
+    /* Chart Colors for Comparison */
+    --chart-1: 220 30% 22%;
+    --chart-2: 24 95% 53%;
+    --chart-3: 142 76% 36%;
+    --chart-4: 265 89% 78%;
+    --chart-5: 12 76% 61%;
+    
     /* Professional Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(220 30% 22%), hsl(220 30% 28%));
     --gradient-secondary: linear-gradient(135deg, hsl(220 15% 95%), hsl(220 10% 98%));
@@ -109,6 +116,13 @@ All colors MUST be HSL.
     --border: 220 15% 22%;
     --input: 220 15% 22%;
     --ring: 24 95% 53%;
+    
+    /* Chart Colors for Comparison (Dark Mode) */
+    --chart-1: 220 20% 18%;
+    --chart-2: 24 95% 53%;
+    --chart-3: 142 76% 36%;
+    --chart-4: 265 89% 78%;
+    --chart-5: 12 76% 61%;
     
     /* Dark Mode Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(220 25% 8%), hsl(220 22% 12%));
