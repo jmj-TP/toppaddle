@@ -5,20 +5,30 @@ import Footer from '@/components/Footer';
 import { RadarComparisonChart } from '@/components/comparison/RadarComparisonChart';
 import { BarComparisonChart } from '@/components/comparison/BarComparisonChart';
 import { InsightsSection } from '@/components/comparison/InsightsSection';
-import { VerdictSection } from '@/components/comparison/VerdictSection';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { X, ArrowRight } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { X, ArrowRight, Trophy, DollarSign } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '@/components/SEO';
 
 const Compare = () => {
   const { paddles, removePaddle, clearComparison } = useComparisonStore();
-  const [highlightedPaddle, setHighlightedPaddle] = useState<string | null>(null);
-  const [considerPrice, setConsiderPrice] = useState(false);
+  const [selectedPaddle, setSelectedPaddle] = useState<string | null>(paddles[0]?.id || null);
   const navigate = useNavigate();
+
+  // Calculate best overall and best value
+  const bestOverall = paddles.reduce((best, paddle) => {
+    const paddleScore = (paddle.speed + paddle.control + paddle.power + paddle.spin) / 4;
+    const bestScore = (best.speed + best.control + best.power + best.spin) / 4;
+    return paddleScore > bestScore ? paddle : best;
+  }, paddles[0]);
+
+  const bestValue = paddles.reduce((best, paddle) => {
+    const paddleValue = (paddle.speed + paddle.control + paddle.power + paddle.spin) / (4 * paddle.price);
+    const bestValueScore = (best.speed + best.control + best.power + best.spin) / (4 * best.price);
+    return paddleValue > bestValueScore ? paddle : best;
+  }, paddles[0]);
 
   if (paddles.length === 0) {
     return (
@@ -78,14 +88,26 @@ const Compare = () => {
             {paddles.map((paddle) => (
               <Card
                 key={paddle.id}
-                className={`p-6 cursor-pointer transition-all ${
-                  highlightedPaddle === paddle.id ? 'ring-2 ring-primary' : ''
-                }`}
-                onMouseEnter={() => setHighlightedPaddle(paddle.id)}
-                onMouseLeave={() => setHighlightedPaddle(null)}
+                className="p-6 relative"
               >
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="font-bold text-lg">{paddle.name}</h3>
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg mb-2">{paddle.name}</h3>
+                    <div className="flex gap-2 flex-wrap mb-4">
+                      {paddle.id === bestOverall?.id && (
+                        <Badge variant="default" className="gap-1">
+                          <Trophy className="w-3 h-3" />
+                          Best Overall
+                        </Badge>
+                      )}
+                      {paddle.id === bestValue?.id && (
+                        <Badge variant="secondary" className="gap-1">
+                          <DollarSign className="w-3 h-3" />
+                          Best Value
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -100,7 +122,25 @@ const Compare = () => {
                   className="w-full h-40 object-contain mb-4 bg-muted rounded-lg"
                 />
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
+                  {paddle.blade && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Blade:</span>
+                      <span className="font-medium text-right flex-1 ml-2">{paddle.blade}</span>
+                    </div>
+                  )}
+                  {paddle.forehandRubber && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Forehand:</span>
+                      <span className="font-medium text-right flex-1 ml-2">{paddle.forehandRubber}</span>
+                    </div>
+                  )}
+                  {paddle.backhandRubber && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Backhand:</span>
+                      <span className="font-medium text-right flex-1 ml-2">{paddle.backhandRubber}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between pt-2 border-t border-border">
                     <span className="text-muted-foreground">Price:</span>
                     <span className="font-semibold">${paddle.price}</span>
                   </div>
@@ -117,23 +157,17 @@ const Compare = () => {
             ))}
           </div>
 
-          {/* Price Toggle */}
-          <div className="flex items-center justify-center gap-3 p-4 bg-muted rounded-lg">
-            <Switch
-              id="price-toggle"
-              checked={considerPrice}
-              onCheckedChange={setConsiderPrice}
-            />
-            <Label htmlFor="price-toggle" className="cursor-pointer">
-              Consider Price Influence
-            </Label>
+          {/* Radar Chart and Insights Side by Side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="p-6">
+              <RadarComparisonChart 
+                paddles={paddles} 
+                selectedPaddle={selectedPaddle}
+                onPaddleSelect={setSelectedPaddle}
+              />
+            </Card>
+            <InsightsSection paddles={paddles} selectedPaddleId={selectedPaddle} />
           </div>
-
-          {/* Radar Chart */}
-          <Card className="p-6">
-            <h2 className="text-2xl font-bold text-center mb-6">Performance Overview</h2>
-            <RadarComparisonChart paddles={paddles} highlightedPaddle={highlightedPaddle} />
-          </Card>
 
           {/* Bar Charts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -150,12 +184,6 @@ const Compare = () => {
               <BarComparisonChart paddles={paddles} stat="spin" label="Spin" />
             </Card>
           </div>
-
-          {/* Verdict Section */}
-          <VerdictSection paddles={paddles} considerPrice={considerPrice} />
-
-          {/* Insights Section */}
-          <InsightsSection paddles={paddles} />
         </main>
         <Footer />
       </div>

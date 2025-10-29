@@ -4,10 +4,14 @@ import { Card } from '@/components/ui/card';
 
 interface InsightsSectionProps {
   paddles: ComparisonPaddle[];
+  selectedPaddleId?: string | null;
 }
 
-export const InsightsSection = ({ paddles }: InsightsSectionProps) => {
+export const InsightsSection = ({ paddles, selectedPaddleId }: InsightsSectionProps) => {
   if (paddles.length < 2) return null;
+
+  const selectedPaddle = paddles.find(p => p.id === selectedPaddleId) || paddles[0];
+  const otherPaddles = paddles.filter(p => p.id !== selectedPaddle.id);
 
   const generateInsights = (paddle1: ComparisonPaddle, paddle2: ComparisonPaddle) => {
     const insights: { text: string; isPositive: boolean }[] = [];
@@ -69,39 +73,35 @@ export const InsightsSection = ({ paddles }: InsightsSectionProps) => {
     <Card className="p-6">
       <h2 className="text-xl font-bold mb-4">Comparison Insights</h2>
       <div className="space-y-6">
-        {paddles.map((paddle1, idx1) =>
-          paddles.slice(idx1 + 1).map((paddle2, idx2) => {
-            const insights = generateInsights(paddle1, paddle2);
-            return (
-              <div key={`${paddle1.id}-${paddle2.id}`} className="space-y-3">
-                <h3 className="font-semibold text-sm">
-                  Why is <span className="text-primary">{paddle1.name}</span> better than{' '}
-                  <span className="text-chart-2">{paddle2.name}</span>?
-                </h3>
-                <ul className="space-y-2">
-                  {insights.length === 0 ? (
-                    <li className="text-sm text-muted-foreground">
-                      These paddles have very similar performance characteristics
+        {otherPaddles.map((otherPaddle) => {
+          const insights = generateInsights(selectedPaddle, otherPaddle);
+          const positiveInsights = insights.filter(i => i.isPositive);
+          
+          return (
+            <div key={`${selectedPaddle.id}-${otherPaddle.id}`} className="space-y-3">
+              <h3 className="font-semibold text-sm">
+                Why is <span className="text-primary">{selectedPaddle.name}</span> better than{' '}
+                <span className="text-muted-foreground">{otherPaddle.name}</span>?
+              </h3>
+              <ul className="space-y-2">
+                {positiveInsights.length === 0 ? (
+                  <li className="text-sm text-muted-foreground">
+                    {selectedPaddle.name} has no significant advantages over {otherPaddle.name}
+                  </li>
+                ) : (
+                  positiveInsights.map((insight, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm">
+                      <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-foreground">
+                        {insight.text}
+                      </span>
                     </li>
-                  ) : (
-                    insights.map((insight, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
-                        {insight.isPositive ? (
-                          <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        ) : (
-                          <X className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />
-                        )}
-                        <span className={insight.isPositive ? 'text-foreground' : 'text-muted-foreground'}>
-                          {insight.text}
-                        </span>
-                      </li>
-                    ))
-                  )}
-                </ul>
-              </div>
-            );
-          })
-        )}
+                  ))
+                )}
+              </ul>
+            </div>
+          );
+        })}
       </div>
     </Card>
   );
