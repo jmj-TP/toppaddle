@@ -15,6 +15,8 @@ export interface ComparisonPaddle {
   blade?: string;
   forehandRubber?: string;
   backhandRubber?: string;
+  forehandSponge?: string;
+  backhandSponge?: string;
   // Component details for granular comparison
   bladeStats?: {
     speed: number;

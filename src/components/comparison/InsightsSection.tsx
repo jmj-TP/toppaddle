@@ -1,17 +1,28 @@
 import { ComparisonPaddle } from '@/stores/comparisonStore';
-import { Check, X } from 'lucide-react';
+import { Check, ChevronRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 interface InsightsSectionProps {
   paddles: ComparisonPaddle[];
   selectedPaddleId?: string | null;
+  onPaddleSelect?: (paddleId: string) => void;
 }
 
-export const InsightsSection = ({ paddles, selectedPaddleId }: InsightsSectionProps) => {
+export const InsightsSection = ({ paddles, selectedPaddleId, onPaddleSelect }: InsightsSectionProps) => {
   if (paddles.length < 2) return null;
 
   const selectedPaddle = paddles.find(p => p.id === selectedPaddleId) || paddles[0];
   const otherPaddles = paddles.filter(p => p.id !== selectedPaddle.id);
+
+  const cycleToNextPaddle = () => {
+    const currentIndex = paddles.findIndex(p => p.id === selectedPaddle.id);
+    const nextIndex = (currentIndex + 1) % paddles.length;
+    const nextPaddle = paddles[nextIndex];
+    if (onPaddleSelect) {
+      onPaddleSelect(nextPaddle.id);
+    }
+  };
 
   const generateInsights = (paddle1: ComparisonPaddle, paddle2: ComparisonPaddle) => {
     const insights: { text: string; isPositive: boolean }[] = [];
@@ -80,10 +91,20 @@ export const InsightsSection = ({ paddles, selectedPaddleId }: InsightsSectionPr
           
           return (
             <div key={`${selectedPaddle.id}-${otherPaddle.id}`} className="space-y-3">
-              <h3 className="font-semibold text-sm">
-                Why is <span className="text-primary">{selectedPaddle.name}</span> better than{' '}
-                <span className="text-muted-foreground">{otherPaddle.name}</span>?
-              </h3>
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="font-semibold text-sm">
+                  Why is <span className="text-primary">{selectedPaddle.name}</span> better than{' '}
+                  <span className="text-muted-foreground">{otherPaddle.name}</span>?
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={cycleToNextPaddle}
+                  className="flex-shrink-0"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
               <ul className="space-y-2">
                 {positiveInsights.length === 0 ? (
                   <li className="text-sm text-muted-foreground">

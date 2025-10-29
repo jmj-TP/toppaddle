@@ -118,54 +118,73 @@ export const RadarComparisonChart = ({
 
   const includeWeight = performanceView === 'overall';
 
-  const data = [
+  // Define all possible stats with their calculations
+  const statDefinitions = [
     {
+      key: 'speed',
       stat: 'Speed',
-      ...paddles.reduce((acc, paddle) => ({
-        ...acc,
-        [getDisplayName(paddle)]: Math.min(100, getViewStats(paddle).speed),
-      }), {})
+      getValue: (paddle: ComparisonPaddle) => {
+        const stats = getViewStats(paddle);
+        return stats.speed !== undefined ? Math.min(100, stats.speed) : null;
+      },
     },
     {
+      key: 'control',
       stat: 'Control',
-      ...paddles.reduce((acc, paddle) => ({
-        ...acc,
-        [getDisplayName(paddle)]: Math.min(100, getViewStats(paddle).control),
-      }), {})
+      getValue: (paddle: ComparisonPaddle) => {
+        const stats = getViewStats(paddle);
+        return stats.control !== undefined ? Math.min(100, stats.control) : null;
+      },
     },
     {
+      key: 'power',
       stat: 'Power',
-      ...paddles.reduce((acc, paddle) => ({
-        ...acc,
-        [getDisplayName(paddle)]: Math.min(100, getViewStats(paddle).power),
-      }), {})
+      getValue: (paddle: ComparisonPaddle) => {
+        const stats = getViewStats(paddle);
+        return stats.power !== undefined ? Math.min(100, stats.power) : null;
+      },
     },
     {
+      key: 'spin',
       stat: 'Spin',
-      ...paddles.reduce((acc, paddle) => ({
-        ...acc,
-        [getDisplayName(paddle)]: Math.min(100, getViewStats(paddle).spin),
-      }), {})
+      getValue: (paddle: ComparisonPaddle) => {
+        const stats = getViewStats(paddle);
+        return stats.spin !== undefined ? Math.min(100, stats.spin) : null;
+      },
     },
     {
+      key: 'value',
       stat: 'Value',
-      ...paddles.reduce((acc, paddle) => {
+      getValue: (paddle: ComparisonPaddle) => {
         const stats = getViewStats(paddle);
         const price = stats.price || paddle.price;
-        return {
-          ...acc,
-          [getDisplayName(paddle)]: priceToRadarValue(price),
-        };
-      }, {})
+        return price !== undefined ? priceToRadarValue(price) : null;
+      },
     },
     ...(includeWeight ? [{
+      key: 'weight',
       stat: 'Weight',
-      ...paddles.reduce((acc, paddle) => ({
-        ...acc,
-        [getDisplayName(paddle)]: weightToRadarValue(paddle.weight),
-      }), {})
+      getValue: (paddle: ComparisonPaddle) => {
+        return paddle.weight !== undefined ? weightToRadarValue(paddle.weight) : null;
+      },
     }] : []),
   ];
+
+  // Filter out stats where all paddles have null values
+  const availableStats = statDefinitions.filter(statDef => 
+    paddles.some(paddle => statDef.getValue(paddle) !== null)
+  );
+
+  const data = availableStats.map(statDef => ({
+    stat: statDef.stat,
+    ...paddles.reduce((acc, paddle) => {
+      const value = statDef.getValue(paddle);
+      return {
+        ...acc,
+        [getDisplayName(paddle)]: value !== null ? value : 0,
+      };
+    }, {})
+  }));
 
   const handleLegendClick = (entry: any) => {
     const paddle = paddles.find(p => getDisplayName(p) === entry.value);
@@ -222,9 +241,6 @@ export const RadarComparisonChart = ({
           </RadarChart>
         </ResponsiveContainer>
       </div>
-      <p className="text-xs text-center text-muted-foreground">
-        Click on paddle names above to highlight and compare
-      </p>
     </div>
   );
 };

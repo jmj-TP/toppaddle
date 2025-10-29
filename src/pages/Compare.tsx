@@ -132,13 +132,19 @@ const Compare = () => {
                   {paddle.forehandRubber && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Forehand:</span>
-                      <span className="font-medium text-right flex-1 ml-2">{paddle.forehandRubber}</span>
+                      <span className="font-medium text-right flex-1 ml-2">
+                        {paddle.forehandRubber}
+                        {paddle.forehandSponge && ` (${paddle.forehandSponge})`}
+                      </span>
                     </div>
                   )}
                   {paddle.backhandRubber && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Backhand:</span>
-                      <span className="font-medium text-right flex-1 ml-2">{paddle.backhandRubber}</span>
+                      <span className="font-medium text-right flex-1 ml-2">
+                        {paddle.backhandRubber}
+                        {paddle.backhandSponge && ` (${paddle.backhandSponge})`}
+                      </span>
                     </div>
                   )}
                   <div className="flex justify-between pt-2 border-t border-border">
@@ -187,7 +193,11 @@ const Compare = () => {
                 onPerformanceViewChange={setPerformanceView}
               />
             </Card>
-            <InsightsSection paddles={paddles} selectedPaddleId={selectedPaddle} />
+            <InsightsSection 
+              paddles={paddles} 
+              selectedPaddleId={selectedPaddle}
+              onPaddleSelect={setSelectedPaddle}
+            />
           </div>
 
           {/* Bar Charts Grid */}

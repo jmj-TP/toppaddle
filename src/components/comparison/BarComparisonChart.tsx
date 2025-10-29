@@ -60,11 +60,16 @@ export const BarComparisonChart = ({ paddles, stat, label, performanceView = 'ov
     }
   };
 
-  const paddlesWithStats = paddles.map(p => ({
-    ...p,
-    displayName: getDisplayName(p),
-    statValue: getViewStats(p)[stat],
-  }));
+  const paddlesWithStats = paddles
+    .map(p => ({
+      ...p,
+      displayName: getDisplayName(p),
+      statValue: getViewStats(p)[stat],
+    }))
+    .filter(p => p.statValue !== undefined);
+
+  // Don't render if no paddles have this stat
+  if (paddlesWithStats.length === 0) return null;
 
   const maxValue = Math.max(...paddlesWithStats.map(p => p.statValue));
   

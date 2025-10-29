@@ -775,6 +775,8 @@ const Configurator = () => {
         blade: selectedBlade.Blade_Name,
         forehandRubber: selectedForehand.Rubber_Name,
         backhandRubber: selectedBackhand.Rubber_Name,
+        forehandSponge: selectedForehandThickness,
+        backhandSponge: selectedBackhandThickness,
         bladeStats: {
           speed: selectedBlade.Blade_Speed,
           control: selectedBlade.Blade_Control,
