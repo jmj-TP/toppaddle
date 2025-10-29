@@ -9,6 +9,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
+import { RadarComparisonChart } from "@/components/comparison/RadarComparisonChart";
+import type { ComparisonPaddle } from "@/stores/comparisonStore";
 
 export interface UserPreferences {
   budget: number;
@@ -380,12 +382,36 @@ const StatsDisplay = ({
                 )}
               </div>
             ) : (
-              <div className="space-y-2">
-                <StatBar label="Speed" value={stats.speed} Icon={Gauge} />
-                <StatBar label="Spin" value={stats.spin} Icon={Target} />
-                <StatBar label="Control" value={stats.control} Icon={Shield} />
-                <StatBar label="Power" value={stats.power} Icon={Star} />
-              </div>
+              <>
+                <div className="space-y-2">
+                  <StatBar label="Speed" value={stats.speed} Icon={Gauge} />
+                  <StatBar label="Spin" value={stats.spin} Icon={Target} />
+                  <StatBar label="Control" value={stats.control} Icon={Shield} />
+                  <StatBar label="Power" value={stats.power} Icon={Star} />
+                </div>
+                
+                {/* Radar Chart */}
+                <div className="mt-8 pt-6 border-t border-border">
+                  <h3 className="text-lg font-semibold mb-4 text-center">Performance Overview</h3>
+                  <RadarComparisonChart 
+                    paddles={[{
+                      id: racket ? racket.Racket_Name : `${blade?.Blade_Name}-${forehand?.Rubber_Name}-${backhand?.Rubber_Name}`,
+                      name: racket ? racket.Racket_Name : "Custom Paddle",
+                      image: "",
+                      speed: stats.speed,
+                      control: stats.control,
+                      power: stats.power,
+                      spin: stats.spin,
+                      price: stats.price,
+                      weight: racket ? 180 : (blade?.Blade_Weight || 85) + (forehand?.Rubber_Weight || 45) + (backhand?.Rubber_Weight || 45),
+                      level: level as "Beginner" | "Intermediate" | "Advanced",
+                      blade: blade?.Blade_Name,
+                      forehandRubber: forehand?.Rubber_Name,
+                      backhandRubber: backhand?.Rubber_Name
+                    }]}
+                  />
+                </div>
+              </>
             )}
         </div>
 
