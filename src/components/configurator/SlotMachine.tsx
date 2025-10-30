@@ -262,7 +262,11 @@ const SlotMachine = ({
       return `This product is currently filtered out:\n• ${reasons.join('\n• ')}\n\nTo make it available again, adjust the filters above.`;
     };
     
-    const [currentIndex, setCurrentIndex] = useState(items.findIndex(item => getName(item) === getName(selected)));
+    const safeItems = items.length > 0 ? items : [selected];
+    const [currentIndex, setCurrentIndex] = useState(() => {
+      const idx = safeItems.findIndex(item => getName(item) === getName(selected));
+      return idx >= 0 ? idx : 0;
+    });
     const [localSpinning, setLocalSpinning] = useState(false);
     const [animationKey, setAnimationKey] = useState(0);
     const wheelRef = useRef<HTMLDivElement>(null);
@@ -273,10 +277,12 @@ const SlotMachine = ({
     // Update current index only when not spinning
     useEffect(() => {
       if (!localSpinning) {
-        const newIndex = items.findIndex(item => getName(item) === getName(selected));
-        setCurrentIndex(newIndex);
+        const newIndex = safeItems.findIndex(item => getName(item) === getName(selected));
+        if (newIndex >= 0) {
+          setCurrentIndex(newIndex);
+        }
       }
-    }, [selected, items, localSpinning]);
+    }, [selected, safeItems, localSpinning]);
 
     // Start spinning only once when isSpinning becomes true
     useEffect(() => {
@@ -300,26 +306,26 @@ const SlotMachine = ({
     }, [isSpinning, delay]);
 
     const handleWheel = (e: React.WheelEvent) => {
-      if (isSpinning) return;
+      if (localSpinning) return;
       e.preventDefault();
       e.stopPropagation();
       
       const delta = e.deltaY;
       const newIndex = delta > 0 
-        ? (currentIndex + 1) % items.length
-        : (currentIndex - 1 + items.length) % items.length;
+        ? (currentIndex + 1) % safeItems.length
+        : (currentIndex - 1 + safeItems.length) % safeItems.length;
       
-      onChange(items[newIndex]);
+      onChange(safeItems[newIndex]);
     };
 
     const handleSwipe = (direction: 'up' | 'down') => {
-      if (isSpinning) return;
+      if (localSpinning) return;
       
       const newIndex = direction === 'down'
-        ? (currentIndex + 1) % items.length
-        : (currentIndex - 1 + items.length) % items.length;
+        ? (currentIndex + 1) % safeItems.length
+        : (currentIndex - 1 + safeItems.length) % safeItems.length;
       
-      onChange(items[newIndex]);
+      onChange(safeItems[newIndex]);
     };
 
     // Get visible items (current, prev, next with wrapping)
@@ -333,10 +339,10 @@ const SlotMachine = ({
     };
 
     // Wheel 3D parameters
-    const radius = 500; // Large radius for subtle curve
-    const itemHeight = 140; // Height of each item slot (including gap)
-    const totalItems = items.length * 3; // Replicate items for smooth infinite scroll
-    const allItems = Array.from({ length: 3 }, () => items).flat();
+    const radius = 600; // Large radius for subtle curve
+    const itemHeight = 160; // Height of each item slot (including gap)
+    const totalItems = safeItems.length * 3; // Replicate items for smooth infinite scroll
+    const allItems = Array.from({ length: 3 }, () => safeItems).flat();
 
     // Calculate angle per item
     const anglePerItem = (itemHeight / radius) * (180 / Math.PI);
@@ -375,11 +381,11 @@ const SlotMachine = ({
         <div
           ref={wheelRef}
           onWheel={handleWheel}
-          className={`relative w-full max-w-[380px] md:max-w-[300px] lg:max-w-[320px] xl:max-w-[380px] h-[400px] md:h-[380px] lg:h-[420px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 ${
+          className={`relative w-full max-w-[380px] md:max-w-[300px] lg:max-w-[320px] xl:max-w-[380px] h-[480px] md:h-[460px] lg:h-[500px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 ${
             !selectedAvailable ? 'border-destructive/50' : 'border-border'
           } ${!selectedAvailable ? 'opacity-60' : ''}`}
           style={{ 
-            perspective: '1200px',
+            perspective: '1500px',
             perspectiveOrigin: 'center center'
           }}
         >
@@ -413,7 +419,7 @@ const SlotMachine = ({
                   >
                     {/* Generate items positioned on cylinder */}
                     {Array.from({ length: 50 }).map((_, i) => {
-                      const itemIndex = i % items.length;
+                      const itemIndex = i % safeItems.length;
                       const angle = i * anglePerItem;
                       const rotateX = angle;
                       const translateZ = radius;
@@ -423,23 +429,23 @@ const SlotMachine = ({
                           key={`spin-${i}`}
                           className="absolute left-0 right-0 flex flex-col items-center justify-center"
                           style={{
-                            height: `${itemHeight - 20}px`,
+                            height: `${itemHeight}px`,
                             top: '50%',
                             transform: `translateY(-50%) rotateX(${rotateX}deg) translateZ(${translateZ}px)`,
                             transformStyle: 'preserve-3d',
                             backfaceVisibility: 'hidden',
                           }}
                         >
-                          <div className="px-2.5 w-full">
-                            <div className="relative w-[calc(100%-20px)] mx-auto h-20 flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border">
+                          <div className="px-2.5 w-full flex flex-col items-center justify-center h-full">
+                            <div className="relative w-[calc(100%-20px)] mx-auto h-24 flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border">
                               <img 
-                                src={getImage(items[itemIndex])} 
-                                alt={getName(items[itemIndex])}
+                                src={getImage(safeItems[itemIndex])} 
+                                alt={getName(safeItems[itemIndex])}
                                 className="w-full h-full object-cover"
                               />
                             </div>
-                            <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-1 px-1 block">
-                              {getName(items[itemIndex])}
+                            <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-2 px-1 block">
+                              {getName(safeItems[itemIndex])}
                             </span>
                           </div>
                         </div>
@@ -476,15 +482,15 @@ const SlotMachine = ({
                       const translateZ = radius;
                       
                       // Determine if this is the centered item
-                      const isCentered = i === currentIndex + items.length;
-                      const isAdjacent = Math.abs(i - (currentIndex + items.length)) === 1;
+                      const isCentered = i === currentIndex + safeItems.length;
+                      const isAdjacent = Math.abs(i - (currentIndex + safeItems.length)) === 1;
                       
                       return (
                         <div
                           key={`item-${i}`}
                           className="absolute left-0 right-0 flex flex-col items-center justify-center"
                           style={{
-                            height: `${itemHeight - 20}px`,
+                            height: `${itemHeight}px`,
                             top: '50%',
                             transform: `translateY(-50%) rotateX(${rotateX}deg) translateZ(${translateZ}px)`,
                             transformStyle: 'preserve-3d',
@@ -493,11 +499,11 @@ const SlotMachine = ({
                             pointerEvents: isCentered ? 'auto' : 'none',
                           }}
                         >
-                          <div className={`px-2.5 w-full ${isCentered ? 'py-[30px]' : ''}`}>
+                          <div className={`px-2.5 w-full flex flex-col items-center justify-center h-full`}>
                             <div className={`relative mx-auto rounded-lg overflow-hidden bg-background ${
                               isCentered 
-                                ? 'w-[calc(100%-20px)] h-[240px] md:h-[220px] lg:h-[260px] border-2 border-border shadow-lg' 
-                                : 'w-[calc(100%-20px)] h-20 border border-border'
+                                ? 'w-[calc(100%-20px)] h-[280px] md:h-[260px] lg:h-[300px] border-2 border-border shadow-lg' 
+                                : 'w-[calc(100%-20px)] h-24 border border-border'
                             }`}>
                               <img 
                                 src={getImage(item)} 
@@ -517,42 +523,13 @@ const SlotMachine = ({
                                     </button>
                                   </PopoverTrigger>
                                   <PopoverContent className="max-w-[280px] sm:max-w-xs bg-card border-2 border-border p-4 z-[9999]" side="right" sideOffset={10} align="center">
-                                    <div className="space-y-2 text-xs">
-                                      <h4 className="font-semibold text-sm text-foreground break-words">{getName(item)}</h4>
-                                      <div className="grid grid-cols-2 gap-2">
-                                        {item.Blade_Speed !== undefined && (
-                                          <>
-                                            <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{item.Blade_Speed}</span></div>
-                                            <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{item.Blade_Spin}</span></div>
-                                            <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{item.Blade_Control}</span></div>
-                                            <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{item.Blade_Power}</span></div>
-                                            <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${item.Blade_Price}</span></div>
-                                            <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{item.Blade_Level}</span></div>
-                                            {item.Blade_Style && <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{item.Blade_Style}</span></div>}
-                                            {item.Blade_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{item.Blade_Weight}g</span></div>}
-                                          </>
-                                        )}
-                                        {item.Rubber_Speed !== undefined && (
-                                          <>
-                                            <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{item.Rubber_Speed}</span></div>
-                                            <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{item.Rubber_Spin}</span></div>
-                                            <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{item.Rubber_Control}</span></div>
-                                            <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{item.Rubber_Power}</span></div>
-                                            <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${item.Rubber_Price}</span></div>
-                                            <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{item.Rubber_Level}</span></div>
-                                            <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{item.Rubber_Style}</span></div>
-                                            {item.Rubber_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{item.Rubber_Weight}g</span></div>}
-                                            {item.Rubber_Sponge_Sizes && <div className="col-span-2"><span className="text-muted-foreground">Sponge:</span> <span className="font-medium">{item.Rubber_Sponge_Sizes.join(", ")}</span></div>}
-                                          </>
-                                        )}
-                                      </div>
-                                    </div>
+...
                                   </PopoverContent>
                                 </Popover>
                               </div>
                             )}
                             {!isCentered && (
-                              <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-1 px-1 block">
+                              <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-2 px-1 block">
                                 {getName(item)}
                               </span>
                             )}
@@ -569,7 +546,7 @@ const SlotMachine = ({
           {/* Scroll buttons - smaller and minimalistic */}
           <button
             onClick={() => handleSwipe('up')}
-            disabled={isSpinning}
+            disabled={localSpinning}
             className="absolute top-3 left-1/2 -translate-x-1/2 z-40 bg-card/80 hover:bg-card border border-border disabled:opacity-30 disabled:cursor-not-allowed text-foreground rounded-full shadow-md transition-all hover:scale-110 disabled:hover:scale-100 w-6 h-6 flex items-center justify-center backdrop-blur-sm"
             aria-label="Previous item"
           >
@@ -578,7 +555,7 @@ const SlotMachine = ({
           
           <button
             onClick={() => handleSwipe('down')}
-            disabled={isSpinning}
+            disabled={localSpinning}
             className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 bg-card/80 hover:bg-card border border-border disabled:opacity-30 disabled:cursor-not-allowed text-foreground rounded-full shadow-md transition-all hover:scale-110 disabled:hover:scale-100 w-6 h-6 flex items-center justify-center backdrop-blur-sm"
             aria-label="Next item"
           >
