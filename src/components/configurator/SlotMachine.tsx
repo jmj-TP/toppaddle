@@ -342,8 +342,8 @@ const SlotMachine = ({
     };
 
     // Wheel 3D parameters
-    const radius = 700; // Large radius for subtle curve
-    const itemHeight = 180; // Height of each item slot (including gap)
+    const radius = 800; // Large radius for subtle curve
+    const itemHeight = 200; // Height of each item slot (including gap)
     const totalItems = safeItems.length * 3; // Replicate items for smooth infinite scroll
     const allItems = Array.from({ length: 3 }, () => safeItems).flat();
 
@@ -384,11 +384,11 @@ const SlotMachine = ({
         <div
           ref={wheelRef}
           onWheel={handleWheel}
-          className={`relative w-full max-w-[380px] md:max-w-[300px] lg:max-w-[320px] xl:max-w-[380px] h-[420px] md:h-[400px] lg:h-[440px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 ${
+          className={`relative w-full max-w-[380px] md:max-w-[300px] lg:max-w-[320px] xl:max-w-[380px] h-[500px] md:h-[480px] lg:h-[520px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 ${
             !selectedAvailable ? 'border-destructive/50' : 'border-border'
           } ${!selectedAvailable ? 'opacity-60' : ''}`}
           style={{ 
-            perspective: '2000px',
+            perspective: '2400px',
             perspectiveOrigin: 'center center'
           }}
         >
@@ -487,6 +487,7 @@ const SlotMachine = ({
                       // Determine if this is the centered item
                       const isCentered = i === currentIndex + safeItems.length;
                       const isAdjacent = Math.abs(i - (currentIndex + safeItems.length)) === 1;
+                      const isAboveCenter = i < currentIndex + safeItems.length;
                       
                       return (
                         <div
@@ -498,15 +499,21 @@ const SlotMachine = ({
                             transform: `translateY(-50%) rotateX(${rotateX}deg) translateZ(${translateZ}px)`,
                             transformStyle: 'preserve-3d',
                             backfaceVisibility: 'hidden',
-                            opacity: isCentered ? 1 : isAdjacent ? 0.4 : 0,
+                            opacity: isCentered ? 1 : isAdjacent ? 0.3 : 0,
                             pointerEvents: isCentered ? 'auto' : 'none',
                           }}
                         >
-                          <div className={`w-full flex flex-col items-center ${isCentered ? 'justify-center' : 'justify-start pt-4'}`}>
+                          <div className={`w-full h-full flex flex-col items-center ${
+                            isCentered 
+                              ? 'justify-center' 
+                              : isAboveCenter 
+                                ? 'justify-end pb-2' 
+                                : 'justify-start pt-2'
+                          }`}>
                             <div className={`relative mx-auto rounded-lg overflow-hidden bg-background ${
                               isCentered 
-                                ? 'w-[calc(100%-24px)] h-[300px] md:h-[280px] lg:h-[320px] border-2 border-border shadow-lg' 
-                                : 'w-[calc(100%-24px)] h-28 border border-border'
+                                ? 'w-[calc(100%-24px)] h-[360px] md:h-[340px] lg:h-[380px] border-2 border-border shadow-lg' 
+                                : 'w-[calc(100%-24px)] h-20 border border-border'
                             }`}>
                               <img 
                                 src={getImage(item)} 
