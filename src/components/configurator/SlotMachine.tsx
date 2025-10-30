@@ -366,19 +366,10 @@ const SlotMachine = ({
         <div
           ref={wheelRef}
           onWheel={handleWheel}
-          className={`relative w-full max-w-[380px] md:max-w-[240px] lg:max-w-[300px] xl:max-w-[500px] h-[320px] md:h-[240px] lg:h-[300px] xl:h-[360px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 md:border-3 lg:border-4 ${
+          className={`relative w-full max-w-[380px] md:max-w-[300px] lg:max-w-[320px] xl:max-w-[380px] h-[400px] md:h-[380px] lg:h-[420px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 ${
             !selectedAvailable ? 'border-destructive/50' : 'border-border'
           } ${!selectedAvailable ? 'opacity-60' : ''}`}
-          style={{ perspective: '1000px' }}
         >
-          {/* Center highlight */}
-          <div className={`absolute top-1/2 left-0 right-0 -translate-y-1/2 w-full h-28 md:h-24 lg:h-28 xl:h-32 border-y-2 md:border-y-3 lg:border-y-4 ${
-            !selectedAvailable ? 'border-destructive/30' : 'border-primary/40'
-          } bg-primary/5 z-0 pointer-events-none shadow-[inset_0_0_20px_rgba(0,0,0,0.1)]`} />
-          
-          {/* Top and bottom gradients for depth */}
-          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-card to-transparent z-10 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-card to-transparent z-10 pointer-events-none" />
 
           {/* Items container */}
           <div className="relative h-full flex flex-col items-center justify-center">
@@ -391,9 +382,9 @@ const SlotMachine = ({
                 >
                   <motion.div
                     className="flex flex-col items-center"
-                    initial={{ y: 140 }}
+                    initial={{ y: 200 }}
                     animate={{ 
-                      y: -3600,
+                      y: -6400,
                     }}
                     transition={{
                       duration: (2000 + delay) / 1000,
@@ -411,157 +402,144 @@ const SlotMachine = ({
                       return (
                       <motion.div
                         key={`spin-${i}`}
-                        className="h-28 md:h-24 lg:h-28 xl:h-32 w-full flex items-center justify-center gap-3 px-4 md:px-3 lg:px-6 xl:px-8 flex-shrink-0 border-b border-border/20"
+                        className="h-[130px] w-full flex flex-col items-center justify-center px-2.5 flex-shrink-0"
                         style={{ 
                           transformStyle: 'preserve-3d',
                           backfaceVisibility: 'hidden',
                         }}
                       >
-                        <div className="relative w-16 h-16 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-20 xl:h-20 flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border">
+                        <div className="relative w-[calc(100%-20px)] h-24 flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border">
                           <img 
                             src={getImage(items[itemIndex])} 
                             alt={getName(items[itemIndex])}
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <p className="text-sm md:text-xs lg:text-sm xl:text-base font-semibold text-primary dark:text-accent text-left line-clamp-2 flex-1" style={{ opacity: 1 }}>
+                        <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-2 px-1">
                           {getName(items[itemIndex])}
-                        </p>
+                        </span>
                       </motion.div>
                       );
                     })}
                   </motion.div>
                 </motion.div>
               ) : (
-                <motion.div
-                  key="static"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute inset-0"
-                >
-                  {getVisibleItems().map(({ item, offset }, idx) => {
-                    const distance = Math.abs(offset);
-                    // No transparency - all items fully visible
-                    const opacity = 1;
-                    const scale = offset === 0 ? 1.05 : Math.max(0.7, 1 - distance * 0.15);
-                    const yPos = offset * 88; // Increased spacing for bigger items
-                    const rotateX = offset === 0 ? 0 : offset * 8; // 3D tilt effect
-
-                    return (
-                      <motion.div
-                        key={`${getName(item)}-${idx}`}
-                        initial={{ y: yPos, opacity, scale }}
-                        animate={{ y: yPos, opacity, scale }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 35,
-                          mass: 0.8,
-                        }}
-                        className="absolute left-0 right-0 h-28 md:h-24 lg:h-28 xl:h-32 flex items-center px-4 md:px-3 lg:px-6 xl:px-8"
-                        style={{
-                          top: '50%',
-                          transform: `translateY(calc(-50% + ${yPos}px)) scale(${scale}) rotateX(${rotateX}deg)`,
-                          transformStyle: 'preserve-3d',
-                          backfaceVisibility: 'hidden',
-                          willChange: 'transform, opacity',
-                        }}
-                        onClick={() => offset !== 0 && onChange(item)}
-                      >
-                        <div className="flex items-center gap-3 w-full">
-                          <div className={`relative flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border transition-all ${
-                            offset === 0 
-                              ? 'w-20 h-20 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 shadow-lg'
-                              : 'w-14 h-14 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16'
-                          }`}>
-                            <img 
-                              src={getImage(item)} 
-                              alt={getName(item)}
-                              className="w-full h-full object-cover"
-                            />
+                <div className="relative w-full h-full flex flex-col items-center justify-center" key="static">
+                  {/* Large centered image */}
+                  <motion.div
+                    className="absolute w-full flex flex-col items-center justify-center px-2.5 z-30"
+                    style={{
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                    }}
+                    initial={false}
+                    animate={{ y: '-50%' }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 30
+                    }}
+                  >
+                    <div className="relative w-[calc(100%-20px)] h-[240px] md:h-[220px] lg:h-[260px] rounded-lg overflow-hidden bg-background border-2 border-border shadow-lg">
+                      <img 
+                        src={getImage(items[currentIndex])} 
+                        alt={getName(items[currentIndex])}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 mt-3 px-2 w-full justify-center">
+                      <span className="text-sm md:text-base font-semibold text-primary dark:text-accent text-center line-clamp-2">
+                        {getName(items[currentIndex])}
+                      </span>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0">
+                            <Info className="w-4 h-4" />
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="max-w-[280px] sm:max-w-xs bg-card border-2 border-border p-4 z-[9999]" side="right" sideOffset={10} align="center">
+                          <div className="space-y-2 text-xs">
+                            <h4 className="font-semibold text-sm text-foreground break-words">{getName(items[currentIndex])}</h4>
+                            <div className="grid grid-cols-2 gap-2">
+                              {items[currentIndex].Blade_Speed !== undefined && (
+                                <>
+                                  <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{items[currentIndex].Blade_Speed}</span></div>
+                                  <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{items[currentIndex].Blade_Spin}</span></div>
+                                  <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{items[currentIndex].Blade_Control}</span></div>
+                                  <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{items[currentIndex].Blade_Power}</span></div>
+                                  <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${items[currentIndex].Blade_Price}</span></div>
+                                  <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{items[currentIndex].Blade_Level}</span></div>
+                                  {items[currentIndex].Blade_Style && <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{items[currentIndex].Blade_Style}</span></div>}
+                                  {items[currentIndex].Blade_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{items[currentIndex].Blade_Weight}g</span></div>}
+                                </>
+                              )}
+                              {items[currentIndex].Rubber_Speed !== undefined && (
+                                <>
+                                  <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{items[currentIndex].Rubber_Speed}</span></div>
+                                  <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{items[currentIndex].Rubber_Spin}</span></div>
+                                  <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{items[currentIndex].Rubber_Control}</span></div>
+                                  <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{items[currentIndex].Rubber_Power}</span></div>
+                                  <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${items[currentIndex].Rubber_Price}</span></div>
+                                  <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{items[currentIndex].Rubber_Level}</span></div>
+                                  <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{items[currentIndex].Rubber_Style}</span></div>
+                                  {items[currentIndex].Rubber_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{items[currentIndex].Rubber_Weight}g</span></div>}
+                                  {items[currentIndex].Rubber_Sponge_Sizes && <div className="col-span-2"><span className="text-muted-foreground">Sponge:</span> <span className="font-medium">{items[currentIndex].Rubber_Sponge_Sizes.join(", ")}</span></div>}
+                                </>
+                              )}
+                            </div>
                           </div>
-                          <div className="flex items-center gap-2 flex-1 min-w-0">
-                            <p 
-                              className={`text-left transition-colors cursor-pointer ${
-                                offset === 0 
-                                  ? !selectedAvailable 
-                                    ? 'text-destructive text-base md:text-sm lg:text-base xl:text-lg font-bold line-through line-clamp-2' 
-                                    : 'text-primary dark:text-accent text-base md:text-sm lg:text-base xl:text-lg font-bold line-clamp-2'
-                                  : 'text-primary/60 dark:text-accent/60 text-xs md:text-[10px] lg:text-xs xl:text-sm font-medium line-clamp-1'
-                              }`}
-                              style={{ opacity }}
-                            >
-                              {getName(item)}
-                            </p>
-                            {offset === 0 && (
-                              <Popover>
-                                <PopoverTrigger asChild onClick={(e) => e.stopPropagation()}>
-                                  <button className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0">
-                                    <Info className="w-4 h-4" />
-                                  </button>
-                                </PopoverTrigger>
-                                <PopoverContent className="max-w-[280px] sm:max-w-xs bg-card border-2 border-border p-4 z-[9999]" side="right" sideOffset={10} align="center">
-                                  <div className="space-y-2 text-xs">
-                                    <h4 className="font-semibold text-sm text-foreground break-words">{getName(item)}</h4>
-                                    <div className="grid grid-cols-2 gap-2">
-                                      {item.Blade_Speed !== undefined && (
-                                        <>
-                                          <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{item.Blade_Speed}</span></div>
-                                          <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{item.Blade_Spin}</span></div>
-                                          <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{item.Blade_Control}</span></div>
-                                          <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{item.Blade_Power}</span></div>
-                                          <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${item.Blade_Price}</span></div>
-                                          <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{item.Blade_Level}</span></div>
-                                          {item.Blade_Style && <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{item.Blade_Style}</span></div>}
-                                          {item.Blade_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{item.Blade_Weight}g</span></div>}
-                                        </>
-                                      )}
-                                      {item.Rubber_Speed !== undefined && (
-                                        <>
-                                          <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{item.Rubber_Speed}</span></div>
-                                          <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{item.Rubber_Spin}</span></div>
-                                          <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{item.Rubber_Control}</span></div>
-                                          <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{item.Rubber_Power}</span></div>
-                                          <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${item.Rubber_Price}</span></div>
-                                          <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{item.Rubber_Level}</span></div>
-                                          <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{item.Rubber_Style}</span></div>
-                                          {item.Rubber_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{item.Rubber_Weight}g</span></div>}
-                                          {item.Rubber_Sponge_Sizes && <div className="col-span-2"><span className="text-muted-foreground">Sponge:</span> <span className="font-medium">{item.Rubber_Sponge_Sizes.join(", ")}</span></div>}
-                                        </>
-                                      )}
-                                    </div>
-                                  </div>
-                                </PopoverContent>
-                              </Popover>
-                            )}
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </motion.div>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </motion.div>
+                  
+                  {/* Teaser for next item (bottom) */}
+                  <div className="absolute bottom-0 left-0 right-0 h-24 overflow-hidden pointer-events-none z-20">
+                    <div className="absolute bottom-0 left-2.5 right-2.5">
+                      <div className="relative w-full h-20 rounded-t-lg overflow-hidden bg-background/50 border-t-2 border-x-2 border-border opacity-40">
+                        <img 
+                          src={getImage(items[(currentIndex + 1) % items.length])} 
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Teaser for previous item (top) */}
+                  <div className="absolute top-0 left-0 right-0 h-24 overflow-hidden pointer-events-none z-20">
+                    <div className="absolute top-0 left-2.5 right-2.5">
+                      <div className="relative w-full h-20 rounded-b-lg overflow-hidden bg-background/50 border-b-2 border-x-2 border-border opacity-40">
+                        <img 
+                          src={getImage(items[(currentIndex - 1 + items.length) % items.length])} 
+                          alt=""
+                          className="w-full h-full object-cover object-bottom"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Swipe buttons */}
+          {/* Scroll buttons - smaller and cleaner */}
           <button
             onClick={() => handleSwipe('up')}
             disabled={isSpinning}
-            className="absolute top-2 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-all z-20 bg-card/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center shadow-sm hover:shadow-md hover:scale-105"
+            className="absolute top-3 left-1/2 -translate-x-1/2 z-40 bg-card/80 hover:bg-card border border-border disabled:opacity-30 disabled:cursor-not-allowed text-foreground rounded-full shadow-md transition-all hover:scale-105 disabled:hover:scale-100 w-7 h-7 flex items-center justify-center backdrop-blur-sm"
             aria-label="Previous item"
           >
-            <ChevronUp className="w-4 h-4" />
+            <ChevronUp className="w-3.5 h-3.5" />
           </button>
           
           <button
             onClick={() => handleSwipe('down')}
             disabled={isSpinning}
-            className="absolute bottom-2 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-all z-20 bg-card/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center shadow-sm hover:shadow-md hover:scale-105"
+            className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 bg-card/80 hover:bg-card border border-border disabled:opacity-30 disabled:cursor-not-allowed text-foreground rounded-full shadow-md transition-all hover:scale-105 disabled:hover:scale-100 w-7 h-7 flex items-center justify-center backdrop-blur-sm"
             aria-label="Next item"
           >
-            <ChevronDown className="w-4 h-4" />
+            <ChevronDown className="w-3.5 h-3.5" />
           </button>
         </div>
         
