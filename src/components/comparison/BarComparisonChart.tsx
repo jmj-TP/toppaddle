@@ -9,7 +9,7 @@ interface BarComparisonChartProps {
   performanceView?: PerformanceView;
 }
 
-const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))'];
+const COLORS = ['hsl(var(--accent))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))'];
 
 export const BarComparisonChart = ({ paddles, stat, label, performanceView = 'overall' }: BarComparisonChartProps) => {
   // Get stats based on view

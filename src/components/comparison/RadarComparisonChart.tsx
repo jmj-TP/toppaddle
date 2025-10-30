@@ -12,7 +12,7 @@ interface RadarComparisonChartProps {
   onPerformanceViewChange?: (view: PerformanceView) => void;
 }
 
-const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))'];
+const COLORS = ['hsl(var(--accent))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))'];
 
 type PerformanceView = 'overall' | 'forehand' | 'blade' | 'backhand';
 
@@ -31,6 +31,8 @@ export const RadarComparisonChart = ({
   onPerformanceViewChange 
 }: RadarComparisonChartProps) => {
   const [internalPerformanceView, setInternalPerformanceView] = useState<PerformanceView>('overall');
+  const [includeWeight, setIncludeWeight] = useState(true);
+  const [includeValue, setIncludeValue] = useState(true);
   
   // Use external view if provided, otherwise use internal
   const performanceView = externalPerformanceView || internalPerformanceView;
@@ -116,8 +118,6 @@ export const RadarComparisonChart = ({
     }
   };
 
-  const includeWeight = performanceView === 'overall';
-
   // Define all possible stats with their calculations
   const statDefinitions = [
     {
@@ -152,7 +152,7 @@ export const RadarComparisonChart = ({
         return stats.spin !== undefined ? Math.min(100, stats.spin) : null;
       },
     },
-    {
+    ...(includeValue ? [{
       key: 'value',
       stat: 'Value',
       getValue: (paddle: ComparisonPaddle) => {
@@ -160,7 +160,7 @@ export const RadarComparisonChart = ({
         const price = stats.price || paddle.price;
         return price !== undefined ? priceToRadarValue(price) : null;
       },
-    },
+    }] : []),
     ...(includeWeight ? [{
       key: 'weight',
       stat: 'Weight',
@@ -195,17 +195,35 @@ export const RadarComparisonChart = ({
 
   return (
     <div className="w-full space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <h2 className="text-xl font-bold">{VIEW_LABELS[performanceView]}</h2>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={cycleView}
-          className="gap-2"
-        >
-          Next View
-          <ChevronRight className="w-4 h-4" />
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant={includeWeight ? "default" : "outline"}
+            size="sm"
+            onClick={() => setIncludeWeight(!includeWeight)}
+            className="h-8 px-3 text-xs"
+          >
+            Weight
+          </Button>
+          <Button
+            variant={includeValue ? "default" : "outline"}
+            size="sm"
+            onClick={() => setIncludeValue(!includeValue)}
+            className="h-8 px-3 text-xs"
+          >
+            Value
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={cycleView}
+            className="gap-2 h-8 px-3"
+          >
+            Next View
+            <ChevronRight className="w-3 h-3" />
+          </Button>
+        </div>
       </div>
       <div className="w-full h-[400px] flex items-center justify-center">
         <ResponsiveContainer width="100%" height="100%">

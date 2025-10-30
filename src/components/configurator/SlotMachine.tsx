@@ -409,7 +409,7 @@ const SlotMachine = ({
                           backfaceVisibility: 'hidden',
                         }}
                       >
-                        <p className="text-sm md:text-xs lg:text-sm xl:text-base font-semibold text-pink-600 dark:text-pink-400 text-center line-clamp-3" style={{ opacity: 1 }}>
+                        <p className="text-sm md:text-xs lg:text-sm xl:text-base font-semibold text-primary dark:text-accent text-center line-clamp-3" style={{ opacity: 1 }}>
                           {getName(items[itemIndex])}
                         </p>
                       </motion.div>
@@ -456,12 +456,12 @@ const SlotMachine = ({
                       >
                         <div className="flex items-center gap-2">
                           <p 
-                            className={`text-center line-clamp-3 transition-colors cursor-pointer ${
+                            className={`text-center line-clamp-2 transition-colors cursor-pointer ${
                               offset === 0 
                                 ? !selectedAvailable 
                                   ? 'text-destructive text-base md:text-sm lg:text-base xl:text-lg font-bold line-through' 
-                                  : 'text-pink-600 dark:text-pink-400 text-base md:text-sm lg:text-base xl:text-lg font-bold'
-                                : 'text-pink-500 dark:text-pink-300 text-xs md:text-[10px] lg:text-xs xl:text-sm font-medium'
+                                  : 'text-primary dark:text-accent text-base md:text-sm lg:text-base xl:text-lg font-bold'
+                                : 'text-primary/70 dark:text-accent/70 text-xs md:text-[10px] lg:text-xs xl:text-sm font-medium'
                             }`}
                             style={{ opacity }}
                           >
@@ -474,9 +474,9 @@ const SlotMachine = ({
                                   <Info className="w-4 h-4" />
                                 </button>
                               </PopoverTrigger>
-                              <PopoverContent className="max-w-xs bg-card border-2 border-border p-4 z-[9999]" side="right" sideOffset={10} align="center">
+                              <PopoverContent className="max-w-[280px] sm:max-w-xs bg-card border-2 border-border p-4 z-[9999]" side="right" sideOffset={10} align="center">
                                 <div className="space-y-2 text-xs">
-                                  <h4 className="font-semibold text-sm text-foreground">{getName(item)}</h4>
+                                  <h4 className="font-semibold text-sm text-foreground break-words">{getName(item)}</h4>
                                   <div className="grid grid-cols-2 gap-2">
                                     {item.Blade_Speed !== undefined && (
                                       <>
@@ -521,19 +521,19 @@ const SlotMachine = ({
           <button
             onClick={() => handleSwipe('up')}
             disabled={isSpinning}
-            className="absolute top-4 left-1/2 -translate-x-1/2 text-foreground hover:text-primary disabled:opacity-30 transition-colors z-20 bg-card/90 backdrop-blur-sm border-2 border-border rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:scale-110"
+            className="absolute top-2 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-all z-20 bg-card/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center shadow-sm hover:shadow-md hover:scale-105"
             aria-label="Previous item"
           >
-            <ChevronUp className="w-6 h-6" />
+            <ChevronUp className="w-4 h-4" />
           </button>
           
           <button
             onClick={() => handleSwipe('down')}
             disabled={isSpinning}
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 text-foreground hover:text-primary disabled:opacity-30 transition-colors z-20 bg-card/90 backdrop-blur-sm border-2 border-border rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:scale-110"
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-all z-20 bg-card/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center shadow-sm hover:shadow-md hover:scale-105"
             aria-label="Next item"
           >
-            <ChevronDown className="w-6 h-6" />
+            <ChevronDown className="w-4 h-4" />
           </button>
         </div>
         

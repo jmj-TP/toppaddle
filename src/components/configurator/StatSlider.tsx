@@ -28,6 +28,12 @@ export const StatSlider = ({
   showValue = true,
 }: StatSliderProps) => {
   const desc = description || statDescriptions[label] || "";
+  
+  // Special handling for Weight slider
+  const isWeight = label === "Weight";
+  const displayValue = isWeight ? value : value;
+  const minValue = isWeight ? 150 : 0;
+  const maxValue = isWeight ? 250 : 100;
 
   return (
     <div className="group py-4 px-5 bg-card rounded-2xl border border-border hover:border-accent/30 transition-all duration-300">
@@ -54,15 +60,15 @@ export const StatSlider = ({
           <Slider
             value={[value]}
             onValueChange={(values) => onChange(values[0])}
-            min={0}
-            max={100}
+            min={minValue}
+            max={maxValue}
             step={1}
             className="w-full"
           />
         </div>
         {showValue && (
-          <span className="text-sm font-semibold text-accent min-w-[40px] text-right">
-            {value}
+          <span className="text-sm font-semibold text-accent min-w-[50px] text-right">
+            {isWeight ? `${displayValue}g` : displayValue}
           </span>
         )}
       </div>

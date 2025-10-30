@@ -88,57 +88,59 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Table Tennis Dark Mode - Strong contrast with orange energy */
-    --background: 220 50% 8%;
-    --foreground: 0 0% 98%;
+    /* Table Tennis Dark Mode - Deep navy with orange accents */
+    /* Background: #181C27 = hsl(220, 20%, 13%) */
+    --background: 220 20% 13%;
+    --foreground: 220 10% 95%;
     
-    --card: 220 45% 12%;
-    --card-foreground: 0 0% 98%;
+    /* Card: Slightly lighter than background */
+    --card: 220 18% 18%;
+    --card-foreground: 220 10% 95%;
     
-    --popover: 220 45% 12%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 220 18% 18%;
+    --popover-foreground: 220 10% 95%;
     
-    /* Primary - Vibrant orange for dark mode */
-    --primary: 25 95% 55%;
-    --primary-foreground: 220 50% 8%;
+    /* Primary - Vivid Orange #FF8C32 = hsl(25, 100%, 60%) */
+    --primary: 25 100% 60%;
+    --primary-foreground: 220 20% 13%;
     
-    --secondary: 220 40% 18%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 220 15% 25%;
+    --secondary-foreground: 220 10% 95%;
     
-    --muted: 220 35% 20%;
-    --muted-foreground: 220 10% 70%;
+    --muted: 220 15% 30%;
+    --muted-foreground: 220 10% 65%;
     
-    /* Accent - Orange maintained for consistency */
-    --accent: 25 95% 55%;
-    --accent-foreground: 220 50% 8%;
+    /* Accent - Orange maintained */
+    --accent: 25 100% 60%;
+    --accent-foreground: 220 20% 13%;
     
     --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 220 10% 95%;
     
-    --border: 220 30% 22%;
-    --input: 220 30% 22%;
-    --ring: 25 95% 55%;
+    --border: 220 15% 28%;
+    --input: 220 15% 28%;
+    --ring: 25 100% 60%;
     
-    /* Chart Colors (Dark Mode) - Varied and vibrant */
-    --chart-1: 25 95% 60%;
-    --chart-2: 200 80% 55%;
-    --chart-3: 280 60% 60%;
-    --chart-4: 340 75% 55%;
-    --chart-5: 160 50% 50%;
+    /* Chart Colors - Vibrant and distinct */
+    --chart-1: 25 100% 60%;
+    --chart-2: 140 60% 55%;
+    --chart-3: 200 80% 55%;
+    --chart-4: 280 60% 60%;
+    --chart-5: 340 75% 55%;
     
     /* Dark Mode Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(220 50% 8%), hsl(220 45% 14%));
-    --gradient-secondary: linear-gradient(135deg, hsl(220 40% 18%), hsl(220 35% 22%));
-    --gradient-accent: linear-gradient(135deg, hsl(25 95% 55%), hsl(35 95% 60%));
-    --gradient-soft: linear-gradient(180deg, hsl(220 50% 8%), hsl(220 45% 12%));
-    --gradient-hero: linear-gradient(135deg, hsl(220 50% 8% / 0.95), hsl(220 45% 14% / 0.9));
+    --gradient-primary: linear-gradient(135deg, hsl(220 20% 13%), hsl(220 18% 20%));
+    --gradient-secondary: linear-gradient(135deg, hsl(220 15% 25%), hsl(220 15% 30%));
+    --gradient-accent: linear-gradient(135deg, hsl(25 100% 60%), hsl(35 100% 65%));
+    --gradient-soft: linear-gradient(180deg, hsl(220 20% 13%), hsl(220 18% 18%));
+    --gradient-hero: linear-gradient(135deg, hsl(220 20% 13% / 0.95), hsl(220 18% 18% / 0.9));
     
-    /* Dark Mode Shadows - Deep with orange glow */
+    /* Dark Mode Shadows */
     --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.5);
     --shadow-md: 0 2px 8px -2px hsl(0 0% 0% / 0.6), 0 1px 3px 0 hsl(0 0% 0% / 0.5);
     --shadow-lg: 0 4px 16px -4px hsl(0 0% 0% / 0.7), 0 2px 6px -2px hsl(0 0% 0% / 0.6);
     --shadow-xl: 0 8px 32px -8px hsl(0 0% 0% / 0.8), 0 4px 12px -4px hsl(0 0% 0% / 0.7);
-    --shadow-accent: 0 4px 20px -4px hsl(25 95% 55% / 0.5);
+    --shadow-accent: 0 4px 20px -4px hsl(25 100% 60% / 0.5);
     --shadow-card: 0 2px 16px -4px hsl(0 0% 0% / 0.6);
     
     --sidebar-background: 0 0% 10%;

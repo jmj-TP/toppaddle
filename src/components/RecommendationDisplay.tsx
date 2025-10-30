@@ -34,6 +34,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   const addItem = useCartStore(state => state.addItem);
   const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [showAllRecommendations, setShowAllRecommendations] = useState(false);
   
   const [showPreferenceEditor, setShowPreferenceEditor] = useState(false);
   const [tempBudget, setTempBudget] = useState(currentAnswers?.Budget || "<100$");
@@ -85,6 +86,11 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       const setup = item.data as CustomSetup;
       navigate(`/configurator?blade=${encodeURIComponent(setup.blade.Blade_Name)}&fh=${encodeURIComponent(setup.forehandRubber.Rubber_Name)}&bh=${encodeURIComponent(setup.backhandRubber.Rubber_Name)}&handle=${encodeURIComponent(handleType)}&fhThickness=${encodeURIComponent(forehandThickness)}&bhThickness=${encodeURIComponent(backhandThickness)}`);
     }
+  };
+
+  // Add to comparison
+  const handleAddToCompare = (item: typeof allRecommendations[0]) => {
+    navigate('/compare');
   };
 
   // Add to cart with Shopify integration
@@ -274,15 +280,20 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   );
 
   // Pre-assembled racket card component
-  const PreAssembledCard = ({ racket, rank }: { racket: typeof preAssembled, rank?: number }) => racket ? (
-    <Card className="border-border" style={{ boxShadow: "var(--shadow-lg)" }}>
+  const PreAssembledCard = ({ racket, rank, isBest }: { racket: typeof preAssembled, rank?: number, isBest?: boolean }) => racket ? (
+    <Card className={`border-border ${isBest ? 'ring-2 ring-accent shadow-accent' : ''}`} style={{ boxShadow: isBest ? "var(--shadow-accent)" : "var(--shadow-lg)" }}>
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 flex-1 min-w-0">
+            {isBest && <span className="text-2xl flex-shrink-0">🏆</span>}
             <span className="text-2xl flex-shrink-0">🏓</span>
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
-              <span className="font-semibold text-base sm:text-lg truncate">Ready-to-Play Racket{rank ? ` #${rank}` : ''}</span>
-              <Badge variant="secondary" className="w-fit text-xs">Beginner Friendly</Badge>
+              <span className="font-semibold text-base sm:text-lg truncate">
+                {isBest ? 'Best Match - ' : ''}Ready-to-Play Racket{rank ? ` #${rank}` : ''}
+              </span>
+              <Badge variant={isBest ? "default" : "secondary"} className="w-fit text-xs">
+                {isBest ? 'Recommended' : 'Beginner Friendly'}
+              </Badge>
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -358,6 +369,14 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                 Add to Cart
               </Button>
             </div>
+            <Button 
+              onClick={() => handleAddToCompare({ type: 'preAssembled', score: racket.score, data: racket, rank })}
+              variant="outline"
+              size="sm"
+              className="w-full"
+            >
+              Compare
+            </Button>
           </div>
         </div>
       </CardContent>
@@ -365,7 +384,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   ) : null;
 
   // Custom setup card component with collapsible details
-  const CustomSetupCard = ({ setup, rank }: { setup: CustomSetup; rank?: number }) => {
+  const CustomSetupCard = ({ setup, rank, isBest }: { setup: CustomSetup; rank?: number; isBest?: boolean }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     // Calculate combined stats (weighted average)
@@ -381,14 +400,19 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
     return (
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <Card className="border-border" style={{ boxShadow: "var(--shadow-lg)" }}>
+        <Card className={`border-border ${isBest ? 'ring-2 ring-accent shadow-accent' : ''}`} style={{ boxShadow: isBest ? "var(--shadow-accent)" : "var(--shadow-lg)" }}>
           <CardHeader>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 flex-1 min-w-0">
+                {isBest && <span className="text-2xl flex-shrink-0">🏆</span>}
                 <span className="text-2xl flex-shrink-0">⚡</span>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
-                  <span className="font-semibold text-base sm:text-lg truncate">Custom Setup{rank ? ` #${rank}` : ''}</span>
-                  <Badge variant="outline" className="w-fit text-xs">Advanced Choice</Badge>
+                  <span className="font-semibold text-base sm:text-lg truncate">
+                    {isBest ? 'Best Match - ' : ''}Custom Setup{rank ? ` #${rank}` : ''}
+                  </span>
+                  <Badge variant={isBest ? "default" : "outline"} className="w-fit text-xs">
+                    {isBest ? 'Recommended' : 'Advanced Choice'}
+                  </Badge>
                 </div>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
@@ -500,7 +524,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     className="w-full"
                   >
                     <Wrench className="w-3 h-3 mr-1" />
-                    View in Configurator
+                    More Info
                   </Button>
                   <Button 
                     onClick={() => handleAddToCart({ type: 'custom1', score: setup.score, data: setup, rank })}
@@ -513,6 +537,14 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     Add to Cart
                   </Button>
                 </div>
+                <Button 
+                  onClick={() => handleAddToCompare({ type: 'custom1', score: setup.score, data: setup, rank })}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
+                  Compare
+                </Button>
               </div>
             </div>
 
@@ -758,18 +790,48 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
 
       {/* Render recommendations sorted by score (best first) */}
-      {allRecommendations.map((item, index) => {
-        const rank = allRecommendations.length > 1 ? index + 1 : undefined;
+      <div className="space-y-4">
+        {/* Best recommendation always shown */}
+        {allRecommendations.length > 0 && (() => {
+          const bestItem = allRecommendations[0];
+          if (bestItem.type === 'preAssembled' || bestItem.type === 'preAssembled2') {
+            return <PreAssembledCard key={bestItem.type} racket={bestItem.data} rank={1} isBest={true} />;
+          } else {
+            return <CustomSetupCard key={bestItem.type} setup={bestItem.data} rank={1} isBest={true} />;
+          }
+        })()}
         
-        if (item.type === 'preAssembled' || item.type === 'preAssembled2') {
-          return <PreAssembledCard key={item.type} racket={item.data} rank={rank} />;
-        } else if (item.type === 'custom1') {
-          return <CustomSetupCard key="custom1" setup={item.data} rank={rank} />;
-        } else if (item.type === 'custom2') {
-          return <CustomSetupCard key="custom2" setup={item.data} rank={rank} />;
-        }
-        return null;
-      })}
+        {/* Other recommendations - collapsible */}
+        {allRecommendations.length > 1 && (
+          <Collapsible open={showAllRecommendations} onOpenChange={setShowAllRecommendations}>
+            <CollapsibleTrigger asChild>
+              <Button variant="outline" className="w-full">
+                {showAllRecommendations ? (
+                  <>
+                    <ChevronUp className="w-4 h-4 mr-2" />
+                    Hide Alternative Options
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-4 h-4 mr-2" />
+                    Show {allRecommendations.length - 1} More Option{allRecommendations.length > 2 ? 's' : ''}
+                  </>
+                )}
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-4 mt-4">
+              {allRecommendations.slice(1).map((item, index) => {
+                const rank = index + 2;
+                if (item.type === 'preAssembled' || item.type === 'preAssembled2') {
+                  return <PreAssembledCard key={item.type} racket={item.data} rank={rank} isBest={false} />;
+                } else {
+                  return <CustomSetupCard key={item.type} setup={item.data} rank={rank} isBest={false} />;
+                }
+              })}
+            </CollapsibleContent>
+          </Collapsible>
+        )}
+      </div>
 
       {/* Preference Adjustment Section */}
       <Card className="mt-6 border-2 border-accent/50">

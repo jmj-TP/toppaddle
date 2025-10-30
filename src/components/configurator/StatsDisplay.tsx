@@ -85,7 +85,7 @@ const StatsDisplay = ({
   const [editSpin, setEditSpin] = useState(stats.spin);
   const [editControl, setEditControl] = useState(stats.control);
   const [editPower, setEditPower] = useState(stats.power);
-  const [editWeight, setEditWeight] = useState<number>(180); // Default preferred weight in grams
+  const [editWeight, setEditWeight] = useState<number>(200); // Default preferred weight in grams (150-250g range)
   
   // Advanced component-specific preferences
   const [editForehandSpeed, setEditForehandSpeed] = useState(forehand?.Rubber_Speed || 50);
