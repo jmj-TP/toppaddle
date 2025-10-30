@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { RadarComparisonChart } from "@/components/comparison/RadarComparisonChart";
 import type { ComparisonPaddle } from "@/stores/comparisonStore";
+import { StatSlider } from "@/components/configurator/StatSlider";
 
 export interface UserPreferences {
   budget: number;
@@ -169,44 +170,18 @@ const StatsDisplay = ({
   };
 
   const StatBar = ({ label, value, Icon }: { label: string; value: number; Icon: any }) => (
-    <div className="flex items-center gap-2 mb-3">
-      <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-      <span className="text-sm font-medium min-w-[60px]">{label}:</span>
-      <div className="flex-1 bg-muted dark:bg-secondary/30 rounded-full h-2">
+    <div className="py-3 px-4 bg-muted/30 rounded-xl">
+      <div className="flex items-center gap-2 mb-2">
+        <Icon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+        <span className="text-sm font-medium text-foreground">{label}</span>
+        <span className="text-sm font-semibold text-accent ml-auto">{value}</span>
+      </div>
+      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
         <div 
-          className="bg-primary dark:bg-accent rounded-full h-2 transition-all duration-500"
+          className="h-full bg-accent rounded-full transition-all duration-500"
           style={{ width: `${value}%` }}
         />
       </div>
-      <span className="text-sm font-semibold min-w-[30px]">{value}</span>
-    </div>
-  );
-
-  const StatSlider = ({ 
-    label, 
-    value, 
-    Icon, 
-    onChange 
-  }: { 
-    label: string; 
-    value: number; 
-    Icon: any; 
-    onChange: (value: number) => void;
-  }) => (
-    <div className="flex items-center gap-3 mb-4 py-2">
-      <Icon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-      <span className="text-sm font-medium min-w-[60px]">{label}:</span>
-      <div className="flex-1 px-2 py-2">
-        <Slider
-          value={[value]}
-          onValueChange={(values) => onChange(values[0])}
-          min={0}
-          max={100}
-          step={1}
-          className="w-full"
-        />
-      </div>
-      <span className="text-sm font-semibold min-w-[30px] text-right">{value}</span>
     </div>
   );
 
@@ -217,20 +192,20 @@ const StatsDisplay = ({
 
   return (
     <>
-      <div className="grid md:grid-cols-[2fr_1fr] gap-8 items-start">
-        {/* Left Column - Price, Level, and Stats */}
+      <div className="grid lg:grid-cols-[1fr_400px] gap-8 items-start">
+        {/* Left Column - Stats and Configuration */}
         <div className="space-y-6">
-          {/* Meta Stats Row */}
-          <div className="flex flex-wrap items-center gap-4 mb-4">
+          {/* Meta Info Row */}
+          <div className="flex flex-wrap items-center gap-6 px-4">
             {isEditMode ? (
               <>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">Budget:</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-muted-foreground">Budget</span>
                   <Select 
                     value={editBudget.toString()} 
                     onValueChange={(value) => setEditBudget(parseFloat(value))}
                   >
-                    <SelectTrigger className="w-32 h-8">
+                    <SelectTrigger className="w-36 h-9 rounded-xl">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -248,10 +223,10 @@ const StatsDisplay = ({
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">Level:</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-muted-foreground">Level</span>
                   <Select value={editLevel} onValueChange={setEditLevel}>
-                    <SelectTrigger className="w-32 h-8">
+                    <SelectTrigger className="w-36 h-9 rounded-xl">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -264,131 +239,118 @@ const StatsDisplay = ({
               </>
             ) : (
               <>
-                <div className="flex items-center gap-2">
-                  <DollarSign className="w-5 h-5 text-muted-foreground" />
-                  <span className="font-semibold">${stats.price.toFixed(2)}</span>
+                <div className="text-3xl font-semibold text-foreground">
+                  ${stats.price.toFixed(2)}
                 </div>
-                <div className="flex items-center gap-2">
-                  <Gauge className="w-5 h-5 text-muted-foreground" />
-                  <span className="font-semibold">Level: {level}</span>
+                <div className="h-6 w-px bg-border" />
+                <div className="text-sm text-muted-foreground">
+                  {level}
                 </div>
-                <div className="flex items-center gap-2">
-                  <Scale className="w-5 h-5 text-muted-foreground" />
-                  <span className="font-semibold">Weight: {calculateTotalWeight()}</span>
+                <div className="h-6 w-px bg-border" />
+                <div className="text-sm text-muted-foreground">
+                  {calculateTotalWeight()}
                 </div>
               </>
-            )}
-            
-            {!isEditMode && (
-              <Button
-                onClick={handleEditPreferences}
-                variant="outline"
-                size="sm"
-                className="ml-auto hidden lg:flex"
-              >
-                <Settings className="mr-2 h-4 w-4" />
-                Change Preferences
-              </Button>
             )}
           </div>
 
           {/* Stats Bars or Sliders */}
           {isEditMode ? (
-            <div className="space-y-2">
-              <div className="flex items-center gap-4 mb-4">
+            <div className="space-y-3">
+              <StatSlider label="Speed" value={editSpeed} icon={Gauge} onChange={setEditSpeed} />
+              <StatSlider label="Spin" value={editSpin} icon={Target} onChange={setEditSpin} />
+              <StatSlider label="Control" value={editControl} icon={Shield} onChange={setEditControl} />
+              <StatSlider label="Power" value={editPower} icon={Star} onChange={setEditPower} />
+              
+              {/* Weight Preference */}
+              <StatSlider 
+                label="Weight" 
+                value={editWeight} 
+                icon={Scale} 
+                onChange={setEditWeight}
+                description="Preferred total weight in grams. Lighter for speed, heavier for power."
+                showValue={true}
+              />
+              
+              {/* Save and Advanced Buttons */}
+              <div className="flex gap-3 pt-2">
                 <Button
                   onClick={handleSavePreferences}
                   variant="default"
-                  size="sm"
+                  className="flex-1 rounded-xl"
                 >
-                  <Settings className="mr-2 h-4 w-4" />
                   Save Preferences
                 </Button>
-              </div>
-              
-              <StatSlider label="Speed" value={editSpeed} Icon={Gauge} onChange={setEditSpeed} />
-              <StatSlider label="Spin" value={editSpin} Icon={Target} onChange={setEditSpin} />
-              <StatSlider label="Control" value={editControl} Icon={Shield} onChange={setEditControl} />
-              <StatSlider label="Power" value={editPower} Icon={Star} onChange={setEditPower} />
-              
-              {/* Weight Preference */}
-              <div className="flex items-center gap-3 mb-4 py-2">
-                <Scale className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                <span className="text-sm font-medium min-w-[60px]">Weight:</span>
-                <div className="flex-1 px-2 py-2">
-                  <Slider
-                    value={[editWeight]}
-                    onValueChange={(values) => setEditWeight(values[0])}
-                    min={150}
-                    max={210}
-                    step={5}
-                    className="w-full"
-                  />
-                </div>
-                <span className="text-sm font-semibold min-w-[40px] text-right">{editWeight}g</span>
-              </div>
-              
-              {/* Advanced Button */}
-              {!racket && (
-                <div className="pt-4 flex justify-center">
+                {!racket && (
                   <Button
                     onClick={() => setShowAdvanced(!showAdvanced)}
                     variant="outline"
-                    size="sm"
-                    className="w-full"
+                    className="flex-1 rounded-xl"
                   >
                     <Settings className="w-4 h-4 mr-2" />
-                    {showAdvanced ? "Hide Component Preferences" : "Advanced: Component Preferences"}
+                    {showAdvanced ? "Hide Advanced" : "Advanced"}
                   </Button>
-                </div>
-              )}
+                )}
+              </div>
               
               {/* Advanced Component-Specific Stats */}
               {showAdvanced && !racket && (
-                  <div className="mt-6 space-y-6 pt-6 border-t-2 border-border">
-                    {/* Forehand Rubber */}
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-semibold text-primary flex items-center gap-2">
-                        <span className="text-red-500">🔴</span> Forehand Rubber Preferences
-                      </h4>
-                      <StatSlider label="Speed" value={editForehandSpeed} Icon={Gauge} onChange={setEditForehandSpeed} />
-                      <StatSlider label="Spin" value={editForehandSpin} Icon={Target} onChange={setEditForehandSpin} />
-                      <StatSlider label="Control" value={editForehandControl} Icon={Shield} onChange={setEditForehandControl} />
-                      <StatSlider label="Power" value={editForehandPower} Icon={Star} onChange={setEditForehandPower} />
-                    </div>
-                    
-                    {/* Blade */}
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-semibold text-primary flex items-center gap-2">
-                        <span>🏓</span> Blade Preferences
-                      </h4>
-                      <StatSlider label="Speed" value={editBladeSpeed} Icon={Gauge} onChange={setEditBladeSpeed} />
-                      <StatSlider label="Spin" value={editBladeSpin} Icon={Target} onChange={setEditBladeSpin} />
-                      <StatSlider label="Control" value={editBladeControl} Icon={Shield} onChange={setEditBladeControl} />
-                      <StatSlider label="Power" value={editBladePower} Icon={Star} onChange={setEditBladePower} />
-                    </div>
-                    
-                    {/* Backhand Rubber */}
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-semibold text-primary flex items-center gap-2">
-                        <span className="text-blue-500">🔵</span> Backhand Rubber Preferences
-                      </h4>
-                      <StatSlider label="Speed" value={editBackhandSpeed} Icon={Gauge} onChange={setEditBackhandSpeed} />
-                      <StatSlider label="Spin" value={editBackhandSpin} Icon={Target} onChange={setEditBackhandSpin} />
-                      <StatSlider label="Control" value={editBackhandControl} Icon={Shield} onChange={setEditBackhandControl} />
-                      <StatSlider label="Power" value={editBackhandPower} Icon={Star} onChange={setEditBackhandPower} />
-                    </div>
+                <div className="mt-4 space-y-4 pt-4 border-t border-border">
+                  {/* Forehand Rubber */}
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold text-foreground mb-3">
+                      🔴 Forehand Rubber
+                    </h4>
+                    <StatSlider label="Speed" value={editForehandSpeed} icon={Gauge} onChange={setEditForehandSpeed} />
+                    <StatSlider label="Spin" value={editForehandSpin} icon={Target} onChange={setEditForehandSpin} />
+                    <StatSlider label="Control" value={editForehandControl} icon={Shield} onChange={setEditForehandControl} />
+                    <StatSlider label="Power" value={editForehandPower} icon={Star} onChange={setEditForehandPower} />
                   </div>
-                )}
-              </div>
-            ) : (
-              <>
-                <div className="space-y-2">
-                  <StatBar label="Speed" value={stats.speed} Icon={Gauge} />
-                  <StatBar label="Spin" value={stats.spin} Icon={Target} />
-                  <StatBar label="Control" value={stats.control} Icon={Shield} />
-                  <StatBar label="Power" value={stats.power} Icon={Star} />
+                  
+                  {/* Blade */}
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold text-foreground mb-3">
+                      🏓 Blade
+                    </h4>
+                    <StatSlider label="Speed" value={editBladeSpeed} icon={Gauge} onChange={setEditBladeSpeed} />
+                    <StatSlider label="Spin" value={editBladeSpin} icon={Target} onChange={setEditBladeSpin} />
+                    <StatSlider label="Control" value={editBladeControl} icon={Shield} onChange={setEditBladeControl} />
+                    <StatSlider label="Power" value={editBladePower} icon={Star} onChange={setEditBladePower} />
+                  </div>
+                  
+                  {/* Backhand Rubber */}
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold text-foreground mb-3">
+                      ⚫ Backhand Rubber
+                    </h4>
+                    <StatSlider label="Speed" value={editBackhandSpeed} icon={Gauge} onChange={setEditBackhandSpeed} />
+                    <StatSlider label="Spin" value={editBackhandSpin} icon={Target} onChange={setEditBackhandSpin} />
+                    <StatSlider label="Control" value={editBackhandControl} icon={Shield} onChange={setEditBackhandControl} />
+                    <StatSlider label="Power" value={editBackhandPower} icon={Star} onChange={setEditBackhandPower} />
+                  </div>
                 </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-3">
+                <StatBar label="Speed" value={stats.speed} Icon={Gauge} />
+                <StatBar label="Spin" value={stats.spin} Icon={Target} />
+                <StatBar label="Control" value={stats.control} Icon={Shield} />
+                <StatBar label="Power" value={stats.power} Icon={Star} />
+              </div>
+              
+              <div className="flex justify-center pt-4">
+                <Button
+                  onClick={handleEditPreferences}
+                  variant="outline"
+                  size="sm"
+                  className="rounded-xl"
+                >
+                  <Settings className="mr-2 h-4 w-4" />
+                  Change Preferences
+                </Button>
+              </div>
                 
                 {/* Radar Chart */}
                 <div className="mt-8 pt-6 border-t border-border">

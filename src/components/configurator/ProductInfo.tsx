@@ -1,7 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
+import { StatSlider } from "@/components/configurator/StatSlider";
+import { Gauge, Target, Shield, Star } from "lucide-react";
 
 interface ProductInfoProps {
   product: Blade | Rubber | PreAssembledRacket;
@@ -9,16 +10,6 @@ interface ProductInfoProps {
 }
 
 const ProductInfo = ({ product, onClose }: ProductInfoProps) => {
-  const StatRow = ({ label, value }: { label: string; value: number }) => (
-    <div className="space-y-1">
-      <div className="flex justify-between text-sm">
-        <span className="text-muted-foreground">{label}</span>
-        <span className="font-semibold text-accent">{value}</span>
-      </div>
-      <Progress value={value} className="h-1.5" />
-    </div>
-  );
-
   const getName = () => {
     if ('Blade_Name' in product) return product.Blade_Name;
     if ('Rubber_Name' in product) return product.Rubber_Name;
@@ -61,23 +52,81 @@ const ProductInfo = ({ product, onClose }: ProductInfoProps) => {
     return 0;
   };
 
+  const getPower = () => {
+    if ('Blade_Power' in product) return product.Blade_Power;
+    if ('Rubber_Power' in product) return product.Rubber_Power;
+    return Math.round((getSpeed() + getSpin()) / 2);
+  };
+
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg rounded-3xl">
         <DialogHeader>
-          <DialogTitle className="text-xl">{getName()}</DialogTitle>
+          <DialogTitle className="text-2xl font-semibold">{getName()}</DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4 py-4">
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary">{getLevel()}</Badge>
-            <span className="text-lg font-bold text-accent">${getPrice()}</span>
+        <div className="space-y-6 py-4">
+          <div className="flex items-center gap-4">
+            <Badge variant="secondary" className="text-sm">{getLevel()}</Badge>
+            <span className="text-2xl font-semibold text-accent">${getPrice()}</span>
           </div>
 
           <div className="space-y-3">
-            <StatRow label="Speed" value={getSpeed()} />
-            <StatRow label="Spin" value={getSpin()} />
-            <StatRow label="Control" value={getControl()} />
+            <div className="py-3 px-4 bg-muted/30 rounded-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <Gauge className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Speed</span>
+                <span className="text-sm font-semibold text-accent ml-auto">{getSpeed()}</span>
+              </div>
+              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-accent rounded-full transition-all"
+                  style={{ width: `${getSpeed()}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="py-3 px-4 bg-muted/30 rounded-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <Target className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Spin</span>
+                <span className="text-sm font-semibold text-accent ml-auto">{getSpin()}</span>
+              </div>
+              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-accent rounded-full transition-all"
+                  style={{ width: `${getSpin()}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="py-3 px-4 bg-muted/30 rounded-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <Shield className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Control</span>
+                <span className="text-sm font-semibold text-accent ml-auto">{getControl()}</span>
+              </div>
+              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-accent rounded-full transition-all"
+                  style={{ width: `${getControl()}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="py-3 px-4 bg-muted/30 rounded-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <Star className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Power</span>
+                <span className="text-sm font-semibold text-accent ml-auto">{getPower()}</span>
+              </div>
+              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-accent rounded-full transition-all"
+                  style={{ width: `${getPower()}%` }}
+                />
+              </div>
+            </div>
           </div>
 
           {'Rubber_Style' in product && (

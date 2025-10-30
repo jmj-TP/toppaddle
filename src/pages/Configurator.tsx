@@ -15,6 +15,7 @@ import { fetchShopifyProducts, type ShopifyProduct } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
 import { useComparisonStore, type ComparisonPaddle } from "@/stores/comparisonStore";
 import tableTennisImage from "@/assets/table-tennis.png";
+import { HelpCircle, ArrowRight } from "lucide-react";
 
 const Configurator = () => {
   const [searchParams] = useSearchParams();
@@ -852,41 +853,50 @@ const Configurator = () => {
           </p>
         </div>
       </div>
-      <main className="flex-1 bg-gradient-to-b from-background to-secondary/30 py-12">
+      <main className="flex-1 bg-background py-12">
         <div className="container mx-auto px-4 max-w-7xl">
-          {/* Quiz Recommendation Note */}
-          <div className="mb-8 bg-primary/10 border-2 border-primary/30 rounded-xl p-4 text-center animate-fade-in shadow-md">
-            <p className="font-body text-sm md:text-base text-foreground">
-              <span className="font-semibold text-primary">Don't know what to choose?</span> Try our{" "}
-              <a 
-                href="/" 
-                className="text-primary hover:text-primary/70 underline underline-offset-2 font-bold transition-colors"
-              >
-                quiz
-              </a>
-              {" "}to get the perfect recommendation tailored to your playing style.
-            </p>
+          {/* Apple-style Help Banner */}
+          <div className="mb-12 max-w-3xl mx-auto">
+            <a
+              href="/"
+              className="block group bg-card hover:bg-muted/30 border border-border rounded-2xl p-6 transition-all duration-300"
+            >
+              <div className="flex items-center justify-center gap-4">
+                <HelpCircle className="w-5 h-5 text-accent flex-shrink-0" />
+                <div className="flex-1 text-center">
+                  <p className="text-base font-medium text-foreground">
+                    Help me choose.
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    Answer a few questions to find the best paddle for you.
+                  </p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-accent flex-shrink-0 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </a>
           </div>
           
           {/* Header */}
-          <div className="mb-8 space-y-4">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent animate-fade-in">
-              Build Your Perfect Racket
+          <div className="mb-12 space-y-6 text-center">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-foreground">
+              Build Your Perfect Paddle
             </h1>
-            <div className="flex justify-center gap-2">
+            <div className="inline-flex items-center gap-2 bg-muted rounded-full p-1">
               <Button
                 onClick={() => setIsPreassembled(false)}
-                variant={!isPreassembled ? "default" : "outline"}
-                className="rounded-full px-4 sm:px-6 py-2 text-sm sm:text-base"
+                variant={!isPreassembled ? "default" : "ghost"}
+                className="rounded-full px-6 py-2 text-sm font-medium transition-all"
+                style={{ minWidth: '120px' }}
               >
                 Custom
               </Button>
               <Button
                 onClick={() => setIsPreassembled(true)}
-                variant={isPreassembled ? "default" : "outline"}
-                className="rounded-full px-4 sm:px-6 py-2 text-sm sm:text-base"
+                variant={isPreassembled ? "default" : "ghost"}
+                className="rounded-full px-6 py-2 text-sm font-medium transition-all"
+                style={{ minWidth: '120px' }}
               >
-                Preassembled
+                Pre-Assembled
               </Button>
             </div>
           </div>
