@@ -505,7 +505,7 @@ const SlotMachine = ({
                         >
                           <div className={`w-full h-full flex flex-col items-center ${
                             isCentered 
-                              ? 'justify-center' 
+                              ? 'justify-start pt-[60px]' 
                               : isAboveCenter 
                                 ? 'justify-end pb-2' 
                                 : 'justify-start pt-2'
