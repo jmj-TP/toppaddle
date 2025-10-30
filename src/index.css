@@ -8,60 +8,60 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Apple-inspired Minimal Color System */
+    /* Table Tennis Premium Color System */
     
-    /* Neutral Base - Clean whites and soft grays */
-    --background: 0 0% 99%;
-    --foreground: 0 0% 13%;
+    /* 60% Clean White - Fresh, premium backgrounds */
+    --background: 220 20% 97%;
+    --foreground: 220 56% 31%;
     
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 13%;
+    --card: 220 20% 98%;
+    --card-foreground: 220 56% 31%;
     
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 13%;
+    --popover: 220 20% 98%;
+    --popover-foreground: 220 56% 31%;
     
-    /* Primary - Deep charcoal for premium feel */
-    --primary: 0 0% 13%;
-    --primary-foreground: 0 0% 100%;
+    /* 30% Deep Blue - Trust and energy */
+    --primary: 220 56% 31%;
+    --primary-foreground: 220 20% 97%;
     
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 13%;
+    --secondary: 220 35% 90%;
+    --secondary-foreground: 220 56% 31%;
     
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 220 25% 92%;
+    --muted-foreground: 220 30% 50%;
     
-    /* Accent - Subtle blue for interactive elements */
-    --accent: 211 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    /* 10% Energetic Green - Vibrancy and sportiness */
+    --accent: 160 51% 49%;
+    --accent-foreground: 220 20% 97%;
     
     --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 220 20% 97%;
     
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 211 100% 50%;
+    --border: 220 20% 88%;
+    --input: 220 20% 88%;
+    --ring: 160 51% 49%;
     
-    /* Chart Colors - Minimal and elegant */
-    --chart-1: 211 100% 50%;
-    --chart-2: 142 76% 45%;
-    --chart-3: 24 95% 53%;
-    --chart-4: 265 89% 78%;
-    --chart-5: 12 76% 61%;
+    /* Chart Colors - Table Tennis themed */
+    --chart-1: 160 51% 49%;
+    --chart-2: 220 56% 31%;
+    --chart-3: 160 60% 60%;
+    --chart-4: 220 45% 50%;
+    --chart-5: 160 40% 40%;
     
-    /* Apple-style Gradients - Subtle and refined */
-    --gradient-primary: linear-gradient(135deg, hsl(0 0% 13%), hsl(0 0% 18%));
-    --gradient-secondary: linear-gradient(135deg, hsl(0 0% 96%), hsl(0 0% 99%));
-    --gradient-accent: linear-gradient(135deg, hsl(211 100% 50%), hsl(211 100% 55%));
-    --gradient-soft: linear-gradient(180deg, hsl(0 0% 99%), hsl(0 0% 97%));
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 13% / 0.03), hsl(211 100% 50% / 0.05));
+    /* Table Tennis Gradients - Fresh and energetic */
+    --gradient-primary: linear-gradient(135deg, hsl(220 56% 31%), hsl(220 56% 38%));
+    --gradient-secondary: linear-gradient(135deg, hsl(220 20% 97%), hsl(220 20% 94%));
+    --gradient-accent: linear-gradient(135deg, hsl(160 51% 49%), hsl(160 51% 56%));
+    --gradient-soft: linear-gradient(180deg, hsl(220 20% 97%), hsl(220 20% 95%));
+    --gradient-hero: linear-gradient(135deg, hsl(220 56% 31% / 0.05), hsl(160 51% 49% / 0.08));
     
-    /* Apple-style Shadows - Soft and layered */
-    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.04);
-    --shadow-md: 0 2px 8px -2px hsl(0 0% 0% / 0.08), 0 1px 3px 0 hsl(0 0% 0% / 0.04);
-    --shadow-lg: 0 4px 16px -4px hsl(0 0% 0% / 0.12), 0 2px 6px -2px hsl(0 0% 0% / 0.06);
-    --shadow-xl: 0 8px 32px -8px hsl(0 0% 0% / 0.16), 0 4px 12px -4px hsl(0 0% 0% / 0.08);
-    --shadow-accent: 0 4px 20px -4px hsl(211 100% 50% / 0.2);
-    --shadow-card: 0 2px 16px -4px hsl(0 0% 0% / 0.08);
+    /* Premium Shadows - Clean and modern */
+    --shadow-sm: 0 1px 3px 0 hsl(220 56% 31% / 0.06);
+    --shadow-md: 0 2px 8px -2px hsl(220 56% 31% / 0.1), 0 1px 3px 0 hsl(220 56% 31% / 0.06);
+    --shadow-lg: 0 4px 16px -4px hsl(220 56% 31% / 0.12), 0 2px 6px -2px hsl(220 56% 31% / 0.08);
+    --shadow-xl: 0 8px 32px -8px hsl(220 56% 31% / 0.16), 0 4px 12px -4px hsl(220 56% 31% / 0.1);
+    --shadow-accent: 0 4px 20px -4px hsl(160 51% 49% / 0.25);
+    --shadow-card: 0 2px 16px -4px hsl(220 56% 31% / 0.08);
     
     /* Smooth Apple-like Transitions */
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -88,57 +88,57 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Apple Dark Mode - Deep blacks with subtle warmth */
-    --background: 0 0% 7%;
-    --foreground: 0 0% 95%;
+    /* Table Tennis Dark Mode - Deep with energy */
+    --background: 220 35% 12%;
+    --foreground: 220 20% 95%;
     
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 95%;
+    --card: 220 35% 15%;
+    --card-foreground: 220 20% 95%;
     
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 220 35% 15%;
+    --popover-foreground: 220 20% 95%;
     
-    /* Primary - Lighter for contrast in dark mode */
-    --primary: 0 0% 95%;
-    --primary-foreground: 0 0% 7%;
+    /* Primary - Energetic green for dark mode */
+    --primary: 160 51% 49%;
+    --primary-foreground: 220 35% 12%;
     
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 220 30% 20%;
+    --secondary-foreground: 220 20% 95%;
     
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 220 25% 22%;
+    --muted-foreground: 220 15% 65%;
     
-    /* Accent - Vibrant blue for dark mode */
-    --accent: 211 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent - Vibrant green maintained */
+    --accent: 160 51% 49%;
+    --accent-foreground: 220 35% 12%;
     
     --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 220 20% 95%;
     
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 211 100% 50%;
+    --border: 220 25% 25%;
+    --input: 220 25% 25%;
+    --ring: 160 51% 49%;
     
     /* Chart Colors (Dark Mode) */
-    --chart-1: 211 100% 50%;
-    --chart-2: 142 76% 45%;
-    --chart-3: 24 95% 53%;
-    --chart-4: 265 89% 78%;
-    --chart-5: 12 76% 61%;
+    --chart-1: 160 51% 49%;
+    --chart-2: 220 56% 45%;
+    --chart-3: 160 60% 60%;
+    --chart-4: 220 45% 55%;
+    --chart-5: 160 40% 45%;
     
     /* Dark Mode Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(0 0% 7%), hsl(0 0% 12%));
-    --gradient-secondary: linear-gradient(135deg, hsl(0 0% 15%), hsl(0 0% 18%));
-    --gradient-accent: linear-gradient(135deg, hsl(211 100% 50%), hsl(211 100% 55%));
-    --gradient-soft: linear-gradient(180deg, hsl(0 0% 7%), hsl(0 0% 9%));
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 7% / 0.95), hsl(0 0% 12% / 0.9));
+    --gradient-primary: linear-gradient(135deg, hsl(220 35% 12%), hsl(220 35% 18%));
+    --gradient-secondary: linear-gradient(135deg, hsl(220 30% 20%), hsl(220 30% 25%));
+    --gradient-accent: linear-gradient(135deg, hsl(160 51% 49%), hsl(160 51% 56%));
+    --gradient-soft: linear-gradient(180deg, hsl(220 35% 12%), hsl(220 35% 15%));
+    --gradient-hero: linear-gradient(135deg, hsl(220 35% 12% / 0.95), hsl(220 35% 18% / 0.9));
     
-    /* Dark Mode Shadows - More pronounced */
+    /* Dark Mode Shadows - Deep with accent glow */
     --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.3);
     --shadow-md: 0 2px 8px -2px hsl(0 0% 0% / 0.4), 0 1px 3px 0 hsl(0 0% 0% / 0.3);
     --shadow-lg: 0 4px 16px -4px hsl(0 0% 0% / 0.5), 0 2px 6px -2px hsl(0 0% 0% / 0.4);
     --shadow-xl: 0 8px 32px -8px hsl(0 0% 0% / 0.6), 0 4px 12px -4px hsl(0 0% 0% / 0.5);
-    --shadow-accent: 0 4px 20px -4px hsl(211 100% 50% / 0.4);
+    --shadow-accent: 0 4px 20px -4px hsl(160 51% 49% / 0.4);
     --shadow-card: 0 2px 16px -4px hsl(0 0% 0% / 0.5);
     
     --sidebar-background: 0 0% 10%;
