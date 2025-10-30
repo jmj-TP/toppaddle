@@ -271,18 +271,21 @@ const SlotMachine = ({
     const [animationKey, setAnimationKey] = useState(0);
     const wheelRef = useRef<HTMLDivElement>(null);
     const hasSpun = useRef(false);
+    const lastSelectedName = useRef(getName(selected));
     const selectedAvailable = isSelectedAvailable();
     const unavailabilityReason = getUnavailabilityReason();
 
-    // Update current index only when not spinning
+    // Update current index only when selected actually changed for THIS wheel
     useEffect(() => {
-      if (!localSpinning) {
-        const newIndex = safeItems.findIndex(item => getName(item) === getName(selected));
+      const currentName = getName(selected);
+      if (!localSpinning && currentName !== lastSelectedName.current) {
+        const newIndex = safeItems.findIndex(item => getName(item) === currentName);
         if (newIndex >= 0) {
           setCurrentIndex(newIndex);
+          lastSelectedName.current = currentName;
         }
       }
-    }, [selected, safeItems, localSpinning]);
+    }, [selected, localSpinning]);
 
     // Start spinning only once when isSpinning becomes true
     useEffect(() => {
@@ -339,8 +342,8 @@ const SlotMachine = ({
     };
 
     // Wheel 3D parameters
-    const radius = 600; // Large radius for subtle curve
-    const itemHeight = 160; // Height of each item slot (including gap)
+    const radius = 700; // Large radius for subtle curve
+    const itemHeight = 180; // Height of each item slot (including gap)
     const totalItems = safeItems.length * 3; // Replicate items for smooth infinite scroll
     const allItems = Array.from({ length: 3 }, () => safeItems).flat();
 
@@ -381,11 +384,11 @@ const SlotMachine = ({
         <div
           ref={wheelRef}
           onWheel={handleWheel}
-          className={`relative w-full max-w-[380px] md:max-w-[300px] lg:max-w-[320px] xl:max-w-[380px] h-[480px] md:h-[460px] lg:h-[500px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 ${
+          className={`relative w-full max-w-[380px] md:max-w-[300px] lg:max-w-[320px] xl:max-w-[380px] h-[420px] md:h-[400px] lg:h-[440px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 ${
             !selectedAvailable ? 'border-destructive/50' : 'border-border'
           } ${!selectedAvailable ? 'opacity-60' : ''}`}
           style={{ 
-            perspective: '1500px',
+            perspective: '2000px',
             perspectiveOrigin: 'center center'
           }}
         >
@@ -427,7 +430,7 @@ const SlotMachine = ({
                       return (
                         <div
                           key={`spin-${i}`}
-                          className="absolute left-0 right-0 flex flex-col items-center justify-center"
+                          className="absolute left-0 right-0 flex flex-col items-center"
                           style={{
                             height: `${itemHeight}px`,
                             top: '50%',
@@ -436,15 +439,15 @@ const SlotMachine = ({
                             backfaceVisibility: 'hidden',
                           }}
                         >
-                          <div className="px-2.5 w-full flex flex-col items-center justify-center h-full">
-                            <div className="relative w-[calc(100%-20px)] mx-auto h-24 flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border">
+                          <div className="w-full flex flex-col items-center justify-center px-3 py-3">
+                            <div className="relative w-full mx-auto h-28 flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border">
                               <img 
                                 src={getImage(safeItems[itemIndex])} 
                                 alt={getName(safeItems[itemIndex])}
                                 className="w-full h-full object-cover"
                               />
                             </div>
-                            <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-2 px-1 block">
+                            <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-2 px-2 block">
                               {getName(safeItems[itemIndex])}
                             </span>
                           </div>
@@ -488,7 +491,7 @@ const SlotMachine = ({
                       return (
                         <div
                           key={`item-${i}`}
-                          className="absolute left-0 right-0 flex flex-col items-center justify-center"
+                          className="absolute left-0 right-0 flex flex-col items-center"
                           style={{
                             height: `${itemHeight}px`,
                             top: '50%',
@@ -499,11 +502,11 @@ const SlotMachine = ({
                             pointerEvents: isCentered ? 'auto' : 'none',
                           }}
                         >
-                          <div className={`px-2.5 w-full flex flex-col items-center justify-center h-full`}>
+                          <div className={`w-full flex flex-col items-center ${isCentered ? 'justify-center' : 'justify-start pt-4'}`}>
                             <div className={`relative mx-auto rounded-lg overflow-hidden bg-background ${
                               isCentered 
-                                ? 'w-[calc(100%-20px)] h-[280px] md:h-[260px] lg:h-[300px] border-2 border-border shadow-lg' 
-                                : 'w-[calc(100%-20px)] h-24 border border-border'
+                                ? 'w-[calc(100%-24px)] h-[300px] md:h-[280px] lg:h-[320px] border-2 border-border shadow-lg' 
+                                : 'w-[calc(100%-24px)] h-28 border border-border'
                             }`}>
                               <img 
                                 src={getImage(item)} 
@@ -512,7 +515,7 @@ const SlotMachine = ({
                               />
                             </div>
                             {isCentered && (
-                              <div className="flex items-center gap-2 mt-3 px-2 w-full justify-center">
+                              <div className="flex items-center gap-2 mt-3 px-3 w-full justify-center">
                                 <span className="text-sm md:text-base font-semibold text-primary dark:text-accent text-center line-clamp-2">
                                   {getName(item)}
                                 </span>
@@ -529,7 +532,7 @@ const SlotMachine = ({
                               </div>
                             )}
                             {!isCentered && (
-                              <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-2 px-1 block">
+                              <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-2 px-2 block">
                                 {getName(item)}
                               </span>
                             )}
