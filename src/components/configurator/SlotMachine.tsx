@@ -213,7 +213,7 @@ const SlotMachine = ({
     selectorComponent,
     filterComponent,
     filters,
-    allItems
+    allItems: allItemsProp
   }: { 
     items: any[]; 
     selected: any; 
@@ -238,7 +238,7 @@ const SlotMachine = ({
 
     // Check if selected item matches current filters
     const isSelectedAvailable = () => {
-      if (!filters || !allItems) return true;
+      if (!filters || !allItemsProp) return true;
       return items.some(item => getName(item) === getName(selected));
     };
 
@@ -332,6 +332,15 @@ const SlotMachine = ({
       return visible;
     };
 
+    // Wheel 3D parameters
+    const radius = 500; // Large radius for subtle curve
+    const itemHeight = 140; // Height of each item slot (including gap)
+    const totalItems = items.length * 3; // Replicate items for smooth infinite scroll
+    const allItems = Array.from({ length: 3 }, () => items).flat();
+
+    // Calculate angle per item
+    const anglePerItem = (itemHeight / radius) * (180 / Math.PI);
+
     return (
       <div className="flex flex-col items-center">
       {/* Header with title and filter button */}
@@ -369,177 +378,211 @@ const SlotMachine = ({
           className={`relative w-full max-w-[380px] md:max-w-[300px] lg:max-w-[320px] xl:max-w-[380px] h-[400px] md:h-[380px] lg:h-[420px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 ${
             !selectedAvailable ? 'border-destructive/50' : 'border-border'
           } ${!selectedAvailable ? 'opacity-60' : ''}`}
+          style={{ 
+            perspective: '1200px',
+            perspectiveOrigin: 'center center'
+          }}
         >
 
-          {/* Items container */}
+          {/* Items container with 3D transforms */}
           <div className="relative h-full flex flex-col items-center justify-center">
             <AnimatePresence mode="wait">
               {localSpinning ? (
                 <motion.div
                   key={animationKey}
-                  className="absolute inset-0 overflow-hidden"
-                  style={{ willChange: 'transform' }}
+                  className="absolute inset-0"
+                  style={{ 
+                    transformStyle: 'preserve-3d',
+                    willChange: 'transform'
+                  }}
                 >
                   <motion.div
-                    className="flex flex-col items-center"
-                    initial={{ y: 200 }}
+                    className="absolute inset-0"
+                    style={{ 
+                      transformStyle: 'preserve-3d',
+                    }}
+                    initial={{ rotateX: 0 }}
                     animate={{ 
-                      y: -6400,
+                      rotateX: 360 * 10, // Multiple full rotations
                     }}
                     transition={{
                       duration: (2000 + delay) / 1000,
                       ease: [0.22, 0.61, 0.36, 1],
                       type: "tween"
                     }}
-                    style={{ 
-                      willChange: 'transform'
-                    }}
                   >
-                    {/* Generate enough items for smooth scrolling */}
+                    {/* Generate items positioned on cylinder */}
                     {Array.from({ length: 50 }).map((_, i) => {
                       const itemIndex = i % items.length;
+                      const angle = i * anglePerItem;
+                      const rotateX = angle;
+                      const translateZ = radius;
                       
                       return (
-                      <motion.div
-                        key={`spin-${i}`}
-                        className="h-[130px] w-full flex flex-col items-center justify-center px-2.5 flex-shrink-0"
-                        style={{ 
-                          transformStyle: 'preserve-3d',
-                          backfaceVisibility: 'hidden',
-                        }}
-                      >
-                        <div className="relative w-[calc(100%-20px)] h-24 flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border">
-                          <img 
-                            src={getImage(items[itemIndex])} 
-                            alt={getName(items[itemIndex])}
-                            className="w-full h-full object-cover"
-                          />
+                        <div
+                          key={`spin-${i}`}
+                          className="absolute left-0 right-0 flex flex-col items-center justify-center"
+                          style={{
+                            height: `${itemHeight - 20}px`,
+                            top: '50%',
+                            transform: `translateY(-50%) rotateX(${rotateX}deg) translateZ(${translateZ}px)`,
+                            transformStyle: 'preserve-3d',
+                            backfaceVisibility: 'hidden',
+                          }}
+                        >
+                          <div className="px-2.5 w-full">
+                            <div className="relative w-[calc(100%-20px)] mx-auto h-20 flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border">
+                              <img 
+                                src={getImage(items[itemIndex])} 
+                                alt={getName(items[itemIndex])}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-1 px-1 block">
+                              {getName(items[itemIndex])}
+                            </span>
+                          </div>
                         </div>
-                        <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-2 px-1">
-                          {getName(items[itemIndex])}
-                        </span>
-                      </motion.div>
                       );
                     })}
                   </motion.div>
                 </motion.div>
               ) : (
-                <div className="relative w-full h-full flex flex-col items-center justify-center" key="static">
-                  {/* Large centered image */}
+                <div 
+                  className="absolute inset-0" 
+                  key="static"
+                  style={{ 
+                    transformStyle: 'preserve-3d',
+                  }}
+                >
                   <motion.div
-                    className="absolute w-full flex flex-col items-center justify-center px-2.5 z-30"
-                    style={{
-                      top: '50%',
-                      transform: 'translateY(-50%)',
+                    className="absolute inset-0"
+                    style={{ 
+                      transformStyle: 'preserve-3d',
                     }}
-                    initial={false}
-                    animate={{ y: '-50%' }}
+                    animate={{ 
+                      rotateX: -currentIndex * anglePerItem
+                    }}
                     transition={{
                       type: "spring",
                       stiffness: 300,
                       damping: 30
                     }}
                   >
-                    <div className="relative w-[calc(100%-20px)] h-[240px] md:h-[220px] lg:h-[260px] rounded-lg overflow-hidden bg-background border-2 border-border shadow-lg">
-                      <img 
-                        src={getImage(items[currentIndex])} 
-                        alt={getName(items[currentIndex])}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex items-center gap-2 mt-3 px-2 w-full justify-center">
-                      <span className="text-sm md:text-base font-semibold text-primary dark:text-accent text-center line-clamp-2">
-                        {getName(items[currentIndex])}
-                      </span>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <button className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0">
-                            <Info className="w-4 h-4" />
-                          </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="max-w-[280px] sm:max-w-xs bg-card border-2 border-border p-4 z-[9999]" side="right" sideOffset={10} align="center">
-                          <div className="space-y-2 text-xs">
-                            <h4 className="font-semibold text-sm text-foreground break-words">{getName(items[currentIndex])}</h4>
-                            <div className="grid grid-cols-2 gap-2">
-                              {items[currentIndex].Blade_Speed !== undefined && (
-                                <>
-                                  <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{items[currentIndex].Blade_Speed}</span></div>
-                                  <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{items[currentIndex].Blade_Spin}</span></div>
-                                  <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{items[currentIndex].Blade_Control}</span></div>
-                                  <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{items[currentIndex].Blade_Power}</span></div>
-                                  <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${items[currentIndex].Blade_Price}</span></div>
-                                  <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{items[currentIndex].Blade_Level}</span></div>
-                                  {items[currentIndex].Blade_Style && <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{items[currentIndex].Blade_Style}</span></div>}
-                                  {items[currentIndex].Blade_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{items[currentIndex].Blade_Weight}g</span></div>}
-                                </>
-                              )}
-                              {items[currentIndex].Rubber_Speed !== undefined && (
-                                <>
-                                  <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{items[currentIndex].Rubber_Speed}</span></div>
-                                  <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{items[currentIndex].Rubber_Spin}</span></div>
-                                  <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{items[currentIndex].Rubber_Control}</span></div>
-                                  <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{items[currentIndex].Rubber_Power}</span></div>
-                                  <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${items[currentIndex].Rubber_Price}</span></div>
-                                  <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{items[currentIndex].Rubber_Level}</span></div>
-                                  <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{items[currentIndex].Rubber_Style}</span></div>
-                                  {items[currentIndex].Rubber_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{items[currentIndex].Rubber_Weight}g</span></div>}
-                                  {items[currentIndex].Rubber_Sponge_Sizes && <div className="col-span-2"><span className="text-muted-foreground">Sponge:</span> <span className="font-medium">{items[currentIndex].Rubber_Sponge_Sizes.join(", ")}</span></div>}
-                                </>
-                              )}
+                    {/* Generate items positioned on cylinder */}
+                    {allItems.map((item, i) => {
+                      const angle = i * anglePerItem;
+                      const rotateX = angle;
+                      const translateZ = radius;
+                      
+                      // Determine if this is the centered item
+                      const isCentered = i === currentIndex + items.length;
+                      const isAdjacent = Math.abs(i - (currentIndex + items.length)) === 1;
+                      
+                      return (
+                        <div
+                          key={`item-${i}`}
+                          className="absolute left-0 right-0 flex flex-col items-center justify-center"
+                          style={{
+                            height: `${itemHeight - 20}px`,
+                            top: '50%',
+                            transform: `translateY(-50%) rotateX(${rotateX}deg) translateZ(${translateZ}px)`,
+                            transformStyle: 'preserve-3d',
+                            backfaceVisibility: 'hidden',
+                            opacity: isCentered ? 1 : isAdjacent ? 0.4 : 0,
+                            pointerEvents: isCentered ? 'auto' : 'none',
+                          }}
+                        >
+                          <div className={`px-2.5 w-full ${isCentered ? 'py-[30px]' : ''}`}>
+                            <div className={`relative mx-auto rounded-lg overflow-hidden bg-background ${
+                              isCentered 
+                                ? 'w-[calc(100%-20px)] h-[240px] md:h-[220px] lg:h-[260px] border-2 border-border shadow-lg' 
+                                : 'w-[calc(100%-20px)] h-20 border border-border'
+                            }`}>
+                              <img 
+                                src={getImage(item)} 
+                                alt={getName(item)}
+                                className="w-full h-full object-cover"
+                              />
                             </div>
+                            {isCentered && (
+                              <div className="flex items-center gap-2 mt-3 px-2 w-full justify-center">
+                                <span className="text-sm md:text-base font-semibold text-primary dark:text-accent text-center line-clamp-2">
+                                  {getName(item)}
+                                </span>
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <button className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0">
+                                      <Info className="w-4 h-4" />
+                                    </button>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="max-w-[280px] sm:max-w-xs bg-card border-2 border-border p-4 z-[9999]" side="right" sideOffset={10} align="center">
+                                    <div className="space-y-2 text-xs">
+                                      <h4 className="font-semibold text-sm text-foreground break-words">{getName(item)}</h4>
+                                      <div className="grid grid-cols-2 gap-2">
+                                        {item.Blade_Speed !== undefined && (
+                                          <>
+                                            <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{item.Blade_Speed}</span></div>
+                                            <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{item.Blade_Spin}</span></div>
+                                            <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{item.Blade_Control}</span></div>
+                                            <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{item.Blade_Power}</span></div>
+                                            <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${item.Blade_Price}</span></div>
+                                            <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{item.Blade_Level}</span></div>
+                                            {item.Blade_Style && <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{item.Blade_Style}</span></div>}
+                                            {item.Blade_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{item.Blade_Weight}g</span></div>}
+                                          </>
+                                        )}
+                                        {item.Rubber_Speed !== undefined && (
+                                          <>
+                                            <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{item.Rubber_Speed}</span></div>
+                                            <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{item.Rubber_Spin}</span></div>
+                                            <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{item.Rubber_Control}</span></div>
+                                            <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{item.Rubber_Power}</span></div>
+                                            <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${item.Rubber_Price}</span></div>
+                                            <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{item.Rubber_Level}</span></div>
+                                            <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{item.Rubber_Style}</span></div>
+                                            {item.Rubber_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{item.Rubber_Weight}g</span></div>}
+                                            {item.Rubber_Sponge_Sizes && <div className="col-span-2"><span className="text-muted-foreground">Sponge:</span> <span className="font-medium">{item.Rubber_Sponge_Sizes.join(", ")}</span></div>}
+                                          </>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </PopoverContent>
+                                </Popover>
+                              </div>
+                            )}
+                            {!isCentered && (
+                              <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-1 px-1 block">
+                                {getName(item)}
+                              </span>
+                            )}
                           </div>
-                        </PopoverContent>
-                      </Popover>
-                    </div>
+                        </div>
+                      );
+                    })}
                   </motion.div>
-                  
-                  {/* Teaser for next item (bottom) */}
-                  <div className="absolute bottom-0 left-0 right-0 h-24 overflow-hidden pointer-events-none z-20">
-                    <div className="absolute bottom-0 left-2.5 right-2.5">
-                      <div className="relative w-full h-20 rounded-t-lg overflow-hidden bg-background/50 border-t-2 border-x-2 border-border opacity-40">
-                        <img 
-                          src={getImage(items[(currentIndex + 1) % items.length])} 
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Teaser for previous item (top) */}
-                  <div className="absolute top-0 left-0 right-0 h-24 overflow-hidden pointer-events-none z-20">
-                    <div className="absolute top-0 left-2.5 right-2.5">
-                      <div className="relative w-full h-20 rounded-b-lg overflow-hidden bg-background/50 border-b-2 border-x-2 border-border opacity-40">
-                        <img 
-                          src={getImage(items[(currentIndex - 1 + items.length) % items.length])} 
-                          alt=""
-                          className="w-full h-full object-cover object-bottom"
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Scroll buttons - smaller and cleaner */}
+          {/* Scroll buttons - smaller and minimalistic */}
           <button
             onClick={() => handleSwipe('up')}
             disabled={isSpinning}
-            className="absolute top-3 left-1/2 -translate-x-1/2 z-40 bg-card/80 hover:bg-card border border-border disabled:opacity-30 disabled:cursor-not-allowed text-foreground rounded-full shadow-md transition-all hover:scale-105 disabled:hover:scale-100 w-7 h-7 flex items-center justify-center backdrop-blur-sm"
+            className="absolute top-3 left-1/2 -translate-x-1/2 z-40 bg-card/80 hover:bg-card border border-border disabled:opacity-30 disabled:cursor-not-allowed text-foreground rounded-full shadow-md transition-all hover:scale-110 disabled:hover:scale-100 w-6 h-6 flex items-center justify-center backdrop-blur-sm"
             aria-label="Previous item"
           >
-            <ChevronUp className="w-3.5 h-3.5" />
+            <ChevronUp className="w-3 h-3" />
           </button>
           
           <button
             onClick={() => handleSwipe('down')}
             disabled={isSpinning}
-            className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 bg-card/80 hover:bg-card border border-border disabled:opacity-30 disabled:cursor-not-allowed text-foreground rounded-full shadow-md transition-all hover:scale-105 disabled:hover:scale-100 w-7 h-7 flex items-center justify-center backdrop-blur-sm"
+            className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 bg-card/80 hover:bg-card border border-border disabled:opacity-30 disabled:cursor-not-allowed text-foreground rounded-full shadow-md transition-all hover:scale-110 disabled:hover:scale-100 w-6 h-6 flex items-center justify-center backdrop-blur-sm"
             aria-label="Next item"
           >
-            <ChevronDown className="w-3.5 h-3.5" />
+            <ChevronDown className="w-3 h-3" />
           </button>
         </div>
         
