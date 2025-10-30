@@ -213,7 +213,8 @@ const SlotMachine = ({
     selectorComponent,
     filterComponent,
     filters,
-    allItems: allItemsProp
+    allItems: allItemsProp,
+    rotationOffset = 0
   }: { 
     items: any[]; 
     selected: any; 
@@ -224,6 +225,7 @@ const SlotMachine = ({
     filterComponent?: React.ReactNode;
     filters?: ProductFilters;
     allItems?: any[];
+    rotationOffset?: number;
   }) => {
     const getName = (item: any) => {
       return item.Blade_Name || item.Rubber_Name || item.Racket_Name;
@@ -412,7 +414,7 @@ const SlotMachine = ({
                     }}
                     initial={{ rotateX: 0 }}
                     animate={{ 
-                      rotateX: 360 * 10, // Multiple full rotations
+                      rotateX: 360 * 10 + rotationOffset, // Multiple full rotations
                     }}
                     transition={{
                       duration: (2000 + delay) / 1000,
@@ -470,7 +472,7 @@ const SlotMachine = ({
                       transformStyle: 'preserve-3d',
                     }}
                     animate={{ 
-                      rotateX: -currentIndex * anglePerItem
+                      rotateX: -currentIndex * anglePerItem + rotationOffset
                     }}
                     transition={{
                       type: "spring",
@@ -505,7 +507,7 @@ const SlotMachine = ({
                         >
                           <div className={`w-full h-full flex flex-col items-center ${
                             isCentered 
-                              ? 'justify-start pt-[60px]' 
+                              ? 'justify-center'
                               : isAboveCenter 
                                 ? 'justify-end pb-2' 
                                 : 'justify-start pt-2'
@@ -803,6 +805,7 @@ const SlotMachine = ({
               label="Forehand Rubber"
               delay={0}
               filters={forehandFilters}
+              rotationOffset={24}
               allItems={rubbers}
               filterComponent={
                 <ProductFilter
@@ -848,6 +851,7 @@ const SlotMachine = ({
               selected={selectedBlade}
               onChange={onBladeChange}
               label="Blade"
+              rotationOffset={-21}
               delay={1000}
               filters={bladeFilters}
               allItems={blades}
@@ -888,6 +892,7 @@ const SlotMachine = ({
               onChange={onBackhandChange}
               label="Backhand Rubber"
               delay={2000}
+              rotationOffset={24}
               filters={backhandFilters}
               allItems={rubbers}
               filterComponent={
