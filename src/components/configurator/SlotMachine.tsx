@@ -214,7 +214,8 @@ const SlotMachine = ({
     filterComponent,
     filters,
     allItems: allItemsProp,
-    rotationOffset = 0
+    rotationOffset = 0,
+    wheelType = 'middle'
   }: { 
     items: any[]; 
     selected: any; 
@@ -226,6 +227,7 @@ const SlotMachine = ({
     filters?: ProductFilters;
     allItems?: any[];
     rotationOffset?: number;
+    wheelType?: 'side' | 'middle';
   }) => {
     const getName = (item: any) => {
       return item.Blade_Name || item.Rubber_Name || item.Racket_Name;
@@ -435,7 +437,7 @@ const SlotMachine = ({
                           className="absolute left-0 right-0 flex flex-col items-center"
                           style={{
                             height: `${itemHeight}px`,
-                            top: '50%',
+                            top: wheelType === 'side' ? 'calc(50% - 50px)' : 'calc(50% + 50px)',
                             transform: `translateY(-50%) rotateX(${rotateX}deg) translateZ(${translateZ}px)`,
                             transformStyle: 'preserve-3d',
                             backfaceVisibility: 'hidden',
@@ -497,7 +499,7 @@ const SlotMachine = ({
                           className="absolute left-0 right-0 flex flex-col items-center"
                           style={{
                             height: `${itemHeight}px`,
-                            top: '50%',
+                            top: wheelType === 'side' ? 'calc(50% - 50px)' : 'calc(50% + 50px)',
                             transform: `translateY(-50%) rotateX(${rotateX}deg) translateZ(${translateZ}px)`,
                             transformStyle: 'preserve-3d',
                             backfaceVisibility: 'hidden',
@@ -505,13 +507,7 @@ const SlotMachine = ({
                             pointerEvents: isCentered ? 'auto' : 'none',
                           }}
                         >
-                          <div className={`w-full h-full flex flex-col items-center ${
-                            isCentered 
-                              ? 'justify-center'
-                              : isAboveCenter 
-                                ? 'justify-end pb-2' 
-                                : 'justify-start pt-2'
-                          }`}>
+                          <div className="w-full h-full flex flex-col items-center justify-center">
                             <div className={`relative mx-auto rounded-lg overflow-hidden bg-background ${
                               isCentered 
                                 ? 'w-[calc(100%-24px)] h-[360px] md:h-[340px] lg:h-[380px] border-2 border-border shadow-lg' 
@@ -792,6 +788,7 @@ const SlotMachine = ({
               selected={selectedRacket}
               onChange={onRacketChange}
               label="Preassembled Racket"
+              wheelType="middle"
             />
           </div>
         </div>
@@ -806,6 +803,7 @@ const SlotMachine = ({
               delay={0}
               filters={forehandFilters}
               rotationOffset={0}
+              wheelType="side"
               allItems={rubbers}
               filterComponent={
                 <ProductFilter
@@ -853,6 +851,7 @@ const SlotMachine = ({
               label="Blade"
               rotationOffset={0}
               delay={1000}
+              wheelType="middle"
               filters={bladeFilters}
               allItems={blades}
               filterComponent={
@@ -893,6 +892,7 @@ const SlotMachine = ({
               label="Backhand Rubber"
               delay={2000}
               rotationOffset={0}
+              wheelType="side"
               filters={backhandFilters}
               allItems={rubbers}
               filterComponent={
