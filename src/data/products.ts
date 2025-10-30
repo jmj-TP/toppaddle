@@ -12,6 +12,7 @@ export interface Blade {
   Blade_Weight?: number; // grams (optional - will be estimated if not provided)
   Blade_Description: string; // Detailed product description
   Blade_Style?: "Offensive" | "Defensive" | "All-Round" | "Allround"; // Playing style of the blade
+  Blade_Image?: string; // Product image URL
 }
 
 // Estimate blade weight based on characteristics
@@ -45,6 +46,7 @@ export interface Rubber {
   Rubber_Weight?: number; // grams (when applied to blade - optional, will be estimated)
   Rubber_Sponge_Sizes?: string[]; // Available sponge thickness options
   Rubber_Description: string; // Detailed product description
+  Rubber_Image?: string; // Product image URL
 }
 
 // Estimate rubber weight when applied to blade
@@ -83,6 +85,7 @@ export interface PreAssembledRacket {
   Racket_Price: number; // USD
   Racket_Level: "Beginner" | "Intermediate" | "Advanced";
   Racket_Description: string; // Detailed product description
+  Racket_Image?: string; // Product image URL
 }
 
 // Blades Database
@@ -99,6 +102,7 @@ export const blades: Blade[] = [
     Blade_Weight: 88.0,
     Blade_Description: "Professional blade description coming soon",
     Blade_Style: "Allround",
+    Blade_Image: "https://placehold.co/400x400/1a2333/ff8c32?text=Blade",
   },
   {
     Blade_Name: "Butterfly Primorac Carbon",

@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import ComponentStatsCard from "./ComponentStatsCard";
+import { getProductImage } from "@/utils/addProductImages";
 
 interface SlotMachineProps {
   isPreassembled: boolean;
@@ -228,6 +229,13 @@ const SlotMachine = ({
       return item.Blade_Name || item.Rubber_Name || item.Racket_Name;
     };
 
+    const getImage = (item: any) => {
+      if (item.Blade_Name) return getProductImage(item, 'blade');
+      if (item.Rubber_Name) return getProductImage(item, 'rubber');
+      if (item.Racket_Name) return getProductImage(item, 'racket');
+      return getProductImage(item, 'blade');
+    };
+
     // Check if selected item matches current filters
     const isSelectedAvailable = () => {
       if (!filters || !allItems) return true;
@@ -327,7 +335,7 @@ const SlotMachine = ({
     return (
       <div className="flex flex-col items-center">
       {/* Header with title and filter button */}
-        <div className="relative w-full max-w-[380px] md:max-w-[240px] lg:max-w-[280px] xl:max-w-[450px] mb-2 md:mb-3">
+        <div className="relative w-full max-w-[380px] md:max-w-[240px] lg:max-w-[300px] xl:max-w-[500px] mb-2 md:mb-3">
           <h3 className="text-base md:text-sm lg:text-base xl:text-lg font-semibold text-foreground tracking-tight text-center">{label}</h3>
           {filterComponent && (
             <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2">
@@ -358,13 +366,13 @@ const SlotMachine = ({
         <div
           ref={wheelRef}
           onWheel={handleWheel}
-          className={`relative w-full max-w-[380px] md:max-w-[240px] lg:max-w-[280px] xl:max-w-[450px] h-[240px] md:h-[180px] lg:h-[240px] xl:h-[280px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 md:border-3 lg:border-4 ${
+          className={`relative w-full max-w-[380px] md:max-w-[240px] lg:max-w-[300px] xl:max-w-[500px] h-[320px] md:h-[240px] lg:h-[300px] xl:h-[360px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 md:border-3 lg:border-4 ${
             !selectedAvailable ? 'border-destructive/50' : 'border-border'
           } ${!selectedAvailable ? 'opacity-60' : ''}`}
           style={{ perspective: '1000px' }}
         >
           {/* Center highlight */}
-          <div className={`absolute top-1/2 left-0 right-0 -translate-y-1/2 w-full h-20 md:h-16 lg:h-20 xl:h-24 border-y-2 md:border-y-3 lg:border-y-4 ${
+          <div className={`absolute top-1/2 left-0 right-0 -translate-y-1/2 w-full h-28 md:h-24 lg:h-28 xl:h-32 border-y-2 md:border-y-3 lg:border-y-4 ${
             !selectedAvailable ? 'border-destructive/30' : 'border-primary/40'
           } bg-primary/5 z-0 pointer-events-none shadow-[inset_0_0_20px_rgba(0,0,0,0.1)]`} />
           
@@ -403,13 +411,20 @@ const SlotMachine = ({
                       return (
                       <motion.div
                         key={`spin-${i}`}
-                        className="h-20 md:h-16 lg:h-20 xl:h-24 w-full flex items-center justify-center px-4 md:px-3 lg:px-6 xl:px-8 flex-shrink-0 border-b border-border/20"
+                        className="h-28 md:h-24 lg:h-28 xl:h-32 w-full flex items-center justify-center gap-3 px-4 md:px-3 lg:px-6 xl:px-8 flex-shrink-0 border-b border-border/20"
                         style={{ 
                           transformStyle: 'preserve-3d',
                           backfaceVisibility: 'hidden',
                         }}
                       >
-                        <p className="text-sm md:text-xs lg:text-sm xl:text-base font-semibold text-primary dark:text-accent text-center line-clamp-3" style={{ opacity: 1 }}>
+                        <div className="relative w-16 h-16 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-20 xl:h-20 flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border">
+                          <img 
+                            src={getImage(items[itemIndex])} 
+                            alt={getName(items[itemIndex])}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <p className="text-sm md:text-xs lg:text-sm xl:text-base font-semibold text-primary dark:text-accent text-left line-clamp-2 flex-1" style={{ opacity: 1 }}>
                           {getName(items[itemIndex])}
                         </p>
                       </motion.div>
@@ -429,8 +444,8 @@ const SlotMachine = ({
                     const distance = Math.abs(offset);
                     // No transparency - all items fully visible
                     const opacity = 1;
-                    const scale = offset === 0 ? 1.1 : Math.max(0.75, 1 - distance * 0.15);
-                    const yPos = offset * 64 - 40; // 64px spacing between items for smaller wheels, shifted up 40px
+                    const scale = offset === 0 ? 1.05 : Math.max(0.7, 1 - distance * 0.15);
+                    const yPos = offset * 88; // Increased spacing for bigger items
                     const rotateX = offset === 0 ? 0 : offset * 8; // 3D tilt effect
 
                     return (
@@ -444,7 +459,7 @@ const SlotMachine = ({
                           damping: 35,
                           mass: 0.8,
                         }}
-                        className="absolute left-0 right-0 h-20 md:h-16 lg:h-20 xl:h-24 flex items-center justify-center px-4 md:px-3 lg:px-6 xl:px-8"
+                        className="absolute left-0 right-0 h-28 md:h-24 lg:h-28 xl:h-32 flex items-center px-4 md:px-3 lg:px-6 xl:px-8"
                         style={{
                           top: '50%',
                           transform: `translateY(calc(-50% + ${yPos}px)) scale(${scale}) rotateX(${rotateX}deg)`,
@@ -454,60 +469,73 @@ const SlotMachine = ({
                         }}
                         onClick={() => offset !== 0 && onChange(item)}
                       >
-                        <div className="flex items-center gap-2">
-                          <p 
-                            className={`text-center line-clamp-2 transition-colors cursor-pointer ${
-                              offset === 0 
-                                ? !selectedAvailable 
-                                  ? 'text-destructive text-base md:text-sm lg:text-base xl:text-lg font-bold line-through' 
-                                  : 'text-primary dark:text-accent text-base md:text-sm lg:text-base xl:text-lg font-bold'
-                                : 'text-primary/70 dark:text-accent/70 text-xs md:text-[10px] lg:text-xs xl:text-sm font-medium'
-                            }`}
-                            style={{ opacity }}
-                          >
-                            {getName(item)}
-                          </p>
-                          {offset === 0 && (
-                            <Popover>
-                              <PopoverTrigger asChild onClick={(e) => e.stopPropagation()}>
-                                <button className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0">
-                                  <Info className="w-4 h-4" />
-                                </button>
-                              </PopoverTrigger>
-                              <PopoverContent className="max-w-[280px] sm:max-w-xs bg-card border-2 border-border p-4 z-[9999]" side="right" sideOffset={10} align="center">
-                                <div className="space-y-2 text-xs">
-                                  <h4 className="font-semibold text-sm text-foreground break-words">{getName(item)}</h4>
-                                  <div className="grid grid-cols-2 gap-2">
-                                    {item.Blade_Speed !== undefined && (
-                                      <>
-                                        <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{item.Blade_Speed}</span></div>
-                                        <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{item.Blade_Spin}</span></div>
-                                        <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{item.Blade_Control}</span></div>
-                                        <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{item.Blade_Power}</span></div>
-                                        <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${item.Blade_Price}</span></div>
-                                        <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{item.Blade_Level}</span></div>
-                                        {item.Blade_Style && <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{item.Blade_Style}</span></div>}
-                                        {item.Blade_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{item.Blade_Weight}g</span></div>}
-                                      </>
-                                    )}
-                                    {item.Rubber_Speed !== undefined && (
-                                      <>
-                                        <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{item.Rubber_Speed}</span></div>
-                                        <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{item.Rubber_Spin}</span></div>
-                                        <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{item.Rubber_Control}</span></div>
-                                        <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{item.Rubber_Power}</span></div>
-                                        <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${item.Rubber_Price}</span></div>
-                                        <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{item.Rubber_Level}</span></div>
-                                        <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{item.Rubber_Style}</span></div>
-                                        {item.Rubber_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{item.Rubber_Weight}g</span></div>}
-                                        {item.Rubber_Sponge_Sizes && <div className="col-span-2"><span className="text-muted-foreground">Sponge:</span> <span className="font-medium">{item.Rubber_Sponge_Sizes.join(", ")}</span></div>}
-                                      </>
-                                    )}
+                        <div className="flex items-center gap-3 w-full">
+                          <div className={`relative flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border transition-all ${
+                            offset === 0 
+                              ? 'w-20 h-20 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 shadow-lg'
+                              : 'w-14 h-14 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16'
+                          }`}>
+                            <img 
+                              src={getImage(item)} 
+                              alt={getName(item)}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <p 
+                              className={`text-left transition-colors cursor-pointer ${
+                                offset === 0 
+                                  ? !selectedAvailable 
+                                    ? 'text-destructive text-base md:text-sm lg:text-base xl:text-lg font-bold line-through line-clamp-2' 
+                                    : 'text-primary dark:text-accent text-base md:text-sm lg:text-base xl:text-lg font-bold line-clamp-2'
+                                  : 'text-primary/60 dark:text-accent/60 text-xs md:text-[10px] lg:text-xs xl:text-sm font-medium line-clamp-1'
+                              }`}
+                              style={{ opacity }}
+                            >
+                              {getName(item)}
+                            </p>
+                            {offset === 0 && (
+                              <Popover>
+                                <PopoverTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                  <button className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0">
+                                    <Info className="w-4 h-4" />
+                                  </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="max-w-[280px] sm:max-w-xs bg-card border-2 border-border p-4 z-[9999]" side="right" sideOffset={10} align="center">
+                                  <div className="space-y-2 text-xs">
+                                    <h4 className="font-semibold text-sm text-foreground break-words">{getName(item)}</h4>
+                                    <div className="grid grid-cols-2 gap-2">
+                                      {item.Blade_Speed !== undefined && (
+                                        <>
+                                          <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{item.Blade_Speed}</span></div>
+                                          <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{item.Blade_Spin}</span></div>
+                                          <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{item.Blade_Control}</span></div>
+                                          <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{item.Blade_Power}</span></div>
+                                          <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${item.Blade_Price}</span></div>
+                                          <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{item.Blade_Level}</span></div>
+                                          {item.Blade_Style && <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{item.Blade_Style}</span></div>}
+                                          {item.Blade_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{item.Blade_Weight}g</span></div>}
+                                        </>
+                                      )}
+                                      {item.Rubber_Speed !== undefined && (
+                                        <>
+                                          <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{item.Rubber_Speed}</span></div>
+                                          <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{item.Rubber_Spin}</span></div>
+                                          <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{item.Rubber_Control}</span></div>
+                                          <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{item.Rubber_Power}</span></div>
+                                          <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${item.Rubber_Price}</span></div>
+                                          <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{item.Rubber_Level}</span></div>
+                                          <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{item.Rubber_Style}</span></div>
+                                          {item.Rubber_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{item.Rubber_Weight}g</span></div>}
+                                          {item.Rubber_Sponge_Sizes && <div className="col-span-2"><span className="text-muted-foreground">Sponge:</span> <span className="font-medium">{item.Rubber_Sponge_Sizes.join(", ")}</span></div>}
+                                        </>
+                                      )}
+                                    </div>
                                   </div>
-                                </div>
-                              </PopoverContent>
-                            </Popover>
-                          )}
+                                </PopoverContent>
+                              </Popover>
+                            )}
+                          </div>
                         </div>
                       </motion.div>
                     );
@@ -758,8 +786,8 @@ const SlotMachine = ({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-2 lg:gap-4 xl:gap-6 justify-items-center py-8 max-w-7xl mx-auto px-2">
-          <div className="w-full max-w-[380px] md:max-w-[240px] lg:max-w-[280px] xl:max-w-md">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-3 lg:gap-6 xl:gap-8 justify-items-center py-8 max-w-7xl mx-auto px-2">
+          <div className="w-full max-w-[380px] md:max-w-[240px] lg:max-w-[300px] xl:max-w-[500px]">
             <SlotWheel
               items={safeFilteredForehandRubbers}
               selected={selectedForehand}
@@ -806,7 +834,7 @@ const SlotMachine = ({
             </div>
           </div>
           
-          <div className="w-full max-w-[380px] md:max-w-[240px] lg:max-w-[280px] xl:max-w-md">
+          <div className="w-full max-w-[380px] md:max-w-[240px] lg:max-w-[300px] xl:max-w-[500px]">
             <SlotWheel
               items={safeFilteredBlades}
               selected={selectedBlade}
@@ -845,7 +873,7 @@ const SlotMachine = ({
             </div>
           </div>
           
-          <div className="w-full max-w-[380px] md:max-w-[240px] lg:max-w-[280px] xl:max-w-md">
+          <div className="w-full max-w-[380px] md:max-w-[240px] lg:max-w-[300px] xl:max-w-[500px]">
             <SlotWheel
               items={safeFilteredBackhandRubbers}
               selected={selectedBackhand}
