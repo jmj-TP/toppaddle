@@ -437,7 +437,7 @@ const SlotMachine = ({
                           className="absolute left-0 right-0 flex flex-col items-center"
                           style={{
                             height: `${itemHeight}px`,
-                            top: wheelType === 'side' ? 'calc(50% - 85px)' : 'calc(50% + 85px)',
+                            top: wheelType === 'side' ? 'calc(50% - 120px)' : 'calc(50% + 120px)',
                             transform: `translateY(-50%) rotateX(${rotateX}deg) translateZ(${translateZ}px)`,
                             transformStyle: 'preserve-3d',
                             backfaceVisibility: 'hidden',
@@ -499,7 +499,7 @@ const SlotMachine = ({
                           className="absolute left-0 right-0 flex flex-col items-center"
                           style={{
                             height: `${itemHeight}px`,
-                            top: wheelType === 'side' ? 'calc(50% - 85px)' : 'calc(50% + 85px)',
+                            top: wheelType === 'side' ? 'calc(50% - 120px)' : 'calc(50% + 120px)',
                             transform: `translateY(-50%) rotateX(${rotateX}deg) translateZ(${translateZ}px)`,
                             transformStyle: 'preserve-3d',
                             backfaceVisibility: 'hidden',
