@@ -14,6 +14,7 @@ import BrandSelector from "./BrandSelector";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ShareButton from "./ShareButton";
 import { useCartStore } from "@/stores/cartStore";
+import { useComparisonStore, type ComparisonPaddle } from "@/stores/comparisonStore";
 import { fetchShopifyProducts, type ShopifyProduct } from "@/lib/shopify";
 import { toast } from "sonner";
 
@@ -32,6 +33,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   
   const navigate = useNavigate();
   const addItem = useCartStore(state => state.addItem);
+  const addPaddle = useComparisonStore(state => state.addPaddle);
   const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [showAllRecommendations, setShowAllRecommendations] = useState(false);
@@ -90,6 +92,76 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
   // Add to comparison
   const handleAddToCompare = (item: typeof allRecommendations[0]) => {
+    let paddle: ComparisonPaddle;
+    
+    if (item.type === 'preAssembled' || item.type === 'preAssembled2') {
+      const racket = item.data;
+      paddle = {
+        id: `pre-${racket.Racket_Name}`,
+        name: racket.Racket_Name,
+        image: racket.Racket_Image || '',
+        speed: racket.Racket_Speed,
+        control: racket.Racket_Control,
+        power: racket.Racket_Power,
+        spin: racket.Racket_Spin,
+        price: racket.Racket_Price,
+        weight: 180,
+        level: racket.Racket_Level as "Beginner" | "Intermediate" | "Advanced"
+      };
+    } else {
+      const setup = item.data as CustomSetup;
+      const bladeWeight = estimateBladeWeight(setup.blade);
+      const fhWeight = estimateRubberWeight(setup.forehandRubber);
+      const bhWeight = estimateRubberWeight(setup.backhandRubber);
+      const totalWeight = bladeWeight + fhWeight + bhWeight;
+      
+      const combinedSpeed = Math.round((setup.blade.Blade_Speed + setup.forehandRubber.Rubber_Speed + setup.backhandRubber.Rubber_Speed) / 3);
+      const combinedSpin = Math.round((setup.forehandRubber.Rubber_Spin + setup.backhandRubber.Rubber_Spin) / 2);
+      const combinedControl = Math.round((setup.blade.Blade_Control + setup.forehandRubber.Rubber_Control + setup.backhandRubber.Rubber_Control) / 3);
+      const combinedPower = Math.round((setup.blade.Blade_Power + setup.forehandRubber.Rubber_Speed + setup.backhandRubber.Rubber_Speed) / 3);
+      
+      paddle = {
+        id: `custom-${setup.blade.Blade_Name}-${setup.forehandRubber.Rubber_Name}-${setup.backhandRubber.Rubber_Name}`,
+        name: `Custom Setup: ${setup.blade.Blade_Name}`,
+        image: setup.blade.Blade_Image || '',
+        speed: combinedSpeed,
+        control: combinedControl,
+        power: combinedPower,
+        spin: combinedSpin,
+        price: setup.totalPrice,
+        weight: totalWeight,
+        level: setup.blade.Blade_Level as "Beginner" | "Intermediate" | "Advanced",
+        blade: setup.blade.Blade_Name,
+        forehandRubber: setup.forehandRubber.Rubber_Name,
+        backhandRubber: setup.backhandRubber.Rubber_Name,
+        forehandSponge: forehandThickness,
+        backhandSponge: backhandThickness,
+        bladeStats: {
+          speed: setup.blade.Blade_Speed,
+          control: setup.blade.Blade_Control,
+          power: setup.blade.Blade_Power,
+          spin: 0,
+          price: setup.blade.Blade_Price
+        },
+        forehandStats: {
+          speed: setup.forehandRubber.Rubber_Speed,
+          control: setup.forehandRubber.Rubber_Control,
+          power: setup.forehandRubber.Rubber_Speed,
+          spin: setup.forehandRubber.Rubber_Spin,
+          price: setup.forehandRubber.Rubber_Price
+        },
+        backhandStats: {
+          speed: setup.backhandRubber.Rubber_Speed,
+          control: setup.backhandRubber.Rubber_Control,
+          power: setup.backhandRubber.Rubber_Speed,
+          spin: setup.backhandRubber.Rubber_Spin,
+          price: setup.backhandRubber.Rubber_Price
+        }
+      };
+    }
+    
+    addPaddle(paddle);
+    toast.success("Added to comparison", { description: paddle.name });
     navigate('/compare');
   };
 
