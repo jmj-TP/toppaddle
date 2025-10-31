@@ -213,9 +213,7 @@ const SlotMachine = ({
     selectorComponent,
     filterComponent,
     filters,
-    allItems: allItemsProp,
-    rotationOffset = 0,
-    wheelType = 'middle'
+    allItems
   }: { 
     items: any[]; 
     selected: any; 
@@ -226,8 +224,6 @@ const SlotMachine = ({
     filterComponent?: React.ReactNode;
     filters?: ProductFilters;
     allItems?: any[];
-    rotationOffset?: number;
-    wheelType?: 'side' | 'middle';
   }) => {
     const getName = (item: any) => {
       return item.Blade_Name || item.Rubber_Name || item.Racket_Name;
@@ -242,7 +238,7 @@ const SlotMachine = ({
 
     // Check if selected item matches current filters
     const isSelectedAvailable = () => {
-      if (!filters || !allItemsProp) return true;
+      if (!filters || !allItems) return true;
       return items.some(item => getName(item) === getName(selected));
     };
 
@@ -266,30 +262,21 @@ const SlotMachine = ({
       return `This product is currently filtered out:\n• ${reasons.join('\n• ')}\n\nTo make it available again, adjust the filters above.`;
     };
     
-    const safeItems = items.length > 0 ? items : [selected];
-    const [currentIndex, setCurrentIndex] = useState(() => {
-      const idx = safeItems.findIndex(item => getName(item) === getName(selected));
-      return idx >= 0 ? idx : 0;
-    });
+    const [currentIndex, setCurrentIndex] = useState(items.findIndex(item => getName(item) === getName(selected)));
     const [localSpinning, setLocalSpinning] = useState(false);
     const [animationKey, setAnimationKey] = useState(0);
     const wheelRef = useRef<HTMLDivElement>(null);
     const hasSpun = useRef(false);
-    const lastSelectedName = useRef(getName(selected));
     const selectedAvailable = isSelectedAvailable();
     const unavailabilityReason = getUnavailabilityReason();
 
-    // Update current index only when selected actually changed for THIS wheel
+    // Update current index only when not spinning
     useEffect(() => {
-      const currentName = getName(selected);
-      if (!localSpinning && currentName !== lastSelectedName.current) {
-        const newIndex = safeItems.findIndex(item => getName(item) === currentName);
-        if (newIndex >= 0) {
-          setCurrentIndex(newIndex);
-          lastSelectedName.current = currentName;
-        }
+      if (!localSpinning) {
+        const newIndex = items.findIndex(item => getName(item) === getName(selected));
+        setCurrentIndex(newIndex);
       }
-    }, [selected, localSpinning]);
+    }, [selected, items, localSpinning]);
 
     // Start spinning only once when isSpinning becomes true
     useEffect(() => {
@@ -313,26 +300,26 @@ const SlotMachine = ({
     }, [isSpinning, delay]);
 
     const handleWheel = (e: React.WheelEvent) => {
-      if (localSpinning) return;
+      if (isSpinning) return;
       e.preventDefault();
       e.stopPropagation();
       
       const delta = e.deltaY;
       const newIndex = delta > 0 
-        ? (currentIndex + 1) % safeItems.length
-        : (currentIndex - 1 + safeItems.length) % safeItems.length;
+        ? (currentIndex + 1) % items.length
+        : (currentIndex - 1 + items.length) % items.length;
       
-      onChange(safeItems[newIndex]);
+      onChange(items[newIndex]);
     };
 
     const handleSwipe = (direction: 'up' | 'down') => {
-      if (localSpinning) return;
+      if (isSpinning) return;
       
       const newIndex = direction === 'down'
-        ? (currentIndex + 1) % safeItems.length
-        : (currentIndex - 1 + safeItems.length) % safeItems.length;
+        ? (currentIndex + 1) % items.length
+        : (currentIndex - 1 + items.length) % items.length;
       
-      onChange(safeItems[newIndex]);
+      onChange(items[newIndex]);
     };
 
     // Get visible items (current, prev, next with wrapping)
@@ -344,15 +331,6 @@ const SlotMachine = ({
       }
       return visible;
     };
-
-    // Wheel 3D parameters
-    const radius = 800; // Large radius for subtle curve
-    const itemHeight = 200; // Height of each item slot (including gap)
-    const totalItems = safeItems.length * 3; // Replicate items for smooth infinite scroll
-    const allItems = Array.from({ length: 3 }, () => safeItems).flat();
-
-    // Calculate angle per item
-    const anglePerItem = (itemHeight / radius) * (180 / Math.PI);
 
     return (
       <div className="flex flex-col items-center">
@@ -388,186 +366,180 @@ const SlotMachine = ({
         <div
           ref={wheelRef}
           onWheel={handleWheel}
-          className={`relative w-full max-w-[380px] md:max-w-[300px] lg:max-w-[320px] xl:max-w-[380px] h-[500px] md:h-[480px] lg:h-[520px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 ${
+          className={`relative w-full max-w-[380px] md:max-w-[300px] lg:max-w-[320px] xl:max-w-[380px] h-[400px] md:h-[380px] lg:h-[420px] bg-card rounded-xl overflow-hidden shadow-2xl border-2 ${
             !selectedAvailable ? 'border-destructive/50' : 'border-border'
           } ${!selectedAvailable ? 'opacity-60' : ''}`}
-          style={{ 
-            perspective: '2400px',
-            perspectiveOrigin: 'center center'
-          }}
         >
 
-          {/* Items container with 3D transforms */}
+          {/* Items container */}
           <div className="relative h-full flex flex-col items-center justify-center">
             <AnimatePresence mode="wait">
               {localSpinning ? (
                 <motion.div
                   key={animationKey}
-                  className="absolute inset-0"
-                  style={{ 
-                    transformStyle: 'preserve-3d',
-                    willChange: 'transform'
-                  }}
+                  className="absolute inset-0 overflow-hidden"
+                  style={{ willChange: 'transform' }}
                 >
                   <motion.div
-                    className="absolute inset-0"
-                    style={{ 
-                      transformStyle: 'preserve-3d',
-                    }}
-                    initial={{ rotateX: 0 }}
+                    className="flex flex-col items-center"
+                    initial={{ y: 200 }}
                     animate={{ 
-                      rotateX: 360 * 10 + rotationOffset, // Multiple full rotations
+                      y: -6400,
                     }}
                     transition={{
                       duration: (2000 + delay) / 1000,
                       ease: [0.22, 0.61, 0.36, 1],
                       type: "tween"
                     }}
+                    style={{ 
+                      willChange: 'transform'
+                    }}
                   >
-                    {/* Generate items positioned on cylinder */}
+                    {/* Generate enough items for smooth scrolling */}
                     {Array.from({ length: 50 }).map((_, i) => {
-                      const itemIndex = i % safeItems.length;
-                      const angle = i * anglePerItem;
-                      const rotateX = angle;
-                      const translateZ = radius;
+                      const itemIndex = i % items.length;
                       
                       return (
-                        <div
-                          key={`spin-${i}`}
-                          className="absolute left-0 right-0 flex flex-col items-center"
-                          style={{
-                            height: `${itemHeight}px`,
-                            top: wheelType === 'side' ? 'calc(50% - 200px)' : 'calc(50% + 200px)',
-                            transform: `translateY(-50%) rotateX(${rotateX}deg) translateZ(${translateZ}px)`,
-                            transformStyle: 'preserve-3d',
-                            backfaceVisibility: 'hidden',
-                          }}
-                        >
-                          <div className="w-full flex flex-col items-center justify-center px-3 py-3">
-                            <div className="relative w-full mx-auto h-28 flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border">
-                              <img 
-                                src={getImage(safeItems[itemIndex])} 
-                                alt={getName(safeItems[itemIndex])}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-2 px-2 block">
-                              {getName(safeItems[itemIndex])}
-                            </span>
-                          </div>
+                      <motion.div
+                        key={`spin-${i}`}
+                        className="h-[130px] w-full flex flex-col items-center justify-center px-2.5 flex-shrink-0"
+                        style={{ 
+                          transformStyle: 'preserve-3d',
+                          backfaceVisibility: 'hidden',
+                        }}
+                      >
+                        <div className="relative w-[calc(100%-20px)] h-24 flex-shrink-0 rounded-lg overflow-hidden bg-background border border-border">
+                          <img 
+                            src={getImage(items[itemIndex])} 
+                            alt={getName(items[itemIndex])}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
+                        <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-2 px-1">
+                          {getName(items[itemIndex])}
+                        </span>
+                      </motion.div>
                       );
                     })}
                   </motion.div>
                 </motion.div>
               ) : (
-                <div 
-                  className="absolute inset-0" 
-                  key="static"
-                  style={{ 
-                    transformStyle: 'preserve-3d',
-                  }}
-                >
+                <div className="relative w-full h-full flex flex-col items-center justify-center" key="static">
+                  {/* Large centered image */}
                   <motion.div
-                    className="absolute inset-0"
-                    style={{ 
-                      transformStyle: 'preserve-3d',
+                    className="absolute w-full flex flex-col items-center justify-center px-2.5 z-30"
+                    style={{
+                      top: '50%',
+                      transform: 'translateY(-50%)',
                     }}
-                    animate={{ 
-                      rotateX: -currentIndex * anglePerItem + rotationOffset
-                    }}
+                    initial={false}
+                    animate={{ y: '-50%' }}
                     transition={{
                       type: "spring",
                       stiffness: 300,
                       damping: 30
                     }}
                   >
-                    {/* Generate items positioned on cylinder */}
-                    {allItems.map((item, i) => {
-                      const angle = i * anglePerItem;
-                      const rotateX = angle;
-                      const translateZ = radius;
-                      
-                      // Determine if this is the centered item
-                      const isCentered = i === currentIndex + safeItems.length;
-                      const isAdjacent = Math.abs(i - (currentIndex + safeItems.length)) === 1;
-                      const isAboveCenter = i < currentIndex + safeItems.length;
-                      
-                      return (
-                        <div
-                          key={`item-${i}`}
-                          className="absolute left-0 right-0 flex flex-col items-center"
-                          style={{
-                            height: `${itemHeight}px`,
-                            top: wheelType === 'side' ? 'calc(50% - 200px)' : 'calc(50% + 200px)',
-                            transform: `translateY(-50%) rotateX(${rotateX}deg) translateZ(${translateZ}px)`,
-                            transformStyle: 'preserve-3d',
-                            backfaceVisibility: 'hidden',
-                            opacity: isCentered ? 1 : isAdjacent ? 0.3 : 0,
-                            pointerEvents: isCentered ? 'auto' : 'none',
-                          }}
-                        >
-                          <div className="w-full h-full flex flex-col items-center justify-center">
-                            <div className={`relative mx-auto rounded-lg overflow-hidden bg-background ${
-                              isCentered 
-                                ? 'w-[calc(100%-24px)] h-[360px] md:h-[340px] lg:h-[380px] border-2 border-border shadow-lg' 
-                                : 'w-[calc(100%-24px)] h-20 border border-border'
-                            }`}>
-                              <img 
-                                src={getImage(item)} 
-                                alt={getName(item)}
-                                className="w-full h-full object-cover"
-                              />
+                    <div className="relative w-[calc(100%-20px)] h-[240px] md:h-[220px] lg:h-[260px] rounded-lg overflow-hidden bg-background border-2 border-border shadow-lg">
+                      <img 
+                        src={getImage(items[currentIndex])} 
+                        alt={getName(items[currentIndex])}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 mt-3 px-2 w-full justify-center">
+                      <span className="text-sm md:text-base font-semibold text-primary dark:text-accent text-center line-clamp-2">
+                        {getName(items[currentIndex])}
+                      </span>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0">
+                            <Info className="w-4 h-4" />
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="max-w-[280px] sm:max-w-xs bg-card border-2 border-border p-4 z-[9999]" side="right" sideOffset={10} align="center">
+                          <div className="space-y-2 text-xs">
+                            <h4 className="font-semibold text-sm text-foreground break-words">{getName(items[currentIndex])}</h4>
+                            <div className="grid grid-cols-2 gap-2">
+                              {items[currentIndex].Blade_Speed !== undefined && (
+                                <>
+                                  <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{items[currentIndex].Blade_Speed}</span></div>
+                                  <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{items[currentIndex].Blade_Spin}</span></div>
+                                  <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{items[currentIndex].Blade_Control}</span></div>
+                                  <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{items[currentIndex].Blade_Power}</span></div>
+                                  <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${items[currentIndex].Blade_Price}</span></div>
+                                  <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{items[currentIndex].Blade_Level}</span></div>
+                                  {items[currentIndex].Blade_Style && <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{items[currentIndex].Blade_Style}</span></div>}
+                                  {items[currentIndex].Blade_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{items[currentIndex].Blade_Weight}g</span></div>}
+                                </>
+                              )}
+                              {items[currentIndex].Rubber_Speed !== undefined && (
+                                <>
+                                  <div><span className="text-muted-foreground">Speed:</span> <span className="font-medium">{items[currentIndex].Rubber_Speed}</span></div>
+                                  <div><span className="text-muted-foreground">Spin:</span> <span className="font-medium">{items[currentIndex].Rubber_Spin}</span></div>
+                                  <div><span className="text-muted-foreground">Control:</span> <span className="font-medium">{items[currentIndex].Rubber_Control}</span></div>
+                                  <div><span className="text-muted-foreground">Power:</span> <span className="font-medium">{items[currentIndex].Rubber_Power}</span></div>
+                                  <div><span className="text-muted-foreground">Price:</span> <span className="font-medium">${items[currentIndex].Rubber_Price}</span></div>
+                                  <div><span className="text-muted-foreground">Level:</span> <span className="font-medium">{items[currentIndex].Rubber_Level}</span></div>
+                                  <div className="col-span-2"><span className="text-muted-foreground">Style:</span> <span className="font-medium">{items[currentIndex].Rubber_Style}</span></div>
+                                  {items[currentIndex].Rubber_Weight && <div className="col-span-2"><span className="text-muted-foreground">Weight:</span> <span className="font-medium">{items[currentIndex].Rubber_Weight}g</span></div>}
+                                  {items[currentIndex].Rubber_Sponge_Sizes && <div className="col-span-2"><span className="text-muted-foreground">Sponge:</span> <span className="font-medium">{items[currentIndex].Rubber_Sponge_Sizes.join(", ")}</span></div>}
+                                </>
+                              )}
                             </div>
-                            {isCentered && (
-                              <div className="flex items-center gap-2 mt-3 px-3 w-full justify-center">
-                                <span className="text-sm md:text-base font-semibold text-primary dark:text-accent text-center line-clamp-2">
-                                  {getName(item)}
-                                </span>
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <button className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0">
-                                      <Info className="w-4 h-4" />
-                                    </button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="max-w-[280px] sm:max-w-xs bg-card border-2 border-border p-4 z-[9999]" side="right" sideOffset={10} align="center">
-...
-                                  </PopoverContent>
-                                </Popover>
-                              </div>
-                            )}
-                            {!isCentered && (
-                              <span className="text-xs font-medium text-primary dark:text-accent truncate w-full text-center mt-2 px-2 block">
-                                {getName(item)}
-                              </span>
-                            )}
                           </div>
-                        </div>
-                      );
-                    })}
+                        </PopoverContent>
+                      </Popover>
+                    </div>
                   </motion.div>
+                  
+                  {/* Teaser for next item (bottom) */}
+                  <div className="absolute bottom-0 left-0 right-0 h-24 overflow-hidden pointer-events-none z-20">
+                    <div className="absolute bottom-0 left-2.5 right-2.5">
+                      <div className="relative w-full h-20 rounded-t-lg overflow-hidden bg-background/50 border-t-2 border-x-2 border-border opacity-40">
+                        <img 
+                          src={getImage(items[(currentIndex + 1) % items.length])} 
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Teaser for previous item (top) */}
+                  <div className="absolute top-0 left-0 right-0 h-24 overflow-hidden pointer-events-none z-20">
+                    <div className="absolute top-0 left-2.5 right-2.5">
+                      <div className="relative w-full h-20 rounded-b-lg overflow-hidden bg-background/50 border-b-2 border-x-2 border-border opacity-40">
+                        <img 
+                          src={getImage(items[(currentIndex - 1 + items.length) % items.length])} 
+                          alt=""
+                          className="w-full h-full object-cover object-bottom"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Scroll buttons - smaller and minimalistic */}
+          {/* Scroll buttons - smaller and cleaner */}
           <button
             onClick={() => handleSwipe('up')}
-            disabled={localSpinning}
-            className="absolute top-3 left-1/2 -translate-x-1/2 z-40 bg-card/80 hover:bg-card border border-border disabled:opacity-30 disabled:cursor-not-allowed text-foreground rounded-full shadow-md transition-all hover:scale-110 disabled:hover:scale-100 w-6 h-6 flex items-center justify-center backdrop-blur-sm"
+            disabled={isSpinning}
+            className="absolute top-3 left-1/2 -translate-x-1/2 z-40 bg-card/80 hover:bg-card border border-border disabled:opacity-30 disabled:cursor-not-allowed text-foreground rounded-full shadow-md transition-all hover:scale-105 disabled:hover:scale-100 w-7 h-7 flex items-center justify-center backdrop-blur-sm"
             aria-label="Previous item"
           >
-            <ChevronUp className="w-3 h-3" />
+            <ChevronUp className="w-3.5 h-3.5" />
           </button>
           
           <button
             onClick={() => handleSwipe('down')}
-            disabled={localSpinning}
-            className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 bg-card/80 hover:bg-card border border-border disabled:opacity-30 disabled:cursor-not-allowed text-foreground rounded-full shadow-md transition-all hover:scale-110 disabled:hover:scale-100 w-6 h-6 flex items-center justify-center backdrop-blur-sm"
+            disabled={isSpinning}
+            className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 bg-card/80 hover:bg-card border border-border disabled:opacity-30 disabled:cursor-not-allowed text-foreground rounded-full shadow-md transition-all hover:scale-105 disabled:hover:scale-100 w-7 h-7 flex items-center justify-center backdrop-blur-sm"
             aria-label="Next item"
           >
-            <ChevronDown className="w-3 h-3" />
+            <ChevronDown className="w-3.5 h-3.5" />
           </button>
         </div>
         
@@ -788,7 +760,6 @@ const SlotMachine = ({
               selected={selectedRacket}
               onChange={onRacketChange}
               label="Preassembled Racket"
-              wheelType="middle"
             />
           </div>
         </div>
@@ -802,8 +773,6 @@ const SlotMachine = ({
               label="Forehand Rubber"
               delay={0}
               filters={forehandFilters}
-              rotationOffset={0}
-              wheelType="side"
               allItems={rubbers}
               filterComponent={
                 <ProductFilter
@@ -849,9 +818,7 @@ const SlotMachine = ({
               selected={selectedBlade}
               onChange={onBladeChange}
               label="Blade"
-              rotationOffset={0}
               delay={1000}
-              wheelType="middle"
               filters={bladeFilters}
               allItems={blades}
               filterComponent={
@@ -891,8 +858,6 @@ const SlotMachine = ({
               onChange={onBackhandChange}
               label="Backhand Rubber"
               delay={2000}
-              rotationOffset={0}
-              wheelType="side"
               filters={backhandFilters}
               allItems={rubbers}
               filterComponent={
