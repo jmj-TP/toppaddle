@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useComparisonStore } from '@/stores/comparisonStore';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -8,15 +8,35 @@ import { InsightsSection } from '@/components/comparison/InsightsSection';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X, ArrowRight, Trophy, DollarSign } from 'lucide-react';
+import { X, ArrowRight, Trophy, DollarSign, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '@/components/SEO';
+import { useCartStore } from '@/stores/cartStore';
+import { fetchShopifyProducts, type ShopifyProduct } from '@/lib/shopify';
+import { toast } from 'sonner';
 
 const Compare = () => {
   const { paddles, removePaddle, clearComparison } = useComparisonStore();
   const [selectedPaddle, setSelectedPaddle] = useState<string | null>(paddles[0]?.id || null);
   const [performanceView, setPerformanceView] = useState<PerformanceView>('overall');
   const navigate = useNavigate();
+  const addItem = useCartStore(state => state.addItem);
+  const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const products = await fetchShopifyProducts();
+        setShopifyProducts(products);
+      } catch (error) {
+        console.error('Failed to load Shopify products:', error);
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    };
+    loadProducts();
+  }, []);
 
   // Calculate best overall and best value
   const bestOverall = paddles.reduce((best, paddle) => {
@@ -30,6 +50,71 @@ const Compare = () => {
     const bestValueScore = (best.speed + best.control + best.power + best.spin) / (4 * best.price);
     return paddleValue > bestValueScore ? paddle : best;
   }, paddles[0]);
+
+  const handleAddToCart = (paddle: typeof paddles[0]) => {
+    if (isLoadingProducts) {
+      toast.error("Products still loading, please wait");
+      return;
+    }
+
+    // For pre-assembled paddles
+    if (paddle.id.startsWith('pre-')) {
+      const racketName = paddle.name;
+      const shopifyProduct = shopifyProducts.find(p => 
+        p.node.title.toLowerCase().includes(racketName.toLowerCase())
+      );
+
+      if (shopifyProduct && shopifyProduct.node.variants.edges.length > 0) {
+        const variant = shopifyProduct.node.variants.edges[0].node;
+        addItem({
+          product: shopifyProduct,
+          variantId: variant.id,
+          variantTitle: variant.title,
+          price: variant.price,
+          quantity: 1,
+          selectedOptions: variant.selectedOptions || []
+        });
+        toast.success("Added to cart", { description: paddle.name });
+      } else {
+        toast.error("Product not found in store");
+      }
+    } else {
+      // For custom setups, add blade and rubbers
+      const components = [
+        paddle.blade,
+        paddle.forehandRubber,
+        paddle.backhandRubber
+      ].filter(Boolean);
+
+      let addedCount = 0;
+      components.forEach(componentName => {
+        const shopifyProduct = shopifyProducts.find(p => 
+          p.node.title.toLowerCase() === componentName?.toLowerCase()
+        );
+
+        if (shopifyProduct && shopifyProduct.node.variants.edges.length > 0) {
+          const variant = shopifyProduct.node.variants.edges[0].node;
+          addItem({
+            product: shopifyProduct,
+            variantId: variant.id,
+            variantTitle: variant.title,
+            price: variant.price,
+            quantity: 1,
+            selectedOptions: variant.selectedOptions || []
+          });
+          addedCount++;
+        }
+      });
+
+      if (addedCount > 0) {
+        toast.success("Added to cart", { 
+          description: `${addedCount} component${addedCount > 1 ? 's' : ''} added` 
+        });
+      } else {
+        toast.error("Components not found in store");
+      }
+    }
+  };
 
   if (paddles.length === 0) {
     return (
@@ -160,6 +245,14 @@ const Compare = () => {
                     <span className="font-semibold">{paddle.level}</span>
                   </div>
                 </div>
+                <Button 
+                  className="w-full mt-4" 
+                  onClick={() => handleAddToCart(paddle)}
+                  disabled={isLoadingProducts}
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  Add to Cart
+                </Button>
               </Card>
             ))}
           </div>
