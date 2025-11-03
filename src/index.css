@@ -149,8 +149,8 @@ All colors MUST be HSL.
     --success: 130 64% 53%;
     --success-foreground: 0 0% 98%;
     
-    /* Footer/Top Bar: #10131a = hsl(220, 26%, 8%) */
-    --sidebar-background: 220 26% 8%;
+    /* Footer/Top Bar: #181c25 = hsl(220, 18%, 12%) */
+    --sidebar-background: 220 18% 12%;
     --sidebar-foreground: 0 0% 95%;
     --sidebar-primary: 16 100% 62%;
     --sidebar-primary-foreground: 0 0% 98%;
