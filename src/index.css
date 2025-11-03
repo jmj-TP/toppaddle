@@ -88,74 +88,75 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* TopPaddle Warm Dark Mode - Charcoal with Warm Beige & Orange */
-    /* Background: #222222 = hsl(0, 0%, 13%) */
-    --background: 0 0% 13%;
-    --foreground: 33 62% 90%;
+    /* TopPaddle Modern Dark Mode - Neutral Gray Palette */
+    /* Main Background: #181818 = hsl(0, 0%, 9%) */
+    --background: 0 0% 9%;
+    --foreground: 0 0% 95%;
     
-    /* Card/Surface: #1C1C1C = hsl(0, 0%, 11%) */
-    --card: 0 0% 11%;
-    --card-foreground: 33 62% 90%;
+    /* Card/Surface: #282828 = hsl(0, 0%, 16%) */
+    --card: 0 0% 16%;
+    --card-foreground: 0 0% 95%;
     
-    --popover: 0 0% 11%;
-    --popover-foreground: 33 62% 90%;
+    --popover: 0 0% 16%;
+    --popover-foreground: 0 0% 95%;
     
-    /* Primary/Accent: #E5C287 = hsl(38, 66%, 71%) */
-    --primary: 38 66% 71%;
-    --primary-foreground: 0 0% 13%;
+    /* CTA & Stats Orange: #FF6F3C = hsl(16, 100%, 62%) */
+    --primary: 16 100% 62%;
+    --primary-foreground: 0 0% 95%;
     
-    --secondary: 0 0% 11%;
-    --secondary-foreground: 33 62% 90%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 95%;
     
-    --muted: 0 0% 11%;
-    --muted-foreground: 47 28% 63%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 69%;
     
-    /* Accent: #E5C287 = hsl(38, 66%, 71%) */
-    --accent: 38 66% 71%;
-    --accent-foreground: 0 0% 13%;
+    /* Accent Orange: #FF6F3C = hsl(16, 100%, 62%) */
+    --accent: 16 100% 62%;
+    --accent-foreground: 0 0% 95%;
     
     --destructive: 0 72% 51%;
-    --destructive-foreground: 33 62% 90%;
+    --destructive-foreground: 0 0% 95%;
     
-    /* Borders: #444444 = hsl(0, 0%, 27%) */
-    --border: 0 0% 27%;
-    --input: 0 0% 27%;
-    --ring: 43 74% 49%;
+    /* Borders/Dividers: #383838 = hsl(0, 0%, 22%) */
+    --border: 0 0% 22%;
+    --input: 0 0% 22%;
+    --ring: 16 100% 62%;
     
-    /* Chart Colors - Warm palette */
-    --chart-1: 38 66% 71%;
-    --chart-2: 43 74% 49%;
-    --chart-3: 91 63% 26%;
-    --chart-4: 33 62% 90%;
-    --chart-5: 47 28% 63%;
+    /* Chart Colors - Neutral with orange accent */
+    --chart-1: 16 100% 62%;
+    --chart-2: 0 0% 69%;
+    --chart-3: 200 80% 50%;
+    --chart-4: 0 0% 95%;
+    --chart-5: 0 0% 16%;
     
-    /* Dark Mode Gradients - Warm tones */
-    --gradient-primary: linear-gradient(135deg, hsl(38 66% 71%), hsl(43 74% 49%));
-    --gradient-secondary: linear-gradient(135deg, hsl(0 0% 11%), hsl(0 0% 15%));
-    --gradient-accent: linear-gradient(135deg, hsl(38 66% 71%), hsl(43 74% 60%));
-    --gradient-soft: linear-gradient(180deg, hsl(0 0% 13%), hsl(0 0% 11%));
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 13% / 0.95), hsl(0 0% 11% / 0.9));
+    /* Dark Mode Gradients - Neutral tones */
+    --gradient-primary: linear-gradient(135deg, hsl(16 100% 62%), hsl(16 100% 55%));
+    --gradient-secondary: linear-gradient(135deg, hsl(0 0% 16%), hsl(0 0% 20%));
+    --gradient-accent: linear-gradient(135deg, hsl(16 100% 62%), hsl(16 100% 70%));
+    --gradient-soft: linear-gradient(180deg, hsl(0 0% 9%), hsl(0 0% 16%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 9% / 0.95), hsl(0 0% 16% / 0.9));
     
-    /* Dark Mode Shadows - Softer */
+    /* Dark Mode Shadows - Subtle */
     --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.4);
     --shadow-md: 0 2px 8px -2px hsl(0 0% 0% / 0.5), 0 1px 3px 0 hsl(0 0% 0% / 0.4);
     --shadow-lg: 0 4px 16px -4px hsl(0 0% 0% / 0.6), 0 2px 6px -2px hsl(0 0% 0% / 0.5);
     --shadow-xl: 0 8px 32px -8px hsl(0 0% 0% / 0.7), 0 4px 12px -4px hsl(0 0% 0% / 0.6);
-    --shadow-accent: 0 4px 20px -4px hsl(38 66% 71% / 0.3);
+    --shadow-accent: 0 4px 20px -4px hsl(16 100% 62% / 0.3);
     --shadow-card: 0 2px 16px -4px hsl(0 0% 0% / 0.5);
     
-    /* Success/Positive States: #416D19 = hsl(91, 63%, 26%) */
-    --success: 91 63% 26%;
-    --success-foreground: 33 62% 90%;
+    /* Success/Positive States */
+    --success: 130 64% 53%;
+    --success-foreground: 0 0% 95%;
     
-    --sidebar-background: 0 0% 13%;
-    --sidebar-foreground: 33 62% 90%;
-    --sidebar-primary: 38 66% 71%;
-    --sidebar-primary-foreground: 0 0% 13%;
-    --sidebar-accent: 0 0% 11%;
-    --sidebar-accent-foreground: 33 62% 90%;
-    --sidebar-border: 0 0% 27%;
-    --sidebar-ring: 43 74% 49%;
+    /* Footer/Top Bar: #222326 = hsl(225, 6%, 14%) */
+    --sidebar-background: 225 6% 14%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 16 100% 62%;
+    --sidebar-primary-foreground: 0 0% 95%;
+    --sidebar-accent: 0 0% 16%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 22%;
+    --sidebar-ring: 16 100% 62%;
   }
 }
 
