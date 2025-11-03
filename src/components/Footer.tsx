@@ -5,7 +5,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-primary text-primary-foreground">
+    <footer className="bg-sidebar-background text-sidebar-foreground">
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3 mb-12">
           {/* Brand */}
@@ -14,7 +14,7 @@ const Footer = () => {
               <span className="text-2xl">🏓</span>
               <h3 className="font-headline text-xl font-bold">TopPaddle</h3>
             </div>
-            <p className="font-body text-sm text-primary-foreground/70 leading-relaxed">
+            <p className="font-body text-sm text-sidebar-foreground/70 leading-relaxed">
               Over 20 years of experience in table tennis.
             </p>
           </div>
@@ -27,7 +27,7 @@ const Footer = () => {
                 <Link
                   to="/"
                   onClick={() => window.scrollTo(0, 0)}
-                  className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
+                  className="font-body text-sm text-sidebar-foreground/70 transition-colors hover:text-accent"
                 >
                   Quiz
                 </Link>
@@ -36,7 +36,7 @@ const Footer = () => {
                 <Link
                   to="/configurator"
                   onClick={() => window.scrollTo(0, 0)}
-                  className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
+                  className="font-body text-sm text-sidebar-foreground/70 transition-colors hover:text-accent"
                 >
                   Configurator
                 </Link>
@@ -45,7 +45,7 @@ const Footer = () => {
                 <Link
                   to="/blog"
                   onClick={() => window.scrollTo(0, 0)}
-                  className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
+                  className="font-body text-sm text-sidebar-foreground/70 transition-colors hover:text-accent"
                 >
                   Blog
                 </Link>
@@ -54,7 +54,7 @@ const Footer = () => {
                 <Link
                   to="/about"
                   onClick={() => window.scrollTo(0, 0)}
-                  className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
+                  className="font-body text-sm text-sidebar-foreground/70 transition-colors hover:text-accent"
                 >
                   About
                 </Link>
@@ -70,7 +70,7 @@ const Footer = () => {
                 <Link
                   to="/terms"
                   onClick={() => window.scrollTo(0, 0)}
-                  className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
+                  className="font-body text-sm text-sidebar-foreground/70 transition-colors hover:text-accent"
                 >
                   Terms & Disclaimer
                 </Link>
@@ -79,7 +79,7 @@ const Footer = () => {
                 <Link
                   to="/privacy"
                   onClick={() => window.scrollTo(0, 0)}
-                  className="font-body text-sm text-primary-foreground/70 transition-colors hover:text-accent"
+                  className="font-body text-sm text-sidebar-foreground/70 transition-colors hover:text-accent"
                 >
                   Privacy Policy
                 </Link>
@@ -89,8 +89,8 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-primary-foreground/10 pt-8">
-          <p className="font-body text-center text-sm text-primary-foreground/50">
+        <div className="border-t border-sidebar-foreground/10 pt-8">
+          <p className="font-body text-center text-sm text-sidebar-foreground/50">
             © {currentYear} TopPaddle. All rights reserved.
           </p>
         </div>

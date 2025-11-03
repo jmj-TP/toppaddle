@@ -21,12 +21,12 @@ const Header = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-primary shadow-md">
+    <header className="sticky top-0 z-50 w-full bg-sidebar-background shadow-md">
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center space-x-2">
-            <span className="font-headline text-xl font-bold text-primary-foreground">
+            <span className="font-headline text-xl font-bold text-sidebar-foreground">
               TopPaddle
             </span>
           </Link>
@@ -41,7 +41,7 @@ const Header = () => {
                 className={`font-body text-sm font-medium transition-colors hover:text-accent ${
                   isActive(item.href)
                     ? "text-accent"
-                    : "text-primary-foreground"
+                    : "text-sidebar-foreground"
                 }`}
               >
                 {item.name}
@@ -56,7 +56,7 @@ const Header = () => {
             <CartDrawer />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="rounded-md p-2 text-primary-foreground hover:bg-primary/90"
+              className="rounded-md p-2 text-sidebar-foreground hover:bg-sidebar-background/90"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -78,7 +78,7 @@ const Header = () => {
                   className={`font-body px-4 py-2 text-sm font-medium transition-colors hover:text-accent ${
                     isActive(item.href)
                       ? "text-accent"
-                      : "text-primary-foreground"
+                      : "text-sidebar-foreground"
                   }`}
                 >
                   {item.name}
