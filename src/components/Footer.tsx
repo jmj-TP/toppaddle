@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -11,7 +12,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">🏓</span>
+              <img src={logo} alt="TopPaddle Logo" className="h-8 w-8" />
               <h3 className="font-headline text-xl font-bold">TopPaddle</h3>
             </div>
             <p className="font-body text-sm text-sidebar-foreground/70 leading-relaxed">

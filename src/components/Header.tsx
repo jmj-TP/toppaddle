@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import DarkModeToggle from "./DarkModeToggle";
 import { CartDrawer } from "./CartDrawer";
+import logo from "@/assets/logo.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,6 +27,7 @@ const Header = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center space-x-2">
+            <img src={logo} alt="TopPaddle Logo" className="h-8 w-8" />
             <span className="font-headline text-xl font-bold text-sidebar-foreground">
               TopPaddle
             </span>
