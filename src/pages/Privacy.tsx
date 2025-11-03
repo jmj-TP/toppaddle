@@ -6,7 +6,7 @@ const Privacy = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       <SEO
         title="Privacy Policy - How We Protect Your Data"
         description="Learn how TopPaddle collects, uses, and protects your information. Our privacy policy covers cookies and analytics."
@@ -14,7 +14,7 @@ const Privacy = () => {
         noindex={true}
       />
       <Header />
-      <main className="flex-1 bg-background">
+      <main className="flex-1">
         <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-4xl">
             <h1 className="font-headline text-4xl font-bold text-foreground">

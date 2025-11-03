@@ -13,9 +13,9 @@ const BlogPost = () => {
 
   if (!post) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
         <Header />
-        <main className="flex-1 bg-background">
+        <main className="flex-1">
           <div className="container mx-auto px-4 py-16 text-center">
             <h1 className="font-headline text-4xl font-bold">Post Not Found</h1>
             <Link to="/blog" className="mt-8 inline-block">
@@ -29,7 +29,7 @@ const BlogPost = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       <SEO
         title={post.title}
         description={post.excerpt}
@@ -63,7 +63,7 @@ const BlogPost = () => {
         ]}
       />
       <Header />
-      <main className="flex-1 bg-background">
+      <main className="flex-1">
         <article className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-4xl">
             <Link to="/blog">

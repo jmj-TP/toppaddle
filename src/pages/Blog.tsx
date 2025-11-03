@@ -10,7 +10,7 @@ import StructuredData from "@/components/StructuredData";
 
 const Blog = () => {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       <SEO
         title="Table Tennis Blog - Expert Tips, Reviews & Guides"
         description="Expert table tennis advice, equipment reviews, and tips. 8 years of experience helping players improve their game with honest recommendations."
@@ -26,7 +26,7 @@ const Blog = () => {
         }}
       />
       <Header />
-      <main className="flex-1 bg-gradient-to-b from-background to-secondary/20">
+      <main className="flex-1">
         <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
             <h1 className="font-headline text-4xl font-bold text-foreground md:text-5xl">

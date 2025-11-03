@@ -151,7 +151,7 @@ const Compare = () => {
         title="Compare Table Tennis Paddles"
         description="Compare up to 3 custom table tennis paddles side by side. Analyze performance stats, price, and get detailed insights."
       />
-      <div className="min-h-screen flex flex-col bg-background">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 space-y-8">
           {/* Header */}

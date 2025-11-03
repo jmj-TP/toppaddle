@@ -9,7 +9,7 @@ import StructuredData from "@/components/StructuredData";
 
 const About = () => {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       <SEO
         title="About TopPaddle - 20+ Years of Table Tennis Experience"
         description="Learn about TopPaddle's mission to help players find the perfect table tennis equipment. 20+ years of experience and honest recommendations."

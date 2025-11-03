@@ -829,7 +829,7 @@ const Configurator = () => {
     : calculateCustomStats();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       <SEO
         title="Table Tennis Racket Configurator - Build Your Custom Setup"
         description="Configure your perfect table tennis racket. Choose from professional blades and rubbers or select pre-assembled options. Real-time stats and pricing for all skill levels."
@@ -845,7 +845,7 @@ const Configurator = () => {
         }}
       />
       <Header />
-      <main className="flex-1 bg-background py-12">
+      <main className="flex-1 py-12">
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Apple-style Help Banner */}
           <div className="mb-12 max-w-3xl mx-auto">

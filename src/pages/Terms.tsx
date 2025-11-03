@@ -6,7 +6,7 @@ const Terms = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       <SEO
         title="Terms & Disclaimer"
         description="Read TopPaddle's terms of service and disclaimer. Important information about quiz results and product recommendations."
@@ -14,7 +14,7 @@ const Terms = () => {
         noindex={true}
       />
       <Header />
-      <main className="flex-1 bg-background">
+      <main className="flex-1">
         <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-4xl">
             <h1 className="font-headline text-4xl font-bold text-foreground">

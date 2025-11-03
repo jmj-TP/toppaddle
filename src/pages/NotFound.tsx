@@ -13,14 +13,14 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       <SEO
         title="Page Not Found - 404 Error"
         description="The page you're looking for doesn't exist. Return to TopPaddle to find your perfect table tennis racket."
         noindex={true}
       />
       <Header />
-      <main className="flex-1 flex items-center justify-center bg-gradient-to-b from-background to-secondary/20">
+      <main className="flex-1 flex items-center justify-center">
         <div className="text-center px-4">
           <h1 className="font-headline text-6xl font-bold text-foreground mb-4">404</h1>
           <p className="font-body text-2xl text-muted-foreground mb-8">Oops! Page not found</p>
