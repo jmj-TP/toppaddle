@@ -845,14 +845,6 @@ const Configurator = () => {
         }}
       />
       <Header />
-      <div className="bg-blue-50 dark:bg-blue-950/30 border-b-2 border-blue-200 dark:border-blue-800">
-        <div className="container mx-auto px-4 py-3">
-          <p className="text-center text-sm">
-            <span className="font-semibold text-blue-900 dark:text-blue-100">Pre-launch pricing:</span>{" "}
-            <span className="text-blue-800 dark:text-blue-200">Final prices will update after our supplier partnership is confirmed.</span>
-          </p>
-        </div>
-      </div>
       <main className="flex-1 bg-background py-12">
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Apple-style Help Banner */}

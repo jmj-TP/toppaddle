@@ -21,7 +21,7 @@ const Header = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-sidebar-background shadow-md">
+    <header className="sticky top-0 z-50 w-full bg-sidebar-background/95 backdrop-blur-md shadow-md">
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}

@@ -174,6 +174,10 @@ All colors MUST be HSL.
     @apply font-headline;
   }
 
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    @apply text-[#E5E5E5];
+  }
+
   /* Blog post link styling */
   .prose a {
     @apply text-accent font-medium underline decoration-2 underline-offset-4;
