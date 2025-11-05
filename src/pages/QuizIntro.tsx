@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HowItWorks from "@/components/HowItWorks";
@@ -6,9 +7,18 @@ import SEO from "@/components/SEO";
 import StructuredData from "@/components/StructuredData";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useQuizStore } from "@/stores/quizStore";
 
 const QuizIntro = () => {
   const navigate = useNavigate();
+  const { isComplete } = useQuizStore();
+
+  // If quiz is complete, redirect to the quiz page to show recommendations
+  useEffect(() => {
+    if (isComplete) {
+      navigate("/quiz/start", { replace: true });
+    }
+  }, [isComplete, navigate]);
 
   const handleStartQuiz = () => {
     navigate("/quiz/start");
