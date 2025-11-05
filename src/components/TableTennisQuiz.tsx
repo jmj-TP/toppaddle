@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -9,6 +9,7 @@ import HandleSelector from "./HandleSelector";
 import MediumHandsSelector from "./MediumHandsSelector";
 import BrandSelector from "./BrandSelector";
 import { getRecommendation, type QuizAnswers } from "@/utils/ratingSystem";
+import { useQuizStore } from "@/stores/quizStore";
 
 const questions = [
   {
@@ -128,11 +129,21 @@ interface TableTennisQuizProps {
 }
 
 const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
+  const { 
+    answers: storedAnswers,
+    completeAnswers: storedCompleteAnswers,
+    recommendation: storedRecommendation,
+    isComplete: storedIsComplete,
+    setAnswers: setStoredAnswers,
+    setRecommendation: setStoredRecommendation,
+    resetQuiz
+  } = useQuizStore();
+  
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Partial<QuizAnswers>>({});
-  const [completeAnswers, setCompleteAnswers] = useState<QuizAnswers | null>(null);
-  const [isComplete, setIsComplete] = useState(false);
-  const [recommendation, setRecommendation] = useState<any>(null);
+  const [answers, setAnswers] = useState<Partial<QuizAnswers>>(storedAnswers);
+  const [completeAnswers, setCompleteAnswers] = useState<QuizAnswers | null>(storedCompleteAnswers);
+  const [isComplete, setIsComplete] = useState(storedIsComplete);
+  const [recommendation, setRecommendation] = useState<any>(storedRecommendation);
   const [showPremiumBudget, setShowPremiumBudget] = useState(false);
   const [showForehandSpecial, setShowForehandSpecial] = useState(false);
   const [showBackhandSpecial, setShowBackhandSpecial] = useState(false);
@@ -214,6 +225,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     
     const newAnswers = { ...answers, [question.key]: answer };
     setAnswers(newAnswers);
+    setStoredAnswers(newAnswers);
 
     // Add current question to history before moving forward
     setQuestionHistory([...questionHistory, currentQuestion]);
@@ -377,6 +389,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       const rec = getRecommendation(completeQuizAnswers);
       setRecommendation(rec);
       setIsComplete(true);
+      setStoredRecommendation(rec, completeQuizAnswers);
       return;
     }
 
@@ -389,6 +402,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       const rec = getRecommendation(completeQuizAnswers);
       setRecommendation(rec);
       setIsComplete(true);
+      setStoredRecommendation(rec, completeQuizAnswers);
     }
   };
 
@@ -472,6 +486,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     setShowBrandSelector(false);
     setSelectedBrands([]);
     setQuestionHistory([]);
+    resetQuiz();
     onQuizStatusChange(false);
   };
 

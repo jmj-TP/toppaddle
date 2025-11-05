@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import Index from "./pages/Index";
+import QuizIntro from "./pages/QuizIntro";
 import Quiz from "./pages/Quiz";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -26,7 +27,8 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/quiz" element={<QuizIntro />} />
+            <Route path="/quiz/start" element={<Quiz />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogPost />} />
             <Route path="/about" element={<About />} />

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
-import HowItWorks from "@/components/HowItWorks";
 import CTASection from "@/components/CTASection";
 import TrustSection from "@/components/TrustSection";
 import BlogPreview from "@/components/BlogPreview";
@@ -71,7 +70,6 @@ const Index = () => {
       <Header />
       <main className="flex-1">
         <HeroSection onStartQuiz={handleStartQuiz} />
-        <HowItWorks />
         <CTASection onStartQuiz={handleStartQuiz} />
         <TrustSection />
         <FAQSection faqs={faqs} />
