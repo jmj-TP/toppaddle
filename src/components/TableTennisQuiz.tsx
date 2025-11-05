@@ -154,6 +154,17 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [questionHistory, setQuestionHistory] = useState<number[]>([]);
 
+  // On mount, check if quiz is already complete and show recommendation
+  useEffect(() => {
+    if (storedIsComplete && storedRecommendation && storedCompleteAnswers) {
+      setIsComplete(true);
+      setRecommendation(storedRecommendation);
+      setCompleteAnswers(storedCompleteAnswers);
+      setAnswers(storedCompleteAnswers);
+      onQuizStatusChange(true);
+    }
+  }, []);
+
   // More budget options follow-up question
   const moreBudgetQuestion = {
     id: 11.5,
