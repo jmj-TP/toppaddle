@@ -34,6 +34,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   const navigate = useNavigate();
   const addItem = useCartStore(state => state.addItem);
   const addPaddle = useComparisonStore(state => state.addPaddle);
+  const comparisonPaddles = useComparisonStore(state => state.paddles);
   const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [showAllRecommendations, setShowAllRecommendations] = useState(false);
@@ -158,6 +159,13 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           price: setup.backhandRubber.Rubber_Price
         }
       };
+    }
+    
+    if (comparisonPaddles.length >= 3) {
+      toast.error("Comparison is full", { 
+        description: "Please clear the comparison section to add more paddles" 
+      });
+      return;
     }
     
     addPaddle(paddle);

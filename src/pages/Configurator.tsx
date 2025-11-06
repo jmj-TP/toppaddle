@@ -27,6 +27,7 @@ const Configurator = () => {
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const addItem = useCartStore(state => state.addItem);
   const addPaddle = useComparisonStore(state => state.addPaddle);
+  const comparisonPaddles = useComparisonStore(state => state.paddles);
   
   // State for custom mode
   const [selectedBlade, setSelectedBlade] = useState<Blade>(blades[0]);
@@ -800,6 +801,13 @@ const Configurator = () => {
           price: selectedBackhand.Rubber_Price,
         },
       };
+
+      if (comparisonPaddles.length >= 3) {
+        toast.error("Comparison is full", { 
+          description: "Please clear the comparison section to add more paddles" 
+        });
+        return;
+      }
 
       addPaddle(comparisonPaddle);
       
