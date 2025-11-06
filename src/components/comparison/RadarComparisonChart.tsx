@@ -225,13 +225,22 @@ export const RadarComparisonChart = ({
           </Button>
         </div>
       </div>
-      <div className="w-full h-[400px] flex items-center justify-center">
+      <div className="w-full h-[300px] sm:h-[400px] flex items-center justify-center">
         <ResponsiveContainer width="100%" height="100%">
-          <RadarChart data={data}>
+          <RadarChart 
+            data={data}
+            margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
+            className="mx-auto"
+          >
             <PolarGrid stroke="hsl(var(--border))" />
             <PolarAngleAxis 
               dataKey="stat" 
-              tick={{ fill: 'hsl(var(--foreground))', fontSize: 14, fontWeight: 500 }}
+              tick={{ 
+                fill: 'hsl(var(--foreground))', 
+                fontSize: 11,
+                fontWeight: 500 
+              }}
+              tickLine={false}
             />
             {paddles.map((paddle, idx) => {
               const displayName = getDisplayName(paddle);
