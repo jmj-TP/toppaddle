@@ -15,6 +15,9 @@ import { useComparisonStore, type ComparisonPaddle } from "@/stores/comparisonSt
 import tableTennisImage from "@/assets/table-tennis.png";
 import { HelpCircle, ArrowRight } from "lucide-react";
 import { ProductFilters } from "@/components/configurator/ProductFilter";
+import ReviewStrip from "@/components/configurator/ReviewStrip";
+import StickyDecisionBar from "@/components/configurator/StickyDecisionBar";
+import { useRef } from "react";
 
 const Configurator = () => {
   const [searchParams] = useSearchParams();
@@ -75,6 +78,11 @@ const Configurator = () => {
 
   // Spin trigger for slot machine
   const [spinTrigger, setSpinTrigger] = useState(0);
+  
+  // Refs for scrolling to sections
+  const forehandRef = useRef<HTMLDivElement>(null);
+  const bladeRef = useRef<HTMLDivElement>(null);
+  const backhandRef = useRef<HTMLDivElement>(null);
 
   // Initialize default thicknesses based on selected rubbers
   useEffect(() => {
@@ -375,8 +383,14 @@ const Configurator = () => {
 
   const stats = calculateStats();
 
+  const handleChipClick = (section: 'forehand' | 'blade' | 'backhand') => {
+    const ref = section === 'forehand' ? forehandRef : section === 'blade' ? bladeRef : backhandRef;
+    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    ref.current?.focus();
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background pb-[15vh]">
       <SEO
         title="Table Tennis Racket Configurator - Build Your Custom Setup"
         description="Configure your perfect table tennis racket with our professional configurator."
@@ -441,7 +455,7 @@ const Configurator = () => {
           </div>
 
           {/* Slot Machine Section */}
-          <div className="mb-12">
+          <div className="mb-12" ref={bladeRef}>
             <SlotMachine
               isPreassembled={isPreassembled}
               selectedBlade={selectedBlade}
@@ -498,6 +512,36 @@ const Configurator = () => {
           />
         </div>
       </main>
+      
+      {/* Review Strip */}
+      <ReviewStrip
+        totalPrice={stats.price}
+        level={isPreassembled ? selectedRacket.Racket_Level : selectedBlade.Blade_Level}
+        totalWeight={
+          isPreassembled
+            ? '~180g'
+            : `${(selectedBlade.Blade_Weight || 85) + (selectedForehand.Rubber_Weight || 45) + (selectedBackhand.Rubber_Weight || 45)}g`
+        }
+        selections={{
+          forehand: isPreassembled ? selectedRacket.Racket_Name : selectedForehand.Rubber_Name,
+          blade: isPreassembled ? selectedRacket.Racket_Name : selectedBlade.Blade_Name,
+          backhand: isPreassembled ? selectedRacket.Racket_Name : selectedBackhand.Rubber_Name,
+        }}
+        onChipClick={handleChipClick}
+      />
+      
+      {/* Sticky Decision Bar */}
+      <StickyDecisionBar
+        totalPrice={stats.price}
+        onAddToCart={handleAddToCart}
+        onAddToCompare={handleAddToCompare}
+        assembleForMe={assembleForMe}
+        onAssembleChange={setAssembleForMe}
+        sealsService={sealsService}
+        onSealsChange={setSealsService}
+        onRandomReroll={handleRandomReroll}
+        isPreassembled={isPreassembled}
+      />
       
       <Footer />
     </div>
