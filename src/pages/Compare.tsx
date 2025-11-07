@@ -15,6 +15,7 @@ import SEO from '@/components/SEO';
 import { useCartStore } from '@/stores/cartStore';
 import { fetchShopifyProducts, type ShopifyProduct } from '@/lib/shopify';
 import { toast } from 'sonner';
+import { rubbers } from '@/data/products';
 
 const Compare = () => {
   const { paddles, removePaddle, clearComparison, updateSponge } = useComparisonStore();
@@ -229,26 +230,28 @@ const Compare = () => {
                           {paddle.forehandRubber}
                         </span>
                       </div>
-                      {paddle.forehandSponge && (
-                        <div className="flex justify-between items-center">
-                          <span className="text-muted-foreground text-xs pl-4">Thickness:</span>
-                          <Select
-                            value={paddle.forehandSponge}
-                            onValueChange={(value) => updateSponge(paddle.id, 'forehand', value)}
-                          >
-                            <SelectTrigger className="h-7 w-24 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="1.5mm">1.5mm</SelectItem>
-                              <SelectItem value="1.8mm">1.8mm</SelectItem>
-                              <SelectItem value="2.0mm">2.0mm</SelectItem>
-                              <SelectItem value="2.1mm">2.1mm</SelectItem>
-                              <SelectItem value="Max">Max</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      )}
+                      {paddle.forehandSponge && (() => {
+                        const rubber = rubbers.find(r => r.Rubber_Name === paddle.forehandRubber);
+                        const availableSizes = rubber?.Rubber_Sponge_Sizes || ['1.5mm', '1.8mm', '2.0mm', '2.1mm', 'Max'];
+                        return (
+                          <div className="flex justify-between items-center">
+                            <span className="text-muted-foreground text-xs pl-4">Thickness:</span>
+                            <Select
+                              value={paddle.forehandSponge}
+                              onValueChange={(value) => updateSponge(paddle.id, 'forehand', value)}
+                            >
+                              <SelectTrigger className="h-7 w-24 text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {availableSizes.map(size => (
+                                  <SelectItem key={size} value={size}>{size}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        );
+                      })()}
                     </>
                   )}
                   {paddle.backhandRubber && (
@@ -259,26 +262,28 @@ const Compare = () => {
                           {paddle.backhandRubber}
                         </span>
                       </div>
-                      {paddle.backhandSponge && (
-                        <div className="flex justify-between items-center">
-                          <span className="text-muted-foreground text-xs pl-4">Thickness:</span>
-                          <Select
-                            value={paddle.backhandSponge}
-                            onValueChange={(value) => updateSponge(paddle.id, 'backhand', value)}
-                          >
-                            <SelectTrigger className="h-7 w-24 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="1.5mm">1.5mm</SelectItem>
-                              <SelectItem value="1.8mm">1.8mm</SelectItem>
-                              <SelectItem value="2.0mm">2.0mm</SelectItem>
-                              <SelectItem value="2.1mm">2.1mm</SelectItem>
-                              <SelectItem value="Max">Max</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      )}
+                      {paddle.backhandSponge && (() => {
+                        const rubber = rubbers.find(r => r.Rubber_Name === paddle.backhandRubber);
+                        const availableSizes = rubber?.Rubber_Sponge_Sizes || ['1.5mm', '1.8mm', '2.0mm', '2.1mm', 'Max'];
+                        return (
+                          <div className="flex justify-between items-center">
+                            <span className="text-muted-foreground text-xs pl-4">Thickness:</span>
+                            <Select
+                              value={paddle.backhandSponge}
+                              onValueChange={(value) => updateSponge(paddle.id, 'backhand', value)}
+                            >
+                              <SelectTrigger className="h-7 w-24 text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {availableSizes.map(size => (
+                                  <SelectItem key={size} value={size}>{size}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        );
+                      })()}
                     </>
                   )}
                 </div>
