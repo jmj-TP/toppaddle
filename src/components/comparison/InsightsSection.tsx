@@ -2,14 +2,16 @@ import { ComparisonPaddle } from '@/stores/comparisonStore';
 import { Check, ChevronRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { type PerformanceView } from './RadarComparisonChart';
 
 interface InsightsSectionProps {
   paddles: ComparisonPaddle[];
   selectedPaddleId?: string | null;
   onPaddleSelect?: (paddleId: string) => void;
+  performanceView?: PerformanceView;
 }
 
-export const InsightsSection = ({ paddles, selectedPaddleId, onPaddleSelect }: InsightsSectionProps) => {
+export const InsightsSection = ({ paddles, selectedPaddleId, onPaddleSelect, performanceView = 'overall' }: InsightsSectionProps) => {
   if (paddles.length < 2) return null;
 
   const selectedPaddle = paddles.find(p => p.id === selectedPaddleId) || paddles[0];
@@ -24,16 +26,38 @@ export const InsightsSection = ({ paddles, selectedPaddleId, onPaddleSelect }: I
     }
   };
 
+  const getStatsForView = (paddle: ComparisonPaddle) => {
+    if (performanceView === 'blade' && paddle.bladeStats) {
+      return paddle.bladeStats;
+    } else if (performanceView === 'forehand' && paddle.forehandStats) {
+      return paddle.forehandStats;
+    } else if (performanceView === 'backhand' && paddle.backhandStats) {
+      return paddle.backhandStats;
+    }
+    return {
+      speed: paddle.speed,
+      control: paddle.control,
+      power: paddle.power,
+      spin: paddle.spin,
+      price: paddle.price
+    };
+  };
+
   const generateInsights = (paddle1: ComparisonPaddle, paddle2: ComparisonPaddle) => {
     const insights: { text: string; isPositive: boolean }[] = [];
 
-    // Compare stats
-    const speedDiff = ((paddle1.speed - paddle2.speed) / paddle2.speed) * 100;
-    const controlDiff = ((paddle1.control - paddle2.control) / paddle2.control) * 100;
-    const powerDiff = ((paddle1.power - paddle2.power) / paddle2.power) * 100;
-    const spinDiff = ((paddle1.spin - paddle2.spin) / paddle2.spin) * 100;
-    const weightDiff = paddle1.weight - paddle2.weight;
-    const priceDiff = paddle1.price - paddle2.price;
+    const stats1 = getStatsForView(paddle1);
+    const stats2 = getStatsForView(paddle2);
+
+    // Compare stats based on view
+    const speedDiff = ((stats1.speed - stats2.speed) / stats2.speed) * 100;
+    const controlDiff = ((stats1.control - stats2.control) / stats2.control) * 100;
+    const powerDiff = ((stats1.power - stats2.power) / stats2.power) * 100;
+    const spinDiff = ((stats1.spin - stats2.spin) / stats2.spin) * 100;
+    const priceDiff = stats1.price - stats2.price;
+    
+    // Only include weight comparison for overall view
+    const weightDiff = performanceView === 'overall' ? paddle1.weight - paddle2.weight : null;
 
     // Show ALL differences, even tiny ones (0.1% threshold)
     if (Math.abs(speedDiff) > 0.1) {
@@ -64,7 +88,7 @@ export const InsightsSection = ({ paddles, selectedPaddleId, onPaddleSelect }: I
       });
     }
 
-    if (Math.abs(weightDiff) > 0.1) {
+    if (weightDiff !== null && Math.abs(weightDiff) > 0.1) {
       insights.push({
         text: `${Math.abs(weightDiff).toFixed(1)}g ${weightDiff > 0 ? 'heavier' : 'lighter'}`,
         isPositive: weightDiff < 0,
@@ -81,9 +105,22 @@ export const InsightsSection = ({ paddles, selectedPaddleId, onPaddleSelect }: I
     return insights;
   };
 
+  const getViewTitle = () => {
+    switch (performanceView) {
+      case 'blade':
+        return 'Blade Comparison';
+      case 'forehand':
+        return 'Forehand Rubber Comparison';
+      case 'backhand':
+        return 'Backhand Rubber Comparison';
+      default:
+        return 'Comparison Insights';
+    }
+  };
+
   return (
     <Card className="p-6">
-      <h2 className="text-xl font-bold mb-4">Comparison Insights</h2>
+      <h2 className="text-xl font-bold mb-4">{getViewTitle()}</h2>
       <div className="space-y-6">
         {otherPaddles.map((otherPaddle) => {
           const insights = generateInsights(selectedPaddle, otherPaddle);

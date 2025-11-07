@@ -410,6 +410,29 @@ const Configurator = () => {
         blade: selectedBlade.Blade_Name,
         forehandRubber: selectedForehand.Rubber_Name,
         backhandRubber: selectedBackhand.Rubber_Name,
+        forehandSponge: selectedForehandThickness,
+        backhandSponge: selectedBackhandThickness,
+        bladeStats: {
+          speed: selectedBlade.Blade_Speed,
+          control: selectedBlade.Blade_Control,
+          power: selectedBlade.Blade_Power,
+          spin: 0,
+          price: selectedBlade.Blade_Price
+        },
+        forehandStats: {
+          speed: selectedForehand.Rubber_Speed,
+          control: selectedForehand.Rubber_Control,
+          power: selectedForehand.Rubber_Speed,
+          spin: selectedForehand.Rubber_Spin,
+          price: selectedForehand.Rubber_Price
+        },
+        backhandStats: {
+          speed: selectedBackhand.Rubber_Speed,
+          control: selectedBackhand.Rubber_Control,
+          power: selectedBackhand.Rubber_Speed,
+          spin: selectedBackhand.Rubber_Spin,
+          price: selectedBackhand.Rubber_Price
+        }
       };
 
       addPaddle(comparisonPaddle);

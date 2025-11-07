@@ -325,6 +325,7 @@ const Compare = () => {
               paddles={paddles} 
               selectedPaddleId={selectedPaddle}
               onPaddleSelect={setSelectedPaddle}
+              performanceView={performanceView}
             />
           </div>
 

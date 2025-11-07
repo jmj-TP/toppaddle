@@ -283,7 +283,7 @@ export const RadarComparisonChart = ({
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart 
               data={data}
-              margin={{ top: 30, right: 50, bottom: 30, left: 50 }}
+              margin={{ top: 40, right: 50, bottom: 60, left: 50 }}
               className="mx-auto"
             >
               <PolarGrid stroke="hsl(var(--border))" />
