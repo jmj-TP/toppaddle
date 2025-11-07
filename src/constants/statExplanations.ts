@@ -22,7 +22,7 @@ export const statExplanations: Record<string, StatExplanation> = {
   },
   Value: {
     short: "Stats per dollar - performance to price ratio",
-    detailed: "Value represents cost-effectiveness. Calculated as: (1 ÷ (Price ÷ Total Stats)) × 100, capped at 100. A setup with 240 stats at $240 ($1 per stat) scores 100 - perfect reference! A setup with 200 stats at $400 ($2 per stat) scores 50. A setup with 300 stats at $150 ($0.50 per stat) scores 100 (capped). Higher value means better bang for your buck. Score of 100 = $1 or less per stat - excellent value!"
+    detailed: "Value represents cost-effectiveness. Calculated as: (Total Stats ÷ Price ÷ 2) × 100, capped at 100. Example: 220 total stats at $142 = 1.55 stats/$1 = 77.5 value. A setup with 2 stats per dollar ($0.50 per stat) scores 100 - exceptional value! A setup with 1 stat per dollar ($1 per stat) scores 50 - average value. Higher value means better bang for your buck."
   },
   Weight: {
     short: "Total assembled paddle weight in grams",

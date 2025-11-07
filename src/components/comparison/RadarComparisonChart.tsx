@@ -110,14 +110,14 @@ export const RadarComparisonChart = ({
     
     if (price <= 0 || totalStats === 0) return 0;
     
-    // Cost per stat (price / total stats)
-    const costPerStat = price / totalStats;
+    // Stats per dollar
+    const statsPerDollar = totalStats / price;
     
-    // Value = (1 / costPerStat) × 100, capped at 100
-    // $1 per stat = 100 value (perfect reference)
-    // $2 per stat = 50 value
-    // $0.5 per stat = 200, capped at 100
-    const value = (1 / costPerStat) * 100;
+    // Value = (statsPerDollar / 2) × 100, capped at 100
+    // 2 stats per dollar ($0.5 per stat) = 100 value (maximum)
+    // 1 stat per dollar ($1 per stat) = 50 value
+    // 0.5 stats per dollar ($2 per stat) = 25 value
+    const value = (statsPerDollar / 2) * 100;
     return Math.min(100, Math.max(0, value));
   };
 

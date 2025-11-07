@@ -47,12 +47,12 @@ const Compare = () => {
 
   const bestValue = paddles.reduce((best, paddle) => {
     const paddleTotalStats = paddle.speed + paddle.control + paddle.power + paddle.spin;
-    const paddleCostPerStat = paddle.price / paddleTotalStats;
-    const paddleValue = Math.min(100, (1 / paddleCostPerStat) * 100);
+    const paddleStatsPerDollar = paddleTotalStats / paddle.price;
+    const paddleValue = Math.min(100, (paddleStatsPerDollar / 2) * 100);
     
     const bestTotalStats = best.speed + best.control + best.power + best.spin;
-    const bestCostPerStat = best.price / bestTotalStats;
-    const bestValueScore = Math.min(100, (1 / bestCostPerStat) * 100);
+    const bestStatsPerDollar = bestTotalStats / best.price;
+    const bestValueScore = Math.min(100, (bestStatsPerDollar / 2) * 100);
     
     return paddleValue > bestValueScore ? paddle : best;
   }, paddles[0]);
