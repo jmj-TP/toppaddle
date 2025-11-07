@@ -152,13 +152,66 @@ const StatsDisplay = ({
       // Save current setup for undo
       setPreviousSetup({ blade, forehand, backhand });
       
-      // Build QuizAnswers from preferences
+      // Build QuizAnswers from preferences with more nuanced logic
+      const avgSpeed = showAdvanced 
+        ? (editForehandSpeed + editBladeSpeed + editBackhandSpeed) / 3
+        : editSpeed;
+      const avgControl = showAdvanced
+        ? (editForehandControl + editBladeControl + editBackhandControl) / 3
+        : editControl;
+      const avgSpin = showAdvanced
+        ? (editForehandSpin + editBladeSpin + editBackhandSpin) / 3
+        : editSpin;
+      const avgPower = showAdvanced
+        ? (editForehandPower + editBladePower + editBackhandPower) / 3
+        : editPower;
+      
+      // Determine playstyle based on dominant stats
+      let playstyle = 'Allround';
+      if (avgSpeed > avgControl && avgSpeed > 60) {
+        playstyle = 'Offensive';
+      } else if (avgControl > avgSpeed && avgControl > 60) {
+        playstyle = 'Defensive';
+      }
+      
+      // Determine forehand style based on forehand stats
+      let forehandStyle = 'Spin & topspin';
+      const fhSpeed = showAdvanced ? editForehandSpeed : editSpeed;
+      const fhControl = showAdvanced ? editForehandControl : editControl;
+      const fhSpin = showAdvanced ? editForehandSpin : editSpin;
+      
+      if (fhSpeed > Math.max(fhControl, fhSpin) && fhSpeed > 65) {
+        forehandStyle = 'Fast & aggressive';
+      } else if (fhControl > Math.max(fhSpeed, fhSpin) && fhControl > 65) {
+        forehandStyle = 'Calm & controlled';
+      }
+      
+      // Determine backhand style based on backhand stats
+      let backhandStyle = 'Spin & topspin';
+      const bhSpeed = showAdvanced ? editBackhandSpeed : editSpeed;
+      const bhControl = showAdvanced ? editBackhandControl : editControl;
+      const bhSpin = showAdvanced ? editBackhandSpin : editSpin;
+      
+      if (bhSpeed > Math.max(bhControl, bhSpin) && bhSpeed > 65) {
+        backhandStyle = 'Fast & aggressive';
+      } else if (bhControl > Math.max(bhSpeed, bhSpin) && bhControl > 65) {
+        backhandStyle = 'Calm & controlled';
+      }
+      
+      // Determine power preference
+      let powerPref = 'Balanced';
+      if (avgPower > 70 || avgSpeed > 75) {
+        powerPref = 'A lot of power';
+      } else if (avgControl > 70) {
+        powerPref = 'Control is more important';
+      }
+      
       const quizAnswers: QuizAnswers = {
         Level: editLevel,
-        Playstyle: editSpeed > 70 ? 'Offensive' : editControl > 70 ? 'Defensive' : 'Allround',
-        Forehand: editSpeed > 70 ? 'Fast & aggressive' : editControl > 70 ? 'Calm & controlled' : 'Spin & topspin',
-        Backhand: editSpeed > 70 ? 'Fast & aggressive' : editControl > 70 ? 'Calm & controlled' : 'Spin & topspin',
-        Power: editSpeed > 70 ? 'A lot of power' : editControl > 70 ? 'Control is more important' : 'Balanced',
+        Playstyle: playstyle,
+        Forehand: forehandStyle,
+        Backhand: backhandStyle,
+        Power: powerPref,
         HandlePreference: 'Shakehand',
         Grip: blade?.Blade_Grip?.[0] || 'Flared',
         WantsSpecialRubbers: 'No',
@@ -452,24 +505,6 @@ const StatsDisplay = ({
           
           {showAdvanced && !racket && (
             <div className="mt-[2vh] space-y-[2vh] pt-[2vh] border-t border-border">
-              {/* Top buttons for Advanced section */}
-              <div className="flex gap-[2vw] mb-[2vh]">
-                <Button
-                  onClick={handleSavePreferences}
-                  variant="default"
-                  className="flex-1 rounded-xl py-[2.5vh] text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] font-semibold"
-                >
-                  Save Preferences
-                </Button>
-                <Button
-                  onClick={() => setShowAdvanced(false)}
-                  variant="outline"
-                  className="flex-1 rounded-xl py-[2.5vh] text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)]"
-                >
-                  Hide Advanced
-                </Button>
-              </div>
-              
               <div className="space-y-[1vh]">
                 <h4 className="text-[3.5vw] lg:text-[0.95vw] font-semibold text-foreground mb-[1.5vh]">
                   🔴 Forehand Rubber
@@ -498,6 +533,24 @@ const StatsDisplay = ({
                 <StatSlider label="Spin" value={editBackhandSpin} icon={Target} onChange={setEditBackhandSpin} />
                 <StatSlider label="Control" value={editBackhandControl} icon={Shield} onChange={setEditBackhandControl} />
                 <StatSlider label="Power" value={editBackhandPower} icon={Star} onChange={setEditBackhandPower} />
+              </div>
+              
+              {/* Bottom buttons for Advanced section */}
+              <div className="flex gap-[2vw] pt-[2vh]">
+                <Button
+                  onClick={handleSavePreferences}
+                  variant="default"
+                  className="flex-1 rounded-xl py-[2.5vh] text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] font-semibold"
+                >
+                  Save Preferences
+                </Button>
+                <Button
+                  onClick={() => setShowAdvanced(false)}
+                  variant="outline"
+                  className="flex-1 rounded-xl py-[2.5vh] text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)]"
+                >
+                  Hide Advanced
+                </Button>
               </div>
             </div>
           )}
@@ -581,7 +634,12 @@ const StatsDisplay = ({
               </div>
             </div>
             <div className="transition-all duration-250 motion-reduce:transition-none">
-              <RadarComparisonChart paddles={getRadarData()} />
+              <RadarComparisonChart 
+                paddles={getRadarData()} 
+                includeValue={showValue}
+                includeWeight={showWeight}
+                hideControls={true}
+              />
             </div>
           </div>
         </>
