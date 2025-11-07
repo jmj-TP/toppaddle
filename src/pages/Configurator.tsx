@@ -1,14 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import WheelCard from "@/components/configurator/WheelCard";
-import ReviewStrip from "@/components/configurator/ReviewStrip";
-import UtilityDrawer from "@/components/configurator/UtilityDrawer";
-import StickyDecisionBar from "@/components/configurator/StickyDecisionBar";
-import RacketRadar from "@/components/configurator/RacketRadar";
-import { Button } from "@/components/ui/button";
-import { blades, rubbers, preAssembledRackets, estimateBladeWeight, estimateRubberWeight } from "@/data/products";
+import SlotMachine from "@/components/configurator/SlotMachine";
+import StatsDisplay, { type UserPreferences } from "@/components/configurator/StatsDisplay";
+import { blades, rubbers, preAssembledRackets } from "@/data/products";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
@@ -18,8 +14,9 @@ import { useCartStore } from "@/stores/cartStore";
 import { useComparisonStore, type ComparisonPaddle } from "@/stores/comparisonStore";
 import tableTennisImage from "@/assets/table-tennis.png";
 import { HelpCircle, ArrowRight } from "lucide-react";
+import { ProductFilters } from "@/components/configurator/ProductFilter";
 
-const ConfiguratorNew = () => {
+const Configurator = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [isPreassembled, setIsPreassembled] = useState(false);
@@ -52,14 +49,32 @@ const ConfiguratorNew = () => {
   const [selectedForehandColor, setSelectedForehandColor] = useState<string>("Red");
   const [selectedBackhandColor, setSelectedBackhandColor] = useState<string>("Black");
 
-  // Refs for scrolling to cards
-  const forehandRef = useRef<HTMLDivElement | null>(null);
-  const bladeRef = useRef<HTMLDivElement | null>(null);
-  const backhandRef = useRef<HTMLDivElement | null>(null);
-  const racketRef = useRef<HTMLDivElement | null>(null);
+  // Filter states
+  const [forehandFilters, setForehandFilters] = useState<ProductFilters>({
+    maxPrice: 999999,
+    level: ["All"],
+    style: ["All"],
+    brand: ["All"],
+  });
+  const [bladeFilters, setBladeFilters] = useState<ProductFilters>({
+    maxPrice: 999999,
+    level: ["All"],
+    style: ["All"],
+    brand: ["All"],
+  });
+  const [backhandFilters, setBackhandFilters] = useState<ProductFilters>({
+    maxPrice: 999999,
+    level: ["All"],
+    style: ["All"],
+    brand: ["All"],
+  });
 
-  // Undo state for random reroll
-  const [undoState, setUndoState] = useState<any>(null);
+  const [forehandFilterOpen, setForehandFilterOpen] = useState(false);
+  const [bladeFilterOpen, setBladeFilterOpen] = useState(false);
+  const [backhandFilterOpen, setBackhandFilterOpen] = useState(false);
+
+  // Spin trigger for slot machine
+  const [spinTrigger, setSpinTrigger] = useState(0);
 
   // Initialize default thicknesses based on selected rubbers
   useEffect(() => {
@@ -120,45 +135,12 @@ const ConfiguratorNew = () => {
   }, []);
 
   const handleRandomReroll = () => {
-    // Store current state for undo
-    setUndoState({
-      blade: selectedBlade,
-      forehand: selectedForehand,
-      backhand: selectedBackhand,
-      racket: selectedRacket,
-      isPreassembled
-    });
-
-    if (isPreassembled) {
-      const random = preAssembledRackets[Math.floor(Math.random() * preAssembledRackets.length)];
-      setSelectedRacket(random);
-      toast.success("Randomized!", { description: `Now showing ${random.Racket_Name}` });
-    } else {
-      const randomBlade = blades[Math.floor(Math.random() * blades.length)];
-      const randomForehand = rubbers[Math.floor(Math.random() * rubbers.length)];
-      const randomBackhand = rubbers[Math.floor(Math.random() * rubbers.length)];
-      
-      setSelectedBlade(randomBlade);
-      setSelectedForehand(randomForehand);
-      setSelectedBackhand(randomBackhand);
-      
-      toast.success("Randomized!", { 
-        description: `${randomBlade.Blade_Name} + ${randomForehand.Rubber_Name} + ${randomBackhand.Rubber_Name}` 
-      });
-    }
+    setSpinTrigger(prev => prev + 1);
   };
 
-  const handleUndo = () => {
-    if (!undoState) return;
-    
-    setSelectedBlade(undoState.blade);
-    setSelectedForehand(undoState.forehand);
-    setSelectedBackhand(undoState.backhand);
-    setSelectedRacket(undoState.racket);
-    setIsPreassembled(undoState.isPreassembled);
-    
-    toast.success("Undone!", { description: "Previous configuration restored" });
-    setUndoState(null);
+  const handlePreferencesChange = (preferences: UserPreferences) => {
+    // Handle preferences change logic
+    toast.success("Preferences updated!");
   };
 
   const calculateStats = () => {
@@ -169,18 +151,15 @@ const ConfiguratorNew = () => {
         control: selectedRacket.Racket_Control,
         power: Math.round((selectedRacket.Racket_Speed + selectedRacket.Racket_Spin) / 2),
         price: selectedRacket.Racket_Price,
-        weight: 175,
-        level: selectedRacket.Racket_Level
       };
     } else {
       const speed = Math.round((selectedBlade.Blade_Speed + selectedForehand.Rubber_Speed + selectedBackhand.Rubber_Speed) / 3);
       const spin = Math.round((selectedBlade.Blade_Spin + selectedForehand.Rubber_Spin + selectedBackhand.Rubber_Spin) / 3);
       const control = Math.round((selectedBlade.Blade_Control + selectedForehand.Rubber_Control + selectedBackhand.Rubber_Control) / 3);
       const power = Math.round((speed + spin) / 2);
-      const totalPrice = selectedBlade.Blade_Price + selectedForehand.Rubber_Price + selectedBackhand.Rubber_Price + (sealsService ? 5.49 : 0);
-      const weight = estimateBladeWeight(selectedBlade) + estimateRubberWeight(selectedForehand) + estimateRubberWeight(selectedBackhand);
+      const totalPrice = selectedBlade.Blade_Price + selectedForehand.Rubber_Price + selectedBackhand.Rubber_Price + (sealsService ? 5.49 : 0) + (assembleForMe ? 0 : 0);
       
-      return { speed, spin, control, power, price: totalPrice, weight, level: selectedBlade.Blade_Level };
+      return { speed, spin, control, power, price: totalPrice };
     }
   };
 
@@ -361,7 +340,7 @@ const ConfiguratorNew = () => {
         power: stats.power,
         spin: selectedRacket.Racket_Spin,
         price: selectedRacket.Racket_Price,
-        weight: stats.weight,
+        weight: 180,
         level: selectedRacket.Racket_Level as "Beginner" | "Intermediate" | "Advanced",
       } : {
         id: `custom-${selectedBlade.Blade_Name}-${Date.now()}`,
@@ -372,7 +351,7 @@ const ConfiguratorNew = () => {
         power: stats.power,
         spin: stats.spin,
         price: stats.price,
-        weight: stats.weight,
+        weight: (selectedBlade.Blade_Weight || 85) + (selectedForehand.Rubber_Weight || 45) + (selectedBackhand.Rubber_Weight || 45),
         level: selectedBlade.Blade_Level as "Beginner" | "Intermediate" | "Advanced",
         blade: selectedBlade.Blade_Name,
         forehandRubber: selectedForehand.Rubber_Name,
@@ -391,17 +370,6 @@ const ConfiguratorNew = () => {
     } catch (error) {
       console.error("Error adding to comparison:", error);
       toast.error("Failed to add to comparison");
-    }
-  };
-
-  const handleChipClick = (id: string) => {
-    const ref = id === "forehand" ? forehandRef.current :
-                id === "blade" ? bladeRef.current :
-                id === "backhand" ? backhandRef.current :
-                racketRef.current;
-    
-    if (ref) {
-      ref.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   };
 
@@ -425,8 +393,8 @@ const ConfiguratorNew = () => {
       />
       <Header />
       
-      <main className="flex-1 pb-24">
-        <div className="container mx-auto px-4 max-w-7xl py-8">
+      <main className="flex-1">
+        <div className="container mx-auto px-4 py-8">
           {/* Help Banner */}
           <div className="mb-8 max-w-3xl mx-auto">
             <a
@@ -446,127 +414,94 @@ const ConfiguratorNew = () => {
           </div>
           
           {/* Header */}
-          <div className="mb-8 space-y-4 text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-              Build Your Perfect Paddle
-            </h1>
+          <div className="mb-8 text-center">
+            <h1 className="text-4xl font-bold mb-6 text-foreground">Configure Your Perfect Paddle</h1>
             <div className="inline-flex items-center gap-1 bg-muted rounded-full p-1">
-              <Button
+              <button
                 onClick={() => setIsPreassembled(false)}
-                variant={!isPreassembled ? "default" : "ghost"}
-                className="rounded-full px-5 py-1.5 text-sm font-medium transition-all"
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                  !isPreassembled
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
-                Custom
-              </Button>
-              <Button
+                Custom Build
+              </button>
+              <button
                 onClick={() => setIsPreassembled(true)}
-                variant={isPreassembled ? "default" : "ghost"}
-                className="rounded-full px-5 py-1.5 text-sm font-medium transition-all"
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                  isPreassembled
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 Pre-Assembled
-              </Button>
+              </button>
             </div>
           </div>
 
-          {/* Configure Section - Three Wheel Cards */}
-          <div className="mb-8">
-            {isPreassembled ? (
-              <div className="max-w-md mx-auto">
-                <WheelCard
-                  type="racket"
-                  item={selectedRacket}
-                  options={[
-                    { label: "Price", value: `$${selectedRacket.Racket_Price}` },
-                    { label: "Level", value: selectedRacket.Racket_Level }
-                  ]}
-                  onScroll={(ref) => racketRef.current = ref}
-                />
-              </div>
-            ) : (
-              <div className="grid md:grid-cols-3 gap-4">
-                <WheelCard
-                  type="forehand"
-                  item={selectedForehand}
-                  options={[
-                    { label: "Sponge", value: selectedForehandThickness },
-                    { label: "Color", value: selectedForehandColor }
-                  ]}
-                  onScroll={(ref) => forehandRef.current = ref}
-                />
-                <WheelCard
-                  type="blade"
-                  item={selectedBlade}
-                  options={[
-                    { label: "Grip", value: selectedGrip }
-                  ]}
-                  onScroll={(ref) => bladeRef.current = ref}
-                />
-                <WheelCard
-                  type="backhand"
-                  item={selectedBackhand}
-                  options={[
-                    { label: "Sponge", value: selectedBackhandThickness },
-                    { label: "Color", value: selectedBackhandColor }
-                  ]}
-                  onScroll={(ref) => backhandRef.current = ref}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Tune Section - Racket Radar */}
-          <div className="mb-8 max-w-2xl mx-auto">
-            <RacketRadar
-              speed={stats.speed}
-              spin={stats.spin}
-              control={stats.control}
-              power={stats.power}
-              weight={stats.weight}
-              value={stats.price}
+          {/* Slot Machine Section */}
+          <div className="mb-12">
+            <SlotMachine
+              isPreassembled={isPreassembled}
+              selectedBlade={selectedBlade}
+              selectedForehand={selectedForehand}
+              selectedBackhand={selectedBackhand}
+              selectedRacket={selectedRacket}
+              onBladeChange={setSelectedBlade}
+              onForehandChange={setSelectedForehand}
+              onBackhandChange={setSelectedBackhand}
+              onRacketChange={setSelectedRacket}
+              spinTrigger={spinTrigger}
+              selectedGrip={selectedGrip}
+              selectedForehandThickness={selectedForehandThickness}
+              selectedBackhandThickness={selectedBackhandThickness}
+              selectedForehandColor={selectedForehandColor}
+              selectedBackhandColor={selectedBackhandColor}
+              onGripChange={setSelectedGrip}
+              onForehandThicknessChange={setSelectedForehandThickness}
+              onBackhandThicknessChange={setSelectedBackhandThickness}
+              onForehandColorChange={setSelectedForehandColor}
+              onBackhandColorChange={setSelectedBackhandColor}
+              forehandFilters={forehandFilters}
+              bladeFilters={bladeFilters}
+              backhandFilters={backhandFilters}
+              onForehandFiltersChange={setForehandFilters}
+              onBladeFiltersChange={setBladeFilters}
+              onBackhandFiltersChange={setBackhandFilters}
+              forehandFilterOpen={forehandFilterOpen}
+              bladeFilterOpen={bladeFilterOpen}
+              backhandFilterOpen={backhandFilterOpen}
+              onForehandFilterOpenChange={setForehandFilterOpen}
+              onBladeFilterOpenChange={setBladeFilterOpen}
+              onBackhandFilterOpenChange={setBackhandFilterOpen}
             />
           </div>
-        </div>
 
-        {/* Review Strip */}
-        <ReviewStrip
-          totalPrice={stats.price}
-          level={stats.level}
-          totalWeight={stats.weight}
-          selections={
-            isPreassembled
-              ? [{ id: "racket", name: selectedRacket.Racket_Name, label: "Racket" }]
-              : [
-                  { id: "forehand", name: selectedForehand.Rubber_Name, label: "Forehand" },
-                  { id: "blade", name: selectedBlade.Blade_Name, label: "Blade" },
-                  { id: "backhand", name: selectedBackhand.Rubber_Name, label: "Backhand" },
-                ]
-          }
-          onChipClick={handleChipClick}
-        />
-      </main>
-
-      {/* Sticky Decision Bar */}
-      <StickyDecisionBar
-        totalPrice={stats.price}
-        onAddToCart={handleAddToCart}
-        onCompare={handleAddToCompare}
-        isLoading={isLoadingProducts}
-        utilityButton={
-          <UtilityDrawer
+          {/* Stats Display Section */}
+          <StatsDisplay
+            stats={calculateStats()}
+            level={isPreassembled ? selectedRacket.Racket_Level : selectedBlade.Blade_Level}
+            blade={isPreassembled ? null : selectedBlade}
+            forehand={isPreassembled ? null : selectedForehand}
+            backhand={isPreassembled ? null : selectedBackhand}
+            racket={isPreassembled ? selectedRacket : null}
+            onRandomReroll={handleRandomReroll}
+            onPreferencesChange={handlePreferencesChange}
+            onAddToCart={handleAddToCart}
+            onAddToCompare={handleAddToCompare}
+            isPreassembled={isPreassembled}
             assembleForMe={assembleForMe}
             onAssembleChange={setAssembleForMe}
             sealsService={sealsService}
             onSealsChange={setSealsService}
-            onRandomReroll={handleRandomReroll}
-            onUndo={undoState ? handleUndo : undefined}
-            isCustomMode={!isPreassembled}
           />
-        }
-      />
+        </div>
+      </main>
       
       <Footer />
     </div>
   );
 };
 
-export default ConfiguratorNew;
+export default Configurator;

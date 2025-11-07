@@ -2,7 +2,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { ExternalLink, Gauge, Target, Shield, Star, Settings, DollarSign, Scale, Wrench, GitCompare } from "lucide-react";
+import { ExternalLink, Gauge, Target, Shield, Star, Settings, DollarSign, Scale, Wrench, GitCompare, ShoppingCart } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -393,14 +393,14 @@ const StatsDisplay = ({
           <Button
             onClick={onRandomReroll}
             size="lg"
-            className="w-full text-xl py-8 font-bold shadow-lg hover:shadow-xl transition-all bg-orange-500 hover:bg-orange-600 text-white border-4 border-black rounded-2xl"
+            className="w-full text-xl py-8 font-bold shadow-lg hover:shadow-xl transition-all bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl"
           >
             Random Reroll
           </Button>
           {onAddToCart && (
             <>
               {!isPreassembled && (
-                <div className="bg-accent/10 border-2 border-accent/20 rounded-xl p-4 space-y-3">
+                <div className="bg-card border border-border rounded-xl p-4 space-y-3">
                   <div className="flex items-start gap-3">
                     <Wrench className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
                     <div className="flex-1 space-y-2">
@@ -415,6 +415,7 @@ const StatsDisplay = ({
                       id="assemble" 
                       checked={assembleForMe}
                       onCheckedChange={onAssembleChange}
+                      className="data-[state=checked]:bg-accent data-[state=checked]:border-accent"
                     />
                     <Label 
                       htmlFor="assemble" 
@@ -426,9 +427,9 @@ const StatsDisplay = ({
                 </div>
               )}
               {!isPreassembled && (
-                <div className="bg-primary/10 border-2 border-primary/20 rounded-xl p-4 space-y-3">
+                <div className="bg-card border border-border rounded-xl p-4 space-y-3">
                   <div className="flex items-start gap-3">
-                    <Shield className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                    <Shield className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
                     <div className="flex-1 space-y-2">
                       <h4 className="font-semibold text-sm">Blade Seals Service ($5.49)</h4>
                       <p className="text-xs text-muted-foreground">
@@ -441,6 +442,7 @@ const StatsDisplay = ({
                       id="seals" 
                       checked={sealsService}
                       onCheckedChange={onSealsChange}
+                      className="data-[state=checked]:bg-accent data-[state=checked]:border-accent"
                     />
                     <Label 
                       htmlFor="seals" 
@@ -454,9 +456,19 @@ const StatsDisplay = ({
               <Button
                 onClick={onAddToCart}
                 size="lg"
-                className="w-full text-xl py-8 font-bold shadow-lg hover:shadow-xl transition-all border-4 border-black rounded-2xl"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold py-6 rounded-xl shadow-lg transition-all"
               >
+                <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
+              </Button>
+              <Button
+                onClick={onAddToCompare}
+                variant="outline"
+                size="lg"
+                className="w-full text-lg font-semibold py-6 rounded-xl border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all"
+              >
+                <GitCompare className="mr-2 h-5 w-5" />
+                Compare
               </Button>
               {onAddToCompare && (
                 <Button
