@@ -390,7 +390,7 @@ const Configurator = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background pb-[15vh]">
+    <div className="min-h-screen flex flex-col bg-background pb-[15vh] overflow-x-hidden">
       <SEO
         title="Table Tennis Racket Configurator - Build Your Custom Setup"
         description="Configure your perfect table tennis racket with our professional configurator."
@@ -509,6 +509,9 @@ const Configurator = () => {
             onAssembleChange={setAssembleForMe}
             sealsService={sealsService}
             onSealsChange={setSealsService}
+            onBladeChange={setSelectedBlade}
+            onForehandChange={setSelectedForehand}
+            onBackhandChange={setSelectedBackhand}
           />
         </div>
       </main>

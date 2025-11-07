@@ -1,17 +1,21 @@
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { ExternalLink, Gauge, Target, Shield, Star, Settings, DollarSign, Scale, Wrench, GitCompare, ShoppingCart } from "lucide-react";
+import { Gauge, Target, Shield, Star, Settings, Scale, SkipForward } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { RadarComparisonChart } from "@/components/comparison/RadarComparisonChart";
-import type { ComparisonPaddle } from "@/stores/comparisonStore";
 import { StatSlider } from "@/components/configurator/StatSlider";
+import { getRecommendation, findBestCustomSetups } from "@/utils/ratingSystem";
+import type { QuizAnswers } from "@/utils/ratingSystem";
+import { useQuizStore } from "@/stores/quizStore";
+import { toast } from "sonner";
+import { blades, rubbers } from "@/data/products";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface UserPreferences {
   budget: number;
@@ -57,6 +61,9 @@ interface StatsDisplayProps {
   onAssembleChange: (value: boolean) => void;
   sealsService: boolean;
   onSealsChange: (value: boolean) => void;
+  onBladeChange?: (blade: Blade) => void;
+  onForehandChange?: (rubber: Rubber) => void;
+  onBackhandChange?: (rubber: Rubber) => void;
 }
 
 const StatsDisplay = ({
@@ -75,6 +82,9 @@ const StatsDisplay = ({
   onAssembleChange,
   sealsService,
   onSealsChange,
+  onBladeChange,
+  onForehandChange,
+  onBackhandChange,
 }: StatsDisplayProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -85,6 +95,18 @@ const StatsDisplay = ({
   const [editControl, setEditControl] = useState(stats.control);
   const [editPower, setEditPower] = useState(stats.power);
   const [editWeight, setEditWeight] = useState<number>(200);
+  
+  const [radarView, setRadarView] = useState<'overall' | 'forehand' | 'blade' | 'backhand'>('overall');
+  const [showValue, setShowValue] = useState(true);
+  const [showWeight, setShowWeight] = useState(true);
+  
+  const [previousSetup, setPreviousSetup] = useState<{
+    blade: Blade | null;
+    forehand: Rubber | null;
+    backhand: Rubber | null;
+  } | null>(null);
+  
+  const quizStore = useQuizStore();
   
   const [editForehandSpeed, setEditForehandSpeed] = useState(forehand?.Rubber_Speed || 50);
   const [editForehandSpin, setEditForehandSpin] = useState(forehand?.Rubber_Spin || 50);
@@ -126,6 +148,57 @@ const StatsDisplay = ({
   };
 
   const handleSavePreferences = () => {
+    if (!isPreassembled && onBladeChange && onForehandChange && onBackhandChange) {
+      // Save current setup for undo
+      setPreviousSetup({ blade, forehand, backhand });
+      
+      // Build QuizAnswers from preferences
+      const quizAnswers: QuizAnswers = {
+        Level: editLevel,
+        Playstyle: editSpeed > 70 ? 'Offensive' : editControl > 70 ? 'Defensive' : 'Allround',
+        Forehand: editSpeed > 70 ? 'Fast & aggressive' : editControl > 70 ? 'Calm & controlled' : 'Spin & topspin',
+        Backhand: editSpeed > 70 ? 'Fast & aggressive' : editControl > 70 ? 'Calm & controlled' : 'Spin & topspin',
+        Power: editSpeed > 70 ? 'A lot of power' : editControl > 70 ? 'Control is more important' : 'Balanced',
+        HandlePreference: 'Shakehand',
+        Grip: blade?.Blade_Grip?.[0] || 'Flared',
+        WantsSpecialRubbers: 'No',
+        ForehandRubberStyle: forehand?.Rubber_Style || 'Normal',
+        BackhandRubberStyle: backhand?.Rubber_Style || 'Normal',
+        Brand: [],
+        Budget: editBudget === 999999 ? 'No limit' : `<${editBudget}$`,
+        WeightPreference: editWeight < 170 ? 'Lightweight' : editWeight > 200 ? 'Heavy' : 'Medium',
+        AssemblyPreference: 'Custom setup'
+      };
+      
+      // Run the matching algorithm
+      const customSetups = findBestCustomSetups(quizAnswers, 1);
+      
+      if (customSetups.length > 0) {
+        const bestSetup = customSetups[0];
+        onBladeChange(bestSetup.blade);
+        onForehandChange(bestSetup.forehandRubber);
+        onBackhandChange(bestSetup.backhandRubber);
+        
+        toast.success("Your setup was optimized to match your preferences.", {
+          action: {
+            label: "Undo",
+            onClick: () => {
+              if (previousSetup) {
+                onBladeChange(previousSetup.blade!);
+                onForehandChange(previousSetup.forehand!);
+                onBackhandChange(previousSetup.backhand!);
+                setPreviousSetup(null);
+                toast.info("Setup restored");
+              }
+            }
+          },
+          duration: 5000
+        });
+      } else {
+        toast.error("Could not find matching setup with these preferences");
+      }
+    }
+    
     if (onPreferencesChange) {
       const preferences: UserPreferences = {
         budget: editBudget,
@@ -154,6 +227,7 @@ const StatsDisplay = ({
       
       onPreferencesChange(preferences);
     }
+    
     setIsEditMode(false);
     setShowAdvanced(false);
   };
@@ -165,26 +239,123 @@ const StatsDisplay = ({
     return `${(blade?.Blade_Weight || 85) + (forehand?.Rubber_Weight || 45) + (backhand?.Rubber_Weight || 45)}g`;
   };
 
-  const StatBar = ({ label, value, Icon }: { label: string; value: number; Icon: any }) => (
-    <div className="py-[1.5vh] px-[2vw] bg-muted/30 rounded-xl">
-      <div className="flex items-center gap-[1vw] mb-[1vh]">
-        <Icon className="w-[4vw] h-[4vw] lg:w-[1.2vw] lg:h-[1.2vw] text-muted-foreground flex-shrink-0" />
-        <span className="text-[3.5vw] lg:text-[0.9vw] font-medium text-foreground">{label}</span>
-        <span className="text-[3.5vw] lg:text-[0.9vw] font-semibold text-accent ml-auto">{value}</span>
+  const cycleRadarView = () => {
+    const views: typeof radarView[] = ['forehand', 'blade', 'backhand', 'overall'];
+    const currentIndex = views.indexOf(radarView);
+    setRadarView(views[(currentIndex + 1) % views.length]);
+  };
+  
+  const getRadarData = () => {
+    if (radarView === 'overall') {
+      return [{
+        id: racket ? racket.Racket_Name : `${blade?.Blade_Name}-${forehand?.Rubber_Name}-${backhand?.Rubber_Name}`,
+        name: racket ? racket.Racket_Name : "Overall setup",
+        image: "",
+        speed: stats.speed,
+        control: stats.control,
+        power: stats.power,
+        spin: stats.spin,
+        price: Math.round(stats.price),
+        weight: racket ? 180 : (blade?.Blade_Weight || 85) + (forehand?.Rubber_Weight || 45) + (backhand?.Rubber_Weight || 45),
+        level: level as "Beginner" | "Intermediate" | "Advanced",
+        blade: blade?.Blade_Name,
+        forehandRubber: forehand?.Rubber_Name,
+        backhandRubber: backhand?.Rubber_Name
+      }];
+    } else if (radarView === 'forehand' && forehand) {
+      return [{
+        id: forehand.Rubber_Name,
+        name: `FH Rubber: ${forehand.Rubber_Name}`,
+        image: "",
+        speed: forehand.Rubber_Speed,
+        control: forehand.Rubber_Control,
+        power: forehand.Rubber_Power || Math.round((forehand.Rubber_Speed + forehand.Rubber_Spin) / 2),
+        spin: forehand.Rubber_Spin,
+        price: forehand.Rubber_Price,
+        weight: forehand.Rubber_Weight,
+        level: level as "Beginner" | "Intermediate" | "Advanced"
+      }];
+    } else if (radarView === 'blade' && blade) {
+      return [{
+        id: blade.Blade_Name,
+        name: `Blade: ${blade.Blade_Name}`,
+        image: "",
+        speed: blade.Blade_Speed,
+        control: blade.Blade_Control,
+        power: blade.Blade_Power || Math.round((blade.Blade_Speed + blade.Blade_Spin) / 2),
+        spin: blade.Blade_Spin,
+        price: blade.Blade_Price,
+        weight: blade.Blade_Weight,
+        level: level as "Beginner" | "Intermediate" | "Advanced"
+      }];
+    } else if (radarView === 'backhand' && backhand) {
+      return [{
+        id: backhand.Rubber_Name,
+        name: `BH Rubber: ${backhand.Rubber_Name}`,
+        image: "",
+        speed: backhand.Rubber_Speed,
+        control: backhand.Rubber_Control,
+        power: backhand.Rubber_Power || Math.round((backhand.Rubber_Speed + backhand.Rubber_Spin) / 2),
+        spin: backhand.Rubber_Spin,
+        price: backhand.Rubber_Price,
+        weight: backhand.Rubber_Weight,
+        level: level as "Beginner" | "Intermediate" | "Advanced"
+      }];
+    }
+    return [];
+  };
+  
+  const getRadarSubhead = () => {
+    switch (radarView) {
+      case 'overall': return 'Overall';
+      case 'forehand': return 'FH Rubber';
+      case 'blade': return 'Blade';
+      case 'backhand': return 'BH Rubber';
+    }
+  };
+  
+  const tooltips = {
+    speed: "How fast the ball travels off your paddle",
+    spin: "Ability to generate rotation on the ball",
+    control: "Precision and consistency in placement",
+    power: "Force and impact of your shots",
+    value: "Price-to-performance ratio",
+    weight: "Total weight in grams"
+  };
+  
+  const StatBar = ({ label, value, Icon, tooltip }: { label: string; value: number; Icon: any; tooltip?: string }) => (
+    <TooltipProvider>
+      <div className="py-[1.5vh] px-[2vw] bg-card border border-border/50 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+        <div className="flex items-center gap-[1vw] mb-[1vh]">
+          <Icon className="w-[4vw] h-[4vw] lg:w-[1.2vw] lg:h-[1.2vw] text-muted-foreground flex-shrink-0" />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] font-medium text-[hsl(var(--primary))] cursor-help">
+                {label}
+              </span>
+            </TooltipTrigger>
+            {tooltip && (
+              <TooltipContent className="max-w-[250px]">
+                <p>{tooltip}</p>
+              </TooltipContent>
+            )}
+          </Tooltip>
+          <span className="text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] font-semibold text-accent ml-auto">{value}</span>
+        </div>
+        <div className="h-[0.8vh] bg-muted/50 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-accent/80 to-accent rounded-full transition-all duration-500"
+            style={{ width: `${value}%` }}
+          />
+        </div>
       </div>
-      <div className="h-[0.4vh] bg-muted rounded-full overflow-hidden">
-        <div 
-          className="h-full bg-accent rounded-full transition-all duration-500"
-          style={{ width: `${value}%` }}
-        />
-      </div>
-    </div>
+    </TooltipProvider>
   );
 
   return (
-    <div className="w-full max-w-[90vw] lg:max-w-[1200px] mx-auto space-y-[3vh] pb-[20vh]">
+    <div className="w-full max-w-[90vw] lg:max-w-[1200px] mx-auto space-y-[3vh] pb-[20vh] overflow-x-hidden">
       {/* Meta Info Row */}
-      <div className="flex flex-wrap items-center gap-[3vw] lg:gap-[2vw] px-[2vw]">
+      <div className="flex flex-wrap items-center gap-[clamp(0.5rem,3vw,1rem)] lg:gap-[clamp(0.5rem,2vw,1rem)] px-[2vw]">
         {isEditMode ? (
           <>
             <div className="flex items-center gap-[2vw]">
@@ -227,15 +398,15 @@ const StatsDisplay = ({
           </>
         ) : (
           <>
-            <div className="text-[6vw] lg:text-[2vw] font-semibold text-foreground">
+            <div className="text-[clamp(1.25rem,6vw,2rem)] lg:text-[clamp(1.25rem,2vw,1.75rem)] font-semibold text-[hsl(var(--primary))]">
               ${stats.price.toFixed(2)}
             </div>
             <div className="h-[4vh] w-px bg-border hidden sm:block" />
-            <div className="text-[3.5vw] lg:text-[0.9vw] text-muted-foreground">
+            <div className="text-[clamp(0.875rem,3.5vw,0.95rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] text-muted-foreground">
               {level}
             </div>
             <div className="h-[4vh] w-px bg-border hidden sm:block" />
-            <div className="text-[3.5vw] lg:text-[0.9vw] text-muted-foreground">
+            <div className="text-[clamp(0.875rem,3.5vw,0.95rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] text-muted-foreground">
               {calculateTotalWeight()}
             </div>
           </>
@@ -281,6 +452,24 @@ const StatsDisplay = ({
           
           {showAdvanced && !racket && (
             <div className="mt-[2vh] space-y-[2vh] pt-[2vh] border-t border-border">
+              {/* Top buttons for Advanced section */}
+              <div className="flex gap-[2vw] mb-[2vh]">
+                <Button
+                  onClick={handleSavePreferences}
+                  variant="default"
+                  className="flex-1 rounded-xl py-[2.5vh] text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] font-semibold"
+                >
+                  Save Preferences
+                </Button>
+                <Button
+                  onClick={() => setShowAdvanced(false)}
+                  variant="outline"
+                  className="flex-1 rounded-xl py-[2.5vh] text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)]"
+                >
+                  Hide Advanced
+                </Button>
+              </div>
+              
               <div className="space-y-[1vh]">
                 <h4 className="text-[3.5vw] lg:text-[0.95vw] font-semibold text-foreground mb-[1.5vh]">
                   🔴 Forehand Rubber
@@ -315,11 +504,11 @@ const StatsDisplay = ({
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-[2vw] lg:gap-[1.5vw]">
-            <StatBar label="Speed" value={stats.speed} Icon={Gauge} />
-            <StatBar label="Spin" value={stats.spin} Icon={Target} />
-            <StatBar label="Control" value={stats.control} Icon={Shield} />
-            <StatBar label="Power" value={stats.power} Icon={Star} />
+          <div className="grid grid-cols-2 gap-[clamp(0.5rem,2vw,1rem)] lg:gap-[clamp(0.5rem,1.5vw,1rem)]">
+            <StatBar label="Speed" value={stats.speed} Icon={Gauge} tooltip={tooltips.speed} />
+            <StatBar label="Spin" value={stats.spin} Icon={Target} tooltip={tooltips.spin} />
+            <StatBar label="Control" value={stats.control} Icon={Shield} tooltip={tooltips.control} />
+            <StatBar label="Power" value={stats.power} Icon={Star} tooltip={tooltips.power} />
           </div>
           
           <div className="flex justify-center pt-[2vh]">
@@ -327,33 +516,73 @@ const StatsDisplay = ({
               onClick={handleEditPreferences}
               variant="outline"
               size="sm"
-              className="rounded-xl px-[4vw] lg:px-[2vw] py-[2vh] text-[3.5vw] lg:text-[0.85vw]"
+              className="rounded-xl px-[clamp(1rem,4vw,2rem)] lg:px-[clamp(1rem,2vw,1.5rem)] py-[2vh] text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.85vw,0.9rem)]"
             >
-              <Settings className="mr-[1vw] lg:mr-[0.5vw] h-[4vw] w-[4vw] lg:h-[1.2vw] lg:w-[1.2vw]" />
+              <Settings className="mr-[clamp(0.25rem,1vw,0.5rem)] lg:mr-[clamp(0.25rem,0.5vw,0.5rem)] h-[clamp(1rem,4vw,1.2rem)] w-[clamp(1rem,4vw,1.2rem)] lg:h-[clamp(1rem,1.2vw,1.2rem)] lg:w-[clamp(1rem,1.2vw,1.2rem)]" />
               Change Preferences
             </Button>
           </div>
             
           {/* Radar Chart */}
           <div className="mt-[4vh] pt-[3vh] border-t border-border">
-            <h3 className="text-[4.5vw] lg:text-[1.2vw] font-semibold mb-[2vh] text-center">Performance Overview</h3>
-            <RadarComparisonChart 
-              paddles={[{
-                id: racket ? racket.Racket_Name : `${blade?.Blade_Name}-${forehand?.Rubber_Name}-${backhand?.Rubber_Name}`,
-                name: racket ? racket.Racket_Name : "Custom Paddle",
-                image: "",
-                speed: stats.speed,
-                control: stats.control,
-                power: stats.power,
-                spin: stats.spin,
-                price: stats.price,
-                weight: racket ? 180 : (blade?.Blade_Weight || 85) + (forehand?.Rubber_Weight || 45) + (backhand?.Rubber_Weight || 45),
-                level: level as "Beginner" | "Intermediate" | "Advanced",
-                blade: blade?.Blade_Name,
-                forehandRubber: forehand?.Rubber_Name,
-                backhandRubber: backhand?.Rubber_Name
-              }]}
-            />
+            <div className="flex flex-col sm:flex-row items-center justify-between mb-[2vh] gap-[1vh]">
+              <div className="text-center sm:text-left">
+                <h3 className="text-[clamp(1.125rem,4.5vw,1.5rem)] lg:text-[clamp(1.125rem,1.2vw,1.35rem)] font-semibold text-[hsl(var(--primary))]">
+                  Performance Overview
+                </h3>
+                <p className="text-[clamp(0.75rem,3vw,0.875rem)] lg:text-[clamp(0.75rem,0.8vw,0.85rem)] text-muted-foreground mt-[0.5vh]">
+                  {getRadarSubhead()}
+                </p>
+              </div>
+              <div className="flex items-center gap-[clamp(0.5rem,2vw,1rem)] flex-wrap justify-center">
+                <Button
+                  onClick={cycleRadarView}
+                  variant="outline"
+                  size="sm"
+                  className="rounded-xl px-[clamp(0.75rem,3vw,1.5rem)] py-[1.5vh] text-[clamp(0.75rem,3vw,0.85rem)] lg:text-[clamp(0.75rem,0.85vw,0.9rem)] hover:bg-accent/10"
+                >
+                  <SkipForward className="mr-[clamp(0.25rem,1vw,0.5rem)] h-[clamp(0.875rem,3.5vw,1rem)] w-[clamp(0.875rem,3.5vw,1rem)] lg:h-[clamp(0.875rem,1vw,1rem)] lg:w-[clamp(0.875rem,1vw,1rem)]" />
+                  Next View
+                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => setShowValue(!showValue)}
+                        variant={showValue ? "default" : "outline"}
+                        size="sm"
+                        className="rounded-xl px-[clamp(0.75rem,3vw,1.5rem)] py-[1.5vh] text-[clamp(0.75rem,3vw,0.85rem)] lg:text-[clamp(0.75rem,0.85vw,0.9rem)]"
+                      >
+                        Value
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{tooltips.value}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => setShowWeight(!showWeight)}
+                        variant={showWeight ? "default" : "outline"}
+                        size="sm"
+                        className="rounded-xl px-[clamp(0.75rem,3vw,1.5rem)] py-[1.5vh] text-[clamp(0.75rem,3vw,0.85rem)] lg:text-[clamp(0.75rem,0.85vw,0.9rem)]"
+                      >
+                        Weight
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{tooltips.weight}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+            <div className="transition-all duration-250 motion-reduce:transition-none">
+              <RadarComparisonChart paddles={getRadarData()} />
+            </div>
           </div>
         </>
       )}
