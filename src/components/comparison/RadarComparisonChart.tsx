@@ -278,14 +278,15 @@ export const RadarComparisonChart = ({
           <p>Weight metric only available in Overall Performance view</p>
         </div>
       )}
-      <div className="w-full h-[450px] sm:h-[500px] lg:h-[550px] flex items-center justify-center">
-        <TooltipProvider delayDuration={100}>
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart 
-              data={data}
-              margin={{ top: 30, right: 50, bottom: 90, left: 50 }}
-              className="mx-auto"
-            >
+      <div className="w-full space-y-6">
+        <div className="w-full h-[350px] sm:h-[450px] lg:h-[500px]">
+          <TooltipProvider delayDuration={100}>
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart 
+                data={data}
+                margin={{ top: 20, right: 50, bottom: 20, left: 50 }}
+                className="mx-auto"
+              >
               <PolarGrid stroke="hsl(var(--border))" />
               <PolarAngleAxis 
                 dataKey="stat" 
@@ -357,15 +358,33 @@ export const RadarComparisonChart = ({
             <Legend 
               onClick={handleLegendClick}
               wrapperStyle={{ 
-                paddingTop: '30px',
-                fontSize: '14px',
-                fontWeight: 500,
-                cursor: 'pointer'
+                display: 'none'
               }}
             />
           </RadarChart>
         </ResponsiveContainer>
-        </TooltipProvider>
+          </TooltipProvider>
+        </div>
+        <div className="flex flex-wrap justify-center gap-4 pt-4">
+          {paddles.map((paddle, idx) => {
+            const displayName = getDisplayName(paddle);
+            return (
+              <button
+                key={paddle.id}
+                onClick={() => handleLegendClick({ value: displayName })}
+                className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+              >
+                <div 
+                  className="w-3 h-3 rounded-sm" 
+                  style={{ backgroundColor: COLORS[idx] }}
+                />
+                <span className="text-sm font-medium text-foreground">
+                  {displayName}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
