@@ -108,12 +108,16 @@ export const RadarComparisonChart = ({
     const spin = stats.spin || 0;
     const totalStats = speed + control + power + spin;
     
-    if (price <= 0) return 0;
+    if (price <= 0 || totalStats === 0) return 0;
     
-    // Value = (total stats / price) × 100
-    // 1 stat per $1 = 100 value
-    // Cap at 100 for display
-    const value = (totalStats / price) * 100;
+    // Cost per stat (price / total stats)
+    const costPerStat = price / totalStats;
+    
+    // Value = ((8 - cost per stat) / 8) × 100
+    // $8 per stat = 0 value (worst)
+    // $1 per stat = 87.5 value
+    // $0.125 per stat = 100 value (best)
+    const value = ((8 - costPerStat) / 8) * 100;
     return Math.min(100, Math.max(0, value));
   };
 
