@@ -805,6 +805,7 @@ const SlotMachine = ({
                   title="Forehand Rubber"
                   open={forehandFilterOpen}
                   onOpenChange={onForehandFilterOpenChange}
+                  products={rubbers}
                 />
               }
             />
@@ -852,6 +853,7 @@ const SlotMachine = ({
                   title="Blade"
                   open={bladeFilterOpen}
                   onOpenChange={onBladeFilterOpenChange}
+                  products={blades}
                 />
               }
             />
@@ -891,6 +893,7 @@ const SlotMachine = ({
                   title="Backhand Rubber"
                   open={backhandFilterOpen}
                   onOpenChange={onBackhandFilterOpenChange}
+                  products={rubbers}
                 />
               }
             />

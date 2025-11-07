@@ -1,11 +1,13 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Settings, X } from "lucide-react";
-import { useState } from "react";
+import { useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Badge } from "@/components/ui/badge";
+import { Blade, Rubber } from "@/data/products";
+import { toast } from "sonner";
 
 export interface ProductFilters {
   maxPrice: number;
@@ -23,6 +25,7 @@ interface ProductFilterProps {
   title: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  products: (Blade | Rubber)[];
 }
 
 const PRICE_OPTIONS = [
@@ -84,11 +87,111 @@ const BRAND_OPTIONS = [
   { value: "DHS", label: "DHS" },
 ];
 
-export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onOpenChange }: ProductFilterProps) => {
+export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onOpenChange, products }: ProductFilterProps) => {
   const styleOptions = type === "blade" ? BLADE_STYLE_OPTIONS : RUBBER_STYLE_OPTIONS;
 
   const handleFilterChange = (newFilters: ProductFilters) => {
     onFiltersChange(newFilters);
+  };
+
+  // Calculate available options based on current filters
+  const availableOptions = useMemo(() => {
+    const getProductBrand = (product: Blade | Rubber) => {
+      const name = 'Blade_Name' in product ? product.Blade_Name : product.Rubber_Name;
+      if (name.startsWith('Butterfly')) return 'Butterfly';
+      if (name.startsWith('JOOLA')) return 'JOOLA';
+      if (name.startsWith('ANDRO') || name.startsWith('Andro')) return 'ANDRO';
+      if (name.startsWith('DHS')) return 'DHS';
+      return 'Other';
+    };
+
+    // Filter products by current selections (except the dimension we're checking)
+    const getFilteredProducts = (excludeDimension: string) => {
+      return products.filter(product => {
+        const brand = getProductBrand(product);
+        const level = 'Blade_Level' in product ? product.Blade_Level : (product as Rubber).Rubber_Level;
+        const style = 'Blade_Style' in product ? product.Blade_Style : (product as Rubber).Rubber_Style;
+        const price = 'Blade_Price' in product ? product.Blade_Price : (product as Rubber).Rubber_Price;
+        
+        // Apply filters except the one we're checking availability for
+        if (excludeDimension !== 'brand' && filters.brand && !filters.brand.includes('All')) {
+          if (!filters.brand.includes(brand)) return false;
+        }
+        if (excludeDimension !== 'level' && !filters.level.includes('All')) {
+          if (!filters.level.includes(level)) return false;
+        }
+        if (excludeDimension !== 'style' && !filters.style.includes('All')) {
+          if (type === 'blade') {
+            if (!filters.style.includes(style || '')) return false;
+          } else {
+            if (!filters.style.includes(style)) return false;
+          }
+        }
+        if (excludeDimension !== 'price' && price > filters.maxPrice) return false;
+        
+        if (type === 'rubber' && excludeDimension !== 'spongeSize') {
+          const rubber = product as Rubber;
+          if (filters.spongeSize && filters.spongeSize !== 'All') {
+            if (!rubber.Rubber_Sponge_Sizes?.includes(filters.spongeSize)) return false;
+          }
+        }
+        
+        if (type === 'blade' && excludeDimension !== 'gripType') {
+          const blade = product as Blade;
+          if (filters.gripType && filters.gripType !== 'All') {
+            if (!blade.Blade_Grip.includes(filters.gripType)) return false;
+          }
+        }
+        
+        return true;
+      });
+    };
+
+    // Check which options are available
+    const levels = new Set<string>();
+    const styles = new Set<string>();
+    const brands = new Set<string>();
+    const spongeSizes = new Set<string>();
+    const gripTypes = new Set<string>();
+
+    getFilteredProducts('level').forEach(p => {
+      levels.add('Blade_Level' in p ? p.Blade_Level : (p as Rubber).Rubber_Level);
+    });
+
+    getFilteredProducts('style').forEach(p => {
+      const style = 'Blade_Style' in p ? p.Blade_Style : (p as Rubber).Rubber_Style;
+      if (style) styles.add(style);
+    });
+
+    getFilteredProducts('brand').forEach(p => {
+      brands.add(getProductBrand(p));
+    });
+
+    if (type === 'rubber') {
+      getFilteredProducts('spongeSize').forEach(p => {
+        const rubber = p as Rubber;
+        rubber.Rubber_Sponge_Sizes?.forEach(size => spongeSizes.add(size));
+      });
+    }
+
+    if (type === 'blade') {
+      getFilteredProducts('gripType').forEach(p => {
+        const blade = p as Blade;
+        blade.Blade_Grip.forEach(grip => gripTypes.add(grip));
+      });
+    }
+
+    return {
+      levels: Array.from(levels),
+      styles: Array.from(styles),
+      brands: Array.from(brands),
+      spongeSizes: Array.from(spongeSizes),
+      gripTypes: Array.from(gripTypes),
+    };
+  }, [products, filters, type]);
+
+  const handleDisabledClick = (optionName: string) => {
+    toast.info(`${optionName} is not available with your current filter selections. Try adjusting other filters.`);
   };
 
   return (
@@ -177,15 +280,25 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onO
               }}
               className="flex flex-wrap gap-2 justify-start"
             >
-              {LEVEL_OPTIONS.map((option) => (
-                <ToggleGroupItem 
-                  key={option.value} 
-                  value={option.value}
-                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                >
-                  {option.label}
-                </ToggleGroupItem>
-              ))}
+              {LEVEL_OPTIONS.map((option) => {
+                const isAvailable = option.value === "All" || availableOptions.levels.includes(option.value);
+                return (
+                  <ToggleGroupItem 
+                    key={option.value} 
+                    value={option.value}
+                    disabled={!isAvailable}
+                    onClick={(e) => {
+                      if (!isAvailable) {
+                        e.preventDefault();
+                        handleDisabledClick(option.label);
+                      }
+                    }}
+                    className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {option.label}
+                  </ToggleGroupItem>
+                );
+              })}
             </ToggleGroup>
           </div>
 
@@ -218,15 +331,25 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onO
               }}
               className="flex flex-wrap gap-2 justify-start"
             >
-              {styleOptions.map((option) => (
-                <ToggleGroupItem 
-                  key={option.value} 
-                  value={option.value}
-                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                >
-                  {option.label}
-                </ToggleGroupItem>
-              ))}
+              {styleOptions.map((option) => {
+                const isAvailable = option.value === "All" || availableOptions.styles.includes(option.value);
+                return (
+                  <ToggleGroupItem 
+                    key={option.value} 
+                    value={option.value}
+                    disabled={!isAvailable}
+                    onClick={(e) => {
+                      if (!isAvailable) {
+                        e.preventDefault();
+                        handleDisabledClick(option.label);
+                      }
+                    }}
+                    className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {option.label}
+                  </ToggleGroupItem>
+                );
+              })}
             </ToggleGroup>
           </div>
 
@@ -244,11 +367,25 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onO
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {SPONGE_SIZE_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
+                  {SPONGE_SIZE_OPTIONS.map((option) => {
+                    const isAvailable = option.value === "All" || availableOptions.spongeSizes.includes(option.value);
+                    return (
+                      <SelectItem 
+                        key={option.value} 
+                        value={option.value}
+                        disabled={!isAvailable}
+                        onClick={(e) => {
+                          if (!isAvailable) {
+                            e.stopPropagation();
+                            handleDisabledClick(`Sponge size ${option.label}`);
+                          }
+                        }}
+                        className="disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        {option.label}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </div>
@@ -268,11 +405,25 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onO
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {GRIP_TYPE_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
+                  {GRIP_TYPE_OPTIONS.map((option) => {
+                    const isAvailable = option.value === "All" || availableOptions.gripTypes.includes(option.value);
+                    return (
+                      <SelectItem 
+                        key={option.value} 
+                        value={option.value}
+                        disabled={!isAvailable}
+                        onClick={(e) => {
+                          if (!isAvailable) {
+                            e.stopPropagation();
+                            handleDisabledClick(`Grip type ${option.label}`);
+                          }
+                        }}
+                        className="disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        {option.label}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </div>
@@ -308,15 +459,25 @@ export const ProductFilter = ({ filters, onFiltersChange, type, title, open, onO
               }}
               className="flex flex-wrap gap-2 justify-start"
             >
-              {BRAND_OPTIONS.map((option) => (
-                <ToggleGroupItem 
-                  key={option.value} 
-                  value={option.value}
-                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                >
-                  {option.label}
-                </ToggleGroupItem>
-              ))}
+              {BRAND_OPTIONS.map((option) => {
+                const isAvailable = option.value === "All" || availableOptions.brands.includes(option.value);
+                return (
+                  <ToggleGroupItem 
+                    key={option.value} 
+                    value={option.value}
+                    disabled={!isAvailable}
+                    onClick={(e) => {
+                      if (!isAvailable) {
+                        e.preventDefault();
+                        handleDisabledClick(option.label);
+                      }
+                    }}
+                    className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {option.label}
+                  </ToggleGroupItem>
+                );
+              })}
             </ToggleGroup>
           </div>
         </div>
