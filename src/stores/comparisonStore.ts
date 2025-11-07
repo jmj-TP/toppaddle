@@ -46,6 +46,7 @@ interface ComparisonStore {
   addPaddle: (paddle: ComparisonPaddle) => void;
   removePaddle: (id: string) => void;
   clearComparison: () => void;
+  updateSponge: (id: string, side: 'forehand' | 'backhand', thickness: string) => void;
 }
 
 export const useComparisonStore = create<ComparisonStore>()(
@@ -69,6 +70,17 @@ export const useComparisonStore = create<ComparisonStore>()(
           paddles: state.paddles.filter((p) => p.id !== id),
         })),
       clearComparison: () => set({ paddles: [] }),
+      updateSponge: (id, side, thickness) =>
+        set((state) => ({
+          paddles: state.paddles.map((p) =>
+            p.id === id
+              ? {
+                  ...p,
+                  [side === 'forehand' ? 'forehandSponge' : 'backhandSponge']: thickness,
+                }
+              : p
+          ),
+        })),
     }),
     {
       name: 'paddle-comparison-storage',

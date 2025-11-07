@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { X, ArrowRight, Trophy, DollarSign, ShoppingCart } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useNavigate } from 'react-router-dom';
 import SEO from '@/components/SEO';
 import { useCartStore } from '@/stores/cartStore';
@@ -16,7 +17,7 @@ import { fetchShopifyProducts, type ShopifyProduct } from '@/lib/shopify';
 import { toast } from 'sonner';
 
 const Compare = () => {
-  const { paddles, removePaddle, clearComparison } = useComparisonStore();
+  const { paddles, removePaddle, clearComparison, updateSponge } = useComparisonStore();
   const [selectedPaddle, setSelectedPaddle] = useState<string | null>(paddles[0]?.id || null);
   const [performanceView, setPerformanceView] = useState<PerformanceView>('overall');
   const navigate = useNavigate();
@@ -180,7 +181,7 @@ const Compare = () => {
             {paddles.map((paddle) => (
               <Card
                 key={paddle.id}
-                className="p-6 relative"
+                className="p-6 relative flex flex-col"
               >
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex-1">
@@ -213,7 +214,7 @@ const Compare = () => {
                   alt={paddle.name}
                   className="w-full h-40 object-contain mb-4 bg-muted rounded-lg"
                 />
-                <div className="space-y-2 text-sm">
+                <div className="space-y-2 text-sm flex-1">
                   {paddle.blade && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Blade:</span>
@@ -221,24 +222,68 @@ const Compare = () => {
                     </div>
                   )}
                   {paddle.forehandRubber && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Forehand:</span>
-                      <span className="font-medium text-right flex-1 ml-2">
-                        {paddle.forehandRubber}
-                        {paddle.forehandSponge && ` (${paddle.forehandSponge})`}
-                      </span>
-                    </div>
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Forehand:</span>
+                        <span className="font-medium text-right flex-1 ml-2">
+                          {paddle.forehandRubber}
+                        </span>
+                      </div>
+                      {paddle.forehandSponge && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground text-xs pl-4">Thickness:</span>
+                          <Select
+                            value={paddle.forehandSponge}
+                            onValueChange={(value) => updateSponge(paddle.id, 'forehand', value)}
+                          >
+                            <SelectTrigger className="h-7 w-24 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1.5mm">1.5mm</SelectItem>
+                              <SelectItem value="1.8mm">1.8mm</SelectItem>
+                              <SelectItem value="2.0mm">2.0mm</SelectItem>
+                              <SelectItem value="2.1mm">2.1mm</SelectItem>
+                              <SelectItem value="Max">Max</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                    </>
                   )}
                   {paddle.backhandRubber && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Backhand:</span>
-                      <span className="font-medium text-right flex-1 ml-2">
-                        {paddle.backhandRubber}
-                        {paddle.backhandSponge && ` (${paddle.backhandSponge})`}
-                      </span>
-                    </div>
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Backhand:</span>
+                        <span className="font-medium text-right flex-1 ml-2">
+                          {paddle.backhandRubber}
+                        </span>
+                      </div>
+                      {paddle.backhandSponge && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground text-xs pl-4">Thickness:</span>
+                          <Select
+                            value={paddle.backhandSponge}
+                            onValueChange={(value) => updateSponge(paddle.id, 'backhand', value)}
+                          >
+                            <SelectTrigger className="h-7 w-24 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1.5mm">1.5mm</SelectItem>
+                              <SelectItem value="1.8mm">1.8mm</SelectItem>
+                              <SelectItem value="2.0mm">2.0mm</SelectItem>
+                              <SelectItem value="2.1mm">2.1mm</SelectItem>
+                              <SelectItem value="Max">Max</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                    </>
                   )}
-                  <div className="flex justify-between pt-2 border-t border-border">
+                </div>
+                <div className="space-y-2 text-sm mt-4 pt-4 border-t border-border">
+                  <div className="flex justify-between">
                     <span className="text-muted-foreground">Price:</span>
                     <span className="font-semibold">${paddle.price}</span>
                   </div>
@@ -262,22 +307,6 @@ const Compare = () => {
               </Card>
             ))}
           </div>
-
-          {/* Interactive Selection Guide */}
-          <Card className="p-4 bg-primary/5 border-primary/20">
-            <div className="flex items-center gap-3">
-              <div className="flex-1">
-                <p className="text-sm font-medium">
-                  Click on paddle names in the legend below to select and compare
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Selected: <span className="font-semibold text-primary">
-                    {paddles.find(p => p.id === selectedPaddle)?.name || paddles[0]?.name}
-                  </span>
-                </p>
-              </div>
-            </div>
-          </Card>
 
           {/* Radar Chart and Insights Side by Side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
