@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer, Legend } from 'recharts';
 import { ComparisonPaddle } from '@/stores/comparisonStore';
 import { Button } from '@/components/ui/button';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { statExplanations } from '@/constants/statExplanations';
 
 interface RadarComparisonChartProps {
   paddles: ComparisonPaddle[];
@@ -98,10 +100,21 @@ export const RadarComparisonChart = ({
     }
   };
 
-  // Convert price to radar value (inverse: cheaper = higher score)
-  const priceToRadarValue = (price: number) => {
-    const maxPrice = 500; // Maximum expected price
-    return Math.max(0, Math.min(100, ((maxPrice - price) / maxPrice) * 100));
+  // Calculate value as stats per dollar
+  const statsToValueRadar = (stats: { speed?: number; control?: number; power?: number; spin?: number }, price: number) => {
+    const speed = stats.speed || 0;
+    const control = stats.control || 0;
+    const power = stats.power || 0;
+    const spin = stats.spin || 0;
+    const totalStats = speed + control + power + spin;
+    
+    if (price <= 0) return 0;
+    
+    // Value = (total stats / price) × 100
+    // 1 stat per $1 = 100 value
+    // Cap at 100 for display
+    const value = (totalStats / price) * 100;
+    return Math.min(100, Math.max(0, value));
   };
 
   // Convert weight to radar value (optimal weight = 175g)
@@ -166,10 +179,12 @@ export const RadarComparisonChart = ({
       getValue: (paddle: ComparisonPaddle) => {
         const stats = getViewStats(paddle);
         const price = stats.price || paddle.price;
-        return price !== undefined ? priceToRadarValue(price) : null;
+        if (!price) return null;
+        
+        return statsToValueRadar(stats, price);
       },
     }] : []),
-    ...(includeWeight ? [{
+    ...(includeWeight && performanceView === 'overall' ? [{
       key: 'weight',
       stat: 'Weight',
       getValue: (paddle: ComparisonPaddle) => {
@@ -207,22 +222,40 @@ export const RadarComparisonChart = ({
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <h2 className="text-xl font-bold">{VIEW_LABELS[performanceView]}</h2>
           <div className="flex flex-wrap items-center gap-2">
-            <Button
-              variant={includeWeight ? "default" : "outline"}
-              size="sm"
-              onClick={() => setInternalIncludeWeight(!internalIncludeWeight)}
-              className="h-8 px-3 text-xs"
-            >
-              Weight
-            </Button>
-            <Button
-              variant={includeValue ? "default" : "outline"}
-              size="sm"
-              onClick={() => setInternalIncludeValue(!internalIncludeValue)}
-              className="h-8 px-3 text-xs"
-            >
-              Value
-            </Button>
+            <TooltipProvider delayDuration={100}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={includeValue ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setInternalIncludeValue(!internalIncludeValue)}
+                    className="h-8 px-3 text-xs"
+                  >
+                    Value
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-xs">
+                  <p className="text-xs font-medium">Stats per dollar (higher is better)</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider delayDuration={100}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={includeWeight ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setInternalIncludeWeight(!internalIncludeWeight)}
+                    className="h-8 px-3 text-xs"
+                  >
+                    Weight
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-xs">
+                  <p className="text-xs font-medium">Total paddle weight (Overall view only)</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <Button
               variant="ghost"
               size="sm"
@@ -235,6 +268,12 @@ export const RadarComparisonChart = ({
           </div>
         </div>
       )}
+      {!hideControls && includeWeight && performanceView !== 'overall' && (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
+          <Info className="w-4 h-4 flex-shrink-0" />
+          <p>Weight metric only available in Overall Performance view</p>
+        </div>
+      )}
       <div className="w-full h-[300px] sm:h-[400px] flex items-center justify-center">
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart 
@@ -245,10 +284,40 @@ export const RadarComparisonChart = ({
             <PolarGrid stroke="hsl(var(--border))" />
             <PolarAngleAxis 
               dataKey="stat" 
-              tick={{ 
-                fill: 'hsl(var(--foreground))', 
-                fontSize: 11,
-                fontWeight: 500 
+              tick={(props: any) => {
+                const { x, y, payload } = props;
+                const statName = payload.value;
+                const explanation = statExplanations[statName];
+                
+                return (
+                  <TooltipProvider delayDuration={100}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <g>
+                          <text
+                            x={x}
+                            y={y}
+                            textAnchor={x > 250 ? 'start' : x < 150 ? 'end' : 'middle'}
+                            fill="hsl(var(--foreground))"
+                            fontSize={11}
+                            fontWeight={500}
+                            className="cursor-help"
+                          >
+                            {statName}
+                          </text>
+                        </g>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-xs">
+                        {explanation && (
+                          <div className="space-y-1">
+                            <p className="text-xs font-semibold">{statName}</p>
+                            <p className="text-xs text-muted-foreground">{explanation.detailed}</p>
+                          </div>
+                        )}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                );
               }}
               tickLine={false}
             />

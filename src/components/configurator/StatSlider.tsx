@@ -1,6 +1,7 @@
 import { Slider } from "@/components/ui/slider";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
+import { statExplanations } from "@/constants/statExplanations";
 
 interface StatSliderProps {
   label: string;
@@ -11,14 +12,6 @@ interface StatSliderProps {
   showValue?: boolean;
 }
 
-const statDescriptions: Record<string, string> = {
-  Speed: "How fast the ball travels off the paddle. Higher speed means more offensive power.",
-  Spin: "Ability to generate rotation on the ball. Essential for topspin and serves.",
-  Control: "How predictable and forgiving the paddle is. Higher control means more consistency.",
-  Power: "Combined force of speed and spin. Determines overall attacking capability.",
-  Weight: "Total weight of the assembled paddle. Affects maneuverability and fatigue.",
-};
-
 export const StatSlider = ({
   label,
   value,
@@ -27,7 +20,7 @@ export const StatSlider = ({
   description,
   showValue = true,
 }: StatSliderProps) => {
-  const desc = description || statDescriptions[label] || "";
+  const desc = description || statExplanations[label]?.short || "";
   
   // Special handling for Weight slider
   const isWeight = label === "Weight";
