@@ -319,8 +319,54 @@ const Configurator = () => {
           selectedOptions: backhandVariant.node.selectedOptions
         });
 
+        // Add assembly service if selected
+        if (assembleForMe) {
+          const assemblyProduct = shopifyProducts.find(p => 
+            p.node.title.toLowerCase().includes('assembly') || 
+            p.node.title.toLowerCase().includes('assemble')
+          );
+          if (assemblyProduct) {
+            const assemblyVariant = assemblyProduct.node.variants.edges[0];
+            if (assemblyVariant) {
+              addItem({
+                product: assemblyProduct,
+                variantId: assemblyVariant.node.id,
+                variantTitle: assemblyVariant.node.title,
+                price: assemblyVariant.node.price,
+                quantity: 1,
+                selectedOptions: assemblyVariant.node.selectedOptions
+              });
+            }
+          }
+        }
+
+        // Add sealing service if selected
+        if (sealsService) {
+          const sealingProduct = shopifyProducts.find(p => 
+            p.node.title.toLowerCase().includes('seal') ||
+            p.node.title.toLowerCase().includes('edge tape')
+          );
+          if (sealingProduct) {
+            const sealingVariant = sealingProduct.node.variants.edges[0];
+            if (sealingVariant) {
+              addItem({
+                product: sealingProduct,
+                variantId: sealingVariant.node.id,
+                variantTitle: sealingVariant.node.title,
+                price: sealingVariant.node.price,
+                quantity: 1,
+                selectedOptions: sealingVariant.node.selectedOptions
+              });
+            }
+          }
+        }
+
+        let itemCount = 3;
+        if (assembleForMe) itemCount++;
+        if (sealsService) itemCount++;
+
         toast.success("Custom racket added to cart", {
-          description: "3 items added: blade and 2 rubbers"
+          description: `${itemCount} items added`
         });
       }
     } catch (error) {
