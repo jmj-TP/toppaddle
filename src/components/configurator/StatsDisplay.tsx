@@ -100,12 +100,6 @@ const StatsDisplay = ({
   const [showValue, setShowValue] = useState(true);
   const [showWeight, setShowWeight] = useState(true);
   
-  const [previousSetup, setPreviousSetup] = useState<{
-    blade: Blade | null;
-    forehand: Rubber | null;
-    backhand: Rubber | null;
-  } | null>(null);
-  
   const quizStore = useQuizStore();
   
   const [editForehandSpeed, setEditForehandSpeed] = useState(forehand?.Rubber_Speed || 50);
@@ -149,11 +143,8 @@ const StatsDisplay = ({
 
   const handleSavePreferences = () => {
     if (!isPreassembled && onBladeChange && onForehandChange && onBackhandChange) {
-      // Save current setup for undo
-      setPreviousSetup({ blade, forehand, backhand });
-      
       // Build QuizAnswers from preferences with more nuanced logic
-      const avgSpeed = showAdvanced 
+      const avgSpeed = showAdvanced
         ? (editForehandSpeed + editBladeSpeed + editBackhandSpeed) / 3
         : editSpeed;
       const avgControl = showAdvanced
@@ -232,21 +223,7 @@ const StatsDisplay = ({
         onForehandChange(bestSetup.forehandRubber);
         onBackhandChange(bestSetup.backhandRubber);
         
-        toast.success("Your setup was optimized to match your preferences.", {
-          action: {
-            label: "Undo",
-            onClick: () => {
-              if (previousSetup && previousSetup.blade && previousSetup.forehand && previousSetup.backhand) {
-                onBladeChange(previousSetup.blade);
-                onForehandChange(previousSetup.forehand);
-                onBackhandChange(previousSetup.backhand);
-                setPreviousSetup(null);
-                toast.info("Setup restored");
-              }
-            }
-          },
-          duration: 5000
-        });
+        toast.success("Your setup was optimized to match your preferences.");
       } else {
         toast.error("Could not find matching setup with these preferences");
       }

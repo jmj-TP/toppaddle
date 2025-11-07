@@ -145,6 +145,21 @@ const SlotMachine = ({
   const safeFilteredForehandRubbers = filteredForehandRubbers.length > 0 ? filteredForehandRubbers : rubbers;
   const safeFilteredBackhandRubbers = filteredBackhandRubbers.length > 0 ? filteredBackhandRubbers : rubbers;
 
+  // Auto-select first item if current selection is not in filtered list
+  useEffect(() => {
+    if (!isPreassembled) {
+      if (selectedBlade && !safeFilteredBlades.some(b => b.Blade_Name === selectedBlade.Blade_Name)) {
+        onBladeChange(safeFilteredBlades[0]);
+      }
+      if (selectedForehand && !safeFilteredForehandRubbers.some(r => r.Rubber_Name === selectedForehand.Rubber_Name)) {
+        onForehandChange(safeFilteredForehandRubbers[0]);
+      }
+      if (selectedBackhand && !safeFilteredBackhandRubbers.some(r => r.Rubber_Name === selectedBackhand.Rubber_Name)) {
+        onBackhandChange(safeFilteredBackhandRubbers[0]);
+      }
+    }
+  }, [bladeFilters, forehandFilters, backhandFilters]);
+
   useEffect(() => {
     if (spinTrigger > 0) {
       handleSpin();
@@ -230,6 +245,7 @@ const SlotMachine = ({
     };
 
     const getImage = (item: any) => {
+      if (!item) return getProductImage({}, 'blade');
       if (item.Blade_Name) return getProductImage(item, 'blade');
       if (item.Rubber_Name) return getProductImage(item, 'rubber');
       if (item.Racket_Name) return getProductImage(item, 'racket');
@@ -262,7 +278,10 @@ const SlotMachine = ({
       return `This product is currently filtered out:\n• ${reasons.join('\n• ')}\n\nTo make it available again, adjust the filters above.`;
     };
     
-    const [currentIndex, setCurrentIndex] = useState(items.findIndex(item => getName(item) === getName(selected)));
+    const [currentIndex, setCurrentIndex] = useState(() => {
+      const idx = items.findIndex(item => getName(item) === getName(selected));
+      return idx >= 0 ? idx : 0;
+    });
     const [localSpinning, setLocalSpinning] = useState(false);
     const [animationKey, setAnimationKey] = useState(0);
     const wheelRef = useRef<HTMLDivElement>(null);
@@ -274,7 +293,7 @@ const SlotMachine = ({
     useEffect(() => {
       if (!localSpinning) {
         const newIndex = items.findIndex(item => getName(item) === getName(selected));
-        setCurrentIndex(newIndex);
+        setCurrentIndex(newIndex >= 0 ? newIndex : 0);
       }
     }, [selected, items, localSpinning]);
 
@@ -324,10 +343,14 @@ const SlotMachine = ({
 
     // Get visible items (current, prev, next with wrapping)
     const getVisibleItems = () => {
+      if (items.length === 0) return [];
       const visible = [];
       for (let i = -2; i <= 2; i++) {
         const index = (currentIndex + i + items.length) % items.length;
-        visible.push({ item: items[index], offset: i });
+        const item = items[index];
+        if (item) {
+          visible.push({ item, offset: i });
+        }
       }
       return visible;
     };
