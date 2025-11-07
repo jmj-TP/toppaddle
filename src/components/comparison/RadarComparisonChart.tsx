@@ -278,12 +278,12 @@ export const RadarComparisonChart = ({
           <p>Weight metric only available in Overall Performance view</p>
         </div>
       )}
-      <div className="w-full h-[300px] sm:h-[400px] flex items-center justify-center">
+      <div className="w-full h-[450px] sm:h-[500px] lg:h-[550px] flex items-center justify-center">
         <TooltipProvider delayDuration={100}>
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart 
               data={data}
-              margin={{ top: 40, right: 50, bottom: 60, left: 50 }}
+              margin={{ top: 30, right: 50, bottom: 90, left: 50 }}
               className="mx-auto"
             >
               <PolarGrid stroke="hsl(var(--border))" />
@@ -357,7 +357,7 @@ export const RadarComparisonChart = ({
             <Legend 
               onClick={handleLegendClick}
               wrapperStyle={{ 
-                paddingTop: '20px',
+                paddingTop: '30px',
                 fontSize: '14px',
                 fontWeight: 500,
                 cursor: 'pointer'
