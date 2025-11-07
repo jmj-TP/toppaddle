@@ -236,10 +236,10 @@ const StatsDisplay = ({
           action: {
             label: "Undo",
             onClick: () => {
-              if (previousSetup) {
-                onBladeChange(previousSetup.blade!);
-                onForehandChange(previousSetup.forehand!);
-                onBackhandChange(previousSetup.backhand!);
+              if (previousSetup && previousSetup.blade && previousSetup.forehand && previousSetup.backhand) {
+                onBladeChange(previousSetup.blade);
+                onForehandChange(previousSetup.forehand);
+                onBackhandChange(previousSetup.backhand);
                 setPreviousSetup(null);
                 toast.info("Setup restored");
               }
