@@ -113,11 +113,11 @@ export const RadarComparisonChart = ({
     // Cost per stat (price / total stats)
     const costPerStat = price / totalStats;
     
-    // Value = ((8 - cost per stat) / 8) × 100
-    // $8 per stat = 0 value (worst)
-    // $1 per stat = 87.5 value
-    // $0.125 per stat = 100 value (best)
-    const value = ((8 - costPerStat) / 8) * 100;
+    // Value = (1 / costPerStat) × 100, capped at 100
+    // $1 per stat = 100 value (perfect reference)
+    // $2 per stat = 50 value
+    // $0.5 per stat = 200, capped at 100
+    const value = (1 / costPerStat) * 100;
     return Math.min(100, Math.max(0, value));
   };
 
@@ -279,33 +279,49 @@ export const RadarComparisonChart = ({
         </div>
       )}
       <div className="w-full h-[300px] sm:h-[400px] flex items-center justify-center">
-        <ResponsiveContainer width="100%" height="100%">
-          <RadarChart 
-            data={data}
-            margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
-            className="mx-auto"
-          >
-            <PolarGrid stroke="hsl(var(--border))" />
-            <PolarAngleAxis 
-              dataKey="stat" 
-              tick={(props: any) => {
-                const { x, y, payload } = props;
-                const statName = payload.value;
-                const explanation = statExplanations[statName];
-                
-                return (
-                  <TooltipProvider delayDuration={100}>
+        <TooltipProvider delayDuration={100}>
+          <ResponsiveContainer width="100%" height="100%">
+            <RadarChart 
+              data={data}
+              margin={{ top: 30, right: 50, bottom: 30, left: 50 }}
+              className="mx-auto"
+            >
+              <PolarGrid stroke="hsl(var(--border))" />
+              <PolarAngleAxis 
+                dataKey="stat" 
+                tick={(props: any) => {
+                  const { x, y, payload, cx, cy } = props;
+                  const statName = payload.value;
+                  const explanation = statExplanations[statName];
+                  
+                  // Calculate angle from center to point
+                  const angle = Math.atan2(y - cy, x - cx);
+                  const cos = Math.cos(angle);
+                  const sin = Math.sin(angle);
+                  
+                  // Extend label further from center
+                  const radius = 15;
+                  const labelX = x + cos * radius;
+                  const labelY = y + sin * radius;
+                  
+                  // Determine text anchor based on position
+                  let anchor = 'middle';
+                  if (cos > 0.5) anchor = 'start';
+                  else if (cos < -0.5) anchor = 'end';
+                  
+                  return (
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <g>
                           <text
-                            x={x}
-                            y={y}
-                            textAnchor={x > 250 ? 'start' : x < 150 ? 'end' : 'middle'}
+                            x={labelX}
+                            y={labelY}
+                            textAnchor={anchor}
+                            dominantBaseline="middle"
                             fill="hsl(var(--foreground))"
-                            fontSize={11}
+                            fontSize={12}
                             fontWeight={500}
-                            className="cursor-help"
+                            className="cursor-help select-none"
                           >
                             {statName}
                           </text>
@@ -320,11 +336,10 @@ export const RadarComparisonChart = ({
                         )}
                       </TooltipContent>
                     </Tooltip>
-                  </TooltipProvider>
-                );
-              }}
-              tickLine={false}
-            />
+                  );
+                }}
+                tickLine={false}
+              />
             {paddles.map((paddle, idx) => {
               const displayName = getDisplayName(paddle);
               return (
@@ -350,6 +365,7 @@ export const RadarComparisonChart = ({
             />
           </RadarChart>
         </ResponsiveContainer>
+        </TooltipProvider>
       </div>
     </div>
   );
