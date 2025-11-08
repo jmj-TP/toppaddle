@@ -10,12 +10,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { format } from 'date-fns';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { StrokeDetailModal } from '@/components/training/StrokeDetailModal';
+import { CustomStroke } from '@/types/strokes';
 
 export default function Strokes() {
   const customStrokes = useTrainingStore((state) => state.customStrokes);
   const sessions = useTrainingStore((state) => state.sessions);
   const playerRating = useTrainingStore((state) => state.playerRating);
   const [selectedCategory, setSelectedCategory] = useState<StrokeCategory | 'all'>('all');
+  const [selectedStroke, setSelectedStroke] = useState<CustomStroke | null>(null);
 
   const getStrokeData = (strokeId: string) => {
     const strokeSessions = sessions
@@ -124,7 +127,11 @@ export default function Strokes() {
 
                       return (
                         <motion.div key={stroke.id} variants={fadeInUp}>
-                          <GlassCard>
+                          <GlassCard 
+                            hover 
+                            className="cursor-pointer"
+                            onClick={() => setSelectedStroke(stroke)}
+                          >
                             <div className="flex items-start justify-between mb-4">
                               <div>
                                 <div className="flex items-center gap-2 mb-1">
@@ -224,6 +231,14 @@ export default function Strokes() {
           </>
         )}
       </motion.div>
+
+      <StrokeDetailModal
+        stroke={selectedStroke}
+        sessions={sessions}
+        playerRating={playerRating}
+        open={selectedStroke !== null}
+        onOpenChange={(open) => !open && setSelectedStroke(null)}
+      />
     </DashboardLayout>
   );
 }
