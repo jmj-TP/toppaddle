@@ -15,6 +15,11 @@ import Privacy from "./pages/Privacy";
 import Configurator from "./pages/Configurator";
 import Compare from "./pages/Compare";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import Dashboard from "./pages/dashboard/Dashboard";
+import CheckIn from "./pages/dashboard/CheckIn";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +41,10 @@ const App = () => (
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/configurator" element={<Configurator />} />
             <Route path="/compare" element={<Compare />} />
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/register" element={<Register />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/dashboard/check-in" element={<ProtectedRoute><CheckIn /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

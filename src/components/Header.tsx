@@ -1,13 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogIn, User } from "lucide-react";
 import { useState } from "react";
 import DarkModeToggle from "./DarkModeToggle";
 import { CartDrawer } from "./CartDrawer";
+import { useAuthStore } from "@/stores/authStore";
+import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import logo from "@/assets/logo.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuthStore();
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -18,6 +27,10 @@ const Header = () => {
     { name: "About", href: "/about" },
     { name: "Terms", href: "/terms" },
   ];
+
+  if (isAuthenticated) {
+    navigation.splice(1, 0, { name: "Dashboard", href: "/dashboard" });
+  }
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -51,6 +64,28 @@ const Header = () => {
             ))}
             <CartDrawer />
             <DarkModeToggle />
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard">Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild variant="default" size="sm">
+                <Link to="/auth/login">
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Login
+                </Link>
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button and cart */}
