@@ -3,7 +3,8 @@ import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { useTrainingStore } from '@/stores/trainingStore';
 import { GlassCard } from '@/components/dashboard/GlassCard';
 import { staggerContainer, fadeInUp } from '@/utils/animations';
-import { CATEGORY_LABELS, StrokeCategory, getEmotionLabel } from '@/types/strokes';
+import { CATEGORY_LABELS, StrokeCategory, getEmotionLabel, getLevelDescription } from '@/types/strokes';
+import { LevelBadge } from '@/components/training/LevelBadge';
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -13,6 +14,7 @@ import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 export default function Strokes() {
   const customStrokes = useTrainingStore((state) => state.customStrokes);
   const sessions = useTrainingStore((state) => state.sessions);
+  const playerRating = useTrainingStore((state) => state.playerRating);
   const [selectedCategory, setSelectedCategory] = useState<StrokeCategory | 'all'>('all');
 
   const getStrokeData = (strokeId: string) => {
@@ -100,10 +102,15 @@ export default function Strokes() {
                         return (
                           <motion.div key={stroke.id} variants={fadeInUp}>
                             <GlassCard>
-                              <h3 className="font-semibold text-lg mb-2">{stroke.name}</h3>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                {CATEGORY_LABELS[stroke.category]}
-                              </p>
+                              <div className="flex items-start justify-between mb-2">
+                                <div>
+                                  <h3 className="font-semibold text-lg">{stroke.name}</h3>
+                                  <p className="text-sm text-muted-foreground">
+                                    {CATEGORY_LABELS[stroke.category]}
+                                  </p>
+                                </div>
+                                <LevelBadge level={stroke.level} playerRating={playerRating} />
+                              </div>
                               <div className="text-center py-8 text-muted-foreground">
                                 No data yet. Rate this stroke in your check-ins to see progress.
                               </div>
@@ -120,7 +127,10 @@ export default function Strokes() {
                           <GlassCard>
                             <div className="flex items-start justify-between mb-4">
                               <div>
-                                <h3 className="font-semibold text-lg">{stroke.name}</h3>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h3 className="font-semibold text-lg">{stroke.name}</h3>
+                                  <LevelBadge level={stroke.level} playerRating={playerRating} />
+                                </div>
                                 <p className="text-sm text-muted-foreground">
                                   {CATEGORY_LABELS[stroke.category]}
                                 </p>
@@ -150,7 +160,7 @@ export default function Strokes() {
                                   style={{ fontSize: '0.75rem' }}
                                 />
                                 <YAxis 
-                                  domain={[1, 10]}
+                                  domain={[0, 100]}
                                   stroke="hsl(var(--muted-foreground))"
                                   style={{ fontSize: '0.75rem' }}
                                 />
@@ -170,6 +180,33 @@ export default function Strokes() {
                                 />
                               </LineChart>
                             </ResponsiveContainer>
+
+                            {stroke.splits.length > 0 && (
+                              <div className="mt-4 pt-4 border-t border-border space-y-2">
+                                <h4 className="text-sm font-medium text-muted-foreground">Technique Details</h4>
+                                <div className="grid grid-cols-2 gap-2">
+                                  {stroke.splits.map((split) => {
+                                    const splitData = sessions
+                                      .filter((s) => s.splitRatings?.[stroke.id]?.[split.id] !== undefined)
+                                      .slice(0, 5);
+                                    const splitAvg = splitData.length > 0
+                                      ? splitData.reduce((sum, s) => sum + (s.splitRatings![stroke.id][split.id] || 0), 0) / splitData.length
+                                      : null;
+
+                                    return (
+                                      <div key={split.id} className="text-xs p-2 rounded bg-background/50 border border-border/50">
+                                        <div className="font-medium truncate">{split.name}</div>
+                                        {splitAvg !== null ? (
+                                          <div className="text-muted-foreground">Avg: {splitAvg.toFixed(1)}</div>
+                                        ) : (
+                                          <div className="text-muted-foreground">No data</div>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
 
                             {stroke.description && (
                               <div className="mt-4 pt-4 border-t border-border">

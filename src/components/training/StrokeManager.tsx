@@ -21,13 +21,19 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { GlassCard } from '@/components/dashboard/GlassCard';
-import { Plus, Trash2, Edit } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { SplitManager } from './SplitManager';
+import { LevelBadge } from './LevelBadge';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ChevronDown } from 'lucide-react';
 
 export const StrokeManager = () => {
   const customStrokes = useTrainingStore((state) => state.customStrokes);
+  const playerRating = useTrainingStore((state) => state.playerRating);
   const addCustomStroke = useTrainingStore((state) => state.addCustomStroke);
   const deleteCustomStroke = useTrainingStore((state) => state.deleteCustomStroke);
+  const [expandedStrokes, setExpandedStrokes] = useState<Set<string>>(new Set());
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [name, setName] = useState('');
@@ -48,6 +54,7 @@ export const StrokeManager = () => {
       name: name.trim(),
       category,
       description: description.trim() || undefined,
+      splits: [],
     });
 
     toast({
@@ -65,6 +72,18 @@ export const StrokeManager = () => {
     toast({
       title: 'Stroke removed',
       description: `${name} has been removed from your portfolio.`,
+    });
+  };
+
+  const toggleStroke = (strokeId: string) => {
+    setExpandedStrokes((prev) => {
+      const next = new Set(prev);
+      if (next.has(strokeId)) {
+        next.delete(strokeId);
+      } else {
+        next.add(strokeId);
+      }
+      return next;
     });
   };
 
@@ -165,27 +184,57 @@ export const StrokeManager = () => {
                 <h4 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">
                   {label}
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                   {strokes.map((stroke) => (
                     <GlassCard key={stroke.id}>
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                          <h5 className="font-medium truncate">{stroke.name}</h5>
-                          {stroke.description && (
-                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                              {stroke.description}
-                            </p>
-                          )}
+                      <Collapsible
+                        open={expandedStrokes.has(stroke.id)}
+                        onOpenChange={() => toggleStroke(stroke.id)}
+                      >
+                        <div className="space-y-3">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h5 className="font-medium truncate">{stroke.name}</h5>
+                                <LevelBadge level={stroke.level} playerRating={playerRating} size="sm" />
+                              </div>
+                              {stroke.description && (
+                                <p className="text-xs text-muted-foreground line-clamp-2">
+                                  {stroke.description}
+                                </p>
+                              )}
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {stroke.splits.length} technique detail{stroke.splits.length !== 1 ? 's' : ''}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                              <CollapsibleTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                  <ChevronDown
+                                    className={`w-4 h-4 transition-transform ${
+                                      expandedStrokes.has(stroke.id) ? 'rotate-180' : ''
+                                    }`}
+                                  />
+                                </Button>
+                              </CollapsibleTrigger>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleDelete(stroke.id, stroke.name)}
+                                className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+
+                          <CollapsibleContent>
+                            <div className="pt-3 border-t border-border">
+                              <SplitManager stroke={stroke} />
+                            </div>
+                          </CollapsibleContent>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDelete(stroke.id, stroke.name)}
-                          className="h-8 w-8 text-muted-foreground hover:text-destructive flex-shrink-0 ml-2"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
+                      </Collapsible>
                     </GlassCard>
                   ))}
                 </div>

@@ -1,11 +1,13 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
+import { GlassCard } from '@/components/dashboard/GlassCard';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { InsightCard } from '@/components/dashboard/InsightCard';
+import { OverallProgressChart } from '@/components/dashboard/OverallProgressChart';
 import { useTrainingStore } from '@/stores/trainingStore';
 import { calculateStats, generateInsights } from '@/utils/trainingAnalytics';
 import { Activity, TrendingUp, Target, Flame } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { staggerContainer, staggerItem } from '@/utils/animations';
+import { staggerContainer, staggerItem, fadeInUp } from '@/utils/animations';
 import SEO from '@/components/SEO';
 
 export default function Dashboard() {
@@ -53,15 +55,25 @@ export default function Dashboard() {
             />
           </div>
 
+          {/* Overall Progress Chart */}
+          <motion.div variants={fadeInUp}>
+            <GlassCard>
+              <h2 className="text-2xl font-bold mb-6">Overall Progress</h2>
+              <OverallProgressChart />
+            </GlassCard>
+          </motion.div>
+
           {/* Insights */}
           {insights.length > 0 && (
             <motion.div variants={staggerItem}>
-              <h2 className="text-2xl font-bold mb-4">Insights</h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                {insights.map((insight) => (
-                  <InsightCard key={insight.id} insight={insight} />
-                ))}
-              </div>
+              <GlassCard>
+                <h2 className="text-2xl font-bold mb-6">Recent Insights</h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {insights.map((insight) => (
+                    <InsightCard key={insight.id} insight={insight} />
+                  ))}
+                </div>
+              </GlassCard>
             </motion.div>
           )}
         </motion.div>
