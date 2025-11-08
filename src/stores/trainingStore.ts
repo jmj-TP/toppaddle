@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { CustomStroke } from '@/types/strokes';
 
 export type SessionType = 'training' | 'match';
 
@@ -12,6 +13,7 @@ export interface TrainingSession {
   backhandRating: number; // 1-10
   serveRating: number; // 1-10
   receiveRating: number; // 1-10
+  customStrokeRatings?: Record<string, number>; // strokeId -> rating
   notes?: string;
   currentSetup?: {
     blade?: string;
@@ -22,6 +24,7 @@ export interface TrainingSession {
 
 interface TrainingState {
   sessions: TrainingSession[];
+  customStrokes: CustomStroke[];
   currentSetup?: {
     blade?: string;
     forehandRubber?: string;
@@ -33,12 +36,17 @@ interface TrainingState {
   getSessions: () => TrainingSession[];
   getSessionsByDateRange: (startDate: string, endDate: string) => TrainingSession[];
   setCurrentSetup: (setup: TrainingState['currentSetup']) => void;
+  addCustomStroke: (stroke: Omit<CustomStroke, 'id' | 'createdAt'>) => void;
+  updateCustomStroke: (id: string, stroke: Partial<CustomStroke>) => void;
+  deleteCustomStroke: (id: string) => void;
+  getStrokesByCategory: (category: CustomStroke['category']) => CustomStroke[];
 }
 
 export const useTrainingStore = create<TrainingState>()(
   persist(
     (set, get) => ({
       sessions: [],
+      customStrokes: [],
       currentSetup: undefined,
 
       addSession: (session) => {
@@ -80,6 +88,35 @@ export const useTrainingStore = create<TrainingState>()(
 
       setCurrentSetup: (setup) => {
         set({ currentSetup: setup });
+      },
+
+      addCustomStroke: (stroke) => {
+        const newStroke: CustomStroke = {
+          ...stroke,
+          id: `stroke-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          createdAt: new Date().toISOString(),
+        };
+        set((state) => ({
+          customStrokes: [...state.customStrokes, newStroke],
+        }));
+      },
+
+      updateCustomStroke: (id, updates) => {
+        set((state) => ({
+          customStrokes: state.customStrokes.map((stroke) =>
+            stroke.id === id ? { ...stroke, ...updates } : stroke
+          ),
+        }));
+      },
+
+      deleteCustomStroke: (id) => {
+        set((state) => ({
+          customStrokes: state.customStrokes.filter((stroke) => stroke.id !== id),
+        }));
+      },
+
+      getStrokesByCategory: (category) => {
+        return get().customStrokes.filter((stroke) => stroke.category === category);
       },
     }),
     {

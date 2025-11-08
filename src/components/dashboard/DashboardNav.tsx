@@ -1,10 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, PenSquare, Settings } from 'lucide-react';
+import { LayoutDashboard, PenSquare, Settings, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { name: 'Check-In', path: '/dashboard/check-in', icon: PenSquare },
+  { name: 'My Strokes', path: '/dashboard/strokes', icon: Target },
   { name: 'Settings', path: '/dashboard/settings', icon: Settings },
 ];
 

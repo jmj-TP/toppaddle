@@ -8,8 +8,9 @@ import { Slider } from '@/components/ui/slider';
 import { GlassCard } from '@/components/dashboard/GlassCard';
 import { EmotionSlider } from './EmotionSlider';
 import { toast } from '@/hooks/use-toast';
-import { Dumbbell, Trophy, CheckCircle } from 'lucide-react';
+import { Dumbbell, Trophy, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { fadeInUp, staggerContainer, staggerItem } from '@/utils/animations';
+import { CATEGORY_LABELS, StrokeCategory } from '@/types/strokes';
 
 interface DailyCheckInProps {
   onComplete?: () => void;
@@ -22,11 +23,27 @@ export const DailyCheckIn = ({ onComplete }: DailyCheckInProps) => {
   const [backhandRating, setBackhandRating] = useState(5);
   const [serveRating, setServeRating] = useState(5);
   const [receiveRating, setReceiveRating] = useState(5);
+  const [customStrokeRatings, setCustomStrokeRatings] = useState<Record<string, number>>({});
+  const [expandedCategories, setExpandedCategories] = useState<Set<StrokeCategory>>(new Set());
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const addSession = useTrainingStore((state) => state.addSession);
   const currentSetup = useTrainingStore((state) => state.currentSetup);
+  const customStrokes = useTrainingStore((state) => state.customStrokes);
+  const getStrokesByCategory = useTrainingStore((state) => state.getStrokesByCategory);
+
+  const toggleCategory = (category: StrokeCategory) => {
+    setExpandedCategories((prev) => {
+      const next = new Set(prev);
+      if (next.has(category)) {
+        next.delete(category);
+      } else {
+        next.add(category);
+      }
+      return next;
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +60,7 @@ export const DailyCheckIn = ({ onComplete }: DailyCheckInProps) => {
       backhandRating,
       serveRating,
       receiveRating,
+      customStrokeRatings: Object.keys(customStrokeRatings).length > 0 ? customStrokeRatings : undefined,
       notes: notes.trim() || undefined,
       currentSetup,
     });
@@ -58,10 +76,71 @@ export const DailyCheckIn = ({ onComplete }: DailyCheckInProps) => {
     setBackhandRating(5);
     setServeRating(5);
     setReceiveRating(5);
+    setCustomStrokeRatings({});
     setNotes('');
     setIsSubmitting(false);
 
     onComplete?.();
+  };
+
+  const renderStrokeRatings = (category: StrokeCategory, baseRating: number, setBaseRating: (val: number) => void) => {
+    const strokes = getStrokesByCategory(category);
+    const isExpanded = expandedCategories.has(category);
+
+    return (
+      <div className="space-y-3">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label>{CATEGORY_LABELS[category]}</Label>
+            <span className="text-sm font-medium">{baseRating}/10</span>
+          </div>
+          <Slider
+            value={[baseRating]}
+            onValueChange={([val]) => setBaseRating(val)}
+            min={1}
+            max={10}
+            step={1}
+          />
+        </div>
+
+        {strokes.length > 0 && (
+          <div className="ml-4 pl-4 border-l-2 border-border/50">
+            <button
+              type="button"
+              onClick={() => toggleCategory(category)}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2"
+            >
+              {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              <span>{strokes.length} custom {strokes.length === 1 ? 'stroke' : 'strokes'} (optional)</span>
+            </button>
+            
+            {isExpanded && (
+              <div className="space-y-3 mt-2">
+                {strokes.map((stroke) => (
+                  <div key={stroke.id} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-normal">{stroke.name}</Label>
+                      <span className="text-sm font-medium">
+                        {customStrokeRatings[stroke.id] || 5}/10
+                      </span>
+                    </div>
+                    <Slider
+                      value={[customStrokeRatings[stroke.id] || 5]}
+                      onValueChange={([val]) =>
+                        setCustomStrokeRatings((prev) => ({ ...prev, [stroke.id]: val }))
+                      }
+                      min={1}
+                      max={10}
+                      step={1}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -107,7 +186,7 @@ export const DailyCheckIn = ({ onComplete }: DailyCheckInProps) => {
           {/* Overall Feeling */}
           <motion.div variants={staggerItem}>
             <EmotionSlider
-              label="Overall Feeling"
+              label="How did you feel about this session? (Your personal feeling)"
               value={overallFeeling}
               onChange={setOverallFeeling}
             />
@@ -115,64 +194,18 @@ export const DailyCheckIn = ({ onComplete }: DailyCheckInProps) => {
 
           {/* Skill Ratings */}
           <motion.div variants={staggerItem} className="space-y-4">
-            <h3 className="font-semibold">Skill Ratings</h3>
+            <div>
+              <h3 className="font-semibold">Skill Ratings</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Rate the main categories. Expand to rate your custom strokes (optional).
+              </p>
+            </div>
             
-            <div className="space-y-3">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label>Forehand Technique</Label>
-                  <span className="text-sm font-medium">{forehandRating}/10</span>
-                </div>
-                <Slider
-                  value={[forehandRating]}
-                  onValueChange={([val]) => setForehandRating(val)}
-                  min={1}
-                  max={10}
-                  step={1}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label>Backhand Technique</Label>
-                  <span className="text-sm font-medium">{backhandRating}/10</span>
-                </div>
-                <Slider
-                  value={[backhandRating]}
-                  onValueChange={([val]) => setBackhandRating(val)}
-                  min={1}
-                  max={10}
-                  step={1}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label>Serves Quality</Label>
-                  <span className="text-sm font-medium">{serveRating}/10</span>
-                </div>
-                <Slider
-                  value={[serveRating]}
-                  onValueChange={([val]) => setServeRating(val)}
-                  min={1}
-                  max={10}
-                  step={1}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label>Receives Consistency</Label>
-                  <span className="text-sm font-medium">{receiveRating}/10</span>
-                </div>
-                <Slider
-                  value={[receiveRating]}
-                  onValueChange={([val]) => setReceiveRating(val)}
-                  min={1}
-                  max={10}
-                  step={1}
-                />
-              </div>
+            <div className="space-y-4">
+              {renderStrokeRatings('forehand', forehandRating, setForehandRating)}
+              {renderStrokeRatings('backhand', backhandRating, setBackhandRating)}
+              {renderStrokeRatings('serve', serveRating, setServeRating)}
+              {renderStrokeRatings('receive', receiveRating, setReceiveRating)}
             </div>
           </motion.div>
 

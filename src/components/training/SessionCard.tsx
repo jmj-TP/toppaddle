@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
-import { TrainingSession } from '@/stores/trainingStore';
+import { TrainingSession, useTrainingStore } from '@/stores/trainingStore';
 import { GlassCard } from '@/components/dashboard/GlassCard';
-import { Calendar, Dumbbell, Trophy } from 'lucide-react';
+import { Calendar, Dumbbell, Trophy, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { fadeInUp } from '@/utils/animations';
+import { getEmotionLabel } from '@/types/strokes';
+import { Button } from '@/components/ui/button';
+import { toast } from '@/hooks/use-toast';
 
 interface SessionCardProps {
   session: TrainingSession;
@@ -11,6 +14,15 @@ interface SessionCardProps {
 
 export const SessionCard = ({ session }: SessionCardProps) => {
   const Icon = session.sessionType === 'training' ? Dumbbell : Trophy;
+  const deleteSession = useTrainingStore((state) => state.deleteSession);
+
+  const handleDelete = () => {
+    deleteSession(session.id);
+    toast({
+      title: 'Session deleted',
+      description: 'The training session has been removed.',
+    });
+  };
 
   return (
     <motion.div variants={fadeInUp}>
@@ -32,9 +44,21 @@ export const SessionCard = ({ session }: SessionCardProps) => {
               </div>
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-2xl font-bold">{session.overallFeeling}/7</div>
-            <div className="text-xs text-muted-foreground">Overall</div>
+          <div className="flex items-center gap-3">
+            <div className="text-right">
+              <div className="text-sm font-medium text-muted-foreground">
+                {getEmotionLabel(session.overallFeeling)}
+              </div>
+              <div className="text-xs text-muted-foreground">Personal feeling</div>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleDelete}
+              className="h-8 w-8 text-muted-foreground hover:text-destructive"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
           </div>
         </div>
 
