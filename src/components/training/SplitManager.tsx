@@ -44,7 +44,7 @@ export const SplitManager = ({ stroke }: SplitManagerProps) => {
     };
 
     updateCustomStroke(stroke.id, {
-      splits: [...stroke.splits, newSplit],
+      splits: [...(stroke.splits || []), newSplit],
     });
 
     toast({
@@ -59,7 +59,7 @@ export const SplitManager = ({ stroke }: SplitManagerProps) => {
 
   const handleDelete = (splitId: string, splitName: string) => {
     updateCustomStroke(stroke.id, {
-      splits: stroke.splits.filter((s) => s.id !== splitId),
+      splits: (stroke.splits || []).filter((s) => s.id !== splitId),
     });
 
     toast({
@@ -116,13 +116,13 @@ export const SplitManager = ({ stroke }: SplitManagerProps) => {
         </Dialog>
       </div>
 
-      {stroke.splits.length === 0 ? (
+      {(stroke.splits?.length ?? 0) === 0 ? (
         <p className="text-xs text-muted-foreground italic">
           No technique details yet. Add details to track specific aspects.
         </p>
       ) : (
         <div className="space-y-2">
-          {stroke.splits.map((split) => (
+          {(stroke.splits || []).map((split) => (
             <div
               key={split.id}
               className="flex items-start justify-between p-2 rounded-lg bg-background/50 border border-border/50"

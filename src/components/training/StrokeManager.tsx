@@ -204,7 +204,7 @@ export const StrokeManager = () => {
                                 </p>
                               )}
                               <p className="text-xs text-muted-foreground mt-1">
-                                {stroke.splits.length} technique detail{stroke.splits.length !== 1 ? 's' : ''}
+                                {stroke.splits?.length ?? 0} technique detail{(stroke.splits?.length ?? 0) !== 1 ? 's' : ''}
                               </p>
                             </div>
                             <div className="flex items-center gap-1 flex-shrink-0 ml-2">

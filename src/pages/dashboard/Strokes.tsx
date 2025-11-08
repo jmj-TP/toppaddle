@@ -181,11 +181,11 @@ export default function Strokes() {
                               </LineChart>
                             </ResponsiveContainer>
 
-                            {stroke.splits.length > 0 && (
+                            {(stroke.splits?.length ?? 0) > 0 && (
                               <div className="mt-4 pt-4 border-t border-border space-y-2">
                                 <h4 className="text-sm font-medium text-muted-foreground">Technique Details</h4>
                                 <div className="grid grid-cols-2 gap-2">
-                                  {stroke.splits.map((split) => {
+                                  {(stroke.splits || []).map((split) => {
                                     const splitData = sessions
                                       .filter((s) => s.splitRatings?.[stroke.id]?.[split.id] !== undefined)
                                       .slice(0, 5);

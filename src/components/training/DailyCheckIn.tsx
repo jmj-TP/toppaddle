@@ -215,9 +215,9 @@ export const DailyCheckIn = () => {
                               </div>
                             </div>
 
-                            {stroke.splits.length > 0 && (
+                            {(stroke.splits?.length ?? 0) > 0 && (
                               <div className="pl-4 space-y-2 border-l-2 border-border/50">
-                                {stroke.splits.map((split) => (
+                                {(stroke.splits || []).map((split) => (
                                   <div key={split.id}>
                                     <Label className="text-xs text-muted-foreground">{split.name} (Optional)</Label>
                                     <div className="mt-1">
