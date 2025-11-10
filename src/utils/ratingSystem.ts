@@ -675,6 +675,18 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
       const availableFhThickness = findClosestSpongeThickness(idealFhThickness, setup.forehandRubber.Rubber_Sponge_Sizes);
       const availableBhThickness = findClosestSpongeThickness(idealBhThickness, setup.backhandRubber.Rubber_Sponge_Sizes);
       
+      console.log('Setting sponge thicknesses:', {
+        blade: setup.blade.Blade_Name,
+        forehandRubber: setup.forehandRubber.Rubber_Name,
+        backhandRubber: setup.backhandRubber.Rubber_Name,
+        idealFhThickness,
+        idealBhThickness,
+        availableFhSizes: setup.forehandRubber.Rubber_Sponge_Sizes,
+        availableBhSizes: setup.backhandRubber.Rubber_Sponge_Sizes,
+        availableFhThickness,
+        availableBhThickness
+      });
+      
       return {
         ...setup,
         score: normalizedScore,
@@ -728,26 +740,11 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       handleTypeExplanation
     };
   } else if (assemblyPref.includes('Custom setup')) {
-    // Return top 2 custom setups
+    // Return top 2 custom setups (already have validated sponge sizes)
     const customSetups = findBestCustomSetups(answers, 2);
     const customSetup = customSetups[0] || undefined;
     const customSetup2 = customSetups[1] || undefined;
     const totalScore = customSetup?.score || 0;
-    
-    // Validate and adjust sponge thicknesses to available options
-    let finalForehandThickness = forehandThickness;
-    let finalBackhandThickness = backhandThickness;
-    
-    if (customSetup) {
-      finalForehandThickness = findClosestSpongeThickness(
-        forehandThickness, 
-        customSetup.forehandRubber.Rubber_Sponge_Sizes
-      );
-      finalBackhandThickness = findClosestSpongeThickness(
-        backhandThickness, 
-        customSetup.backhandRubber.Rubber_Sponge_Sizes
-      );
-    }
     
     return { 
       preAssembled: undefined,
@@ -755,15 +752,16 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
       customSetup,
       customSetup2,
       totalScore,
-      forehandThickness: finalForehandThickness,
+      // Use setup-specific validated thicknesses
+      forehandThickness: customSetup?.forehandThickness || forehandThickness,
       forehandThicknessExplanation: forehandExplanation,
-      backhandThickness: finalBackhandThickness,
+      backhandThickness: customSetup?.backhandThickness || backhandThickness,
       backhandThicknessExplanation: backhandExplanation,
       handleType,
       handleTypeExplanation
     };
   } else {
-    // Return both pre-assembled and top 2 custom setups (for "Not sure")
+    // Return both pre-assembled and custom setups (already have validated sponge sizes)
     const preAssembledRackets = findBestPreAssembledRackets(answers, 2);
     const preAssembled = preAssembledRackets[0] || undefined;
     const preAssembled2 = preAssembledRackets[1] || undefined;
@@ -774,30 +772,16 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
     const customScore = customSetup?.score || 0;
     const totalScore = Math.max(preScore, customScore);
     
-    // Validate and adjust sponge thicknesses to available options
-    let finalForehandThickness = forehandThickness;
-    let finalBackhandThickness = backhandThickness;
-    
-    if (customSetup) {
-      finalForehandThickness = findClosestSpongeThickness(
-        forehandThickness, 
-        customSetup.forehandRubber.Rubber_Sponge_Sizes
-      );
-      finalBackhandThickness = findClosestSpongeThickness(
-        backhandThickness, 
-        customSetup.backhandRubber.Rubber_Sponge_Sizes
-      );
-    }
-    
     return { 
       preAssembled,
       preAssembled2,
       customSetup,
       customSetup2,
       totalScore,
-      forehandThickness: finalForehandThickness,
+      // Use setup-specific validated thicknesses
+      forehandThickness: customSetup?.forehandThickness || forehandThickness,
       forehandThicknessExplanation: forehandExplanation,
-      backhandThickness: finalBackhandThickness,
+      backhandThickness: customSetup?.backhandThickness || backhandThickness,
       backhandThicknessExplanation: backhandExplanation,
       handleType,
       handleTypeExplanation

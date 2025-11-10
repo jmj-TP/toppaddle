@@ -90,6 +90,14 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       const setup = item.data as CustomSetup;
       const fhThickness = setup.forehandThickness || forehandThickness;
       const bhThickness = setup.backhandThickness || backhandThickness;
+      console.log('handleViewInConfigurator:', {
+        setupFhThickness: setup.forehandThickness,
+        setupBhThickness: setup.backhandThickness,
+        fallbackFhThickness: forehandThickness,
+        fallbackBhThickness: backhandThickness,
+        finalFhThickness: fhThickness,
+        finalBhThickness: bhThickness
+      });
       navigate(`/configurator?blade=${encodeURIComponent(setup.blade.Blade_Name)}&fh=${encodeURIComponent(setup.forehandRubber.Rubber_Name)}&bh=${encodeURIComponent(setup.backhandRubber.Rubber_Name)}&handle=${encodeURIComponent(handleType)}&fhThickness=${encodeURIComponent(fhThickness)}&bhThickness=${encodeURIComponent(bhThickness)}`);
     }
   };
@@ -217,6 +225,17 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         // Use setup-specific thicknesses if available
         const fhThickness = setup.forehandThickness || forehandThickness;
         const bhThickness = setup.backhandThickness || backhandThickness;
+        
+        console.log('handleAddToCart:', {
+          setupFhThickness: setup.forehandThickness,
+          setupBhThickness: setup.backhandThickness,
+          fallbackFhThickness: forehandThickness,
+          fallbackBhThickness: backhandThickness,
+          finalFhThickness: fhThickness,
+          finalBhThickness: bhThickness,
+          forehandRubber: setup.forehandRubber.Rubber_Name,
+          backhandRubber: setup.backhandRubber.Rubber_Name
+        });
         
         // Find blade
         const bladeProduct = findShopifyProduct(setup.blade.Blade_Name);
