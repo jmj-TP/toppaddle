@@ -105,6 +105,19 @@ export const InsightsSection = ({ paddles, selectedPaddleId, onPaddleSelect, per
     return insights;
   };
 
+  const getDisplayName = (paddle: ComparisonPaddle) => {
+    switch (performanceView) {
+      case 'forehand':
+        return paddle.forehandRubber || paddle.name;
+      case 'blade':
+        return paddle.blade || paddle.name;
+      case 'backhand':
+        return paddle.backhandRubber || paddle.name;
+      default:
+        return paddle.name;
+    }
+  };
+
   const getViewTitle = () => {
     switch (performanceView) {
       case 'blade':
@@ -130,8 +143,8 @@ export const InsightsSection = ({ paddles, selectedPaddleId, onPaddleSelect, per
             <div key={`${selectedPaddle.id}-${otherPaddle.id}`} className="space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <h3 className="font-semibold text-sm">
-                  Why is <span className="text-primary">{selectedPaddle.name}</span> better than{' '}
-                  <span className="text-muted-foreground">{otherPaddle.name}</span>?
+                  Why is <span className="text-primary">{getDisplayName(selectedPaddle)}</span> better than{' '}
+                  <span className="text-muted-foreground">{getDisplayName(otherPaddle)}</span>?
                 </h3>
                 <Button
                   variant="ghost"
@@ -145,7 +158,7 @@ export const InsightsSection = ({ paddles, selectedPaddleId, onPaddleSelect, per
               <ul className="space-y-2">
                 {positiveInsights.length === 0 ? (
                   <li className="text-sm text-muted-foreground">
-                    {selectedPaddle.name} has no significant advantages over {otherPaddle.name}
+                    {getDisplayName(selectedPaddle)} has no significant advantages over {getDisplayName(otherPaddle)}
                   </li>
                 ) : (
                   positiveInsights.map((insight, i) => (
