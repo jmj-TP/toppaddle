@@ -8,7 +8,7 @@ import { InsightsSection } from '@/components/comparison/InsightsSection';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X, ArrowRight, Trophy, DollarSign, ShoppingCart } from 'lucide-react';
+import { X, ArrowRight, Trophy, DollarSign, ShoppingCart, SkipForward } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useNavigate } from 'react-router-dom';
 import SEO from '@/components/SEO';
@@ -16,11 +16,14 @@ import { useCartStore } from '@/stores/cartStore';
 import { fetchShopifyProducts, type ShopifyProduct } from '@/lib/shopify';
 import { toast } from 'sonner';
 import { rubbers } from '@/data/products';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const Compare = () => {
   const { paddles, removePaddle, clearComparison, updateSponge } = useComparisonStore();
   const [selectedPaddle, setSelectedPaddle] = useState<string | null>(paddles[0]?.id || null);
   const [performanceView, setPerformanceView] = useState<PerformanceView>('overall');
+  const [showValue, setShowValue] = useState(true);
+  const [showWeight, setShowWeight] = useState(true);
   const navigate = useNavigate();
   const addItem = useCartStore(state => state.addItem);
   const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
@@ -58,6 +61,26 @@ const Compare = () => {
     
     return paddleValue > bestValueScore ? paddle : best;
   }, paddles[0]);
+
+  const cycleRadarView = () => {
+    const views: PerformanceView[] = ['forehand', 'blade', 'backhand', 'overall'];
+    const currentIndex = views.indexOf(performanceView);
+    setPerformanceView(views[(currentIndex + 1) % views.length]);
+  };
+
+  const getRadarSubhead = () => {
+    switch (performanceView) {
+      case 'overall': return 'Overall';
+      case 'forehand': return 'FH Rubber';
+      case 'blade': return 'Blade';
+      case 'backhand': return 'BH Rubber';
+    }
+  };
+
+  const tooltips = {
+    value: "Price-to-performance ratio",
+    weight: "Total weight in grams"
+  };
 
   const handleAddToCart = (paddle: typeof paddles[0]) => {
     if (isLoadingProducts) {
@@ -316,15 +339,79 @@ const Compare = () => {
           {/* Radar Chart and Insights Side by Side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="p-6">
-              <RadarComparisonChart 
-                paddles={paddles} 
-                selectedPaddle={selectedPaddle}
-                onPaddleSelect={(id) => {
-                  setSelectedPaddle(id);
-                }}
-                performanceView={performanceView}
-                onPerformanceViewChange={setPerformanceView}
-              />
+              <div className="flex flex-col sm:flex-row items-center justify-between mb-[2vh] gap-[1vh]">
+                <div className="text-center sm:text-left">
+                  <h3 className="text-[clamp(1.125rem,4.5vw,1.5rem)] lg:text-[clamp(1.125rem,1.2vw,1.35rem)] font-semibold text-[hsl(var(--primary))]">
+                    Performance Overview
+                  </h3>
+                  <p className="text-[clamp(0.75rem,3vw,0.875rem)] lg:text-[clamp(0.75rem,0.8vw,0.85rem)] text-muted-foreground mt-[0.5vh]">
+                    {getRadarSubhead()}
+                  </p>
+                </div>
+                <div className="flex items-center gap-[clamp(0.5rem,2vw,1rem)] flex-wrap justify-center">
+                  <Button
+                    onClick={cycleRadarView}
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl px-[clamp(0.75rem,3vw,1.5rem)] py-[1.5vh] text-[clamp(0.75rem,3vw,0.85rem)] lg:text-[clamp(0.75rem,0.85vw,0.9rem)] hover:bg-accent/10"
+                  >
+                    <SkipForward className="mr-[clamp(0.25rem,1vw,0.5rem)] h-[clamp(0.875rem,3.5vw,1rem)] w-[clamp(0.875rem,3.5vw,1rem)] lg:h-[clamp(0.875rem,1vw,1rem)] lg:w-[clamp(0.875rem,1vw,1rem)]" />
+                    Next View
+                  </Button>
+                  {performanceView === 'overall' && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            onClick={() => setShowValue(!showValue)}
+                            variant={showValue ? "default" : "outline"}
+                            size="sm"
+                            className="rounded-xl px-[clamp(0.75rem,3vw,1.5rem)] py-[1.5vh] text-[clamp(0.75rem,3vw,0.85rem)] lg:text-[clamp(0.75rem,0.85vw,0.9rem)]"
+                          >
+                            Value
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{tooltips.value}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                  {performanceView === 'overall' && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            onClick={() => setShowWeight(!showWeight)}
+                            variant={showWeight ? "default" : "outline"}
+                            size="sm"
+                            className="rounded-xl px-[clamp(0.75rem,3vw,1.5rem)] py-[1.5vh] text-[clamp(0.75rem,3vw,0.85rem)] lg:text-[clamp(0.75rem,0.85vw,0.9rem)]"
+                          >
+                            Weight
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{tooltips.weight}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </div>
+              </div>
+              <div className="transition-all duration-250 motion-reduce:transition-none">
+                <RadarComparisonChart 
+                  paddles={paddles} 
+                  selectedPaddle={selectedPaddle}
+                  onPaddleSelect={(id) => {
+                    setSelectedPaddle(id);
+                  }}
+                  performanceView={performanceView}
+                  onPerformanceViewChange={setPerformanceView}
+                  includeValue={performanceView === 'overall' && showValue}
+                  includeWeight={performanceView === 'overall' && showWeight}
+                  hideControls={true}
+                />
+              </div>
             </Card>
             <InsightsSection 
               paddles={paddles} 
