@@ -616,7 +616,7 @@ const StatsDisplay = ({
               <RadarComparisonChart 
                 paddles={getRadarData()} 
                 includeValue={showValue}
-                includeWeight={showWeight}
+                includeWeight={radarView === 'overall' && showWeight}
                 hideControls={true}
               />
             </div>
