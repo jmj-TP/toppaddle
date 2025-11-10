@@ -69,16 +69,48 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     );
   };
 
-  // Helper to find variant with specific options
-  const findVariant = (product: ShopifyProduct, options: { [key: string]: string }) => {
-    return product.node.variants.edges.find(variant => {
-      return Object.entries(options).every(([key, value]) => {
-        return variant.node.selectedOptions.some(opt => 
-          opt.name.toLowerCase() === key.toLowerCase() && 
-          opt.value.toLowerCase() === value.toLowerCase()
-        );
-      });
-    })?.node;
+  // Helper to find variant with specific options - matching Configurator logic
+  const findMatchingVariant = (
+    product: ShopifyProduct,
+    options: Array<{ name: string; value: string }>
+  ): string | null => {
+    const variants = product.node.variants.edges;
+    
+    // Try exact match
+    for (const variant of variants) {
+      const variantOptions = variant.node.selectedOptions;
+      const allMatch = options.every(requiredOption => 
+        variantOptions.some(variantOption => 
+          variantOption.name === requiredOption.name && 
+          variantOption.value === requiredOption.value
+        )
+      );
+      
+      if (allMatch && variant.node.availableForSale) {
+        return variant.node.id;
+      }
+    }
+    
+    // Try flexible match
+    for (const variant of variants) {
+      const variantOptions = variant.node.selectedOptions;
+      const allMatch = options.every(requiredOption => 
+        variantOptions.some(variantOption => {
+          if (variantOption.name !== requiredOption.name) return false;
+          const shopifyValue = variantOption.value.toLowerCase();
+          const requestedValue = requiredOption.value.toLowerCase();
+          return shopifyValue === requestedValue || 
+                 shopifyValue.startsWith(requestedValue + ' ') ||
+                 shopifyValue.startsWith(requestedValue + '(');
+        })
+      );
+      
+      if (allMatch && variant.node.availableForSale) {
+        return variant.node.id;
+      }
+    }
+    
+    return null;
   };
 
   // Helper to validate and get closest available sponge thickness
@@ -240,7 +272,12 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           return;
         }
 
-        const variant = findVariant(shopifyProduct, { handle: handleType }) || shopifyProduct.node.variants.edges[0].node;
+        const variantId = findMatchingVariant(shopifyProduct, [
+          { name: "Grip Type", value: handleType }
+        ]);
+        const variant = variantId 
+          ? shopifyProducts.find(p => p.node.id === shopifyProduct.node.id)?.node.variants.edges.find(v => v.node.id === variantId)?.node
+          : shopifyProduct.node.variants.edges[0].node;
         
         addItem({
           product: shopifyProduct,
@@ -268,49 +305,69 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         // Find blade
         const bladeProduct = findShopifyProduct(setup.blade.Blade_Name);
         if (bladeProduct) {
-          const bladeVariant = findVariant(bladeProduct, { handle: handleType }) || bladeProduct.node.variants.edges[0].node;
-          addItem({
-            product: bladeProduct,
-            variantId: bladeVariant.id,
-            variantTitle: bladeVariant.title,
-            price: bladeVariant.price,
-            quantity: 1,
-            selectedOptions: bladeVariant.selectedOptions
-          });
+          const bladeVariantId = findMatchingVariant(bladeProduct, [
+            { name: "Grip Type", value: handleType }
+          ]);
+          
+          if (bladeVariantId) {
+            const bladeVariant = bladeProduct.node.variants.edges.find(v => v.node.id === bladeVariantId)!.node;
+            addItem({
+              product: bladeProduct,
+              variantId: bladeVariant.id,
+              variantTitle: bladeVariant.title,
+              price: bladeVariant.price,
+              quantity: 1,
+              selectedOptions: bladeVariant.selectedOptions
+            });
+          } else {
+            toast.error("Blade variant not available", { description: `${handleType} grip not found` });
+          }
         }
 
         // Find forehand rubber
         const fhProduct = findShopifyProduct(setup.forehandRubber.Rubber_Name);
         if (fhProduct) {
-          const fhVariant = findVariant(fhProduct, { 
-            thickness: fhThickness, 
-            color: "Red" 
-          }) || fhProduct.node.variants.edges[0].node;
-          addItem({
-            product: fhProduct,
-            variantId: fhVariant.id,
-            variantTitle: fhVariant.title,
-            price: fhVariant.price,
-            quantity: 1,
-            selectedOptions: fhVariant.selectedOptions
-          });
+          const fhVariantId = findMatchingVariant(fhProduct, [
+            { name: "Sponge Thickness", value: fhThickness },
+            { name: "Color", value: "Red" }
+          ]);
+          
+          if (fhVariantId) {
+            const fhVariant = fhProduct.node.variants.edges.find(v => v.node.id === fhVariantId)!.node;
+            addItem({
+              product: fhProduct,
+              variantId: fhVariant.id,
+              variantTitle: fhVariant.title,
+              price: fhVariant.price,
+              quantity: 1,
+              selectedOptions: fhVariant.selectedOptions
+            });
+          } else {
+            toast.error("Forehand rubber variant not available", { description: `${fhThickness} not found` });
+          }
         }
 
         // Find backhand rubber
         const bhProduct = findShopifyProduct(setup.backhandRubber.Rubber_Name);
         if (bhProduct) {
-          const bhVariant = findVariant(bhProduct, { 
-            thickness: bhThickness, 
-            color: "Black" 
-          }) || bhProduct.node.variants.edges[0].node;
-          addItem({
-            product: bhProduct,
-            variantId: bhVariant.id,
-            variantTitle: bhVariant.title,
-            price: bhVariant.price,
-            quantity: 1,
-            selectedOptions: bhVariant.selectedOptions
-          });
+          const bhVariantId = findMatchingVariant(bhProduct, [
+            { name: "Sponge Thickness", value: bhThickness },
+            { name: "Color", value: "Black" }
+          ]);
+          
+          if (bhVariantId) {
+            const bhVariant = bhProduct.node.variants.edges.find(v => v.node.id === bhVariantId)!.node;
+            addItem({
+              product: bhProduct,
+              variantId: bhVariant.id,
+              variantTitle: bhVariant.title,
+              price: bhVariant.price,
+              quantity: 1,
+              selectedOptions: bhVariant.selectedOptions
+            });
+          } else {
+            toast.error("Backhand rubber variant not available", { description: `${bhThickness} not found` });
+          }
         }
 
         // Add assembly service if requested
