@@ -52,6 +52,17 @@ const Configurator = () => {
   const [selectedForehandColor, setSelectedForehandColor] = useState<string>("Red");
   const [selectedBackhandColor, setSelectedBackhandColor] = useState<string>("Black");
 
+  // Auto-swap rubber colors to prevent matching colors
+  const handleForehandColorChange = (color: string) => {
+    setSelectedForehandColor(color);
+    setSelectedBackhandColor(color === "Red" ? "Black" : "Red");
+  };
+
+  const handleBackhandColorChange = (color: string) => {
+    setSelectedBackhandColor(color);
+    setSelectedForehandColor(color === "Red" ? "Black" : "Red");
+  };
+
   // Filter states
   const [forehandFilters, setForehandFilters] = useState<ProductFilters>({
     maxPrice: 999999,
@@ -544,8 +555,8 @@ const Configurator = () => {
               onGripChange={setSelectedGrip}
               onForehandThicknessChange={setSelectedForehandThickness}
               onBackhandThicknessChange={setSelectedBackhandThickness}
-              onForehandColorChange={setSelectedForehandColor}
-              onBackhandColorChange={setSelectedBackhandColor}
+          onForehandColorChange={handleForehandColorChange}
+          onBackhandColorChange={handleBackhandColorChange}
               forehandFilters={forehandFilters}
               bladeFilters={bladeFilters}
               backhandFilters={backhandFilters}
