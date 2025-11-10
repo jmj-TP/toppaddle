@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Star, Target, Gauge, Shield, Info, Weight, ChevronDown, ChevronUp, Settings, DollarSign, Package, ShoppingCart, Wrench } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Star, Target, Gauge, Shield, Info, ChevronDown, ChevronUp, ShoppingCart, Wrench, Sparkles } from "lucide-react";
 import type { Recommendation, CustomSetup, QuizAnswers } from "@/utils/ratingSystem";
 import { estimateBladeWeight, estimateRubberWeight } from "@/data/products";
 import BrandSelector from "./BrandSelector";
@@ -345,678 +346,535 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   };
 
 
-  const StatBar = ({ label, value, icon: Icon }: { label: string; value: number; icon: any }) => (
-    <div className="flex items-center gap-2 mb-2">
-      <Icon className="w-4 h-4 text-muted-foreground" />
-      <span className="text-sm font-medium min-w-[60px]">{label}:</span>
-      <div className="flex-1 bg-muted rounded-full h-2">
-        <div 
-          className="bg-primary rounded-full h-2 transition-all duration-500" 
-          style={{ width: `${value}%` }}
-        />
+  const statDescriptions = {
+    speed: "How fast the ball travels off your paddle",
+    spin: "Your ability to curve and control ball trajectory",
+    control: "Precision and accuracy of ball placement",
+    power: "Force and impact behind each shot"
+  };
+
+  const StatSlider = ({ label, value, icon: Icon }: { label: string; value: number; icon: any }) => (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center gap-2 cursor-help">
+                <Icon className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium text-foreground">{label}</span>
+                <Info className="w-3.5 h-3.5 text-muted-foreground" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-xs">
+              <p className="text-xs">{statDescriptions[label.toLowerCase() as keyof typeof statDescriptions]}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <span className="text-sm font-semibold text-foreground">{value}</span>
       </div>
-      <span className="text-sm font-semibold min-w-[30px]">{value}</span>
+      <Slider value={[value]} max={100} disabled className="cursor-default" />
     </div>
   );
 
-  // Pre-assembled racket card component
-  const PreAssembledCard = ({ racket, rank, isBest }: { racket: typeof preAssembled, rank?: number, isBest?: boolean }) => racket ? (
-    <Card className={`border-border ${isBest ? 'ring-2 ring-accent shadow-accent' : ''}`} style={{ boxShadow: isBest ? "var(--shadow-accent)" : "var(--shadow-lg)" }}>
-      <CardHeader>
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            {isBest && <span className="text-2xl flex-shrink-0">🏆</span>}
-            <span className="text-2xl flex-shrink-0">🏓</span>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
-              <span className="font-semibold text-base sm:text-lg truncate">
-                {isBest ? 'Best Match - ' : ''}Ready-to-Play Racket{rank ? ` #${rank}` : ''}
-              </span>
-              <Badge variant={isBest ? "default" : "secondary"} className="w-fit text-xs">
-                {isBest ? 'Recommended' : 'Beginner Friendly'}
-              </Badge>
+  // Premium hero card for best match
+  const HeroCard = ({ item, rank }: { item: typeof allRecommendations[0]; rank?: number }) => {
+    const isPreAssembled = item.type === 'preAssembled' || item.type === 'preAssembled2';
+    const racket = isPreAssembled ? item.data : null;
+    const setup = !isPreAssembled ? (item.data as CustomSetup) : null;
+    
+    const name = racket ? racket.Racket_Name : setup?.blade.Blade_Name || '';
+    const price = racket ? racket.Racket_Price : setup?.totalPrice || 0;
+    const level = racket ? racket.Racket_Level : setup?.blade.Blade_Level || '';
+    const score = item.score;
+    
+    const stats = racket ? {
+      speed: racket.Racket_Speed,
+      spin: racket.Racket_Spin,
+      control: racket.Racket_Control,
+      power: racket.Racket_Power
+    } : {
+      speed: Math.round((setup!.blade.Blade_Speed + setup!.forehandRubber.Rubber_Speed + setup!.backhandRubber.Rubber_Speed) / 3),
+      spin: Math.round((setup!.forehandRubber.Rubber_Spin + setup!.backhandRubber.Rubber_Spin) / 2),
+      control: Math.round((setup!.blade.Blade_Control + setup!.forehandRubber.Rubber_Control + setup!.backhandRubber.Rubber_Control) / 3),
+      power: Math.round((setup!.blade.Blade_Power + setup!.forehandRubber.Rubber_Speed + setup!.backhandRubber.Rubber_Speed) / 3)
+    };
+
+    return (
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-background via-background to-muted/20 border border-border/50 shadow-2xl">
+        {/* Hero Header */}
+        <div className="px-8 pt-12 pb-8 text-center space-y-4">
+          <Badge variant="default" className="text-xs font-medium px-3 py-1">
+            <Sparkles className="w-3 h-3 mr-1" />
+            Perfect Match for You
+          </Badge>
+          
+          <h2 className="font-headline text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+            {name}
+          </h2>
+          
+          <div className="flex items-center justify-center gap-3 text-muted-foreground">
+            <Badge variant="outline" className="text-xs font-normal">
+              {level}
+            </Badge>
+            <span className="text-sm">•</span>
+            <div className="flex items-center gap-1.5">
+              <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+              <span className="text-sm font-semibold text-foreground">{score.toFixed(0)}% Match</span>
+            </div>
+            <span className="text-sm">•</span>
+            <Badge variant="outline" className="text-xs font-normal">
+              {isPreAssembled ? 'Ready to Play' : 'Custom Setup'}
+            </Badge>
+          </div>
+
+          {/* Placeholder Image */}
+          <div className="max-w-md mx-auto mt-8 mb-6">
+            <div className="aspect-[4/3] rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm">
+              <div className="text-center space-y-2 px-4">
+                <div className="text-6xl">🏓</div>
+                <p className="text-xs text-muted-foreground">Product image</p>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="flex items-center gap-1.5">
-              <Star className="w-4 h-4 text-yellow-500 flex-shrink-0" />
-              <span className={`font-bold text-sm ${getScoreColor(racket.score)}`}>
-                {racket.score.toFixed(0)}%
-              </span>
-            </div>
-            <ShareButton
-              racketName={racket.Racket_Name}
-              score={racket.score}
-              price={racket.Racket_Price}
-              isCustom={false}
-            />
+
+          {/* Price */}
+          <div className="text-center space-y-1">
+            <p className="text-sm text-muted-foreground">Starting at</p>
+            <p className="text-5xl font-semibold text-foreground tracking-tight">{formatPrice(price)}</p>
           </div>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <h3 className="font-semibold text-lg mb-2">{racket.Racket_Name}</h3>
-            <p className="text-sm text-muted-foreground mb-3">
-              ✅ No assembly needed - perfect for beginners!
-            </p>
-            
-            <div className="space-y-2">
-              <StatBar label="Speed" value={racket.Racket_Speed} icon={Gauge} />
-              <StatBar label="Spin" value={racket.Racket_Spin} icon={Target} />
-              <StatBar label="Control" value={racket.Racket_Control} icon={Shield} />
-              <StatBar label="Power" value={racket.Racket_Power} icon={Star} />
+
+        {/* Stats Section */}
+        <div className="px-8 pb-8">
+          <div className="max-w-2xl mx-auto space-y-6 bg-card/50 backdrop-blur-sm rounded-2xl p-6 border border-border/30">
+            <h3 className="text-lg font-semibold text-center text-foreground">Performance</h3>
+            <div className="grid gap-6">
+              <StatSlider label="Speed" value={stats.speed} icon={Gauge} />
+              <StatSlider label="Spin" value={stats.spin} icon={Target} />
+              <StatSlider label="Control" value={stats.control} icon={Shield} />
+              <StatSlider label="Power" value={stats.power} icon={Star} />
             </div>
           </div>
-          
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div>
-                <span className="font-medium">Weight:</span> ~180g
-              </div>
-              <div>
-                <span className="font-medium">Level:</span> {racket.Racket_Level}
-              </div>
-              <div>
-                <span className="font-medium">Grip:</span> {handleType}
-              </div>
-              <div>
-                <span className="font-medium">Price:</span> 
-                <span className="text-lg font-bold text-primary ml-1">
-                  {formatPrice(racket.Racket_Price)}*
-                </span>
-              </div>
-            </div>
-            
-            
-            <div className="grid grid-cols-2 gap-2">
+        </div>
+
+        {/* Recommendation Summary */}
+        <div className="px-8 pb-8">
+          <div className="max-w-2xl mx-auto bg-accent/5 rounded-2xl p-6 border border-accent/20">
+            <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+              <Info className="w-4 h-4" />
+              Why this is perfect for you
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {isPreAssembled 
+                ? "This ready-to-play racket matches your skill level and playing style perfectly. No assembly required — just unbox and start playing immediately."
+                : `This custom setup combines ${setup?.blade.Blade_Name} with premium rubbers tailored to your preferences. It offers the perfect balance of performance characteristics you're looking for.`
+              }
+            </p>
+          </div>
+        </div>
+
+        {/* CTA Buttons */}
+        <div className="px-8 pb-12">
+          <div className="max-w-2xl mx-auto space-y-3">
+            <Button 
+              onClick={() => handleAddToCart(item)}
+              size="lg"
+              className="w-full h-14 text-base font-medium rounded-full"
+              disabled={isLoadingProducts}
+            >
+              <ShoppingCart className="w-5 h-5 mr-2" />
+              Add to Cart
+            </Button>
+            <div className="grid grid-cols-2 gap-3">
               <Button 
-                onClick={() => handleViewInConfigurator({ type: 'preAssembled', score: racket.score, data: racket, rank })}
+                onClick={() => handleViewInConfigurator(item)}
                 variant="outline"
-                size="sm"
-                className="w-full"
+                size="lg"
+                className="h-12 text-sm font-medium rounded-full"
               >
-                <Wrench className="w-3 h-3 mr-1" />
                 More Info
               </Button>
               <Button 
-                onClick={() => handleAddToCart({ type: 'preAssembled', score: racket.score, data: racket, rank })}
-                variant="default"
-                size="sm"
-                className="w-full"
-                disabled={isLoadingProducts}
+                onClick={() => handleAddToCompare(item)}
+                variant="outline"
+                size="lg"
+                className="h-12 text-sm font-medium rounded-full"
               >
-                <ShoppingCart className="w-3 h-3 mr-1" />
-                Add to Cart
+                Compare
               </Button>
             </div>
-            <Button 
-              onClick={() => handleAddToCompare({ type: 'preAssembled', score: racket.score, data: racket, rank })}
-              variant="outline"
-              size="sm"
-              className="w-full"
-            >
-              Compare
-            </Button>
           </div>
         </div>
-      </CardContent>
-    </Card>
-  ) : null;
 
-  // Custom setup card component with collapsible details
-  const CustomSetupCard = ({ setup, rank, isBest }: { setup: CustomSetup; rank?: number; isBest?: boolean }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    // Calculate combined stats (weighted average)
-    const combinedSpeed = Math.round((setup.blade.Blade_Speed + setup.forehandRubber.Rubber_Speed + setup.backhandRubber.Rubber_Speed) / 3);
-    const combinedSpin = Math.round((setup.forehandRubber.Rubber_Spin + setup.backhandRubber.Rubber_Spin) / 2);
-    const combinedControl = Math.round((setup.blade.Blade_Control + setup.forehandRubber.Rubber_Control + setup.backhandRubber.Rubber_Control) / 3);
-    const combinedPower = Math.round((setup.blade.Blade_Power + setup.forehandRubber.Rubber_Speed + setup.backhandRubber.Rubber_Speed) / 3);
-    
-    const bladeWeight = estimateBladeWeight(setup.blade);
-    const fhWeight = estimateRubberWeight(setup.forehandRubber);
-    const bhWeight = estimateRubberWeight(setup.backhandRubber);
-    const totalWeight = bladeWeight + fhWeight + bhWeight;
-
-    return (
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <Card className={`border-border ${isBest ? 'ring-2 ring-accent shadow-accent' : ''}`} style={{ boxShadow: isBest ? "var(--shadow-accent)" : "var(--shadow-lg)" }}>
-          <CardHeader>
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 flex-1 min-w-0">
-                {isBest && <span className="text-2xl flex-shrink-0">🏆</span>}
-                <span className="text-2xl flex-shrink-0">⚡</span>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0">
-                  <span className="font-semibold text-base sm:text-lg truncate">
-                    {isBest ? 'Best Match - ' : ''}Custom Setup{rank ? ` #${rank}` : ''}
-                  </span>
-                  <Badge variant={isBest ? "default" : "outline"} className="w-fit text-xs">
-                    {isBest ? 'Recommended' : 'Advanced Choice'}
-                  </Badge>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <div className="flex items-center gap-1.5">
-                  <Star className="w-4 h-4 text-yellow-500 flex-shrink-0" />
-                  <span className={`font-bold text-sm ${getScoreColor(setup.score)}`}>
-                    {setup.score.toFixed(0)}%
-                  </span>
-                </div>
-                <ShareButton
-                  racketName={setup.blade.Blade_Name}
-                  score={setup.score}
-                  price={setup.totalPrice}
-                  isCustom={true}
-                  forehandRubberName={setup.forehandRubber.Rubber_Name}
-                  backhandRubberName={setup.backhandRubber.Rubber_Name}
-                />
-              </div>
-            </div>
-          </CardHeader>
-          
-          <CardContent className="space-y-4">
-            {/* Collapsed View - Mimics Ready-to-Play format */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <h3 className="font-semibold text-lg mb-2">
-                  {setup.blade.Blade_Name}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  ⚡ Professional custom setup - complete control!
-                </p>
-                
-                <div className="space-y-2">
-                  <StatBar label="Speed" value={combinedSpeed} icon={Gauge} />
-                  <StatBar label="Spin" value={combinedSpin} icon={Target} />
-                  <StatBar label="Control" value={combinedControl} icon={Shield} />
-                  <StatBar label="Power" value={combinedPower} icon={Star} />
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-2 text-sm">
+        {/* Assembly Option for Custom */}
+        {!isPreAssembled && setup && (
+          <div className="px-8 pb-12">
+            <div className="max-w-2xl mx-auto bg-muted/30 rounded-2xl p-6 border border-border/30">
+              <div className="flex items-start gap-3">
+                <Wrench className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                <div className="flex-1 space-y-3">
                   <div>
-                    <span className="font-medium">Weight:</span> ~{totalWeight}g
-                  </div>
-                  <div>
-                    <span className="font-medium">Level:</span> {setup.blade.Blade_Level}
-                  </div>
-                  <div>
-                    <span className="font-medium">Grip:</span> {handleType}
-                  </div>
-                  <div>
-                    <span className="font-medium">Price:</span> 
-                    <span className="text-lg font-bold text-primary ml-1">
-                      {formatPrice(setup.totalPrice)}*
-                    </span>
-                  </div>
-                </div>
-                
-                <CollapsibleTrigger asChild>
-                  <Button 
-                    variant="accent"
-                    className="w-full"
-                  >
-                    {isOpen ? (
-                      <>
-                        <ChevronUp className="w-4 h-4 mr-2" />
-                        Hide Component Details
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="w-4 h-4 mr-2" />
-                        View Component Details
-                      </>
-                    )}
-                  </Button>
-                </CollapsibleTrigger>
-                
-                {/* Free Assembly Option */}
-                <div className="bg-accent/10 border border-accent/20 rounded-lg p-3 space-y-2">
-                  <div className="flex items-start gap-2">
-                    <Wrench className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="text-xs text-muted-foreground">
-                        TopPaddle offers free professional assembly. We'll expertly glue your rubbers to your blade.
-                      </p>
-                    </div>
+                    <p className="text-sm font-medium text-foreground mb-1">Free Professional Assembly</p>
+                    <p className="text-xs text-muted-foreground">
+                      We'll expertly glue your rubbers to your blade at no extra cost.
+                    </p>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox 
-                      id={`assemble-${rank}`}
-                      checked={rank === 1 ? assembleCustom1 : assembleCustom2}
-                      onCheckedChange={(checked) => rank === 1 ? setAssembleCustom1(!!checked) : setAssembleCustom2(!!checked)}
+                      id="assemble-hero"
+                      checked={assembleCustom1}
+                      onCheckedChange={(checked) => setAssembleCustom1(!!checked)}
                     />
                     <Label 
-                      htmlFor={`assemble-${rank}`}
-                      className="text-xs font-medium cursor-pointer"
+                      htmlFor="assemble-hero"
+                      className="text-sm font-medium cursor-pointer"
                     >
-                      Assemble my racket for me (Free)
+                      Assemble my racket (Free)
                     </Label>
                   </div>
                 </div>
-                
-                <div className="grid grid-cols-2 gap-2">
-                  <Button 
-                    onClick={() => handleViewInConfigurator({ type: 'custom1', score: setup.score, data: setup, rank })}
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                  >
-                    <Wrench className="w-3 h-3 mr-1" />
-                    More Info
-                  </Button>
-                  <Button 
-                    onClick={() => handleAddToCart({ type: 'custom1', score: setup.score, data: setup, rank })}
-                    variant="default"
-                    size="sm"
-                    className="w-full"
-                    disabled={isLoadingProducts}
-                  >
-                    <ShoppingCart className="w-3 h-3 mr-1" />
-                    Add to Cart
-                  </Button>
-                </div>
-                <Button 
-                  onClick={() => handleAddToCompare({ type: 'custom1', score: setup.score, data: setup, rank })}
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                >
-                  Compare
-                </Button>
               </div>
             </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
-            {/* Expanded View - Full component breakdown */}
-            <CollapsibleContent className="space-y-6 pt-4 border-t">
-              <div className="text-center py-2">
-                <p className="text-sm font-medium text-muted-foreground">
-                  📦 Component Breakdown
+  // Alternative option card (simpler, clean)
+  const AlternativeCard = ({ item, rank }: { item: typeof allRecommendations[0]; rank?: number }) => {
+    const isPreAssembled = item.type === 'preAssembled' || item.type === 'preAssembled2';
+    const racket = isPreAssembled ? item.data : null;
+    const setup = !isPreAssembled ? (item.data as CustomSetup) : null;
+    
+    const name = racket ? racket.Racket_Name : setup?.blade.Blade_Name || '';
+    const price = racket ? racket.Racket_Price : setup?.totalPrice || 0;
+    const level = racket ? racket.Racket_Level : setup?.blade.Blade_Level || '';
+    const score = item.score;
+    
+    const stats = racket ? {
+      speed: racket.Racket_Speed,
+      spin: racket.Racket_Spin,
+      control: racket.Racket_Control,
+      power: racket.Racket_Power
+    } : {
+      speed: Math.round((setup!.blade.Blade_Speed + setup!.forehandRubber.Rubber_Speed + setup!.backhandRubber.Rubber_Speed) / 3),
+      spin: Math.round((setup!.forehandRubber.Rubber_Spin + setup!.backhandRubber.Rubber_Spin) / 2),
+      control: Math.round((setup!.blade.Blade_Control + setup!.forehandRubber.Rubber_Control + setup!.backhandRubber.Rubber_Control) / 3),
+      power: Math.round((setup!.blade.Blade_Power + setup!.forehandRubber.Rubber_Speed + setup!.backhandRubber.Rubber_Speed) / 3)
+    };
+
+    const budgetDiff = budgetAmount ? Math.abs(price - budgetAmount) : 0;
+    const isHigherBudget = budgetAmount ? price > budgetAmount : false;
+    
+    return (
+      <div className="rounded-2xl bg-card border border-border/50 overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div className="p-6 space-y-4">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 space-y-2">
+              <Badge variant="outline" className="text-xs">
+                {isPreAssembled ? 'Ready to Play' : 'Custom Setup'}
+              </Badge>
+              <h3 className="font-semibold text-xl text-foreground">{name}</h3>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span>{level}</span>
+                <span>•</span>
+                <div className="flex items-center gap-1">
+                  <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
+                  <span>{score.toFixed(0)}% Match</span>
+                </div>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-2xl font-semibold text-foreground">{formatPrice(price)}</p>
+              {budgetAmount && (
+                <p className="text-xs text-muted-foreground">
+                  {isHigherBudget ? `+${formatPrice(budgetDiff)} more` : `${formatPrice(budgetDiff)} under budget`}
                 </p>
-              </div>
+              )}
+            </div>
+          </div>
 
-              {/* Blade */}
-              <div className="border rounded-lg p-4 bg-card">
-                <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  🏓 Blade: {setup.blade.Blade_Name}
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <StatBar label="Speed" value={setup.blade.Blade_Speed} icon={Gauge} />
-                    <StatBar label="Spin" value={setup.blade.Blade_Spin} icon={Target} />
-                    <StatBar label="Control" value={setup.blade.Blade_Control} icon={Shield} />
-                    <StatBar label="Power" value={setup.blade.Blade_Power} icon={Star} />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-sm">
-                      <span className="font-medium">Level:</span> {setup.blade.Blade_Level}
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-medium">Grip:</span> {handleType}
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-medium">Price:</span> 
-                      <span className="font-bold ml-1">{formatPrice(setup.blade.Blade_Price)}*</span>
-                    </div>
-                    <Button 
-                      size="sm" 
-                      variant="default"
-                      onClick={async () => {
-                        const bladeProduct = findShopifyProduct(setup.blade.Blade_Name);
-                        if (bladeProduct) {
-                          const variant = findVariant(bladeProduct, { handle: handleType }) || bladeProduct.node.variants.edges[0].node;
-                          addItem({
-                            product: bladeProduct,
-                            variantId: variant.id,
-                            variantTitle: variant.title,
-                            price: variant.price,
-                            quantity: 1,
-                            selectedOptions: variant.selectedOptions
-                          });
-                          toast.success("Added to cart!", { description: setup.blade.Blade_Name });
-                        } else {
-                          toast.error("Product not available", { description: "This blade is not in our store yet." });
-                        }
-                      }}
-                      className="w-full"
-                    >
-                      <ShoppingCart className="w-3 h-3 mr-1" />
-                      Add Blade to Cart
-                    </Button>
-                  </div>
-                </div>
-              </div>
+          {/* Placeholder Image */}
+          <div className="aspect-[16/9] rounded-xl bg-muted/20 border border-border/30 flex items-center justify-center">
+            <div className="text-center space-y-1">
+              <div className="text-4xl">🏓</div>
+              <p className="text-xs text-muted-foreground">Product image</p>
+            </div>
+          </div>
 
-              {/* Forehand Rubber */}
-              <div className="border rounded-lg p-4 bg-card">
-                <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  🔴 Forehand Rubber: {setup.forehandRubber.Rubber_Name}
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <StatBar label="Speed" value={setup.forehandRubber.Rubber_Speed} icon={Gauge} />
-                    <StatBar label="Spin" value={setup.forehandRubber.Rubber_Spin} icon={Target} />
-                    <StatBar label="Control" value={setup.forehandRubber.Rubber_Control} icon={Shield} />
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <button className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full justify-start">
-                          <Info className="w-4 h-4" />
-                          <span>Recommended Sponge:</span>
-                          <span className="font-bold text-accent">{forehandThickness}</span>
-                        </button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-80">
-                        <div className="space-y-2">
-                          <h4 className="font-semibold text-sm">Forehand Sponge Thickness</h4>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            {forehandThicknessExplanation}
-                          </p>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-sm">
-                      <span className="font-medium">Level:</span> {setup.forehandRubber.Rubber_Level}
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-medium">Price:</span> 
-                      <span className="font-bold ml-1">{formatPrice(setup.forehandRubber.Rubber_Price)}*</span>
-                    </div>
-                    <Button 
-                      size="sm" 
-                      variant="default"
-                      onClick={async () => {
-                        const fhProduct = findShopifyProduct(setup.forehandRubber.Rubber_Name);
-                        if (fhProduct) {
-                          const variant = findVariant(fhProduct, { thickness: forehandThickness, color: "Red" }) || fhProduct.node.variants.edges[0].node;
-                          addItem({
-                            product: fhProduct,
-                            variantId: variant.id,
-                            variantTitle: variant.title,
-                            price: variant.price,
-                            quantity: 1,
-                            selectedOptions: variant.selectedOptions
-                          });
-                          toast.success("Added to cart!", { description: setup.forehandRubber.Rubber_Name });
-                        } else {
-                          toast.error("Product not available", { description: "This rubber is not in our store yet." });
-                        }
-                      }}
-                      className="w-full"
-                    >
-                      <ShoppingCart className="w-3 h-3 mr-1" />
-                      Add FH Rubber to Cart
-                    </Button>
-                  </div>
-                </div>
-              </div>
+          {/* Why Different */}
+          <div className="bg-muted/20 rounded-xl p-4">
+            <p className="text-xs font-medium text-foreground mb-1">Why consider this option:</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {isHigherBudget 
+                ? `Higher performance tier with enhanced characteristics. Worth the extra ${formatPrice(budgetDiff)} for serious players.`
+                : `Great value option that stays under budget while maintaining quality performance.`
+              }
+            </p>
+          </div>
 
-              {/* Backhand Rubber */}
-              <div className="border rounded-lg p-4 bg-card">
-                <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  🔵 Backhand Rubber: {setup.backhandRubber.Rubber_Name}
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <StatBar label="Speed" value={setup.backhandRubber.Rubber_Speed} icon={Gauge} />
-                    <StatBar label="Spin" value={setup.backhandRubber.Rubber_Spin} icon={Target} />
-                    <StatBar label="Control" value={setup.backhandRubber.Rubber_Control} icon={Shield} />
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <button className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full justify-start">
-                          <Info className="w-4 h-4" />
-                          <span>Recommended Sponge:</span>
-                          <span className="font-bold text-primary">{backhandThickness}</span>
-                        </button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-80">
-                        <div className="space-y-2">
-                          <h4 className="font-semibold text-sm">Backhand Sponge Thickness</h4>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            {backhandThicknessExplanation}
-                          </p>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-sm">
-                      <span className="font-medium">Level:</span> {setup.backhandRubber.Rubber_Level}
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-medium">Price:</span> 
-                      <span className="font-bold ml-1">{formatPrice(setup.backhandRubber.Rubber_Price)}*</span>
-                    </div>
-                    <Button 
-                      size="sm" 
-                      variant="default"
-                      onClick={async () => {
-                        const bhProduct = findShopifyProduct(setup.backhandRubber.Rubber_Name);
-                        if (bhProduct) {
-                          const variant = findVariant(bhProduct, { thickness: backhandThickness, color: "Black" }) || bhProduct.node.variants.edges[0].node;
-                          addItem({
-                            product: bhProduct,
-                            variantId: variant.id,
-                            variantTitle: variant.title,
-                            price: variant.price,
-                            quantity: 1,
-                            selectedOptions: variant.selectedOptions
-                          });
-                          toast.success("Added to cart!", { description: setup.backhandRubber.Rubber_Name });
-                        } else {
-                          toast.error("Product not available", { description: "This rubber is not in our store yet." });
-                        }
-                      }}
-                      className="w-full"
-                    >
-                      <ShoppingCart className="w-3 h-3 mr-1" />
-                      Add BH Rubber to Cart
-                    </Button>
-                  </div>
-                </div>
+          {/* Quick Stats Grid */}
+          <div className="grid grid-cols-4 gap-3 py-2">
+            {[
+              { label: 'Speed', value: stats.speed },
+              { label: 'Spin', value: stats.spin },
+              { label: 'Control', value: stats.control },
+              { label: 'Power', value: stats.power }
+            ].map(stat => (
+              <div key={stat.label} className="text-center">
+                <p className="text-xs text-muted-foreground mb-1">{stat.label}</p>
+                <p className="text-sm font-semibold text-foreground">{stat.value}</p>
               </div>
+            ))}
+          </div>
 
-              {/* Total Weight Info */}
-              <div className="bg-secondary rounded-lg p-4 text-center">
-                <div className="flex items-center justify-center gap-2 text-xl font-bold text-primary">
-                  <Weight className="w-5 h-5" />
-                  Total Weight: {totalWeight}g
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Blade ({bladeWeight}g) + FH Rubber ({fhWeight}g) + BH Rubber ({bhWeight}g)
-                </p>
+          {/* Actions */}
+          <div className="space-y-2 pt-2">
+            <Button 
+              onClick={() => handleAddToCart(item)}
+              size="lg"
+              className="w-full h-12 text-sm rounded-full"
+              disabled={isLoadingProducts}
+            >
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              Add to Cart
+            </Button>
+            <div className="grid grid-cols-2 gap-2">
+              <Button 
+                onClick={() => handleViewInConfigurator(item)}
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+              >
+                More Info
+              </Button>
+              <Button 
+                onClick={() => handleAddToCompare(item)}
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+              >
+                Compare
+              </Button>
+            </div>
+          </div>
+
+          {/* Assembly for custom */}
+          {!isPreAssembled && setup && (
+            <div className="bg-muted/20 rounded-xl p-3 border border-border/30">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id={`assemble-alt-${rank}`}
+                  checked={assembleCustom2}
+                  onCheckedChange={(checked) => setAssembleCustom2(!!checked)}
+                />
+                <Label 
+                  htmlFor={`assemble-alt-${rank}`}
+                  className="text-xs font-medium cursor-pointer flex items-center gap-1"
+                >
+                  <Wrench className="w-3 h-3" />
+                  Free professional assembly
+                </Label>
               </div>
-            </CollapsibleContent>
-          </CardContent>
-        </Card>
-      </Collapsible>
+            </div>
+          )}
+        </div>
+      </div>
     );
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold text-primary">
-          ✨ Your Perfect Racket Setup! ✨
-        </h2>
-        <p className="text-muted-foreground">
-          Based on your preferences, here are our top recommendations
+    <div className="w-full mx-auto space-y-16 py-12 px-4 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div className="text-center space-y-4 max-w-3xl mx-auto">
+        <Badge variant="outline" className="text-xs font-normal px-4 py-1.5">
+          Quiz Results
+        </Badge>
+        <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl font-bold text-foreground tracking-tight">
+          Your Perfect Match
+        </h1>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Based on your playing style and preferences, we've found the ideal setup to elevate your game.
         </p>
-        
-        {budgetAmount && budgetAmount < 60 && (
-          <div className="mt-4 p-4 bg-accent/10 border border-accent/30 rounded-lg">
-            <p className="text-sm text-foreground">
-              💡 <strong>Note:</strong> Your budget is best suited for pre-assembled rackets. 
-              Custom setups typically start at $90+ due to blade and rubber costs.
-            </p>
-          </div>
-        )}
+      </div>
 
-        {allRecommendations.length > 0 && allRecommendations[0].score < 60 && (
-          <div className="mt-4 p-4 bg-destructive/10 border border-destructive/30 rounded-lg">
-            <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-              <div className="text-left">
-                <p className="text-sm text-foreground">
-                  <strong>Low Match Score:</strong> The best match found is below 60%. For better recommendations, try adjusting your budget or expanding your brand preferences.
-                </p>
-              </div>
+      {/* Budget Warning */}
+      {budgetAmount && budgetAmount < 60 && (
+        <div className="max-w-2xl mx-auto bg-accent/5 border border-accent/20 rounded-2xl p-6">
+          <div className="flex items-start gap-3">
+            <Info className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+            <div className="text-left space-y-1">
+              <p className="text-sm font-medium text-foreground">Budget Consideration</p>
+              <p className="text-sm text-muted-foreground">
+                Your budget is best suited for pre-assembled rackets. Custom setups typically start at $90+ due to individual component costs.
+              </p>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
+      {/* Low Match Score Warning */}
+      {allRecommendations.length > 0 && allRecommendations[0].score < 60 && (
+        <div className="max-w-2xl mx-auto bg-destructive/5 border border-destructive/20 rounded-2xl p-6">
+          <div className="flex items-start gap-3">
+            <Info className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+            <div className="text-left space-y-1">
+              <p className="text-sm font-medium text-foreground">Limited Matches Found</p>
+              <p className="text-sm text-muted-foreground">
+                The recommendations below have a lower match score. Consider adjusting your budget or brand preferences for better results.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {/* Render recommendations sorted by score (best first) */}
-      <div className="space-y-4">
-        {/* Best recommendation always shown */}
-        {allRecommendations.length > 0 && (() => {
-          const bestItem = allRecommendations[0];
-          if (bestItem.type === 'preAssembled' || bestItem.type === 'preAssembled2') {
-            return <PreAssembledCard key={bestItem.type} racket={bestItem.data} rank={1} isBest={true} />;
-          } else {
-            return <CustomSetupCard key={bestItem.type} setup={bestItem.data} rank={1} isBest={true} />;
-          }
-        })()}
-        
-        {/* Other recommendations - collapsible */}
-        {allRecommendations.length > 1 && (
-          <Collapsible open={showAllRecommendations} onOpenChange={setShowAllRecommendations}>
-            <CollapsibleTrigger asChild>
-              <Button variant="outline" className="w-full">
-                {showAllRecommendations ? (
-                  <>
-                    <ChevronUp className="w-4 h-4 mr-2" />
-                    Hide Alternative Options
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="w-4 h-4 mr-2" />
-                    Show {allRecommendations.length - 1} More Option{allRecommendations.length > 2 ? 's' : ''}
-                  </>
-                )}
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-4 mt-4">
-              {allRecommendations.slice(1).map((item, index) => {
-                const rank = index + 2;
-                if (item.type === 'preAssembled' || item.type === 'preAssembled2') {
-                  return <PreAssembledCard key={item.type} racket={item.data} rank={rank} isBest={false} />;
-                } else {
-                  return <CustomSetupCard key={item.type} setup={item.data} rank={rank} isBest={false} />;
-                }
-              })}
-            </CollapsibleContent>
-          </Collapsible>
-        )}
-      </div>
+      {/* Best Match - Hero Card */}
+      {allRecommendations.length > 0 && (
+        <div className="max-w-5xl mx-auto">
+          <HeroCard item={allRecommendations[0]} rank={1} />
+        </div>
+      )}
 
-      {/* Preference Adjustment Section */}
-      <Card className="mt-6 border-2 border-accent/50">
+      {/* Alternative Options */}
+      {allRecommendations.length > 1 && (
+        <div className="max-w-5xl mx-auto space-y-8">
+          <div className="text-center space-y-2">
+            <h2 className="font-headline text-3xl font-bold text-foreground">
+              Alternative Options
+            </h2>
+            <p className="text-muted-foreground">
+              Other great choices that also match your preferences
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            {allRecommendations.slice(1).map((item, index) => (
+              <AlternativeCard key={`${item.type}-${index}`} item={item} rank={index + 2} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Adjust Preferences Section */}
+      <div className="max-w-3xl mx-auto">
         <Collapsible open={showPreferenceEditor} onOpenChange={setShowPreferenceEditor}>
-          <CardHeader className="pb-3">
+          <div className="bg-card border border-border/50 rounded-2xl overflow-hidden">
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" className="w-full flex items-center justify-between p-4 hover:bg-accent/10">
-                <div className="flex items-center gap-2">
-                  <Settings className="w-5 h-5 text-accent" />
-                  <span className="font-semibold">Adjust Budget & Brand Preferences</span>
+              <Button 
+                variant="ghost" 
+                className="w-full flex items-center justify-between p-6 hover:bg-muted/50 transition-colors rounded-none"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 text-accent" />
+                  </div>
+                  <span className="font-semibold text-lg">Adjust Preferences</span>
                 </div>
                 {showPreferenceEditor ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
               </Button>
             </CollapsibleTrigger>
-          </CardHeader>
-          
-          <CollapsibleContent>
-            <CardContent className="space-y-4 pb-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Budget Selector */}
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-accent" />
-                    Budget
-                  </label>
-                  <Select value={tempBudget} onValueChange={setTempBudget}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select budget" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="<50$">Under $50</SelectItem>
-                      <SelectItem value="<100$">Under $100</SelectItem>
-                      <SelectItem value="<120$">Under $120</SelectItem>
-                      <SelectItem value="<140$">Under $140</SelectItem>
-                      <SelectItem value="<160$">Under $160</SelectItem>
-                      <SelectItem value="<180$">Under $180</SelectItem>
-                      <SelectItem value="<200$">Under $200</SelectItem>
-                      <SelectItem value="<250$">Under $250</SelectItem>
-                      <SelectItem value="<300$">Under $300</SelectItem>
-                      <SelectItem value="No limit">No Limit</SelectItem>
-                    </SelectContent>
-                  </Select>
+            
+            <CollapsibleContent>
+              <div className="p-6 pt-0 space-y-6 border-t border-border/30">
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Budget Selector */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-semibold text-foreground">
+                      Budget Range
+                    </label>
+                    <Select value={tempBudget} onValueChange={setTempBudget}>
+                      <SelectTrigger className="w-full h-12 rounded-xl">
+                        <SelectValue placeholder="Select budget" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="<50$">Under $50</SelectItem>
+                        <SelectItem value="<100$">Under $100</SelectItem>
+                        <SelectItem value="<120$">Under $120</SelectItem>
+                        <SelectItem value="<140$">Under $140</SelectItem>
+                        <SelectItem value="<160$">Under $160</SelectItem>
+                        <SelectItem value="<180$">Under $180</SelectItem>
+                        <SelectItem value="<200$">Under $200</SelectItem>
+                        <SelectItem value="<250$">Under $250</SelectItem>
+                        <SelectItem value="<300$">Under $300</SelectItem>
+                        <SelectItem value="No limit">No Limit</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  {/* Brand Selector */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-semibold text-foreground">
+                      Preferred Brands
+                    </label>
+                    <BrandSelector 
+                      selectedBrands={tempBrands}
+                      onBrandToggle={(brand) => {
+                        setTempBrands(prev => {
+                          if (prev.includes(brand)) {
+                            const newBrands = prev.filter(b => b !== brand);
+                            return newBrands.length === 0 ? [brand] : newBrands;
+                          } else {
+                            return [...prev, brand];
+                          }
+                        });
+                      }}
+                    />
+                  </div>
                 </div>
                 
-                {/* Brand Selector */}
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold flex items-center gap-2">
-                    <Package className="w-4 h-4 text-accent" />
-                    Brands
-                  </label>
-                  <BrandSelector 
-                    selectedBrands={tempBrands}
-                    onBrandToggle={(brand) => {
-                      setTempBrands(prev => {
-                        if (prev.includes(brand)) {
-                          const newBrands = prev.filter(b => b !== brand);
-                          return newBrands.length === 0 ? [brand] : newBrands;
-                        } else {
-                          return [...prev, brand];
-                        }
-                      });
-                    }}
-                  />
-                </div>
+                <Button 
+                  onClick={() => {
+                    if (onUpdatePreferences) {
+                      onUpdatePreferences(tempBudget, tempBrands);
+                      setShowPreferenceEditor(false);
+                    }
+                  }}
+                  className="w-full h-12 text-base rounded-full"
+                  size="lg"
+                >
+                  Update Recommendations
+                </Button>
               </div>
-              
-              <Button 
-                onClick={() => {
-                  if (onUpdatePreferences) {
-                    onUpdatePreferences(tempBudget, tempBrands);
-                    setShowPreferenceEditor(false);
-                  }
-                }}
-                className="w-full"
-                size="lg"
-              >
-                Update Recommendations
-              </Button>
-            </CardContent>
-          </CollapsibleContent>
+            </CollapsibleContent>
+          </div>
         </Collapsible>
-      </Card>
-
-      {/* Price Disclaimer */}
-      <div className="text-center text-xs text-muted-foreground italic">
-        *Estimated price. Actual price may vary depending on the retailer and region.
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      {/* Bottom Actions */}
+      <div className="max-w-2xl mx-auto text-center space-y-6">
         <Button 
           onClick={onRestart}
           variant="outline" 
           size="lg"
-          className="w-full sm:w-auto"
+          className="h-12 px-8 rounded-full"
         >
-          Take Quiz Again
+          Retake Quiz
         </Button>
         
-        {!preAssembled && !customSetup && (
-          <div className="text-center p-6 text-muted-foreground">
-            <p>No suitable options found within your budget. Try adjusting your preferences or budget range.</p>
-          </div>
-        )}
+        <p className="text-xs text-muted-foreground">
+          *Prices are estimates and may vary by retailer and region
+        </p>
       </div>
+
+      {/* No Results Fallback */}
+      {!preAssembled && !customSetup && (
+        <div className="max-w-2xl mx-auto text-center py-12">
+          <div className="space-y-4">
+            <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mx-auto">
+              <Info className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h3 className="font-semibold text-xl text-foreground">No Matches Found</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              We couldn't find options matching your current preferences. Try adjusting your budget or brand selections above.
+            </p>
+            <Button onClick={onRestart} size="lg" className="mt-6 rounded-full">
+              Retake Quiz
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
