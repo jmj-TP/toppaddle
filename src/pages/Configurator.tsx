@@ -18,6 +18,7 @@ import { ProductFilters } from "@/components/configurator/ProductFilter";
 import ReviewStrip from "@/components/configurator/ReviewStrip";
 import StickyDecisionBar from "@/components/configurator/StickyDecisionBar";
 import { useRef } from "react";
+import { applySpongeMultipliers } from "@/utils/spongeCalculations";
 
 const Configurator = () => {
   const [searchParams] = useSearchParams();
@@ -172,9 +173,30 @@ const Configurator = () => {
         price: selectedRacket.Racket_Price,
       };
     } else {
-      const speed = Math.round((selectedBlade.Blade_Speed + selectedForehand.Rubber_Speed + selectedBackhand.Rubber_Speed) / 3);
-      const spin = Math.round((selectedBlade.Blade_Spin + selectedForehand.Rubber_Spin + selectedBackhand.Rubber_Spin) / 3);
-      const control = Math.round((selectedBlade.Blade_Control + selectedForehand.Rubber_Control + selectedBackhand.Rubber_Control) / 3);
+      // Apply sponge multipliers to rubber stats
+      const forehandAdjusted = applySpongeMultipliers(
+        {
+          speed: selectedForehand.Rubber_Speed,
+          control: selectedForehand.Rubber_Control,
+          power: selectedForehand.Rubber_Power || Math.round((selectedForehand.Rubber_Speed + selectedForehand.Rubber_Spin) / 2),
+          spin: selectedForehand.Rubber_Spin,
+        },
+        selectedForehandThickness
+      );
+      
+      const backhandAdjusted = applySpongeMultipliers(
+        {
+          speed: selectedBackhand.Rubber_Speed,
+          control: selectedBackhand.Rubber_Control,
+          power: selectedBackhand.Rubber_Power || Math.round((selectedBackhand.Rubber_Speed + selectedBackhand.Rubber_Spin) / 2),
+          spin: selectedBackhand.Rubber_Spin,
+        },
+        selectedBackhandThickness
+      );
+      
+      const speed = Math.round((selectedBlade.Blade_Speed + forehandAdjusted.speed + backhandAdjusted.speed) / 3);
+      const spin = Math.round((selectedBlade.Blade_Spin + forehandAdjusted.spin + backhandAdjusted.spin) / 3);
+      const control = Math.round((selectedBlade.Blade_Control + forehandAdjusted.control + backhandAdjusted.control) / 3);
       const power = Math.round((speed + spin) / 2);
       const totalPrice = selectedBlade.Blade_Price + selectedForehand.Rubber_Price + selectedBackhand.Rubber_Price + (sealsService ? 5.49 : 0) + (assembleForMe ? 0 : 0);
       
@@ -430,21 +452,35 @@ const Configurator = () => {
           spin: 0,
           price: selectedBlade.Blade_Price
         },
-        forehandStats: {
-          speed: selectedForehand.Rubber_Speed,
-          control: selectedForehand.Rubber_Control,
-          power: selectedForehand.Rubber_Speed,
-          spin: selectedForehand.Rubber_Spin,
-          price: selectedForehand.Rubber_Price
-        },
-        backhandStats: {
-          speed: selectedBackhand.Rubber_Speed,
-          control: selectedBackhand.Rubber_Control,
-          power: selectedBackhand.Rubber_Speed,
-          spin: selectedBackhand.Rubber_Spin,
-          price: selectedBackhand.Rubber_Price
-        }
+        forehandStats: applySpongeMultipliers(
+          {
+            speed: selectedForehand.Rubber_Speed,
+            control: selectedForehand.Rubber_Control,
+            power: selectedForehand.Rubber_Power || Math.round((selectedForehand.Rubber_Speed + selectedForehand.Rubber_Spin) / 2),
+            spin: selectedForehand.Rubber_Spin,
+          },
+          selectedForehandThickness
+        ) as any,
+        backhandStats: applySpongeMultipliers(
+          {
+            speed: selectedBackhand.Rubber_Speed,
+            control: selectedBackhand.Rubber_Control,
+            power: selectedBackhand.Rubber_Power || Math.round((selectedBackhand.Rubber_Speed + selectedBackhand.Rubber_Spin) / 2),
+            spin: selectedBackhand.Rubber_Spin,
+          },
+          selectedBackhandThickness
+        ) as any
       };
+
+      // Add price to stats after applying sponge multipliers
+      if (!isPreassembled) {
+        if (comparisonPaddle.forehandStats) {
+          comparisonPaddle.forehandStats.price = selectedForehand.Rubber_Price;
+        }
+        if (comparisonPaddle.backhandStats) {
+          comparisonPaddle.backhandStats.price = selectedBackhand.Rubber_Price;
+        }
+      }
 
       addPaddle(comparisonPaddle);
       
