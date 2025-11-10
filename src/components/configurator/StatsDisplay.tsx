@@ -591,23 +591,25 @@ const StatsDisplay = ({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        onClick={() => setShowWeight(!showWeight)}
-                        variant={showWeight ? "default" : "outline"}
-                        size="sm"
-                        className="rounded-xl px-[clamp(0.75rem,3vw,1.5rem)] py-[1.5vh] text-[clamp(0.75rem,3vw,0.85rem)] lg:text-[clamp(0.75rem,0.85vw,0.9rem)]"
-                      >
-                        Weight
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{tooltips.weight}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                {radarView === 'overall' && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={() => setShowWeight(!showWeight)}
+                          variant={showWeight ? "default" : "outline"}
+                          size="sm"
+                          className="rounded-xl px-[clamp(0.75rem,3vw,1.5rem)] py-[1.5vh] text-[clamp(0.75rem,3vw,0.85rem)] lg:text-[clamp(0.75rem,0.85vw,0.9rem)]"
+                        >
+                          Weight
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{tooltips.weight}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
               </div>
             </div>
             <div className="transition-all duration-250 motion-reduce:transition-none">
