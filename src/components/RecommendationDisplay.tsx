@@ -81,6 +81,32 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     })?.node;
   };
 
+  // Helper to validate and get closest available sponge thickness
+  const getValidatedThickness = (idealThickness: string, rubber: any) => {
+    const availableSizes = rubber.Rubber_Sponge_Sizes || [];
+    if (availableSizes.length === 0) return idealThickness;
+    
+    // Parse thickness
+    const parseThickness = (t: string) => {
+      const match = t.match(/[\d.]+/);
+      return match ? parseFloat(match[0]) : 2.0;
+    };
+    
+    const target = parseThickness(idealThickness);
+    let closest = availableSizes[0];
+    let closestDiff = Math.abs(parseThickness(closest) - target);
+    
+    for (const size of availableSizes) {
+      const diff = Math.abs(parseThickness(size) - target);
+      if (diff < closestDiff) {
+        closestDiff = diff;
+        closest = size;
+      }
+    }
+    
+    return closest;
+  };
+
   // Navigate to configurator with pre-selected items
   const handleViewInConfigurator = (item: typeof allRecommendations[0]) => {
     if (item.type === 'preAssembled' || item.type === 'preAssembled2') {
@@ -88,16 +114,17 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       navigate(`/configurator?preassembled=true&racket=${encodeURIComponent(racket.Racket_Name)}&handle=${encodeURIComponent(handleType)}`);
     } else {
       const setup = item.data as CustomSetup;
-      const fhThickness = setup.forehandThickness || forehandThickness;
-      const bhThickness = setup.backhandThickness || backhandThickness;
-      console.log('handleViewInConfigurator:', {
-        setupFhThickness: setup.forehandThickness,
-        setupBhThickness: setup.backhandThickness,
-        fallbackFhThickness: forehandThickness,
-        fallbackBhThickness: backhandThickness,
-        finalFhThickness: fhThickness,
-        finalBhThickness: bhThickness
-      });
+      
+      // VALIDATE sponge thicknesses against available options
+      const fhThickness = getValidatedThickness(
+        setup.forehandThickness || forehandThickness, 
+        setup.forehandRubber
+      );
+      const bhThickness = getValidatedThickness(
+        setup.backhandThickness || backhandThickness, 
+        setup.backhandRubber
+      );
+      
       navigate(`/configurator?blade=${encodeURIComponent(setup.blade.Blade_Name)}&fh=${encodeURIComponent(setup.forehandRubber.Rubber_Name)}&bh=${encodeURIComponent(setup.backhandRubber.Rubber_Name)}&handle=${encodeURIComponent(handleType)}&fhThickness=${encodeURIComponent(fhThickness)}&bhThickness=${encodeURIComponent(bhThickness)}`);
     }
   };
@@ -127,9 +154,15 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       const bhWeight = estimateRubberWeight(setup.backhandRubber);
       const totalWeight = bladeWeight + fhWeight + bhWeight;
       
-      // Use setup-specific thicknesses if available, otherwise fall back to recommendation thicknesses
-      const fhThickness = setup.forehandThickness || forehandThickness;
-      const bhThickness = setup.backhandThickness || backhandThickness;
+      // VALIDATE sponge thicknesses against available options
+      const fhThickness = getValidatedThickness(
+        setup.forehandThickness || forehandThickness, 
+        setup.forehandRubber
+      );
+      const bhThickness = getValidatedThickness(
+        setup.backhandThickness || backhandThickness, 
+        setup.backhandRubber
+      );
       
       const combinedSpeed = Math.round((setup.blade.Blade_Speed + setup.forehandRubber.Rubber_Speed + setup.backhandRubber.Rubber_Speed) / 3);
       const combinedSpin = Math.round((setup.forehandRubber.Rubber_Spin + setup.backhandRubber.Rubber_Spin) / 2);
@@ -222,20 +255,15 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       } else {
         const setup = item.data as CustomSetup;
         
-        // Use setup-specific thicknesses if available
-        const fhThickness = setup.forehandThickness || forehandThickness;
-        const bhThickness = setup.backhandThickness || backhandThickness;
-        
-        console.log('handleAddToCart:', {
-          setupFhThickness: setup.forehandThickness,
-          setupBhThickness: setup.backhandThickness,
-          fallbackFhThickness: forehandThickness,
-          fallbackBhThickness: backhandThickness,
-          finalFhThickness: fhThickness,
-          finalBhThickness: bhThickness,
-          forehandRubber: setup.forehandRubber.Rubber_Name,
-          backhandRubber: setup.backhandRubber.Rubber_Name
-        });
+        // VALIDATE sponge thicknesses against available options
+        const fhThickness = getValidatedThickness(
+          setup.forehandThickness || forehandThickness, 
+          setup.forehandRubber
+        );
+        const bhThickness = getValidatedThickness(
+          setup.backhandThickness || backhandThickness, 
+          setup.backhandRubber
+        );
         
         // Find blade
         const bladeProduct = findShopifyProduct(setup.blade.Blade_Name);

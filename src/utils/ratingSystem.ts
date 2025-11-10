@@ -341,6 +341,14 @@ function findClosestSpongeThickness(recommendedThickness: string, availableThick
     }
   }
   
+  console.log('findClosestSpongeThickness:', {
+    recommendedThickness,
+    availableThicknesses,
+    closestThickness,
+    targetThickness,
+    closestDiff
+  });
+  
   return closestThickness;
 }
 
