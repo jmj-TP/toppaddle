@@ -574,23 +574,25 @@ const StatsDisplay = ({
                   <SkipForward className="mr-[clamp(0.25rem,1vw,0.5rem)] h-[clamp(0.875rem,3.5vw,1rem)] w-[clamp(0.875rem,3.5vw,1rem)] lg:h-[clamp(0.875rem,1vw,1rem)] lg:w-[clamp(0.875rem,1vw,1rem)]" />
                   Next View
                 </Button>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        onClick={() => setShowValue(!showValue)}
-                        variant={showValue ? "default" : "outline"}
-                        size="sm"
-                        className="rounded-xl px-[clamp(0.75rem,3vw,1.5rem)] py-[1.5vh] text-[clamp(0.75rem,3vw,0.85rem)] lg:text-[clamp(0.75rem,0.85vw,0.9rem)]"
-                      >
-                        Value
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{tooltips.value}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                {radarView === 'overall' && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={() => setShowValue(!showValue)}
+                          variant={showValue ? "default" : "outline"}
+                          size="sm"
+                          className="rounded-xl px-[clamp(0.75rem,3vw,1.5rem)] py-[1.5vh] text-[clamp(0.75rem,3vw,0.85rem)] lg:text-[clamp(0.75rem,0.85vw,0.9rem)]"
+                        >
+                          Value
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{tooltips.value}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
                 {radarView === 'overall' && (
                   <TooltipProvider>
                     <Tooltip>
@@ -615,7 +617,7 @@ const StatsDisplay = ({
             <div className="transition-all duration-250 motion-reduce:transition-none">
               <RadarComparisonChart 
                 paddles={getRadarData()} 
-                includeValue={showValue}
+                includeValue={radarView === 'overall' && showValue}
                 includeWeight={radarView === 'overall' && showWeight}
                 hideControls={true}
               />
