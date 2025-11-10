@@ -427,14 +427,67 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
             </Badge>
           </div>
 
-          {/* Placeholder Image */}
-          <div className="max-w-md mx-auto mt-8 mb-6">
-            <div className="aspect-[4/3] rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm">
-              <div className="text-center space-y-2 px-4">
-                <div className="text-6xl">🏓</div>
-                <p className="text-xs text-muted-foreground">Product image</p>
+          {/* Product Images */}
+          <div className="max-w-3xl mx-auto mt-8 mb-6">
+            {isPreAssembled ? (
+              <div className="flex justify-center">
+                <div className="text-center space-y-3">
+                  <div className="aspect-square w-64 rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm">
+                    <div className="text-center space-y-2 px-4">
+                      <div className="text-6xl">🏓</div>
+                      <p className="text-xs text-muted-foreground">Racket image</p>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-foreground">{handleType} Handle</p>
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-6 items-start">
+                {/* Forehand Rubber */}
+                <div className="text-center space-y-3">
+                  <div className="aspect-square rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm">
+                    <div className="text-center space-y-2 px-4">
+                      <div className="text-5xl">🔴</div>
+                      <p className="text-xs text-muted-foreground">Forehand rubber</p>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-muted-foreground">Forehand</p>
+                    <p className="text-sm font-semibold text-foreground">{forehandThickness}</p>
+                  </div>
+                </div>
+
+                {/* Blade */}
+                <div className="text-center space-y-3">
+                  <div className="aspect-square rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm">
+                    <div className="text-center space-y-2 px-4">
+                      <div className="text-5xl">🏓</div>
+                      <p className="text-xs text-muted-foreground">Blade</p>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-muted-foreground">Handle</p>
+                    <p className="text-sm font-semibold text-foreground">{handleType}</p>
+                  </div>
+                </div>
+
+                {/* Backhand Rubber */}
+                <div className="text-center space-y-3">
+                  <div className="aspect-square rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm">
+                    <div className="text-center space-y-2 px-4">
+                      <div className="text-5xl">⚫</div>
+                      <p className="text-xs text-muted-foreground">Backhand rubber</p>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-muted-foreground">Backhand</p>
+                    <p className="text-sm font-semibold text-foreground">{backhandThickness}</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Price */}
@@ -506,31 +559,58 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           </div>
         </div>
 
-        {/* Assembly Option for Custom */}
+        {/* Assembly and Seal Options for Custom */}
         {!isPreAssembled && setup && (
           <div className="px-8 pb-12">
-            <div className="max-w-2xl mx-auto bg-muted/30 rounded-2xl p-6 border border-border/30">
-              <div className="flex items-start gap-3">
-                <Wrench className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-                <div className="flex-1 space-y-3">
-                  <div>
-                    <p className="text-sm font-medium text-foreground mb-1">Free Professional Assembly</p>
-                    <p className="text-xs text-muted-foreground">
-                      We'll expertly glue your rubbers to your blade at no extra cost.
-                    </p>
+            <div className="max-w-2xl mx-auto space-y-3">
+              {/* Assembly Service */}
+              <div className="bg-muted/30 rounded-2xl p-6 border border-border/30">
+                <div className="flex items-start gap-3">
+                  <Wrench className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 space-y-3">
+                    <div>
+                      <p className="text-sm font-medium text-foreground mb-1">Free Professional Assembly</p>
+                      <p className="text-xs text-muted-foreground">
+                        We'll expertly glue your rubbers to your blade at no extra cost.
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="assemble-hero"
+                        checked={assembleCustom1}
+                        onCheckedChange={(checked) => setAssembleCustom1(!!checked)}
+                      />
+                      <Label 
+                        htmlFor="assemble-hero"
+                        className="text-sm font-medium cursor-pointer"
+                      >
+                        Assemble my racket (Free)
+                      </Label>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="assemble-hero"
-                      checked={assembleCustom1}
-                      onCheckedChange={(checked) => setAssembleCustom1(!!checked)}
-                    />
-                    <Label 
-                      htmlFor="assemble-hero"
-                      className="text-sm font-medium cursor-pointer"
-                    >
-                      Assemble my racket (Free)
-                    </Label>
+                </div>
+              </div>
+
+              {/* Seal Service */}
+              <div className="bg-muted/30 rounded-2xl p-6 border border-border/30">
+                <div className="flex items-start gap-3">
+                  <Shield className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 space-y-3">
+                    <div>
+                      <p className="text-sm font-medium text-foreground mb-1">Edge Tape Seal Service</p>
+                      <p className="text-xs text-muted-foreground">
+                        Protect your blade with professional edge tape application for extended durability.
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="seal-hero" />
+                      <Label 
+                        htmlFor="seal-hero"
+                        className="text-sm font-medium cursor-pointer"
+                      >
+                        Add edge tape seal ($5.00)
+                      </Label>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -312,6 +312,36 @@ function calculateHandleType(answers: QuizAnswers): {
   };
 }
 
+// Helper function to find the closest available sponge thickness
+function findClosestSpongeThickness(recommendedThickness: string, availableThicknesses: string[] | undefined): string {
+  if (!availableThicknesses || availableThicknesses.length === 0) {
+    return recommendedThickness; // Fallback to recommended if no options provided
+  }
+
+  // Parse recommended thickness to number (handle ranges like "1.5-1.7 mm")
+  const parseThickness = (thickness: string): number => {
+    const match = thickness.match(/[\d.]+/);
+    if (!match) return 2.0; // Default fallback
+    return parseFloat(match[0]);
+  };
+
+  const targetThickness = parseThickness(recommendedThickness);
+  
+  // Find closest match
+  let closestThickness = availableThicknesses[0];
+  let closestDiff = Math.abs(parseThickness(closestThickness) - targetThickness);
+  
+  for (const available of availableThicknesses) {
+    const diff = Math.abs(parseThickness(available) - targetThickness);
+    if (diff < closestDiff) {
+      closestDiff = diff;
+      closestThickness = available;
+    }
+  }
+  
+  return closestThickness;
+}
+
 // Calculate recommended sponge thickness based on player level and style
 function calculateSpongeThickness(answers: QuizAnswers): { 
   forehandThickness: string; 
@@ -626,8 +656,13 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
         normalizedScore = Math.min(99, setup.score) - (index * 1);
       }
       
+      // Validate and adjust sponge thicknesses to available options
+      const { forehandThickness, backhandThickness } = calculateSpongeThickness(answers);
+      const availableFhThickness = findClosestSpongeThickness(forehandThickness, setup.forehandRubber.Rubber_Sponge_Sizes);
+      const availableBhThickness = findClosestSpongeThickness(backhandThickness, setup.backhandRubber.Rubber_Sponge_Sizes);
+      
       // If both rubbers are Normal and prices differ, ensure more expensive one is on forehand
-      if (answers.ForehandRubberStyle === "Normal" && 
+      if (answers.ForehandRubberStyle === "Normal" &&
           answers.BackhandRubberStyle === "Normal" &&
           setup.backhandRubber.Rubber_Price > setup.forehandRubber.Rubber_Price) {
         // Swap the rubbers
@@ -692,15 +727,31 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
     const customSetup = customSetups[0] || undefined;
     const customSetup2 = customSetups[1] || undefined;
     const totalScore = customSetup?.score || 0;
+    
+    // Validate and adjust sponge thicknesses to available options
+    let finalForehandThickness = forehandThickness;
+    let finalBackhandThickness = backhandThickness;
+    
+    if (customSetup) {
+      finalForehandThickness = findClosestSpongeThickness(
+        forehandThickness, 
+        customSetup.forehandRubber.Rubber_Sponge_Sizes
+      );
+      finalBackhandThickness = findClosestSpongeThickness(
+        backhandThickness, 
+        customSetup.backhandRubber.Rubber_Sponge_Sizes
+      );
+    }
+    
     return { 
       preAssembled: undefined,
       preAssembled2: undefined,
       customSetup,
       customSetup2,
       totalScore,
-      forehandThickness,
+      forehandThickness: finalForehandThickness,
       forehandThicknessExplanation: forehandExplanation,
-      backhandThickness,
+      backhandThickness: finalBackhandThickness,
       backhandThicknessExplanation: backhandExplanation,
       handleType,
       handleTypeExplanation
@@ -716,15 +767,31 @@ export function getRecommendation(answers: QuizAnswers): Recommendation {
     const preScore = preAssembled?.score || 0;
     const customScore = customSetup?.score || 0;
     const totalScore = Math.max(preScore, customScore);
+    
+    // Validate and adjust sponge thicknesses to available options
+    let finalForehandThickness = forehandThickness;
+    let finalBackhandThickness = backhandThickness;
+    
+    if (customSetup) {
+      finalForehandThickness = findClosestSpongeThickness(
+        forehandThickness, 
+        customSetup.forehandRubber.Rubber_Sponge_Sizes
+      );
+      finalBackhandThickness = findClosestSpongeThickness(
+        backhandThickness, 
+        customSetup.backhandRubber.Rubber_Sponge_Sizes
+      );
+    }
+    
     return { 
       preAssembled,
       preAssembled2,
       customSetup,
       customSetup2,
       totalScore,
-      forehandThickness,
+      forehandThickness: finalForehandThickness,
       forehandThicknessExplanation: forehandExplanation,
-      backhandThickness,
+      backhandThickness: finalBackhandThickness,
       backhandThicknessExplanation: backhandExplanation,
       handleType,
       handleTypeExplanation
