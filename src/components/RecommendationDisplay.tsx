@@ -88,7 +88,9 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       navigate(`/configurator?preassembled=true&racket=${encodeURIComponent(racket.Racket_Name)}&handle=${encodeURIComponent(handleType)}`);
     } else {
       const setup = item.data as CustomSetup;
-      navigate(`/configurator?blade=${encodeURIComponent(setup.blade.Blade_Name)}&fh=${encodeURIComponent(setup.forehandRubber.Rubber_Name)}&bh=${encodeURIComponent(setup.backhandRubber.Rubber_Name)}&handle=${encodeURIComponent(handleType)}&fhThickness=${encodeURIComponent(forehandThickness)}&bhThickness=${encodeURIComponent(backhandThickness)}`);
+      const fhThickness = setup.forehandThickness || forehandThickness;
+      const bhThickness = setup.backhandThickness || backhandThickness;
+      navigate(`/configurator?blade=${encodeURIComponent(setup.blade.Blade_Name)}&fh=${encodeURIComponent(setup.forehandRubber.Rubber_Name)}&bh=${encodeURIComponent(setup.backhandRubber.Rubber_Name)}&handle=${encodeURIComponent(handleType)}&fhThickness=${encodeURIComponent(fhThickness)}&bhThickness=${encodeURIComponent(bhThickness)}`);
     }
   };
 
@@ -117,6 +119,10 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       const bhWeight = estimateRubberWeight(setup.backhandRubber);
       const totalWeight = bladeWeight + fhWeight + bhWeight;
       
+      // Use setup-specific thicknesses if available, otherwise fall back to recommendation thicknesses
+      const fhThickness = setup.forehandThickness || forehandThickness;
+      const bhThickness = setup.backhandThickness || backhandThickness;
+      
       const combinedSpeed = Math.round((setup.blade.Blade_Speed + setup.forehandRubber.Rubber_Speed + setup.backhandRubber.Rubber_Speed) / 3);
       const combinedSpin = Math.round((setup.forehandRubber.Rubber_Spin + setup.backhandRubber.Rubber_Spin) / 2);
       const combinedControl = Math.round((setup.blade.Blade_Control + setup.forehandRubber.Rubber_Control + setup.backhandRubber.Rubber_Control) / 3);
@@ -136,8 +142,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         blade: setup.blade.Blade_Name,
         forehandRubber: setup.forehandRubber.Rubber_Name,
         backhandRubber: setup.backhandRubber.Rubber_Name,
-        forehandSponge: forehandThickness,
-        backhandSponge: backhandThickness,
+        forehandSponge: fhThickness,
+        backhandSponge: bhThickness,
         bladeStats: {
           speed: setup.blade.Blade_Speed,
           control: setup.blade.Blade_Control,
@@ -208,6 +214,10 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       } else {
         const setup = item.data as CustomSetup;
         
+        // Use setup-specific thicknesses if available
+        const fhThickness = setup.forehandThickness || forehandThickness;
+        const bhThickness = setup.backhandThickness || backhandThickness;
+        
         // Find blade
         const bladeProduct = findShopifyProduct(setup.blade.Blade_Name);
         if (bladeProduct) {
@@ -226,7 +236,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         const fhProduct = findShopifyProduct(setup.forehandRubber.Rubber_Name);
         if (fhProduct) {
           const fhVariant = findVariant(fhProduct, { 
-            thickness: forehandThickness, 
+            thickness: fhThickness, 
             color: "Red" 
           }) || fhProduct.node.variants.edges[0].node;
           addItem({
@@ -243,7 +253,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         const bhProduct = findShopifyProduct(setup.backhandRubber.Rubber_Name);
         if (bhProduct) {
           const bhVariant = findVariant(bhProduct, { 
-            thickness: backhandThickness, 
+            thickness: bhThickness, 
             color: "Black" 
           }) || bhProduct.node.variants.edges[0].node;
           addItem({
@@ -454,8 +464,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-muted-foreground">Forehand</p>
-                    <p className="text-sm font-semibold text-foreground">{forehandThickness}</p>
+                    <p className="text-sm font-medium text-foreground leading-tight">{setup!.forehandRubber.Rubber_Name}</p>
+                    <p className="text-xs text-muted-foreground">Sponge: {setup!.forehandThickness || forehandThickness}</p>
                   </div>
                 </div>
 
@@ -468,8 +478,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-muted-foreground">Handle</p>
-                    <p className="text-sm font-semibold text-foreground">{handleType}</p>
+                    <p className="text-sm font-medium text-foreground leading-tight">{setup!.blade.Blade_Name}</p>
+                    <p className="text-xs text-muted-foreground">Handle: {handleType}</p>
                   </div>
                 </div>
 
@@ -482,8 +492,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-muted-foreground">Backhand</p>
-                    <p className="text-sm font-semibold text-foreground">{backhandThickness}</p>
+                    <p className="text-sm font-medium text-foreground leading-tight">{setup!.backhandRubber.Rubber_Name}</p>
+                    <p className="text-xs text-muted-foreground">Sponge: {setup!.backhandThickness || backhandThickness}</p>
                   </div>
                 </div>
               </div>

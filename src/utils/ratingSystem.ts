@@ -25,6 +25,8 @@ export interface CustomSetup {
   backhandRubber: Rubber;
   totalPrice: number;
   score: number;
+  forehandThickness?: string;
+  backhandThickness?: string;
 }
 
 export interface Recommendation {
@@ -656,10 +658,8 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
         normalizedScore = Math.min(99, setup.score) - (index * 1);
       }
       
-      // Validate and adjust sponge thicknesses to available options
-      const { forehandThickness, backhandThickness } = calculateSpongeThickness(answers);
-      const availableFhThickness = findClosestSpongeThickness(forehandThickness, setup.forehandRubber.Rubber_Sponge_Sizes);
-      const availableBhThickness = findClosestSpongeThickness(backhandThickness, setup.backhandRubber.Rubber_Sponge_Sizes);
+      // Calculate ideal sponge thicknesses as reference values
+      const { forehandThickness: idealFhThickness, backhandThickness: idealBhThickness } = calculateSpongeThickness(answers);
       
       // If both rubbers are Normal and prices differ, ensure more expensive one is on forehand
       if (answers.ForehandRubberStyle === "Normal" &&
@@ -671,9 +671,15 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
         setup.backhandRubber = temp;
       }
       
+      // Find the closest available sponge thickness for each rubber
+      const availableFhThickness = findClosestSpongeThickness(idealFhThickness, setup.forehandRubber.Rubber_Sponge_Sizes);
+      const availableBhThickness = findClosestSpongeThickness(idealBhThickness, setup.backhandRubber.Rubber_Sponge_Sizes);
+      
       return {
         ...setup,
-        score: normalizedScore
+        score: normalizedScore,
+        forehandThickness: availableFhThickness,
+        backhandThickness: availableBhThickness
       };
     });
     
