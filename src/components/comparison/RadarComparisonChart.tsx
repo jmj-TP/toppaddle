@@ -223,59 +223,59 @@ export const RadarComparisonChart = ({
   return (
     <div className="w-full space-y-4">
       {!hideControls && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <h2 className="text-xl font-bold">{VIEW_LABELS[performanceView]}</h2>
-          <div className="flex flex-wrap items-center gap-2">
-            <TooltipProvider delayDuration={100}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant={includeValue ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setInternalIncludeValue(!internalIncludeValue)}
-                    className="h-8 px-3 text-xs"
-                  >
-                    Value
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="max-w-xs">
-                  <p className="text-xs font-medium">Stats per dollar (higher is better)</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider delayDuration={100}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant={includeWeight ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setInternalIncludeWeight(!internalIncludeWeight)}
-                    className="h-8 px-3 text-xs"
-                  >
-                    Weight
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="max-w-xs">
-                  <p className="text-xs font-medium">Total paddle weight (Overall view only)</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={cycleView}
-              className="gap-2 h-8 px-3"
-            >
-              Next View
-              <ChevronRight className="w-3 h-3" />
-            </Button>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <h2 className="text-xl font-bold min-h-[2rem] flex items-center">{VIEW_LABELS[performanceView]}</h2>
+            <div className="flex flex-wrap items-center gap-2 min-h-[2rem]">
+              {performanceView === 'overall' && (
+                <>
+                  <TooltipProvider delayDuration={100}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant={includeValue ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setInternalIncludeValue(!internalIncludeValue)}
+                          className="h-8 px-3 text-xs"
+                        >
+                          Value
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-xs">
+                        <p className="text-xs font-medium">Stats per dollar (higher is better)</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider delayDuration={100}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant={includeWeight ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setInternalIncludeWeight(!internalIncludeWeight)}
+                          className="h-8 px-3 text-xs"
+                        >
+                          Weight
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-xs">
+                        <p className="text-xs font-medium">Total paddle weight (Overall view only)</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={cycleView}
+                className="gap-2 h-8 px-3"
+              >
+                Next View
+                <ChevronRight className="w-3 h-3" />
+              </Button>
+            </div>
           </div>
-        </div>
-      )}
-      {!hideControls && includeWeight && performanceView !== 'overall' && (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
-          <Info className="w-4 h-4 flex-shrink-0" />
-          <p>Weight metric only available in Overall Performance view</p>
         </div>
       )}
       <div className="w-full space-y-6">
