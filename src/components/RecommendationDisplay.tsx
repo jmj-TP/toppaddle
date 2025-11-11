@@ -45,6 +45,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   const [tempBrands, setTempBrands] = useState<string[]>(currentAnswers?.Brand || []);
   const [assembleCustom1, setAssembleCustom1] = useState(false);
   const [assembleCustom2, setAssembleCustom2] = useState(false);
+  const [sealCustom1, setSealCustom1] = useState(false);
+  const [sealCustom2, setSealCustom2] = useState(false);
 
   // Load Shopify products
   useEffect(() => {
@@ -292,7 +294,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       } else {
         const setup = item.data as CustomSetup;
         
-        // VALIDATE sponge thicknesses against available options
+        // ========== PHASE 1: PRE-FLIGHT VALIDATION ==========
+        // Validate sponge thicknesses
         const fhThickness = getValidatedThickness(
           setup.forehandThickness || forehandThickness, 
           setup.forehandRubber
@@ -302,76 +305,89 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           setup.backhandRubber
         );
         
-        // Find blade
+        // Find all required products
         const bladeProduct = findShopifyProduct(setup.blade.Blade_Name);
-        if (bladeProduct) {
-          const bladeVariantId = findMatchingVariant(bladeProduct, [
-            { name: "Grip Type", value: handleType }
-          ]);
-          
-          if (bladeVariantId) {
-            const bladeVariant = bladeProduct.node.variants.edges.find(v => v.node.id === bladeVariantId)!.node;
-            addItem({
-              product: bladeProduct,
-              variantId: bladeVariant.id,
-              variantTitle: bladeVariant.title,
-              price: bladeVariant.price,
-              quantity: 1,
-              selectedOptions: bladeVariant.selectedOptions
-            });
-          } else {
-            toast.error("Blade variant not available", { description: `${handleType} grip not found` });
-          }
-        }
-
-        // Find forehand rubber
         const fhProduct = findShopifyProduct(setup.forehandRubber.Rubber_Name);
-        if (fhProduct) {
-          const fhVariantId = findMatchingVariant(fhProduct, [
-            { name: "Sponge Thickness", value: fhThickness },
-            { name: "Color", value: "Red" }
-          ]);
-          
-          if (fhVariantId) {
-            const fhVariant = fhProduct.node.variants.edges.find(v => v.node.id === fhVariantId)!.node;
-            addItem({
-              product: fhProduct,
-              variantId: fhVariant.id,
-              variantTitle: fhVariant.title,
-              price: fhVariant.price,
-              quantity: 1,
-              selectedOptions: fhVariant.selectedOptions
-            });
-          } else {
-            toast.error("Forehand rubber variant not available", { description: `${fhThickness} not found` });
-          }
-        }
-
-        // Find backhand rubber
         const bhProduct = findShopifyProduct(setup.backhandRubber.Rubber_Name);
-        if (bhProduct) {
-          const bhVariantId = findMatchingVariant(bhProduct, [
-            { name: "Sponge Thickness", value: bhThickness },
-            { name: "Color", value: "Black" }
-          ]);
-          
-          if (bhVariantId) {
-            const bhVariant = bhProduct.node.variants.edges.find(v => v.node.id === bhVariantId)!.node;
-            addItem({
-              product: bhProduct,
-              variantId: bhVariant.id,
-              variantTitle: bhVariant.title,
-              price: bhVariant.price,
-              quantity: 1,
-              selectedOptions: bhVariant.selectedOptions
-            });
-          } else {
-            toast.error("Backhand rubber variant not available", { description: `${bhThickness} not found` });
-          }
+        
+        // Check if all products exist
+        const missingProducts: string[] = [];
+        if (!bladeProduct) missingProducts.push(setup.blade.Blade_Name);
+        if (!fhProduct) missingProducts.push(setup.forehandRubber.Rubber_Name);
+        if (!bhProduct) missingProducts.push(setup.backhandRubber.Rubber_Name);
+        
+        if (missingProducts.length > 0) {
+          toast.error("Setup incomplete", { 
+            description: `Products not found: ${missingProducts.join(", ")}` 
+          });
+          return;
         }
-
+        
+        // Find all required variants
+        const bladeVariantId = findMatchingVariant(bladeProduct!, [
+          { name: "Grip Type", value: handleType }
+        ]);
+        const fhVariantId = findMatchingVariant(fhProduct!, [
+          { name: "Sponge Thickness", value: fhThickness },
+          { name: "Color", value: "Red" }
+        ]);
+        const bhVariantId = findMatchingVariant(bhProduct!, [
+          { name: "Sponge Thickness", value: bhThickness },
+          { name: "Color", value: "Black" }
+        ]);
+        
+        // Check if all variants exist
+        const missingVariants: string[] = [];
+        if (!bladeVariantId) missingVariants.push(`${setup.blade.Blade_Name} (${handleType} grip)`);
+        if (!fhVariantId) missingVariants.push(`${setup.forehandRubber.Rubber_Name} (${fhThickness}, Red)`);
+        if (!bhVariantId) missingVariants.push(`${setup.backhandRubber.Rubber_Name} (${bhThickness}, Black)`);
+        
+        if (missingVariants.length > 0) {
+          toast.error("Configuration unavailable", { 
+            description: `Variants not found: ${missingVariants.join(", ")}` 
+          });
+          return;
+        }
+        
+        // Get variant objects
+        const bladeVariant = bladeProduct!.node.variants.edges.find(v => v.node.id === bladeVariantId)!.node;
+        const fhVariant = fhProduct!.node.variants.edges.find(v => v.node.id === fhVariantId)!.node;
+        const bhVariant = bhProduct!.node.variants.edges.find(v => v.node.id === bhVariantId)!.node;
+        
+        // ========== PHASE 2: EXECUTION (ADD ALL ITEMS) ==========
+        // Add blade
+        addItem({
+          product: bladeProduct!,
+          variantId: bladeVariant.id,
+          variantTitle: bladeVariant.title,
+          price: bladeVariant.price,
+          quantity: 1,
+          selectedOptions: bladeVariant.selectedOptions
+        });
+        
+        // Add forehand rubber
+        addItem({
+          product: fhProduct!,
+          variantId: fhVariant.id,
+          variantTitle: fhVariant.title,
+          price: fhVariant.price,
+          quantity: 1,
+          selectedOptions: fhVariant.selectedOptions
+        });
+        
+        // Add backhand rubber
+        addItem({
+          product: bhProduct!,
+          variantId: bhVariant.id,
+          variantTitle: bhVariant.title,
+          price: bhVariant.price,
+          quantity: 1,
+          selectedOptions: bhVariant.selectedOptions
+        });
+        
+        let itemCount = 3; // blade + 2 rubbers
+        
         // Add assembly service if requested
-        let assemblyAdded = false;
         const shouldAssemble = (item.type === 'custom1' && assembleCustom1) || (item.type === 'custom2' && assembleCustom2);
         if (shouldAssemble) {
           const assemblyProduct = shopifyProducts.find(p => 
@@ -389,25 +405,35 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               quantity: 1,
               selectedOptions: assemblyVariant.selectedOptions
             });
-            assemblyAdded = true;
+            itemCount++;
+          }
+        }
+        
+        // Add seal service if requested
+        const shouldSeal = (item.type === 'custom1' && sealCustom1) || (item.type === 'custom2' && sealCustom2);
+        if (shouldSeal) {
+          const sealProduct = shopifyProducts.find(p => 
+            p.node.title.toLowerCase().includes("edge seal service") ||
+            p.node.title.toLowerCase().includes("seal service")
+          );
+
+          if (sealProduct) {
+            const sealVariant = sealProduct.node.variants.edges[0].node;
+            addItem({
+              product: sealProduct,
+              variantId: sealVariant.id,
+              variantTitle: sealVariant.title,
+              price: sealVariant.price,
+              quantity: 1,
+              selectedOptions: sealVariant.selectedOptions
+            });
+            itemCount++;
           }
         }
 
-        const addedCount = [bladeProduct, fhProduct, bhProduct].filter(Boolean).length;
-        const itemCountWithAssembly = assemblyAdded ? addedCount + 1 : addedCount;
-        const description = assemblyAdded 
-          ? `${itemCountWithAssembly} items added with free assembly service`
-          : "Custom setup components added";
-
-        if (addedCount > 0) {
-          toast.success(`Added ${addedCount} items to cart!`, { 
-            description
-          });
-        } else {
-          toast.error("Products not found in store", { 
-            description: "These items are not available yet." 
-          });
-        }
+        toast.success(`Added ${itemCount} items to cart!`, { 
+          description: "Complete custom setup added"
+        });
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
@@ -717,7 +743,11 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Checkbox id="seal-hero" />
+                      <Checkbox 
+                        id="seal-hero"
+                        checked={sealCustom1}
+                        onCheckedChange={(checked) => setSealCustom1(!!checked)}
+                      />
                       <Label 
                         htmlFor="seal-hero"
                         className="text-sm font-medium cursor-pointer"
@@ -855,22 +885,41 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
             </div>
           </div>
 
-          {/* Assembly for custom */}
+          {/* Assembly and Seal for custom */}
           {!isPreAssembled && setup && (
-            <div className="bg-muted/20 rounded-xl p-3 border border-border/30">
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id={`assemble-alt-${rank}`}
-                  checked={assembleCustom2}
-                  onCheckedChange={(checked) => setAssembleCustom2(!!checked)}
-                />
-                <Label 
-                  htmlFor={`assemble-alt-${rank}`}
-                  className="text-xs font-medium cursor-pointer flex items-center gap-1"
-                >
-                  <Wrench className="w-3 h-3" />
-                  Free professional assembly
-                </Label>
+            <div className="space-y-2">
+              <div className="bg-muted/20 rounded-xl p-3 border border-border/30">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={`assemble-alt-${rank}`}
+                    checked={assembleCustom2}
+                    onCheckedChange={(checked) => setAssembleCustom2(!!checked)}
+                  />
+                  <Label 
+                    htmlFor={`assemble-alt-${rank}`}
+                    className="text-xs font-medium cursor-pointer flex items-center gap-1"
+                  >
+                    <Wrench className="w-3 h-3" />
+                    Free professional assembly
+                  </Label>
+                </div>
+              </div>
+              
+              <div className="bg-muted/20 rounded-xl p-3 border border-border/30">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={`seal-alt-${rank}`}
+                    checked={sealCustom2}
+                    onCheckedChange={(checked) => setSealCustom2(!!checked)}
+                  />
+                  <Label 
+                    htmlFor={`seal-alt-${rank}`}
+                    className="text-xs font-medium cursor-pointer flex items-center gap-1"
+                  >
+                    <Shield className="w-3 h-3" />
+                    Add edge tape seal ($5.00)
+                  </Label>
+                </div>
               </div>
             </div>
           )}
