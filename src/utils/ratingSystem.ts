@@ -314,42 +314,99 @@ function calculateHandleType(answers: QuizAnswers): {
   };
 }
 
-// Helper function to find the closest available sponge thickness
-function findClosestSpongeThickness(recommendedThickness: string, availableThicknesses: string[] | undefined): string {
+// Select optimal sponge thickness from available options based on player profile
+function selectOptimalSpongeThickness(
+  availableThicknesses: string[] | undefined,
+  level: string,
+  playStyle: string,
+  rubberStyle: string,
+  side: 'forehand' | 'backhand'
+): string {
   if (!availableThicknesses || availableThicknesses.length === 0) {
-    return recommendedThickness; // Fallback to recommended if no options provided
+    return '2.0 mm'; // Fallback if no options
   }
 
-  // Parse recommended thickness to number (handle ranges like "1.5-1.7 mm")
+  // Parse thickness strings to numbers for sorting
   const parseThickness = (thickness: string): number => {
+    // Handle special cases
+    if (thickness.toLowerCase().includes('ox')) return 0;
+    if (thickness.toLowerCase().includes('max') || thickness.toLowerCase().includes('ultra')) return 2.5;
+    
+    // Extract first number from string (e.g., "2.1mm" -> 2.1)
     const match = thickness.match(/[\d.]+/);
-    if (!match) return 2.0; // Default fallback
+    if (!match) return 2.0;
     return parseFloat(match[0]);
   };
 
-  const targetThickness = parseThickness(recommendedThickness);
-  
-  // Find closest match
-  let closestThickness = availableThicknesses[0];
-  let closestDiff = Math.abs(parseThickness(closestThickness) - targetThickness);
-  
-  for (const available of availableThicknesses) {
-    const diff = Math.abs(parseThickness(available) - targetThickness);
-    if (diff < closestDiff) {
-      closestDiff = diff;
-      closestThickness = available;
-    }
+  // Parse and sort available thicknesses
+  const sortedThicknesses = [...availableThicknesses]
+    .map(t => ({ original: t, value: parseThickness(t) }))
+    .sort((a, b) => a.value - b.value);
+
+  // Special rubber types always use thin/OX
+  if (rubberStyle === "Long Pimples" || rubberStyle === "Anti") {
+    // Find thinnest option (OX or lowest thickness)
+    return sortedThicknesses[0].original;
   }
+
+  if (rubberStyle === "Short Pimples") {
+    // Find option closest to 1.5-1.8mm range
+    const target = 1.65;
+    let closest = sortedThicknesses[0];
+    let minDiff = Math.abs(sortedThicknesses[0].value - target);
+    
+    for (const option of sortedThicknesses) {
+      const diff = Math.abs(option.value - target);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closest = option;
+      }
+    }
+    return closest.original;
+  }
+
+  // For normal rubbers, choose based on level and play style
+  const count = sortedThicknesses.length;
   
-  console.log('findClosestSpongeThickness:', {
-    recommendedThickness,
+  // Determine selection strategy
+  let selectionIndex: number;
+  
+  if (level === 'Beginner' || playStyle.includes('Calm & controlled')) {
+    // Choose from lower third (thinner = more control)
+    const lowerThird = Math.floor(count / 3);
+    selectionIndex = Math.min(lowerThird, count - 1);
+  } else if (level === 'Advanced' || playStyle.includes('Fast & aggressive')) {
+    // Choose from upper third (thicker = more power/spin)
+    const upperThirdStart = Math.floor((count * 2) / 3);
+    selectionIndex = Math.min(upperThirdStart, count - 1);
+  } else {
+    // Intermediate or balanced style - choose middle option
+    selectionIndex = Math.floor(count / 2);
+  }
+
+  // Fine-tune based on play style if not at extremes
+  if (playStyle.includes('Spin & topspin') && level === 'Advanced') {
+    // Prefer thickest option for advanced spin players
+    selectionIndex = count - 1;
+  } else if (playStyle.includes('Spin & topspin') && level === 'Intermediate') {
+    // Prefer upper-middle for intermediate spin players
+    selectionIndex = Math.max(selectionIndex, Math.floor((count * 2) / 3));
+  }
+
+  const selected = sortedThicknesses[selectionIndex];
+  
+  console.log('selectOptimalSpongeThickness:', {
+    side,
+    level,
+    playStyle,
+    rubberStyle,
     availableThicknesses,
-    closestThickness,
-    targetThickness,
-    closestDiff
+    sortedThicknesses: sortedThicknesses.map(t => t.original),
+    selectionIndex,
+    selected: selected.original
   });
-  
-  return closestThickness;
+
+  return selected.original;
 }
 
 // Calculate recommended sponge thickness based on player level and style
@@ -666,9 +723,6 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
         normalizedScore = Math.min(99, setup.score) - (index * 1);
       }
       
-      // Calculate ideal sponge thicknesses as reference values
-      const { forehandThickness: idealFhThickness, backhandThickness: idealBhThickness } = calculateSpongeThickness(answers);
-      
       // If both rubbers are Normal and prices differ, ensure more expensive one is on forehand
       if (answers.ForehandRubberStyle === "Normal" &&
           answers.BackhandRubberStyle === "Normal" &&
@@ -679,20 +733,30 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
         setup.backhandRubber = temp;
       }
       
-      // Find the closest available sponge thickness for each rubber
-      const availableFhThickness = findClosestSpongeThickness(idealFhThickness, setup.forehandRubber.Rubber_Sponge_Sizes);
-      const availableBhThickness = findClosestSpongeThickness(idealBhThickness, setup.backhandRubber.Rubber_Sponge_Sizes);
+      // Select optimal sponge thickness from available options for each rubber
+      const availableFhThickness = selectOptimalSpongeThickness(
+        setup.forehandRubber.Rubber_Sponge_Sizes,
+        answers.Level,
+        answers.Forehand,
+        answers.ForehandRubberStyle,
+        'forehand'
+      );
+      const availableBhThickness = selectOptimalSpongeThickness(
+        setup.backhandRubber.Rubber_Sponge_Sizes,
+        answers.Level,
+        answers.Backhand,
+        answers.BackhandRubberStyle,
+        'backhand'
+      );
       
       console.log('Setting sponge thicknesses:', {
         blade: setup.blade.Blade_Name,
         forehandRubber: setup.forehandRubber.Rubber_Name,
         backhandRubber: setup.backhandRubber.Rubber_Name,
-        idealFhThickness,
-        idealBhThickness,
         availableFhSizes: setup.forehandRubber.Rubber_Sponge_Sizes,
         availableBhSizes: setup.backhandRubber.Rubber_Sponge_Sizes,
-        availableFhThickness,
-        availableBhThickness
+        selectedFhThickness: availableFhThickness,
+        selectedBhThickness: availableBhThickness
       });
       
       return {
