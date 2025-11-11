@@ -71,6 +71,18 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     );
   };
 
+  // Helper to map grip type names to Shopify abbreviations
+  const mapGripTypeToShopify = (gripType: string): string => {
+    const mapping: Record<string, string> = {
+      'Flared': 'FL',
+      'Straight': 'ST',
+      'Anatomic': 'AN',
+      'Chinese Penhold': 'CP',
+      'Japanese Penhold': 'JP'
+    };
+    return mapping[gripType] || gripType;
+  };
+
   // Helper to check if product has a specific option
   const hasProductOption = (product: ShopifyProduct, optionName: string): boolean => {
     return product.node.options.some(opt => opt.name === optionName);
@@ -294,7 +306,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         }
 
         const variantId = findMatchingVariant(shopifyProduct, [
-          { name: "Grip Type", value: handleType }
+          { name: "Grip Type", value: mapGripTypeToShopify(handleType) }
         ]);
         const variant = variantId 
           ? shopifyProducts.find(p => p.node.id === shopifyProduct.node.id)?.node.variants.edges.find(v => v.node.id === variantId)?.node
@@ -344,7 +356,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         
         // Find blade variant (only Grip Type)
         const bladeVariantId = findMatchingVariant(bladeProduct!, [
-          { name: "Grip Type", value: handleType }
+          { name: "Grip Type", value: mapGripTypeToShopify(handleType) }
         ]);
         
         // Build forehand rubber options dynamically
