@@ -47,6 +47,12 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   const [assembleCustom2, setAssembleCustom2] = useState(false);
   const [sealCustom1, setSealCustom1] = useState(false);
   const [sealCustom2, setSealCustom2] = useState(false);
+  
+  // Sponge size selections for custom setups
+  const [custom1ForehandSponge, setCustom1ForehandSponge] = useState<string>("");
+  const [custom1BackhandSponge, setCustom1BackhandSponge] = useState<string>("");
+  const [custom2ForehandSponge, setCustom2ForehandSponge] = useState<string>("");
+  const [custom2BackhandSponge, setCustom2BackhandSponge] = useState<string>("");
 
   // Load Shopify products
   useEffect(() => {
@@ -63,12 +69,48 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     loadProducts();
   }, []);
 
+  // Initialize sponge selections when products load
+  useEffect(() => {
+    if (shopifyProducts.length === 0) return;
+    
+    if (customSetup) {
+      const fhSponges = getAvailableSponges(customSetup.forehandRubber.Rubber_Name);
+      const bhSponges = getAvailableSponges(customSetup.backhandRubber.Rubber_Name);
+      
+      const fhRecommended = getValidatedThickness(customSetup.forehandThickness || forehandThickness, customSetup.forehandRubber);
+      const bhRecommended = getValidatedThickness(customSetup.backhandThickness || backhandThickness, customSetup.backhandRubber);
+      
+      setCustom1ForehandSponge(fhSponges.includes(fhRecommended) ? fhRecommended : fhSponges[0] || "");
+      setCustom1BackhandSponge(bhSponges.includes(bhRecommended) ? bhRecommended : bhSponges[0] || "");
+    }
+    
+    if (customSetup2) {
+      const fhSponges = getAvailableSponges(customSetup2.forehandRubber.Rubber_Name);
+      const bhSponges = getAvailableSponges(customSetup2.backhandRubber.Rubber_Name);
+      
+      const fhRecommended = getValidatedThickness(customSetup2.forehandThickness || forehandThickness, customSetup2.forehandRubber);
+      const bhRecommended = getValidatedThickness(customSetup2.backhandThickness || backhandThickness, customSetup2.backhandRubber);
+      
+      setCustom2ForehandSponge(fhSponges.includes(fhRecommended) ? fhRecommended : fhSponges[0] || "");
+      setCustom2BackhandSponge(bhSponges.includes(bhRecommended) ? bhRecommended : bhSponges[0] || "");
+    }
+  }, [shopifyProducts, customSetup, customSetup2, forehandThickness, backhandThickness]);
+
   // Helper to find Shopify product by name
   const findShopifyProduct = (productName: string) => {
     return shopifyProducts.find(p => 
       p.node.title.toLowerCase().includes(productName.toLowerCase()) ||
       productName.toLowerCase().includes(p.node.title.toLowerCase())
     );
+  };
+
+  // Helper to get available sponge sizes from a rubber product
+  const getAvailableSponges = (productName: string): string[] => {
+    const product = findShopifyProduct(productName);
+    if (!product) return [];
+    
+    const spongeOption = product.node.options.find(opt => opt.name === "Sponge Thickness");
+    return spongeOption?.values || [];
   };
 
   // Helper to check if product has a specific option
@@ -312,17 +354,18 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         toast.success("Added to cart!", { description: racket.Racket_Name });
       } else {
         const setup = item.data as CustomSetup;
+        const isSetup1 = item.type === 'custom1';
         
-        // ========== PHASE 1: PRE-FLIGHT VALIDATION ==========
-        // Validate sponge thicknesses
-        const fhThickness = getValidatedThickness(
-          setup.forehandThickness || forehandThickness, 
-          setup.forehandRubber
-        );
-        const bhThickness = getValidatedThickness(
-          setup.backhandThickness || backhandThickness, 
-          setup.backhandRubber
-        );
+        // Get user-selected sponge sizes
+        const fhThickness = isSetup1 ? custom1ForehandSponge : custom2ForehandSponge;
+        const bhThickness = isSetup1 ? custom1BackhandSponge : custom2BackhandSponge;
+        
+        if (!fhThickness || !bhThickness) {
+          toast.error("Please select sponge sizes", { 
+            description: "Choose sponge thickness for both forehand and backhand rubbers" 
+          });
+          return;
+        }
         
         // Find all required products
         const bladeProduct = findShopifyProduct(setup.blade.Blade_Name);
@@ -367,7 +410,6 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         let bhColorUsed: string | null = null;
         if (hasProductOption(bhProduct!, "Color")) {
           bhColorUsed = getAvailableColor(bhProduct!, "Black");
-          // If Black isn't available and forehand already took first color, try second color
           if (!bhColorUsed && fhColorUsed) {
             const colorOption = bhProduct!.node.options.find(opt => opt.name === "Color");
             if (colorOption && colorOption.values.length > 1) {
@@ -380,26 +422,10 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         }
         const bhVariantId = findMatchingVariant(bhProduct!, bhOptions);
         
-        // Check if all variants exist with detailed error messages
-        const missingVariants: string[] = [];
-        if (!bladeVariantId) {
-          const availableGrips = bladeProduct!.node.options.find(opt => opt.name === "Grip Type")?.values || [];
-          missingVariants.push(`${setup.blade.Blade_Name} - Requested: ${handleType} grip, Available: ${availableGrips.join(", ")}`);
-        }
-        if (!fhVariantId) {
-          const availableSizes = fhProduct!.node.options.find(opt => opt.name === "Sponge Thickness")?.values || [];
-          const availableColors = fhProduct!.node.options.find(opt => opt.name === "Color")?.values || [];
-          missingVariants.push(`${setup.forehandRubber.Rubber_Name} - Requested: ${fhThickness}${fhColorUsed ? `, ${fhColorUsed}` : ''}, Available sizes: ${availableSizes.join(", ")}${availableColors.length ? `, colors: ${availableColors.join(", ")}` : ''}`);
-        }
-        if (!bhVariantId) {
-          const availableSizes = bhProduct!.node.options.find(opt => opt.name === "Sponge Thickness")?.values || [];
-          const availableColors = bhProduct!.node.options.find(opt => opt.name === "Color")?.values || [];
-          missingVariants.push(`${setup.backhandRubber.Rubber_Name} - Requested: ${bhThickness}${bhColorUsed ? `, ${bhColorUsed}` : ''}, Available sizes: ${availableSizes.join(", ")}${availableColors.length ? `, colors: ${availableColors.join(", ")}` : ''}`);
-        }
-        
-        if (missingVariants.length > 0) {
+        // Check if all variants exist
+        if (!bladeVariantId || !fhVariantId || !bhVariantId) {
           toast.error("Configuration unavailable", { 
-            description: `Variants not found: ${missingVariants.join(", ")}` 
+            description: "One or more products with the selected options are not available" 
           });
           return;
         }
@@ -572,7 +598,14 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   );
 
   // Premium hero card for best match
-  const HeroCard = ({ item, rank }: { item: typeof allRecommendations[0]; rank?: number }) => {
+  const HeroCard = ({ item, rank, fhSponge, bhSponge, onFhSpongeChange, onBhSpongeChange }: { 
+    item: typeof allRecommendations[0]; 
+    rank?: number;
+    fhSponge?: string;
+    bhSponge?: string;
+    onFhSpongeChange?: (value: string) => void;
+    onBhSpongeChange?: (value: string) => void;
+  }) => {
     const isPreAssembled = item.type === 'preAssembled' || item.type === 'preAssembled2';
     const racket = isPreAssembled ? item.data : null;
     const setup = !isPreAssembled ? (item.data as CustomSetup) : null;
@@ -641,16 +674,33 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
             ) : (
               <div className="grid grid-cols-3 gap-6 items-start">
                 {/* Forehand Rubber */}
-                <div className="text-center space-y-3">
+                 <div className="text-center space-y-3">
                   <div className="aspect-square rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm">
                     <div className="text-center space-y-2 px-4">
                       <div className="text-5xl">🔴</div>
                       <p className="text-xs text-muted-foreground">Forehand rubber</p>
                     </div>
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     <p className="text-sm font-medium text-foreground leading-tight">{setup!.forehandRubber.Rubber_Name}</p>
-                    <p className="text-xs text-muted-foreground">Sponge: {setup!.forehandThickness || forehandThickness}</p>
+                    <div className="space-y-1">
+                      <Label htmlFor="fh-sponge-hero" className="text-xs text-muted-foreground">Sponge Thickness</Label>
+                      <Select value={fhSponge} onValueChange={onFhSpongeChange}>
+                        <SelectTrigger id="fh-sponge-hero" className="h-8 text-xs">
+                          <SelectValue placeholder="Select thickness" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getAvailableSponges(setup!.forehandRubber.Rubber_Name).map(size => {
+                            const recommended = getValidatedThickness(setup!.forehandThickness || forehandThickness, setup!.forehandRubber);
+                            return (
+                              <SelectItem key={size} value={size}>
+                                {size} {size === recommended && '★ Recommended'}
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
 
@@ -676,9 +726,26 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                       <p className="text-xs text-muted-foreground">Backhand rubber</p>
                     </div>
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     <p className="text-sm font-medium text-foreground leading-tight">{setup!.backhandRubber.Rubber_Name}</p>
-                    <p className="text-xs text-muted-foreground">Sponge: {setup!.backhandThickness || backhandThickness}</p>
+                    <div className="space-y-1">
+                      <Label htmlFor="bh-sponge-hero" className="text-xs text-muted-foreground">Sponge Thickness</Label>
+                      <Select value={bhSponge} onValueChange={onBhSpongeChange}>
+                        <SelectTrigger id="bh-sponge-hero" className="h-8 text-xs">
+                          <SelectValue placeholder="Select thickness" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getAvailableSponges(setup!.backhandRubber.Rubber_Name).map(size => {
+                            const recommended = getValidatedThickness(setup!.backhandThickness || backhandThickness, setup!.backhandRubber);
+                            return (
+                              <SelectItem key={size} value={size}>
+                                {size} {size === recommended && '★ Recommended'}
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -821,7 +888,14 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   };
 
   // Alternative option card (simpler, clean)
-  const AlternativeCard = ({ item, rank }: { item: typeof allRecommendations[0]; rank?: number }) => {
+  const AlternativeCard = ({ item, rank, fhSponge, bhSponge, onFhSpongeChange, onBhSpongeChange }: { 
+    item: typeof allRecommendations[0]; 
+    rank?: number;
+    fhSponge?: string;
+    bhSponge?: string;
+    onFhSpongeChange?: (value: string) => void;
+    onBhSpongeChange?: (value: string) => void;
+  }) => {
     const isPreAssembled = item.type === 'preAssembled' || item.type === 'preAssembled2';
     const racket = isPreAssembled ? item.data : null;
     const setup = !isPreAssembled ? (item.data as CustomSetup) : null;
@@ -882,6 +956,48 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               <p className="text-xs text-muted-foreground">Product image</p>
             </div>
           </div>
+
+          {/* Sponge Selection for Custom Setups */}
+          {!isPreAssembled && setup && (
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor={`fh-sponge-alt-${rank}`} className="text-xs font-medium text-foreground">Forehand Sponge</Label>
+                <Select value={fhSponge} onValueChange={onFhSpongeChange}>
+                  <SelectTrigger id={`fh-sponge-alt-${rank}`} className="h-9 text-xs">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {getAvailableSponges(setup.forehandRubber.Rubber_Name).map(size => {
+                      const recommended = getValidatedThickness(setup.forehandThickness || forehandThickness, setup.forehandRubber);
+                      return (
+                        <SelectItem key={size} value={size}>
+                          {size} {size === recommended && '★'}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor={`bh-sponge-alt-${rank}`} className="text-xs font-medium text-foreground">Backhand Sponge</Label>
+                <Select value={bhSponge} onValueChange={onBhSpongeChange}>
+                  <SelectTrigger id={`bh-sponge-alt-${rank}`} className="h-9 text-xs">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {getAvailableSponges(setup.backhandRubber.Rubber_Name).map(size => {
+                      const recommended = getValidatedThickness(setup.backhandThickness || backhandThickness, setup.backhandRubber);
+                      return (
+                        <SelectItem key={size} value={size}>
+                          {size} {size === recommended && '★'}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
 
           {/* Why Different */}
           <div className="bg-muted/20 rounded-xl p-4">
@@ -1031,7 +1147,14 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       {/* Best Match - Hero Card */}
       {allRecommendations.length > 0 && (
         <div className="max-w-5xl mx-auto">
-          <HeroCard item={allRecommendations[0]} rank={1} />
+          <HeroCard 
+            item={allRecommendations[0]} 
+            rank={1}
+            fhSponge={custom1ForehandSponge}
+            bhSponge={custom1BackhandSponge}
+            onFhSpongeChange={setCustom1ForehandSponge}
+            onBhSpongeChange={setCustom1BackhandSponge}
+          />
         </div>
       )}
 
@@ -1048,9 +1171,22 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           </div>
           
           <div className="grid md:grid-cols-2 gap-6">
-            {allRecommendations.slice(1).map((item, index) => (
-              <AlternativeCard key={`${item.type}-${index}`} item={item} rank={index + 2} />
-            ))}
+            {allRecommendations.slice(1).map((item, index) => {
+              const isCustom1 = item.type === 'custom1';
+              const isCustom2 = item.type === 'custom2';
+              
+              return (
+                <AlternativeCard 
+                  key={`${item.type}-${index}`} 
+                  item={item} 
+                  rank={index + 2}
+                  fhSponge={isCustom2 ? custom2ForehandSponge : custom1ForehandSponge}
+                  bhSponge={isCustom2 ? custom2BackhandSponge : custom1BackhandSponge}
+                  onFhSpongeChange={isCustom2 ? setCustom2ForehandSponge : setCustom1ForehandSponge}
+                  onBhSpongeChange={isCustom2 ? setCustom2BackhandSponge : setCustom1BackhandSponge}
+                />
+              );
+            })}
           </div>
         </div>
       )}
