@@ -71,6 +71,25 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     );
   };
 
+  // Helper to check if product has a specific option
+  const hasProductOption = (product: ShopifyProduct, optionName: string): boolean => {
+    return product.node.options.some(opt => opt.name === optionName);
+  };
+
+  // Helper to get available color for a rubber product
+  const getAvailableColor = (product: ShopifyProduct, preferredColor: string): string | null => {
+    const colorOption = product.node.options.find(opt => opt.name === "Color");
+    if (!colorOption || colorOption.values.length === 0) return null;
+    
+    // Check if preferred color is available
+    if (colorOption.values.some(v => v.toLowerCase() === preferredColor.toLowerCase())) {
+      return preferredColor;
+    }
+    
+    // Return first available color as fallback
+    return colorOption.values[0];
+  };
+
   // Helper to find variant with specific options - matching Configurator logic
   const findMatchingVariant = (
     product: ShopifyProduct,
@@ -323,24 +342,60 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           return;
         }
         
-        // Find all required variants
+        // Find blade variant (only Grip Type)
         const bladeVariantId = findMatchingVariant(bladeProduct!, [
           { name: "Grip Type", value: handleType }
         ]);
-        const fhVariantId = findMatchingVariant(fhProduct!, [
-          { name: "Sponge Thickness", value: fhThickness },
-          { name: "Color", value: "Red" }
-        ]);
-        const bhVariantId = findMatchingVariant(bhProduct!, [
-          { name: "Sponge Thickness", value: bhThickness },
-          { name: "Color", value: "Black" }
-        ]);
         
-        // Check if all variants exist
+        // Build forehand rubber options dynamically
+        const fhOptions: Array<{ name: string; value: string }> = [
+          { name: "Sponge Thickness", value: fhThickness }
+        ];
+        let fhColorUsed: string | null = null;
+        if (hasProductOption(fhProduct!, "Color")) {
+          fhColorUsed = getAvailableColor(fhProduct!, "Red");
+          if (fhColorUsed) {
+            fhOptions.push({ name: "Color", value: fhColorUsed });
+          }
+        }
+        const fhVariantId = findMatchingVariant(fhProduct!, fhOptions);
+        
+        // Build backhand rubber options dynamically
+        const bhOptions: Array<{ name: string; value: string }> = [
+          { name: "Sponge Thickness", value: bhThickness }
+        ];
+        let bhColorUsed: string | null = null;
+        if (hasProductOption(bhProduct!, "Color")) {
+          bhColorUsed = getAvailableColor(bhProduct!, "Black");
+          // If Black isn't available and forehand already took first color, try second color
+          if (!bhColorUsed && fhColorUsed) {
+            const colorOption = bhProduct!.node.options.find(opt => opt.name === "Color");
+            if (colorOption && colorOption.values.length > 1) {
+              bhColorUsed = colorOption.values.find(c => c !== fhColorUsed) || colorOption.values[0];
+            }
+          }
+          if (bhColorUsed) {
+            bhOptions.push({ name: "Color", value: bhColorUsed });
+          }
+        }
+        const bhVariantId = findMatchingVariant(bhProduct!, bhOptions);
+        
+        // Check if all variants exist with detailed error messages
         const missingVariants: string[] = [];
-        if (!bladeVariantId) missingVariants.push(`${setup.blade.Blade_Name} (${handleType} grip)`);
-        if (!fhVariantId) missingVariants.push(`${setup.forehandRubber.Rubber_Name} (${fhThickness}, Red)`);
-        if (!bhVariantId) missingVariants.push(`${setup.backhandRubber.Rubber_Name} (${bhThickness}, Black)`);
+        if (!bladeVariantId) {
+          const availableGrips = bladeProduct!.node.options.find(opt => opt.name === "Grip Type")?.values || [];
+          missingVariants.push(`${setup.blade.Blade_Name} - Requested: ${handleType} grip, Available: ${availableGrips.join(", ")}`);
+        }
+        if (!fhVariantId) {
+          const availableSizes = fhProduct!.node.options.find(opt => opt.name === "Sponge Thickness")?.values || [];
+          const availableColors = fhProduct!.node.options.find(opt => opt.name === "Color")?.values || [];
+          missingVariants.push(`${setup.forehandRubber.Rubber_Name} - Requested: ${fhThickness}${fhColorUsed ? `, ${fhColorUsed}` : ''}, Available sizes: ${availableSizes.join(", ")}${availableColors.length ? `, colors: ${availableColors.join(", ")}` : ''}`);
+        }
+        if (!bhVariantId) {
+          const availableSizes = bhProduct!.node.options.find(opt => opt.name === "Sponge Thickness")?.values || [];
+          const availableColors = bhProduct!.node.options.find(opt => opt.name === "Color")?.values || [];
+          missingVariants.push(`${setup.backhandRubber.Rubber_Name} - Requested: ${bhThickness}${bhColorUsed ? `, ${bhColorUsed}` : ''}, Available sizes: ${availableSizes.join(", ")}${availableColors.length ? `, colors: ${availableColors.join(", ")}` : ''}`);
+        }
         
         if (missingVariants.length > 0) {
           toast.error("Configuration unavailable", { 
