@@ -846,20 +846,34 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     const price = isPreAssembled ? upsellRecommendation.Racket_Price : upsellRecommendation.totalPrice;
     const level = isPreAssembled ? upsellRecommendation.Racket_Level : upsellRecommendation.blade.Blade_Level;
 
+    // Get product images for custom setup
+    const bladeProduct = !isPreAssembled ? findShopifyProduct(upsellRecommendation.blade.Blade_Name) : null;
+    const fhProduct = !isPreAssembled ? findShopifyProduct(upsellRecommendation.forehandRubber.Rubber_Name) : null;
+    const bhProduct = !isPreAssembled ? findShopifyProduct(upsellRecommendation.backhandRubber.Rubber_Name) : null;
+    const preAssembledProduct = isPreAssembled ? findShopifyProduct(upsellRecommendation.Racket_Name) : null;
+
     return (
-      <div className="max-w-5xl mx-auto">
-        <div className="mb-6 text-center">
+      <div className="max-w-5xl mx-auto space-y-8">
+        {/* Heading matching "Your Perfect Match" style */}
+        <div className="text-center space-y-4 max-w-3xl mx-auto">
           <Badge variant="secondary" className="text-xs font-normal px-4 py-1.5 bg-accent/20 text-accent-foreground">
             <Sparkles className="w-3 h-3 mr-1 inline" />
             Flexible budget?
           </Badge>
+          <h2 className="font-headline text-4xl sm:text-5xl md:text-6xl font-bold text-foreground tracking-tight">
+            Upgrade Your Game
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            {upsell.explanation}
+          </p>
         </div>
+
         <Card className="overflow-hidden bg-gradient-to-br from-card via-card to-accent/5 border-accent/30 shadow-lg">
           <CardContent className="p-0">
             {/* Price Comparison Header */}
             <div className="bg-accent/10 border-b border-accent/20 px-8 py-6">
               <div className="max-w-2xl mx-auto">
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between">
                   <div className="text-left">
                     <p className="text-xs text-muted-foreground">Original Budget</p>
                     <p className="text-lg font-semibold text-foreground">{upsell.originalBudget}</p>
@@ -873,32 +887,138 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     <p className="text-lg font-semibold text-accent">{upsell.upsellBudget}</p>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {upsell.explanation}
-                </p>
               </div>
             </div>
 
-            {/* Product Info */}
-            <div className="px-8 py-8">
-              <div className="max-w-2xl mx-auto text-center space-y-4">
-                <h2 className="text-3xl font-bold text-foreground">
-                  {name}
-                </h2>
-                <div className="flex items-center justify-center gap-4">
-                  <Badge variant="secondary" className="text-sm px-3 py-1">
-                    {level}
-                  </Badge>
-                  <div className="flex items-center gap-1.5">
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                    <span className="text-sm font-semibold text-foreground">{upsellItem.score.toFixed(0)}% Match</span>
+            {/* Product Display - Custom or Pre-assembled */}
+            {!isPreAssembled ? (
+              /* Custom Setup - Show all 3 products with images */
+              <div className="px-8 py-8 space-y-8">
+                {/* Overall Setup Info */}
+                <div className="text-center space-y-2">
+                  <h3 className="text-2xl font-bold text-foreground">Custom Setup</h3>
+                  <div className="flex items-center justify-center gap-4">
+                    <Badge variant="secondary" className="text-sm px-3 py-1">
+                      {level}
+                    </Badge>
+                    <div className="flex items-center gap-1.5">
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                      <span className="text-sm font-semibold text-foreground">{upsellItem.score.toFixed(0)}% Match</span>
+                    </div>
+                    <span className="text-2xl font-bold text-accent">
+                      ${price}
+                    </span>
                   </div>
-                  <span className="text-2xl font-bold text-accent">
-                    ${price}
-                  </span>
+                </div>
+
+                {/* 3 Products Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Blade */}
+                  <div className="bg-background/50 border border-border rounded-xl p-4 space-y-3">
+                    {bladeProduct?.node.images.edges[0] && (
+                      <div className="aspect-square rounded-lg overflow-hidden bg-muted">
+                        <img 
+                          src={bladeProduct.node.images.edges[0].node.url}
+                          alt={upsellRecommendation.blade.Blade_Name}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    )}
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground">Blade</p>
+                      <p className="text-sm font-semibold text-foreground line-clamp-2">
+                        {upsellRecommendation.blade.Blade_Name}
+                      </p>
+                      <p className="text-lg font-bold text-accent">
+                        ${upsellRecommendation.blade.Blade_Price}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Forehand Rubber */}
+                  <div className="bg-background/50 border border-border rounded-xl p-4 space-y-3">
+                    {fhProduct?.node.images.edges[0] && (
+                      <div className="aspect-square rounded-lg overflow-hidden bg-muted">
+                        <img 
+                          src={fhProduct.node.images.edges[0].node.url}
+                          alt={upsellRecommendation.forehandRubber.Rubber_Name}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    )}
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground">Forehand Rubber</p>
+                      <p className="text-sm font-semibold text-foreground line-clamp-2">
+                        {upsellRecommendation.forehandRubber.Rubber_Name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {forehandThickness}
+                      </p>
+                      <p className="text-lg font-bold text-accent">
+                        ${upsellRecommendation.forehandRubber.Rubber_Price}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Backhand Rubber */}
+                  <div className="bg-background/50 border border-border rounded-xl p-4 space-y-3">
+                    {bhProduct?.node.images.edges[0] && (
+                      <div className="aspect-square rounded-lg overflow-hidden bg-muted">
+                        <img 
+                          src={bhProduct.node.images.edges[0].node.url}
+                          alt={upsellRecommendation.backhandRubber.Rubber_Name}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    )}
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground">Backhand Rubber</p>
+                      <p className="text-sm font-semibold text-foreground line-clamp-2">
+                        {upsellRecommendation.backhandRubber.Rubber_Name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {backhandThickness}
+                      </p>
+                      <p className="text-lg font-bold text-accent">
+                        ${upsellRecommendation.backhandRubber.Rubber_Price}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              /* Pre-assembled Racket */
+              <div className="px-8 py-8">
+                <div className="max-w-2xl mx-auto text-center space-y-6">
+                  {preAssembledProduct?.node.images.edges[0] && (
+                    <div className="max-w-sm mx-auto aspect-square rounded-2xl overflow-hidden bg-muted">
+                      <img 
+                        src={preAssembledProduct.node.images.edges[0].node.url}
+                        alt={name}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-bold text-foreground">
+                      {name}
+                    </h3>
+                    <div className="flex items-center justify-center gap-4">
+                      <Badge variant="secondary" className="text-sm px-3 py-1">
+                        {level}
+                      </Badge>
+                      <div className="flex items-center gap-1.5">
+                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                        <span className="text-sm font-semibold text-foreground">{upsellItem.score.toFixed(0)}% Match</span>
+                      </div>
+                      <span className="text-2xl font-bold text-accent">
+                        ${price}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* CTA Buttons */}
             <div className="px-8 pb-12">
@@ -926,6 +1046,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     variant="outline"
                     size="lg"
                     className="h-12 text-sm font-medium rounded-full"
+                    disabled={comparisonPaddles.length >= 3}
                   >
                     Compare
                   </Button>
