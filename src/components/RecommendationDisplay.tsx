@@ -31,7 +31,7 @@ interface RecommendationDisplayProps {
 }
 
 export default function RecommendationDisplay({ recommendation, onRestart, assemblyPreference, budgetAmount, playerLevel, currentAnswers, onUpdatePreferences }: RecommendationDisplayProps) {
-  const { preAssembled, preAssembled2, customSetup, customSetup2, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation, handleType, handleTypeExplanation } = recommendation;
+  const { preAssembled, customSetup, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation, handleType, handleTypeExplanation } = recommendation;
   
   const navigate = useNavigate();
   const addItem = useCartStore(state => state.addItem);
@@ -39,22 +39,31 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   const comparisonPaddles = useComparisonStore(state => state.paddles);
   const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
-  const [showAllRecommendations, setShowAllRecommendations] = useState(false);
-  
+  const [flexibleBudgetUpsell, setFlexibleBudgetUpsell] = useState<any>(null);
   const [showPreferenceEditor, setShowPreferenceEditor] = useState(false);
   const [tempBudget, setTempBudget] = useState(currentAnswers?.Budget || "<100$");
   const [tempBrands, setTempBrands] = useState<string[]>(currentAnswers?.Brand || []);
   const [assembleCustom1, setAssembleCustom1] = useState(false);
-  const [assembleCustom2, setAssembleCustom2] = useState(false);
+  const [assembleUpsell, setAssembleUpsell] = useState(false);
   const [sealCustom1, setSealCustom1] = useState(false);
-  const [sealCustom2, setSealCustom2] = useState(false);
+  const [sealUpsell, setSealUpsell] = useState(false);
 
-  // Load Shopify products
+  // Load Shopify products and calculate flexible budget upsell
   useEffect(() => {
     const loadProducts = async () => {
       try {
         const products = await fetchShopifyProducts();
         setShopifyProducts(products);
+        
+        // Calculate flexible budget upsell if we have complete answers
+        if (currentAnswers && Object.keys(currentAnswers).length > 10) {
+          const { calculateFlexibleBudgetUpsell } = await import('@/utils/upsellCalculation');
+          const upsell = calculateFlexibleBudgetUpsell(
+            currentAnswers as QuizAnswers,
+            recommendation
+          );
+          setFlexibleBudgetUpsell(upsell);
+        }
       } catch (error) {
         console.error("Error loading Shopify products:", error);
       } finally {
@@ -62,7 +71,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       }
     };
     loadProducts();
-  }, []);
+  }, [currentAnswers, recommendation]);
 
   // Helper to find Shopify product by name
   const findShopifyProduct = (productName: string) => {
@@ -197,10 +206,11 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
   // Add to comparison
   const handleAddToCompare = (item: typeof allRecommendations[0]) => {
+    const isPreAssembled = 'Racket_Name' in item.data;
     let paddle: ComparisonPaddle;
     
-    if (item.type === 'preAssembled' || item.type === 'preAssembled2') {
-      const racket = item.data;
+    if (isPreAssembled) {
+      const racket = item.data as any;
       paddle = {
         id: `pre-${racket.Racket_Name}`,
         name: racket.Racket_Name,
@@ -289,14 +299,14 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
   // Add to cart with Shopify integration
   const handleAddToCart = async (item: typeof allRecommendations[0]) => {
+    const isPreAssembled = 'Racket_Name' in item.data;
     if (isLoadingProducts) {
       toast.error("Still loading products", { description: "Please wait a moment..." });
       return;
     }
-
     try {
-      if (item.type === 'preAssembled' || item.type === 'preAssembled2') {
-        const racket = item.data;
+      if (isPreAssembled) {
+        const racket = item.data as any;
         const shopifyProduct = findShopifyProduct(racket.Racket_Name);
         
         if (!shopifyProduct) {
@@ -463,7 +473,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         const spongeDetails = `FH: ${fhThickness} (${fhSpongeSelection.explanation}), BH: ${bhThickness} (${bhSpongeSelection.explanation})`;
         
         // Add assembly service if requested
-        const shouldAssemble = (item.type === 'custom1' && assembleCustom1) || (item.type === 'custom2' && assembleCustom2);
+        const shouldAssemble = (item.type === 'custom1' && assembleCustom1) || (item.type === 'upsell' && assembleUpsell);
         if (shouldAssemble) {
           const assemblyProduct = shopifyProducts.find(p => 
             p.node.title.toLowerCase().includes("racket assembly service") ||
@@ -485,7 +495,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         }
         
         // Add seal service if requested
-        const shouldSeal = (item.type === 'custom1' && sealCustom1) || (item.type === 'custom2' && sealCustom2);
+        const shouldSeal = (item.type === 'custom1' && sealCustom1) || (item.type === 'upsell' && sealUpsell);
         if (shouldSeal) {
           const sealProduct = shopifyProducts.find(p => 
             p.node.title.toLowerCase().includes("edge seal service") ||
@@ -594,8 +604,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
   // Premium hero card for best match
   const HeroCard = ({ item, rank }: { item: typeof allRecommendations[0]; rank?: number }) => {
-    const isPreAssembled = item.type === 'preAssembled' || item.type === 'preAssembled2';
-    const racket = isPreAssembled ? item.data : null;
+    const isPreAssembled = 'Racket_Name' in item.data;
+    const racket = isPreAssembled ? item.data as any : null;
     const setup = !isPreAssembled ? (item.data as CustomSetup) : null;
     
     const name = racket ? racket.Racket_Name : setup?.blade.Blade_Name || '';
@@ -841,10 +851,10 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     );
   };
 
-  // Alternative option card (simpler, clean)
-  const AlternativeCard = ({ item, rank }: { item: typeof allRecommendations[0]; rank?: number }) => {
-    const isPreAssembled = item.type === 'preAssembled' || item.type === 'preAssembled2';
-    const racket = isPreAssembled ? item.data : null;
+  // Flexible budget upsell card (Apple-style, premium tone)
+  const FlexibleBudgetCard = ({ item }: { item: typeof allRecommendations[0] }) => {
+    const isPreAssembled = 'Racket_Name' in item.data;
+    const racket = isPreAssembled ? item.data as any : null;
     const setup = !isPreAssembled ? (item.data as CustomSetup) : null;
     
     const name = racket ? racket.Racket_Name : setup?.blade.Blade_Name || '';
@@ -864,7 +874,163 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       power: Math.round((setup!.blade.Blade_Power + setup!.forehandRubber.Rubber_Speed + setup!.backhandRubber.Rubber_Speed) / 3)
     };
 
-    const budgetDiff = budgetAmount ? Math.abs(price - budgetAmount) : 0;
+    return (
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-muted/30 via-background to-muted/20 border-2 border-primary/20 shadow-xl">
+        {/* Flexible Budget Badge */}
+        <div className="px-8 pt-8 pb-6 text-center space-y-3 border-b border-border/30">
+          <Badge variant="outline" className="text-xs font-medium px-4 py-1.5 bg-primary/10 border-primary/30">
+            💡 Flexible budget?
+          </Badge>
+          
+          <h3 className="font-headline text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+            {name}
+          </h3>
+          
+          <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+            {item.upsellInfo?.explanation}
+          </p>
+          
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <Badge variant="outline" className="text-xs font-normal">
+              {level}
+            </Badge>
+            <span className="text-sm">•</span>
+            <div className="flex items-center gap-1.5">
+              <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+              <span className="text-sm font-semibold text-foreground">{score.toFixed(0)}% Match</span>
+            </div>
+            <span className="text-sm">•</span>
+            <span className="text-sm font-semibold text-primary">
+              +${item.upsellInfo?.priceIncrease.toFixed(0)}
+            </span>
+          </div>
+        </div>
+
+        {/* Product Images */}
+        <div className="px-8 py-6">
+          {isPreAssembled ? (
+            <div className="flex justify-center">
+              <div className="aspect-square w-48 rounded-xl bg-muted/20 border border-border/30 flex items-center justify-center">
+                <div className="text-5xl">🏓</div>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-4 items-center">
+              <div className="text-center space-y-2">
+                <div className="aspect-square rounded-xl bg-muted/20 border border-border/30 flex items-center justify-center">
+                  <div className="text-4xl">🔴</div>
+                </div>
+                <p className="text-xs font-medium text-foreground leading-tight">{setup!.forehandRubber.Rubber_Name}</p>
+              </div>
+              
+              <div className="text-center space-y-2">
+                <div className="aspect-square rounded-xl bg-muted/20 border border-border/30 flex items-center justify-center">
+                  <div className="text-4xl">🏏</div>
+                </div>
+                <p className="text-xs font-medium text-foreground leading-tight">{setup!.blade.Blade_Name}</p>
+              </div>
+              
+              <div className="text-center space-y-2">
+                <div className="aspect-square rounded-xl bg-muted/20 border border-border/30 flex items-center justify-center">
+                  <div className="text-4xl">⚫</div>
+                </div>
+                <p className="text-xs font-medium text-foreground leading-tight">{setup!.backhandRubber.Rubber_Name}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Stats and Actions */}
+        <div className="px-8 pb-8 space-y-4">
+          <div className="grid grid-cols-4 gap-3 py-3 bg-muted/20 rounded-xl">
+            {[
+              { label: 'Speed', value: stats.speed },
+              { label: 'Spin', value: stats.spin },
+              { label: 'Control', value: stats.control },
+              { label: 'Power', value: stats.power }
+            ].map(stat => (
+              <div key={stat.label} className="text-center">
+                <p className="text-xs text-muted-foreground mb-1">{stat.label}</p>
+                <p className="text-base font-semibold text-foreground">{stat.value}</p>
+              </div>
+            ))}
+          </div>
+          
+          <div className="space-y-3">
+            <Button 
+              onClick={() => handleAddToCart(item)}
+              size="lg"
+              className="w-full h-12 text-base rounded-full"
+              disabled={isLoadingProducts}
+            >
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              Add to Cart · ${price.toFixed(2)}
+            </Button>
+            
+            <div className="grid grid-cols-2 gap-2">
+              <Button 
+                onClick={() => handleViewInConfigurator(item)}
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+              >
+                More Info
+              </Button>
+              <Button 
+                onClick={() => handleAddToCompare(item)}
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+              >
+                Compare
+              </Button>
+            </div>
+          </div>
+
+          {/* Assembly and Seal for custom setups */}
+          {!isPreAssembled && setup && (
+            <div className="space-y-2 pt-2">
+              <div className="bg-muted/20 rounded-xl p-3 border border-border/30">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="assemble-upsell"
+                    checked={assembleUpsell}
+                    onCheckedChange={(checked) => setAssembleUpsell(!!checked)}
+                  />
+                  <Label 
+                    htmlFor="assemble-upsell"
+                    className="text-xs font-medium cursor-pointer flex items-center gap-1"
+                  >
+                    <Wrench className="w-3 h-3" />
+                    Free professional assembly
+                  </Label>
+                </div>
+              </div>
+              
+              <div className="bg-muted/20 rounded-xl p-3 border border-border/30">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="seal-upsell"
+                    checked={sealUpsell}
+                    onCheckedChange={(checked) => setSealUpsell(!!checked)}
+                  />
+                  <Label 
+                    htmlFor="seal-upsell"
+                    className="text-xs font-medium cursor-pointer flex items-center gap-1"
+                  >
+                    <Shield className="w-3 h-3" />
+                    Edge seal protection
+                  </Label>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  return (
     const isHigherBudget = budgetAmount ? price > budgetAmount : false;
     
     return (
