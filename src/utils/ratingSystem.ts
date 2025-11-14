@@ -204,8 +204,11 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
     }
   }
 
-  // Return realistic score without artificial inflation
-  return (score / maxScore) * 100;
+  // Apply a curve that maps scores from 50-99% range
+  // This ensures bad matches are around 50%, average matches 75-85%, excellent matches 90-99%
+  const rawPercentage = (score / maxScore) * 100;
+  const normalizedScore = 50 + (rawPercentage * 0.49);
+  return normalizedScore;
 }
 
 // Extract brand from product name
