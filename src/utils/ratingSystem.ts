@@ -549,34 +549,13 @@ export function findBestPreAssembledRackets(answers: QuizAnswers, topN: number =
     }))
     .sort((a, b) => b.score - a.score);
 
-  // Normalize scores more accurately to show real differences
+  // Return top N rackets with realistic scores (no artificial inflation)
   if (suitableRackets.length > 0) {
-    const maxScoreInBudget = suitableRackets[0].score;
-    const minScoreInBudget = suitableRackets[suitableRackets.length - 1].score;
-    const scoreRange = maxScoreInBudget - minScoreInBudget;
+    const topRackets = suitableRackets.slice(0, topN);
     
-    // Normalize scores for all top N rackets with wider range
-    const topRackets = suitableRackets.slice(0, topN).map((racket, index) => {
-      let normalizedScore;
-      if (scoreRange > 0) {
-        // Scale from 65 to 99, but prefer raw score if it's already good
-        const scaledScore = 65 + ((racket.score - minScoreInBudget) / scoreRange) * 34;
-        // Use the higher of scaled or raw score (capped at 99)
-        normalizedScore = Math.min(99, Math.max(scaledScore, racket.score));
-      } else {
-        // If all scores are the same, decrease slightly for each rank
-        normalizedScore = Math.min(99, racket.score) - (index * 1);
-      }
-      
-      return {
-        ...racket,
-        score: normalizedScore
-      };
-    });
-    
-    // Ensure second racket has lower score than first
+    // Ensure second racket has lower score than first if they're equal
     if (topRackets.length > 1 && topRackets[1].score >= topRackets[0].score) {
-      topRackets[1].score = topRackets[0].score - 1;
+      topRackets[1].score = topRackets[0].score - 0.5;
     }
     
     return topRackets;
@@ -710,19 +689,8 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
     const minScoreInBudget = bestCombinations[bestCombinations.length - 1].score;
     const scoreRange = maxScoreInBudget - minScoreInBudget;
     
-    // Normalize scores for all top N setups with wider range
+    // Apply realistic scoring - don't inflate artificially
     const topSetups = bestCombinations.slice(0, topN).map((setup, index) => {
-      let normalizedScore;
-      if (scoreRange > 0) {
-        // Scale from 65 to 99, but prefer raw score if it's already good
-        const scaledScore = 65 + ((setup.score - minScoreInBudget) / scoreRange) * 34;
-        // Use the higher of scaled or raw score (capped at 99)
-        normalizedScore = Math.min(99, Math.max(scaledScore, setup.score));
-      } else {
-        // If all scores are the same, decrease slightly for each rank
-        normalizedScore = Math.min(99, setup.score) - (index * 1);
-      }
-      
       // If both rubbers are Normal and prices differ, ensure more expensive one is on forehand
       if (answers.ForehandRubberStyle === "Normal" &&
           answers.BackhandRubberStyle === "Normal" &&
@@ -761,15 +729,14 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
       
       return {
         ...setup,
-        score: normalizedScore,
         forehandThickness: availableFhThickness,
         backhandThickness: availableBhThickness
       };
     });
     
-    // Ensure second setup has lower score than first
+    // Ensure second setup has lower score than first if they're equal
     if (topSetups.length > 1 && topSetups[1].score >= topSetups[0].score) {
-      topSetups[1].score = topSetups[0].score - 1;
+      topSetups[1].score = topSetups[0].score - 0.5;
     }
     
     return topSetups;
