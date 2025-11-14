@@ -204,10 +204,10 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
     }
   }
 
-  // Apply a curve that maps scores from 50-99% range
-  // This ensures bad matches are around 50%, average matches 75-85%, excellent matches 90-99%
+  // Apply a curve that maps scores from 75-99% range
+  // This ensures all matches are at least 75%, average matches 85-90%, excellent matches 95-99%
   const rawPercentage = (score / maxScore) * 100;
-  const normalizedScore = 50 + (rawPercentage * 0.49);
+  const normalizedScore = 75 + (rawPercentage * 0.24);
   return normalizedScore;
 }
 
