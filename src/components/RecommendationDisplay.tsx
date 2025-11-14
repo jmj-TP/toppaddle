@@ -184,8 +184,10 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
   // Navigate to configurator with pre-selected items
   const handleViewInConfigurator = (item: typeof allRecommendations[0]) => {
-    if (item.type === 'preAssembled' || item.type === 'preAssembled2') {
-      const racket = item.data;
+    const isPreAssembled = 'Racket_Name' in item.data;
+    
+    if (isPreAssembled) {
+      const racket = item.data as any;
       navigate(`/configurator?preassembled=true&racket=${encodeURIComponent(racket.Racket_Name)}&handle=${encodeURIComponent(handleType)}`);
     } else {
       const setup = item.data as CustomSetup;
@@ -473,7 +475,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         const spongeDetails = `FH: ${fhThickness} (${fhSpongeSelection.explanation}), BH: ${bhThickness} (${bhSpongeSelection.explanation})`;
         
         // Add assembly service if requested
-        const shouldAssemble = (item.type === 'custom1' && assembleCustom1) || (item.type === 'upsell' && assembleUpsell);
+        const isCustomSetup = !('Racket_Name' in item.data);
+        const shouldAssemble = isCustomSetup && assembleCustom1;
         if (shouldAssemble) {
           const assemblyProduct = shopifyProducts.find(p => 
             p.node.title.toLowerCase().includes("racket assembly service") ||
@@ -495,7 +498,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         }
         
         // Add seal service if requested
-        const shouldSeal = (item.type === 'custom1' && sealCustom1) || (item.type === 'upsell' && sealUpsell);
+        const shouldSeal = isCustomSetup && sealCustom1;
         if (shouldSeal) {
           const sealProduct = shopifyProducts.find(p => 
             p.node.title.toLowerCase().includes("edge seal service") ||
@@ -529,39 +532,11 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     }
   };
   
-  // Create array of all recommendations sorted by match score
-  let allRecommendations = [
-    preAssembled ? { type: 'preAssembled' as const, score: preAssembled.score, data: preAssembled, rank: 1 } : null,
-    preAssembled2 ? { type: 'preAssembled2' as const, score: preAssembled2.score, data: preAssembled2, rank: 2 } : null,
-    customSetup ? { type: 'custom1' as const, score: customSetup.score, data: customSetup, rank: 1 } : null,
-    customSetup2 ? { type: 'custom2' as const, score: customSetup2.score, data: customSetup2, rank: 2 } : null,
-  ].filter((item): item is NonNullable<typeof item> => item !== null)
-   .sort((a, b) => {
-     // For intermediate/advanced players, prioritize custom setups over pre-assembled
-     if (playerLevel === 'Intermediate' || playerLevel === 'Advanced') {
-       if ((a.type === 'preAssembled' || a.type === 'preAssembled2') && (b.type !== 'preAssembled' && b.type !== 'preAssembled2')) return 1;
-       if ((a.type !== 'preAssembled' && a.type !== 'preAssembled2') && (b.type === 'preAssembled' || b.type === 'preAssembled2')) return -1;
-     }
-     // Otherwise sort by match score descending
-     return b.score - a.score;
-   });
-
-  // Filter based on assembly preference to show exactly 2 rackets
-  if (assemblyPreference === "Ready-to-play racket") {
-    // Show only pre-assembled rackets (max 2)
-    allRecommendations = allRecommendations.filter(item => item.type === 'preAssembled' || item.type === 'preAssembled2').slice(0, 2);
-  } else if (assemblyPreference === "Custom setup") {
-    // Show only custom setups (max 2)
-    allRecommendations = allRecommendations.filter(item => item.type !== 'preAssembled' && item.type !== 'preAssembled2').slice(0, 2);
-  } else if (assemblyPreference === "Not sure") {
-    // Show 1 custom and 1 pre-assembled
-    const customOptions = allRecommendations.filter(item => item.type !== 'preAssembled' && item.type !== 'preAssembled2').slice(0, 1);
-    const preAssembledOptions = allRecommendations.filter(item => item.type === 'preAssembled' || item.type === 'preAssembled2').slice(0, 1);
-    allRecommendations = [...customOptions, ...preAssembledOptions];
-  } else {
-    // Default: show top 2 of any type
-    allRecommendations = allRecommendations.slice(0, 2);
-  }
+  // Create array with just the main recommendation
+  const mainRecommendation = preAssembled || customSetup;
+  const allRecommendations = mainRecommendation
+    ? [{ type: 'main' as const, score: mainRecommendation.score, data: mainRecommendation, rank: 1 }]
+    : [];
 
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
@@ -851,324 +826,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     );
   };
 
-  // Flexible budget upsell card (Apple-style, premium tone)
-  const FlexibleBudgetCard = ({ item }: { item: typeof allRecommendations[0] }) => {
-    const isPreAssembled = 'Racket_Name' in item.data;
-    const racket = isPreAssembled ? item.data as any : null;
-    const setup = !isPreAssembled ? (item.data as CustomSetup) : null;
-    
-    const name = racket ? racket.Racket_Name : setup?.blade.Blade_Name || '';
-    const price = racket ? racket.Racket_Price : setup?.totalPrice || 0;
-    const level = racket ? racket.Racket_Level : setup?.blade.Blade_Level || '';
-    const score = item.score;
-    
-    const stats = racket ? {
-      speed: racket.Racket_Speed,
-      spin: racket.Racket_Spin,
-      control: racket.Racket_Control,
-      power: racket.Racket_Power
-    } : {
-      speed: Math.round((setup!.blade.Blade_Speed + setup!.forehandRubber.Rubber_Speed + setup!.backhandRubber.Rubber_Speed) / 3),
-      spin: Math.round((setup!.forehandRubber.Rubber_Spin + setup!.backhandRubber.Rubber_Spin) / 2),
-      control: Math.round((setup!.blade.Blade_Control + setup!.forehandRubber.Rubber_Control + setup!.backhandRubber.Rubber_Control) / 3),
-      power: Math.round((setup!.blade.Blade_Power + setup!.forehandRubber.Rubber_Speed + setup!.backhandRubber.Rubber_Speed) / 3)
-    };
-
-    return (
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-muted/30 via-background to-muted/20 border-2 border-primary/20 shadow-xl">
-        {/* Flexible Budget Badge */}
-        <div className="px-8 pt-8 pb-6 text-center space-y-3 border-b border-border/30">
-          <Badge variant="outline" className="text-xs font-medium px-4 py-1.5 bg-primary/10 border-primary/30">
-            💡 Flexible budget?
-          </Badge>
-          
-          <h3 className="font-headline text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-            {name}
-          </h3>
-          
-          <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
-            {item.upsellInfo?.explanation}
-          </p>
-          
-          <div className="flex items-center justify-center gap-3 pt-2">
-            <Badge variant="outline" className="text-xs font-normal">
-              {level}
-            </Badge>
-            <span className="text-sm">•</span>
-            <div className="flex items-center gap-1.5">
-              <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-              <span className="text-sm font-semibold text-foreground">{score.toFixed(0)}% Match</span>
-            </div>
-            <span className="text-sm">•</span>
-            <span className="text-sm font-semibold text-primary">
-              +${item.upsellInfo?.priceIncrease.toFixed(0)}
-            </span>
-          </div>
-        </div>
-
-        {/* Product Images */}
-        <div className="px-8 py-6">
-          {isPreAssembled ? (
-            <div className="flex justify-center">
-              <div className="aspect-square w-48 rounded-xl bg-muted/20 border border-border/30 flex items-center justify-center">
-                <div className="text-5xl">🏓</div>
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-3 gap-4 items-center">
-              <div className="text-center space-y-2">
-                <div className="aspect-square rounded-xl bg-muted/20 border border-border/30 flex items-center justify-center">
-                  <div className="text-4xl">🔴</div>
-                </div>
-                <p className="text-xs font-medium text-foreground leading-tight">{setup!.forehandRubber.Rubber_Name}</p>
-              </div>
-              
-              <div className="text-center space-y-2">
-                <div className="aspect-square rounded-xl bg-muted/20 border border-border/30 flex items-center justify-center">
-                  <div className="text-4xl">🏏</div>
-                </div>
-                <p className="text-xs font-medium text-foreground leading-tight">{setup!.blade.Blade_Name}</p>
-              </div>
-              
-              <div className="text-center space-y-2">
-                <div className="aspect-square rounded-xl bg-muted/20 border border-border/30 flex items-center justify-center">
-                  <div className="text-4xl">⚫</div>
-                </div>
-                <p className="text-xs font-medium text-foreground leading-tight">{setup!.backhandRubber.Rubber_Name}</p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Stats and Actions */}
-        <div className="px-8 pb-8 space-y-4">
-          <div className="grid grid-cols-4 gap-3 py-3 bg-muted/20 rounded-xl">
-            {[
-              { label: 'Speed', value: stats.speed },
-              { label: 'Spin', value: stats.spin },
-              { label: 'Control', value: stats.control },
-              { label: 'Power', value: stats.power }
-            ].map(stat => (
-              <div key={stat.label} className="text-center">
-                <p className="text-xs text-muted-foreground mb-1">{stat.label}</p>
-                <p className="text-base font-semibold text-foreground">{stat.value}</p>
-              </div>
-            ))}
-          </div>
-          
-          <div className="space-y-3">
-            <Button 
-              onClick={() => handleAddToCart(item)}
-              size="lg"
-              className="w-full h-12 text-base rounded-full"
-              disabled={isLoadingProducts}
-            >
-              <ShoppingCart className="w-4 h-4 mr-2" />
-              Add to Cart · ${price.toFixed(2)}
-            </Button>
-            
-            <div className="grid grid-cols-2 gap-2">
-              <Button 
-                onClick={() => handleViewInConfigurator(item)}
-                variant="outline"
-                size="sm"
-                className="rounded-full"
-              >
-                More Info
-              </Button>
-              <Button 
-                onClick={() => handleAddToCompare(item)}
-                variant="outline"
-                size="sm"
-                className="rounded-full"
-              >
-                Compare
-              </Button>
-            </div>
-          </div>
-
-          {/* Assembly and Seal for custom setups */}
-          {!isPreAssembled && setup && (
-            <div className="space-y-2 pt-2">
-              <div className="bg-muted/20 rounded-xl p-3 border border-border/30">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="assemble-upsell"
-                    checked={assembleUpsell}
-                    onCheckedChange={(checked) => setAssembleUpsell(!!checked)}
-                  />
-                  <Label 
-                    htmlFor="assemble-upsell"
-                    className="text-xs font-medium cursor-pointer flex items-center gap-1"
-                  >
-                    <Wrench className="w-3 h-3" />
-                    Free professional assembly
-                  </Label>
-                </div>
-              </div>
-              
-              <div className="bg-muted/20 rounded-xl p-3 border border-border/30">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="seal-upsell"
-                    checked={sealUpsell}
-                    onCheckedChange={(checked) => setSealUpsell(!!checked)}
-                  />
-                  <Label 
-                    htmlFor="seal-upsell"
-                    className="text-xs font-medium cursor-pointer flex items-center gap-1"
-                  >
-                    <Shield className="w-3 h-3" />
-                    Edge seal protection
-                  </Label>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    const isHigherBudget = budgetAmount ? price > budgetAmount : false;
-    
-    return (
-      <div className="rounded-2xl bg-card border border-border/50 overflow-hidden hover:shadow-lg transition-shadow duration-300">
-        <div className="p-6 space-y-4">
-          {/* Header */}
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1 space-y-2">
-              <Badge variant="outline" className="text-xs">
-                {isPreAssembled ? 'Ready to Play' : 'Custom Setup'}
-              </Badge>
-              <h3 className="font-semibold text-xl text-foreground">{name}</h3>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span>{level}</span>
-                <span>•</span>
-                <div className="flex items-center gap-1">
-                  <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
-                  <span>{score.toFixed(0)}% Match</span>
-                </div>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-2xl font-semibold text-foreground">{formatPrice(price)}</p>
-              {budgetAmount && (
-                <p className="text-xs text-muted-foreground">
-                  {isHigherBudget ? `+${formatPrice(budgetDiff)} more` : `${formatPrice(budgetDiff)} under budget`}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Placeholder Image */}
-          <div className="aspect-[16/9] rounded-xl bg-muted/20 border border-border/30 flex items-center justify-center">
-            <div className="text-center space-y-1">
-              <div className="text-4xl">🏓</div>
-              <p className="text-xs text-muted-foreground">Product image</p>
-            </div>
-          </div>
-
-          {/* Why Different */}
-          <div className="bg-muted/20 rounded-xl p-4">
-            <p className="text-xs font-medium text-foreground mb-1">Why consider this option:</p>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              {isHigherBudget 
-                ? `Higher performance tier with enhanced characteristics. Worth the extra ${formatPrice(budgetDiff)} for serious players.`
-                : `Great value option that stays under budget while maintaining quality performance.`
-              }
-            </p>
-          </div>
-
-          {/* Quick Stats Grid */}
-          <div className="grid grid-cols-4 gap-3 py-2">
-            {[
-              { label: 'Speed', value: stats.speed },
-              { label: 'Spin', value: stats.spin },
-              { label: 'Control', value: stats.control },
-              { label: 'Power', value: stats.power }
-            ].map(stat => (
-              <div key={stat.label} className="text-center">
-                <p className="text-xs text-muted-foreground mb-1">{stat.label}</p>
-                <p className="text-sm font-semibold text-foreground">{stat.value}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Actions */}
-          <div className="space-y-2 pt-2">
-            <Button 
-              onClick={() => handleAddToCart(item)}
-              size="lg"
-              className="w-full h-12 text-sm rounded-full"
-              disabled={isLoadingProducts}
-            >
-              <ShoppingCart className="w-4 h-4 mr-2" />
-              Add to Cart
-            </Button>
-            <div className="grid grid-cols-2 gap-2">
-              <Button 
-                onClick={() => handleViewInConfigurator(item)}
-                variant="outline"
-                size="sm"
-                className="rounded-full"
-              >
-                More Info
-              </Button>
-              <Button 
-                onClick={() => handleAddToCompare(item)}
-                variant="outline"
-                size="sm"
-                className="rounded-full"
-              >
-                Compare
-              </Button>
-            </div>
-          </div>
-
-          {/* Assembly and Seal for custom */}
-          {!isPreAssembled && setup && (
-            <div className="space-y-2">
-              <div className="bg-muted/20 rounded-xl p-3 border border-border/30">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={`assemble-alt-${rank}`}
-                    checked={assembleCustom2}
-                    onCheckedChange={(checked) => setAssembleCustom2(!!checked)}
-                  />
-                  <Label 
-                    htmlFor={`assemble-alt-${rank}`}
-                    className="text-xs font-medium cursor-pointer flex items-center gap-1"
-                  >
-                    <Wrench className="w-3 h-3" />
-                    Free professional assembly
-                  </Label>
-                </div>
-              </div>
-              
-              <div className="bg-muted/20 rounded-xl p-3 border border-border/30">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={`seal-alt-${rank}`}
-                    checked={sealCustom2}
-                    onCheckedChange={(checked) => setSealCustom2(!!checked)}
-                  />
-                  <Label 
-                    htmlFor={`seal-alt-${rank}`}
-                    className="text-xs font-medium cursor-pointer flex items-center gap-1"
-                  >
-                    <Shield className="w-3 h-3" />
-                    Add edge tape seal ($5.00)
-                  </Label>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
+  // Flexible budget upsell card removed - keeping just main recommendation with realistic scores
 
   return (
     <div className="w-full mx-auto space-y-16 py-12 px-4 sm:px-6 lg:px-8">
@@ -1222,25 +880,14 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         </div>
       )}
 
-      {/* Alternative Options */}
-      {allRecommendations.length > 1 && (
-        <div className="max-w-5xl mx-auto space-y-8">
-          <div className="text-center space-y-2">
-            <h2 className="font-headline text-3xl font-bold text-foreground">
-              Alternative Options
-            </h2>
+        {/* No alternative options - just show main recommendation */}
+        {allRecommendations.length === 0 && (
+          <div className="max-w-2xl mx-auto text-center py-8">
             <p className="text-muted-foreground">
-              Other great choices that also match your preferences
+              No suitable upsell found for your budget range
             </p>
           </div>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            {allRecommendations.slice(1).map((item, index) => (
-              <AlternativeCard key={`${item.type}-${index}`} item={item} rank={index + 2} />
-            ))}
-          </div>
-        </div>
-      )}
+        )}
 
       {/* Adjust Preferences Section */}
       <div className="max-w-3xl mx-auto">
