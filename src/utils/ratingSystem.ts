@@ -208,7 +208,8 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
   // This ensures all matches are at least 75%, average matches 85-90%, excellent matches 95-99%
   const rawPercentage = (score / maxScore) * 100;
   const normalizedScore = 75 + (rawPercentage * 0.24);
-  return normalizedScore;
+  // Guarantee minimum 75% and maximum 99%
+  return Math.max(75, Math.min(99, normalizedScore));
 }
 
 // Extract brand from product name
