@@ -18,6 +18,7 @@ import { useCartStore } from "@/stores/cartStore";
 import { useComparisonStore, type ComparisonPaddle } from "@/stores/comparisonStore";
 import { fetchShopifyProducts, type ShopifyProduct } from "@/lib/shopify";
 import { toast } from "sonner";
+import { selectSmartSpongeSize } from "@/utils/smartSpongeSelection";
 
 interface RecommendationDisplayProps {
   recommendation: Recommendation;
@@ -326,16 +327,6 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         const setup = item.data as CustomSetup;
         
         // ========== PHASE 1: PRE-FLIGHT VALIDATION ==========
-        // Validate sponge thicknesses
-        const fhThickness = getValidatedThickness(
-          setup.forehandThickness || forehandThickness, 
-          setup.forehandRubber
-        );
-        const bhThickness = getValidatedThickness(
-          setup.backhandThickness || backhandThickness, 
-          setup.backhandRubber
-        );
-        
         // Find all required products
         const bladeProduct = findShopifyProduct(setup.blade.Blade_Name);
         const fhProduct = findShopifyProduct(setup.forehandRubber.Rubber_Name);
@@ -359,7 +350,21 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           { name: "Grip Type", value: mapGripTypeToShopify(handleType) }
         ]);
         
-        // Build forehand rubber options dynamically
+        // ========== SMART SPONGE SELECTION ==========
+        // Get player level and styles from quiz answers
+        const playerLevel = currentAnswers?.Level || 'Intermediate';
+        const fhStyle = currentAnswers?.Forehand || 'Balanced & versatile';
+        const bhStyle = currentAnswers?.Backhand || 'Balanced & versatile';
+        
+        // Use smart sponge selection for forehand rubber
+        const fhSpongeSelection = selectSmartSpongeSize(fhProduct!, playerLevel, fhStyle, 'FH');
+        const fhThickness = fhSpongeSelection.size;
+        
+        // Use smart sponge selection for backhand rubber
+        const bhSpongeSelection = selectSmartSpongeSize(bhProduct!, playerLevel, bhStyle, 'BH');
+        const bhThickness = bhSpongeSelection.size;
+        
+        // Build forehand rubber options with color handling
         const fhOptions: Array<{ name: string; value: string }> = [
           { name: "Sponge Thickness", value: fhThickness }
         ];
@@ -372,7 +377,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         }
         const fhVariantId = findMatchingVariant(fhProduct!, fhOptions);
         
-        // Build backhand rubber options dynamically
+        // Build backhand rubber options with color handling
         const bhOptions: Array<{ name: string; value: string }> = [
           { name: "Sponge Thickness", value: bhThickness }
         ];
@@ -396,17 +401,17 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         const missingVariants: string[] = [];
         if (!bladeVariantId) {
           const availableGrips = bladeProduct!.node.options.find(opt => opt.name === "Grip Type")?.values || [];
-          missingVariants.push(`${setup.blade.Blade_Name} - Requested: ${handleType} grip, Available: ${availableGrips.join(", ")}`);
+          missingVariants.push(`${setup.blade.Blade_Name} - Requested: ${mapGripTypeToShopify(handleType)} grip, Available: ${availableGrips.join(", ")}`);
         }
         if (!fhVariantId) {
           const availableSizes = fhProduct!.node.options.find(opt => opt.name === "Sponge Thickness")?.values || [];
           const availableColors = fhProduct!.node.options.find(opt => opt.name === "Color")?.values || [];
-          missingVariants.push(`${setup.forehandRubber.Rubber_Name} - Requested: ${fhThickness}${fhColorUsed ? `, ${fhColorUsed}` : ''}, Available sizes: ${availableSizes.join(", ")}${availableColors.length ? `, colors: ${availableColors.join(", ")}` : ''}`);
+          missingVariants.push(`${setup.forehandRubber.Rubber_Name} FH - Target: ${fhSpongeSelection.targetSize.toFixed(1)}mm, Selected: ${fhThickness}${fhColorUsed ? `, ${fhColorUsed}` : ''}, Available: ${availableSizes.join(", ")}${availableColors.length ? `, colors: ${availableColors.join(", ")}` : ''}`);
         }
         if (!bhVariantId) {
           const availableSizes = bhProduct!.node.options.find(opt => opt.name === "Sponge Thickness")?.values || [];
           const availableColors = bhProduct!.node.options.find(opt => opt.name === "Color")?.values || [];
-          missingVariants.push(`${setup.backhandRubber.Rubber_Name} - Requested: ${bhThickness}${bhColorUsed ? `, ${bhColorUsed}` : ''}, Available sizes: ${availableSizes.join(", ")}${availableColors.length ? `, colors: ${availableColors.join(", ")}` : ''}`);
+          missingVariants.push(`${setup.backhandRubber.Rubber_Name} BH - Target: ${bhSpongeSelection.targetSize.toFixed(1)}mm, Selected: ${bhThickness}${bhColorUsed ? `, ${bhColorUsed}` : ''}, Available: ${availableSizes.join(", ")}${availableColors.length ? `, colors: ${availableColors.join(", ")}` : ''}`);
         }
         
         if (missingVariants.length > 0) {
@@ -454,6 +459,9 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         
         let itemCount = 3; // blade + 2 rubbers
         
+        // Show sponge selection explanations in toast
+        const spongeDetails = `FH: ${fhThickness} (${fhSpongeSelection.explanation}), BH: ${bhThickness} (${bhSpongeSelection.explanation})`;
+        
         // Add assembly service if requested
         const shouldAssemble = (item.type === 'custom1' && assembleCustom1) || (item.type === 'custom2' && assembleCustom2);
         if (shouldAssemble) {
@@ -499,7 +507,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         }
 
         toast.success(`Added ${itemCount} items to cart!`, { 
-          description: "Complete custom setup added"
+          description: `${spongeDetails}`,
+          duration: 5000
         });
       }
     } catch (error) {
