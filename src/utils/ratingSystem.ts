@@ -204,7 +204,8 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
     }
   }
 
-  return Math.min(100, (score / maxScore) * 100);
+  // Return realistic score without artificial inflation
+  return (score / maxScore) * 100;
 }
 
 // Extract brand from product name

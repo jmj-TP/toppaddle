@@ -826,7 +826,117 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     );
   };
 
-  // Flexible budget upsell card removed - keeping just main recommendation with realistic scores
+  // Flexible Budget Upsell Card Component
+  const FlexibleBudgetCard = ({ upsell }: { upsell: any }) => {
+    const upsellRecommendation = assemblyPreference?.includes('Ready-to-play')
+      ? upsell.recommendation.preAssembled
+      : upsell.recommendation.customSetup;
+    
+    if (!upsellRecommendation) return null;
+    
+    const isPreAssembled = 'Racket_Name' in upsellRecommendation;
+    const upsellItem = {
+      type: "main" as const,
+      data: upsellRecommendation,
+      score: upsellRecommendation.score,
+      rank: 2
+    };
+
+    const name = isPreAssembled ? upsellRecommendation.Racket_Name : upsellRecommendation.blade.Blade_Name;
+    const price = isPreAssembled ? upsellRecommendation.Racket_Price : upsellRecommendation.totalPrice;
+    const level = isPreAssembled ? upsellRecommendation.Racket_Level : upsellRecommendation.blade.Blade_Level;
+
+    return (
+      <div className="max-w-5xl mx-auto">
+        <div className="mb-6 text-center">
+          <Badge variant="secondary" className="text-xs font-normal px-4 py-1.5 bg-accent/20 text-accent-foreground">
+            <Sparkles className="w-3 h-3 mr-1 inline" />
+            Flexible budget?
+          </Badge>
+        </div>
+        <Card className="overflow-hidden bg-gradient-to-br from-card via-card to-accent/5 border-accent/30 shadow-lg">
+          <CardContent className="p-0">
+            {/* Price Comparison Header */}
+            <div className="bg-accent/10 border-b border-accent/20 px-8 py-6">
+              <div className="max-w-2xl mx-auto">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-left">
+                    <p className="text-xs text-muted-foreground">Original Budget</p>
+                    <p className="text-lg font-semibold text-foreground">{upsell.originalBudget}</p>
+                  </div>
+                  <div className="text-center px-4">
+                    <p className="text-xs text-muted-foreground">Price Increase</p>
+                    <p className="text-sm font-medium text-accent">+${upsell.priceIncrease.toFixed(0)}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-muted-foreground">Upgraded Budget</p>
+                    <p className="text-lg font-semibold text-accent">{upsell.upsellBudget}</p>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {upsell.explanation}
+                </p>
+              </div>
+            </div>
+
+            {/* Product Info */}
+            <div className="px-8 py-8">
+              <div className="max-w-2xl mx-auto text-center space-y-4">
+                <h2 className="text-3xl font-bold text-foreground">
+                  {name}
+                </h2>
+                <div className="flex items-center justify-center gap-4">
+                  <Badge variant="secondary" className="text-sm px-3 py-1">
+                    {level}
+                  </Badge>
+                  <div className="flex items-center gap-1.5">
+                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    <span className="text-sm font-semibold text-foreground">{upsellItem.score.toFixed(0)}% Match</span>
+                  </div>
+                  <span className="text-2xl font-bold text-accent">
+                    ${price}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="px-8 pb-12">
+              <div className="max-w-2xl mx-auto space-y-3">
+                <Button 
+                  onClick={() => handleAddToCart(upsellItem)}
+                  size="lg"
+                  className="w-full h-14 text-base font-medium rounded-full"
+                  disabled={isLoadingProducts}
+                >
+                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  Add to Cart
+                </Button>
+                <div className="grid grid-cols-2 gap-3">
+                  <Button 
+                    onClick={() => handleViewInConfigurator(upsellItem)}
+                    variant="outline"
+                    size="lg"
+                    className="h-12 text-sm font-medium rounded-full"
+                  >
+                    More Info
+                  </Button>
+                  <Button 
+                    onClick={() => handleAddToCompare(upsellItem)}
+                    variant="outline"
+                    size="lg"
+                    className="h-12 text-sm font-medium rounded-full"
+                  >
+                    Compare
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
 
   return (
     <div className="w-full mx-auto space-y-16 py-12 px-4 sm:px-6 lg:px-8">
@@ -880,14 +990,19 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         </div>
       )}
 
-        {/* No alternative options - just show main recommendation */}
-        {allRecommendations.length === 0 && (
-          <div className="max-w-2xl mx-auto text-center py-8">
-            <p className="text-muted-foreground">
-              No suitable upsell found for your budget range
-            </p>
-          </div>
-        )}
+      {/* Flexible Budget Upsell */}
+      {flexibleBudgetUpsell && flexibleBudgetUpsell.isWorthwhile && (
+        <FlexibleBudgetCard upsell={flexibleBudgetUpsell} />
+      )}
+
+      {/* No recommendations fallback */}
+      {allRecommendations.length === 0 && !flexibleBudgetUpsell && (
+        <div className="max-w-2xl mx-auto text-center py-8">
+          <p className="text-muted-foreground">
+            No recommendations found. Try adjusting your preferences.
+          </p>
+        </div>
+      )}
 
       {/* Adjust Preferences Section */}
       <div className="max-w-3xl mx-auto">
