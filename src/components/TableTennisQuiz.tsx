@@ -154,13 +154,16 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [questionHistory, setQuestionHistory] = useState<number[]>([]);
 
-  // On mount, check if quiz is already complete and show recommendation
+  // On mount, check if quiz is already complete and recalculate recommendation with latest scoring
   useEffect(() => {
-    if (storedIsComplete && storedRecommendation && storedCompleteAnswers) {
+    if (storedIsComplete && storedCompleteAnswers) {
+      // Always recalculate to get latest scores
+      const freshRecommendation = getRecommendation(storedCompleteAnswers);
       setIsComplete(true);
-      setRecommendation(storedRecommendation);
+      setRecommendation(freshRecommendation);
       setCompleteAnswers(storedCompleteAnswers);
       setAnswers(storedCompleteAnswers);
+      setStoredRecommendation(freshRecommendation, storedCompleteAnswers);
       onQuizStatusChange(true);
     }
   }, []);
