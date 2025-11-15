@@ -1171,7 +1171,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       )}
 
       {/* Flexible Budget Upsell */}
-      {flexibleBudgetUpsell && flexibleBudgetUpsell.isWorthwhile && (
+      {flexibleBudgetUpsell && (
         <FlexibleBudgetCard upsell={flexibleBudgetUpsell} />
       )}
 
