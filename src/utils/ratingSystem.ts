@@ -204,15 +204,15 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
     }
   }
 
-  // Apply intelligent curve: 95% is normal, 70% is bad, 99% is rare
+  // Apply intelligent curve: 95% is normal, 70% minimum, 99% is rare
   const rawPercentage = (score / maxScore) * 100;
   
   if (rawPercentage < 20) {
-    // Poor matches: 40-70%
-    return 40 + (rawPercentage / 20) * 30;
+    // Poor matches: 70-75%
+    return 70 + (rawPercentage / 20) * 5;
   } else if (rawPercentage < 70) {
-    // Decent to good matches: 70-95%
-    return 70 + ((rawPercentage - 20) / 50) * 25;
+    // Decent to good matches: 75-95%
+    return 75 + ((rawPercentage - 20) / 50) * 20;
   } else {
     // Excellent matches: 95-99% (99% is rare)
     return 95 + ((rawPercentage - 70) / 30) * 4;
