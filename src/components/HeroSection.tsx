@@ -1,105 +1,95 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Settings, HelpCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import tableTennisImg from "@/assets/table-tennis.png";
-import { useNavigate } from "react-router-dom";
 
 interface HeroSectionProps {
   onStartQuiz: () => void;
 }
 
 const HeroSection = ({ onStartQuiz }: HeroSectionProps) => {
-  const navigate = useNavigate();
   return (
-    <section className="relative overflow-hidden bg-background py-16 md:py-24">
-      <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-        <div className="text-center mb-12">
-          <h1 className="font-headline text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight mb-4 text-foreground">
-            Find Your Perfect Paddle
-          </h1>
-          <p className="font-body text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
-            Crafted for every player. From beginner to pro.
-          </p>
-        </div>
+    <section className="relative min-h-[100svh] flex items-center bg-background overflow-hidden">
+      {/* Subtle motion streaks */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 right-0 w-[600px] h-[2px] bg-gradient-to-r from-transparent via-accent/30 to-transparent transform rotate-12 blur-sm" />
+        <div className="absolute bottom-1/3 left-0 w-[500px] h-[2px] bg-gradient-to-r from-transparent via-coral/20 to-transparent transform -rotate-6 blur-sm" />
+      </div>
 
-        {/* Apple-style Help Me Choose Banner */}
-        <div className="mb-12 max-w-4xl mx-auto">
-          <button
-            onClick={onStartQuiz}
-            className="w-full group bg-card hover:bg-muted/50 border border-border rounded-2xl p-8 transition-all duration-300 hover:shadow-lg"
-          >
-            <div className="flex items-center justify-center gap-4">
-              <HelpCircle className="w-6 h-6 text-accent flex-shrink-0" />
-              <div className="flex-1 text-center">
-                <p className="text-lg font-medium text-foreground">
-                  Help me choose.
-                </p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Answer a few questions to find the best paddle for you.
-                </p>
-              </div>
-              <ArrowRight className="w-5 h-5 text-accent flex-shrink-0 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </button>
-        </div>
-
-        {/* Split Options */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-16">
-          {/* Quiz Option */}
-          <div className="group relative bg-card border border-border rounded-3xl p-10 transition-all duration-300 hover:shadow-xl">
-            <div className="relative z-10">
-              <div className="flex items-center justify-center w-14 h-14 mb-6 rounded-2xl bg-accent/10 text-accent mx-auto">
-                <HelpCircle className="w-7 h-7" />
-              </div>
-              <h2 className="font-headline text-2xl font-semibold mb-3 text-center">
-                Take the Quiz
-              </h2>
-              <p className="font-body text-muted-foreground text-center mb-8 leading-relaxed">
-                Perfect for beginners or anyone unsure what paddle suits their style. Get personalized recommendations.
+      <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+          {/* Left Content - 8 columns on mobile, asymmetric on desktop */}
+          <div className="lg:col-span-7 space-y-8 text-center lg:text-left">
+            <div className="space-y-4">
+              <h1 className="font-headline text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-[0.95] text-foreground">
+                A Smarter Way to Play{" "}
+                <span className="inline-block bg-gradient-to-r from-accent to-accent/70 bg-clip-text text-transparent">
+                  Table Tennis.
+                </span>
+              </h1>
+              <p className="font-body text-lg sm:text-xl lg:text-2xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                America's first zero-downtime racket service with pro-grade performance tools.
               </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <Button
+                asChild
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]"
+              >
+                <a 
+                  href="https://forms.gle/7NUWdYu2aJHJh4Dr8" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
+                  Join the Waitlist
+                  <ArrowRight className="w-5 h-5" />
+                </a>
+              </Button>
+              
               <Button
                 onClick={onStartQuiz}
                 size="lg"
-                className="w-full py-6 text-base font-medium rounded-xl transition-all duration-300"
-              >
-                Start Quiz
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Configurator Option */}
-          <div className="group relative bg-card border border-border rounded-3xl p-10 transition-all duration-300 hover:shadow-xl">
-            <div className="relative z-10">
-              <div className="flex items-center justify-center w-14 h-14 mb-6 rounded-2xl bg-primary/10 text-primary mx-auto">
-                <Settings className="w-7 h-7" />
-              </div>
-              <h2 className="font-headline text-2xl font-semibold mb-3 text-center">
-                Use Configurator
-              </h2>
-              <p className="font-body text-muted-foreground text-center mb-8 leading-relaxed">
-                For advanced players who know their game and want full control over their equipment setup.
-              </p>
-              <Button
-                onClick={() => navigate('/configurator')}
-                size="lg"
                 variant="outline"
-                className="w-full py-6 text-base font-medium rounded-xl transition-all duration-300"
+                className="border-2 border-primary/20 hover:border-accent hover:bg-accent/5 px-8 py-6 text-lg font-semibold rounded-full transition-all duration-300"
               >
-                Open Configurator
-                <ArrowRight className="ml-2 h-4 w-4" />
+                Take the Quiz
               </Button>
             </div>
-          </div>
-        </div>
 
-        {/* Image - Apple style clean and centered */}
-        <div className="flex justify-center">
-          <div className="relative">
-            <img
-              src={tableTennisImg}
-              alt="Table tennis paddle and ball"
-              className="max-w-sm md:max-w-md lg:max-w-lg rounded-3xl"
-            />
+            {/* Trust indicators */}
+            <div className="flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-muted-foreground pt-4">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-accent" />
+                <span>Zero Downtime Service</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-accent" />
+                <span>Pro-Grade Equipment</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-accent" />
+                <span>US-Based Support</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Image - Premium paddle silhouette */}
+          <div className="lg:col-span-5 relative">
+            <div className="relative">
+              {/* Spotlight effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-coral/10 rounded-3xl blur-3xl" />
+              
+              {/* Image container */}
+              <div className="relative">
+                <img
+                  src={tableTennisImg}
+                  alt="Professional table tennis paddle"
+                  className="w-full max-w-md mx-auto drop-shadow-2xl"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

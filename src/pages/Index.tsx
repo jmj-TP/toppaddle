@@ -45,7 +45,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen flex flex-col bg-background">
       <SEO
         title="What Table Tennis Paddle is Best for You - Find Your Perfect Racket"
         description="Find your perfect table tennis racket with our expert quiz. 8 years of experience helping players choose the right equipment for their playing style."
