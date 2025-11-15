@@ -63,6 +63,10 @@ export function calculateFlexibleBudgetUpsell(
     return null;
   }
   
+  // Force minimum scores to 70%
+  currentMain.score = Math.max(70, currentMain.score);
+  upsellMain.score = Math.max(70, upsellMain.score);
+  
   // Calculate prices
   const currentPrice = 'Racket_Price' in currentMain 
     ? currentMain.Racket_Price 

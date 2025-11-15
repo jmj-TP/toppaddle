@@ -353,34 +353,38 @@ const StatsDisplay = ({
     weight: "Total weight in grams"
   };
   
-  const StatBar = ({ label, value, Icon, tooltip }: { label: string; value: number; Icon: any; tooltip?: string }) => (
-    <TooltipProvider>
-      <div className="py-[1.5vh] px-[2vw] bg-card border border-border/50 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-        <div className="flex items-center gap-[1vw] mb-[1vh]">
-          <Icon className="w-[4vw] h-[4vw] lg:w-[1.2vw] lg:h-[1.2vw] text-muted-foreground flex-shrink-0" />
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] font-medium text-[hsl(var(--primary))] cursor-help">
-                {label}
-              </span>
-            </TooltipTrigger>
-            {tooltip && (
-              <TooltipContent className="max-w-[250px]">
-                <p>{tooltip}</p>
-              </TooltipContent>
-            )}
-          </Tooltip>
-          <span className="text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] font-semibold text-accent ml-auto">{value}</span>
+  const StatBar = ({ label, value, Icon, tooltip }: { label: string; value: number; Icon: any; tooltip?: string }) => {
+    const [showTooltip, setShowTooltip] = useState(false);
+    
+    return (
+      <TooltipProvider>
+        <div className="py-[1.5vh] px-[2vw] bg-card border border-border/50 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-[1vw] mb-[1vh]">
+            <Icon className="w-[4vw] h-[4vw] lg:w-[1.2vw] lg:h-[1.2vw] text-muted-foreground flex-shrink-0" />
+            <Tooltip open={showTooltip} onOpenChange={setShowTooltip}>
+              <TooltipTrigger asChild onClick={() => setShowTooltip(!showTooltip)}>
+                <span className="text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] font-medium text-[hsl(var(--primary))] cursor-pointer">
+                  {label}
+                </span>
+              </TooltipTrigger>
+              {tooltip && (
+                <TooltipContent className="max-w-[250px]">
+                  <p>{tooltip}</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+            <span className="text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] font-semibold text-accent ml-auto">{value}</span>
+          </div>
+          <div className="h-[0.8vh] bg-muted/50 rounded-sm overflow-hidden">
+            <div 
+              className="h-full bg-accent transition-all duration-500"
+              style={{ width: `${value}%` }}
+            />
+          </div>
         </div>
-        <div className="h-[0.8vh] bg-muted/50 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-accent/80 to-accent rounded-full transition-all duration-500"
-            style={{ width: `${value}%` }}
-          />
-        </div>
-      </div>
-    </TooltipProvider>
-  );
+      </TooltipProvider>
+    );
+  };
 
   return (
     <div className="w-full max-w-[90vw] lg:max-w-[1200px] mx-auto space-y-[3vh] pb-[20vh] overflow-x-hidden">
