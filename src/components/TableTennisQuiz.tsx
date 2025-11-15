@@ -95,10 +95,10 @@ const questions = [
   },
   {
     id: 9,
-    question: "Do you want a ready-to-play racket (pre-assembled), or a custom setup (blade + rubbers)?",
+    question: "Do you want a pre-assembled racket from the manufacturer, or a custom setup (blade + rubbers) assembled by topPaddle?",
     options: [
-      { value: "Ready-to-play racket", label: "Ready-to-Play" },
-      { value: "Custom setup", label: "Custom Setup" },
+      { value: "Ready-to-play racket", label: "Pre-Assembled from Manufacturer" },
+      { value: "Custom setup", label: "Custom Setup (We Assemble)" },
       { value: "Not sure", label: "Not Sure" }
     ],
     key: "AssemblyPreference" as keyof QuizAnswers
