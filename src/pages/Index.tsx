@@ -3,8 +3,12 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
-import CTASection from "@/components/CTASection";
-import TrustSection from "@/components/TrustSection";
+import ValuePropositionSection from "@/components/ValuePropositionSection";
+import PremiumMembershipSection from "@/components/PremiumMembershipSection";
+import EssentialMembershipSection from "@/components/EssentialMembershipSection";
+import ZeroDowntimeExplainer from "@/components/ZeroDowntimeExplainer";
+import ShopTeaserSection from "@/components/ShopTeaserSection";
+import WaitlistSection from "@/components/WaitlistSection";
 import BlogPreview from "@/components/BlogPreview";
 import SEO from "@/components/SEO";
 import StructuredData from "@/components/StructuredData";
@@ -19,6 +23,10 @@ const Index = () => {
 
   const handleStartQuiz = () => {
     navigate("/quiz");
+  };
+
+  const handleJoinWaitlist = () => {
+    window.open("https://forms.gle/7NUWdYu2aJHJh4Dr8", "_blank");
   };
 
   const faqs = [
@@ -70,9 +78,13 @@ const Index = () => {
       <Header />
       <main className="flex-1">
         <HeroSection onStartQuiz={handleStartQuiz} />
-        <CTASection onStartQuiz={handleStartQuiz} />
-        <TrustSection />
+        <ValuePropositionSection />
+        <PremiumMembershipSection onJoinWaitlist={handleJoinWaitlist} />
+        <EssentialMembershipSection />
+        <ZeroDowntimeExplainer />
+        <ShopTeaserSection />
         <FAQSection faqs={faqs} />
+        <WaitlistSection />
         <BlogPreview />
       </main>
       <Footer />
