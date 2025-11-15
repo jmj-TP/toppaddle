@@ -8,31 +8,36 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* TopPaddle Brand Colors - Technical, High-Trust Palette */
+    /* TopPaddle Athletic Brand Colors - Premium Sports Palette */
     
-    /* Base - White and Cool Gray Surfaces */
-    --background: 0 0% 100%;
-    --foreground: 210 47% 11%;
+    /* Base - Crisp White */
+    --background: 60 14% 97%;
+    --foreground: 217 29% 26%;
     
-    --card: 210 14% 97%;
-    --card-foreground: 210 47% 11%;
+    --card: 60 14% 97%;
+    --card-foreground: 217 29% 26%;
     
-    --popover: 0 0% 100%;
-    --popover-foreground: 210 47% 11%;
+    --popover: 60 14% 97%;
+    --popover-foreground: 217 29% 26%;
     
-    /* Primary - Navy #0D1B2A for Trust */
-    --primary: 210 47% 11%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary - Deep Slate Blue */
+    --primary: 217 29% 26%;
+    --primary-foreground: 60 14% 97%;
     
-    --secondary: 210 14% 97%;
-    --secondary-foreground: 210 47% 11%;
+    /* Secondary - Performance Sand */
+    --secondary: 43 31% 82%;
+    --secondary-foreground: 217 29% 26%;
     
-    --muted: 210 14% 97%;
-    --muted-foreground: 210 20% 40%;
+    --muted: 43 31% 82%;
+    --muted-foreground: 220 9% 37%;
     
-    /* Accent - Orange #FF7A1A for Energy */
-    --accent: 25 100% 55%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent - Electric Mint */
+    --accent: 158 83% 73%;
+    --accent-foreground: 217 29% 26%;
+    
+    /* Coral Punch for highlights */
+    --coral: 8 87% 68%;
+    --coral-foreground: 60 14% 97%;
     
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
@@ -48,12 +53,13 @@ All colors MUST be HSL.
     --chart-4: 280 60% 55%;
     --chart-5: 340 75% 50%;
     
-    /* Table Tennis Gradients - Dynamic and energetic */
-    --gradient-primary: linear-gradient(135deg, hsl(220 90% 15%), hsl(220 85% 20%));
-    --gradient-secondary: linear-gradient(135deg, hsl(0 0% 100%), hsl(220 30% 96%));
-    --gradient-accent: linear-gradient(135deg, hsl(25 95% 55%), hsl(35 95% 60%));
-    --gradient-soft: linear-gradient(180deg, hsl(0 0% 98%), hsl(220 20% 96%));
-    --gradient-hero: linear-gradient(135deg, hsl(220 90% 15% / 0.03), hsl(25 95% 55% / 0.08));
+    /* Athletic Gradients - Bold and premium */
+    --gradient-primary: linear-gradient(135deg, hsl(217 29% 26%), hsl(217 29% 32%));
+    --gradient-secondary: linear-gradient(135deg, hsl(43 31% 82%), hsl(43 31% 88%));
+    --gradient-accent: linear-gradient(135deg, hsl(158 83% 73%), hsl(158 83% 80%));
+    --gradient-soft: linear-gradient(180deg, hsl(60 14% 97%), hsl(43 31% 92%));
+    --gradient-hero: linear-gradient(135deg, hsl(217 29% 26% / 0.05), hsl(158 83% 73% / 0.08));
+    --gradient-coral: linear-gradient(135deg, hsl(8 87% 68%), hsl(8 87% 75%));
     
     /* Premium Dashboard Gradients */
     --gradient-premium: linear-gradient(135deg, hsl(270, 60%, 50%), hsl(240, 70%, 60%));
@@ -62,13 +68,14 @@ All colors MUST be HSL.
     --gradient-danger: linear-gradient(135deg, hsl(0, 84%, 60%), hsl(10, 90%, 65%));
     --gradient-glass: linear-gradient(135deg, hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.05));
     
-    /* Premium Shadows - Sharp and clean */
-    --shadow-sm: 0 1px 3px 0 hsl(220 90% 15% / 0.08);
-    --shadow-md: 0 2px 8px -2px hsl(220 90% 15% / 0.12), 0 1px 3px 0 hsl(220 90% 15% / 0.08);
-    --shadow-lg: 0 4px 16px -4px hsl(220 90% 15% / 0.14), 0 2px 6px -2px hsl(220 90% 15% / 0.1);
-    --shadow-xl: 0 8px 32px -8px hsl(220 90% 15% / 0.18), 0 4px 12px -4px hsl(220 90% 15% / 0.12);
-    --shadow-accent: 0 4px 20px -4px hsl(25 95% 55% / 0.35);
-    --shadow-card: 0 2px 16px -4px hsl(220 90% 15% / 0.1);
+    /* Athletic Shadows - Bold and defined */
+    --shadow-sm: 0 1px 3px 0 hsl(217 29% 26% / 0.1);
+    --shadow-md: 0 2px 8px -2px hsl(217 29% 26% / 0.15), 0 1px 3px 0 hsl(217 29% 26% / 0.1);
+    --shadow-lg: 0 4px 16px -4px hsl(217 29% 26% / 0.18), 0 2px 6px -2px hsl(217 29% 26% / 0.12);
+    --shadow-xl: 0 8px 32px -8px hsl(217 29% 26% / 0.22), 0 4px 12px -4px hsl(217 29% 26% / 0.15);
+    --shadow-accent: 0 4px 20px -4px hsl(158 83% 73% / 0.4);
+    --shadow-card: 0 2px 16px -4px hsl(217 29% 26% / 0.12);
+    --shadow-coral: 0 4px 20px -4px hsl(8 87% 68% / 0.4);
     
     /* Dashboard Premium Shadows */
     --shadow-premium: 0 20px 60px -15px hsla(270, 60%, 50%, 0.4);

@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        headline: ['Montserrat', 'sans-serif'],
-        body: ['Open Sans', 'sans-serif'],
+        headline: ['Inter', 'Outfit', 'Manrope', 'sans-serif'],
+        body: ['Inter', 'Outfit', 'Manrope', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -51,11 +51,11 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Table Tennis Theme Colors
-        "table-green": "hsl(var(--table-green))",
-        "ball-orange": "hsl(var(--ball-orange))",
-        "net-white": "hsl(var(--net-white))",
-        "paddle-red": "hsl(var(--paddle-red))",
+        // Athletic Brand Colors
+        coral: {
+          DEFAULT: "hsl(var(--coral))",
+          foreground: "hsl(var(--coral-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
