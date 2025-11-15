@@ -554,28 +554,40 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     power: "Force and impact behind each shot"
   };
 
-  const StatSlider = ({ label, value, icon: Icon }: { label: string; value: number; icon: any }) => (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center gap-2 cursor-help">
-                <Icon className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium text-foreground">{label}</span>
-                <Info className="w-3.5 h-3.5 text-muted-foreground" />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-xs">
-              <p className="text-xs">{statDescriptions[label.toLowerCase() as keyof typeof statDescriptions]}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <span className="text-sm font-semibold text-foreground">{value}</span>
+  const StatSlider = ({ label, value, icon: Icon }: { label: string; value: number; icon: any }) => {
+    const [showTooltip, setShowTooltip] = useState(false);
+    
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <TooltipProvider>
+            <Tooltip open={showTooltip} onOpenChange={setShowTooltip}>
+              <TooltipTrigger asChild>
+                <div 
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={() => setShowTooltip(!showTooltip)}
+                >
+                  <Icon className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm font-medium text-foreground">{label}</span>
+                  <Info className="w-3.5 h-3.5 text-muted-foreground" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs">
+                <p className="text-xs">{statDescriptions[label.toLowerCase() as keyof typeof statDescriptions]}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <span className="text-sm font-semibold text-foreground">{value}</span>
+        </div>
+        <div className="h-3 bg-muted/30 overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-orange-500 to-orange-600 transition-all duration-300"
+            style={{ width: `${value}%` }}
+          />
+        </div>
       </div>
-      <Slider value={[value]} max={100} disabled className="cursor-default" />
-    </div>
-  );
+    );
+  };
 
   // Premium hero card for best match
   const HeroCard = ({ item, rank }: { item: typeof allRecommendations[0]; rank?: number }) => {
@@ -1027,9 +1039,9 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                                 </span>
                               )}
                             </div>
-                            <div className="h-2 bg-background rounded-sm overflow-hidden">
+                            <div className="h-3 bg-muted/30 overflow-hidden">
                               <div 
-                                className="h-full bg-accent"
+                                className="h-full bg-gradient-to-r from-orange-500 to-orange-600 transition-all duration-300"
                                 style={{ width: `${stat.upsell}%` }}
                               />
                             </div>
