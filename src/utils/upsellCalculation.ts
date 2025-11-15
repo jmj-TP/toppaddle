@@ -63,9 +63,17 @@ export function calculateFlexibleBudgetUpsell(
     return null;
   }
   
-  // Force minimum scores to 70%
-  currentMain.score = Math.max(70, currentMain.score);
-  upsellMain.score = Math.max(70, upsellMain.score);
+  // Force minimum scores to 70% and normalize to optimistic 70-99% range
+  // Map the raw scores (which are already 70-99% after normalization) to 70-99% display range
+  const normalizeToOptimisticRange = (score: number) => {
+    // Ensure minimum of 70%
+    const minScore = Math.max(70, score);
+    // Map to 70-99% range for more optimistic display
+    return 70 + ((minScore - 70) / 30) * 29;
+  };
+  
+  currentMain.score = normalizeToOptimisticRange(currentMain.score);
+  upsellMain.score = normalizeToOptimisticRange(upsellMain.score);
   
   // Calculate prices
   const currentPrice = 'Racket_Price' in currentMain 
@@ -84,14 +92,8 @@ export function calculateFlexibleBudgetUpsell(
   const scoreDifference = upsellMain.score - currentMain.score;
   const priceIncreasePercent = (priceIncrease / currentPrice) * 100;
   
-  const isWorthwhile = 
-    priceIncrease > 0 && 
-    scoreDifference > 0 &&
-    priceIncreasePercent <= 50;
-  
-  if (!isWorthwhile) {
-    return null;
-  }
+  // Always show flexible budget option if there's a next tier
+  const isWorthwhile = true;
   
   // Generate Apple-style explanation based on the improvement
   const explanation = generateUpsellExplanation(
