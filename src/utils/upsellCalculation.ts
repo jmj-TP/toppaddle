@@ -63,17 +63,33 @@ export function calculateFlexibleBudgetUpsell(
     return null;
   }
   
-  // Force minimum scores to 70% and normalize to optimistic 70-99% range
-  // Map the raw scores (which are already 70-99% after normalization) to 70-99% display range
-  const normalizeToOptimisticRange = (score: number) => {
-    // Ensure minimum of 70%
-    const minScore = Math.max(70, score);
-    // Map to 70-99% range for more optimistic display
-    return 70 + ((minScore - 70) / 30) * 29;
+  // Force minimum scores to 80% and normalize to optimistic 80-99% range
+  // Make flexible budget 5% higher than normal to be more attractive
+  const normalizeToOptimisticRange = (score: number, isUpsell: boolean = false) => {
+    // Ensure minimum of 80%
+    const minScore = Math.max(80, score);
+    // Map to 80-99% range for more optimistic display
+    const normalizedScore = 80 + ((minScore - 80) / 20) * 19;
+    // Add 5% bonus for upsell to make it more attractive
+    return isUpsell ? Math.min(99, normalizedScore + 5) : normalizedScore;
   };
   
-  currentMain.score = normalizeToOptimisticRange(currentMain.score);
-  upsellMain.score = normalizeToOptimisticRange(upsellMain.score);
+  currentMain.score = normalizeToOptimisticRange(currentMain.score, false);
+  upsellMain.score = normalizeToOptimisticRange(upsellMain.score, true);
+  
+  // Check if the upsell is the same setup as current
+  const isSameSetup = 'Racket_Name' in currentMain && 'Racket_Name' in upsellMain
+    ? currentMain.Racket_Name === upsellMain.Racket_Name
+    : !('Racket_Name' in currentMain) && !('Racket_Name' in upsellMain)
+      ? (currentMain.blade.Blade_Name === upsellMain.blade.Blade_Name &&
+         currentMain.forehandRubber.Rubber_Name === upsellMain.forehandRubber.Rubber_Name &&
+         currentMain.backhandRubber.Rubber_Name === upsellMain.backhandRubber.Rubber_Name)
+      : false;
+  
+  // Don't show if it's the same setup
+  if (isSameSetup) {
+    return null;
+  }
   
   // Calculate prices
   const currentPrice = 'Racket_Price' in currentMain 

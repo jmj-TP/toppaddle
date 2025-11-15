@@ -211,15 +211,15 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
     // Poor matches: 70-75%
     return 70 + (rawPercentage / 20) * 5;
   } else if (rawPercentage < 70) {
-    // Decent to good matches: 75-95%
-    return 75 + ((rawPercentage - 20) / 50) * 20;
+    // Decent to good matches: 85-95%
+    return 85 + ((rawPercentage - 20) / 50) * 10;
   } else {
     // Excellent matches: 95-99% (99% is rare)
     return 95 + ((rawPercentage - 70) / 30) * 4;
   }
   
-  // Absolute safety: never return below 70%
-  return Math.max(70, score);
+  // Absolute safety: never return below 80%
+  return Math.max(80, score);
 }
 
 // Extract brand from product name
