@@ -157,8 +157,25 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   // On mount, check if quiz is already complete and recalculate recommendation with latest scoring
   useEffect(() => {
     if (storedIsComplete && storedCompleteAnswers) {
-      // Always recalculate to get latest scores
+      // Always recalculate to get latest scores with current algorithm
       const freshRecommendation = getRecommendation(storedCompleteAnswers);
+      
+      // Force minimum 70% on all recommendations
+      if (freshRecommendation) {
+        if (freshRecommendation.preAssembled) {
+          freshRecommendation.preAssembled.score = Math.max(70, freshRecommendation.preAssembled.score);
+        }
+        if (freshRecommendation.preAssembled2) {
+          freshRecommendation.preAssembled2.score = Math.max(70, freshRecommendation.preAssembled2.score);
+        }
+        if (freshRecommendation.customSetup) {
+          freshRecommendation.customSetup.score = Math.max(70, freshRecommendation.customSetup.score);
+        }
+        if (freshRecommendation.customSetup2) {
+          freshRecommendation.customSetup2.score = Math.max(70, freshRecommendation.customSetup2.score);
+        }
+      }
+      
       setIsComplete(true);
       setRecommendation(freshRecommendation);
       setCompleteAnswers(storedCompleteAnswers);

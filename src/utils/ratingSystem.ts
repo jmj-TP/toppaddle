@@ -204,7 +204,7 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
     }
   }
 
-  // Apply intelligent curve: 95% is normal, 70% minimum, 99% is rare
+  // Apply intelligent curve: 95% is normal, 70% absolute minimum, 99% is rare
   const rawPercentage = (score / maxScore) * 100;
   
   if (rawPercentage < 20) {
@@ -217,6 +217,9 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
     // Excellent matches: 95-99% (99% is rare)
     return 95 + ((rawPercentage - 70) / 30) * 4;
   }
+  
+  // Absolute safety: never return below 70%
+  return Math.max(70, score);
 }
 
 // Extract brand from product name
