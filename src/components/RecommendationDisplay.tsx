@@ -885,11 +885,12 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       <div className="max-w-5xl mx-auto space-y-8">
         {/* Heading matching "Your Perfect Match" style */}
         <div className="text-center space-y-4 max-w-3xl mx-auto">
+          <Badge variant="outline" className="text-xs font-normal px-4 py-1.5">
+            <Sparkles className="w-3 h-3 mr-1 inline" />
+            Flexible budget?
+          </Badge>
           <h2 className="font-headline text-4xl sm:text-5xl md:text-6xl font-bold text-foreground tracking-tight">
-            <Badge variant="secondary" className="text-xs font-normal px-4 py-1.5 bg-accent/20 text-accent-foreground mr-3">
-              <Sparkles className="w-3 h-3 mr-1 inline" />
-              Flexible budget?
-            </Badge>
+            Upgrade Your Budget
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             {upsell.explanation}
@@ -943,15 +944,13 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Forehand Rubber */}
                   <div className="bg-background/50 border border-border rounded-xl p-4 space-y-3">
-                    {fhProduct?.node.images.edges[0] && (
-                      <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-                        <img 
-                          src={fhProduct.node.images.edges[0].node.url}
-                          alt={upsellRecommendation.forehandRubber.Rubber_Name}
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                    )}
+                    <div className="aspect-square rounded-lg overflow-hidden bg-muted">
+                      <img 
+                        src={fhProduct?.node.images.edges[0]?.node.url || "/placeholder.svg"}
+                        alt={upsellRecommendation.forehandRubber.Rubber_Name}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
                     <div className="space-y-1">
                       <p className="text-xs text-muted-foreground">Forehand Rubber</p>
                       <p className="text-sm font-semibold text-foreground line-clamp-2">
@@ -965,15 +964,13 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                   
                   {/* Blade */}
                   <div className="bg-background/50 border border-border rounded-xl p-4 space-y-3">
-                    {bladeProduct?.node.images.edges[0] && (
-                      <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-                        <img 
-                          src={bladeProduct.node.images.edges[0].node.url}
-                          alt={upsellRecommendation.blade.Blade_Name}
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                    )}
+                    <div className="aspect-square rounded-lg overflow-hidden bg-muted">
+                      <img 
+                        src={bladeProduct?.node.images.edges[0]?.node.url || "/placeholder.svg"}
+                        alt={upsellRecommendation.blade.Blade_Name}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
                     <div className="space-y-1">
                       <p className="text-xs text-muted-foreground">Blade</p>
                       <p className="text-sm font-semibold text-foreground line-clamp-2">
@@ -984,15 +981,13 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
                   {/* Backhand Rubber */}
                   <div className="bg-background/50 border border-border rounded-xl p-4 space-y-3">
-                    {bhProduct?.node.images.edges[0] && (
-                      <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-                        <img 
-                          src={bhProduct.node.images.edges[0].node.url}
-                          alt={upsellRecommendation.backhandRubber.Rubber_Name}
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                    )}
+                    <div className="aspect-square rounded-lg overflow-hidden bg-muted">
+                      <img 
+                        src={bhProduct?.node.images.edges[0]?.node.url || "/placeholder.svg"}
+                        alt={upsellRecommendation.backhandRubber.Rubber_Name}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
                     <div className="space-y-1">
                       <p className="text-xs text-muted-foreground">Backhand Rubber</p>
                       <p className="text-sm font-semibold text-foreground line-clamp-2">
