@@ -44,7 +44,12 @@ export interface Recommendation {
 }
 
 // Calculate compatibility score between user preferences and product attributes
-function calculateScore(answers: QuizAnswers, product: any, productType: 'blade' | 'rubber' | 'racket' = 'racket'): number {
+function calculateScore(
+  answers: QuizAnswers, 
+  product: any, 
+  productType: 'blade' | 'rubber' | 'racket' = 'racket',
+  side?: 'forehand' | 'backhand'
+): number {
   let score = 0;
   let maxScore = 0;
 
@@ -101,20 +106,46 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
   const power = product.Blade_Power || product.Racket_Power || product.Rubber_Power || 0;
   const spin = product.Racket_Spin || product.Rubber_Spin || 0;
 
-  if (answers.Playstyle.includes('Offensive')) {
-    // Heavily prefer high speed and power, penalize excessive control
-    score += (speed / 100) * playstyleWeight * 0.5;
-    score += (power / 100) * playstyleWeight * 0.5;
-    // Penalize overly control-focused rubbers for offensive play
-    if (control > 88) {
-      score -= playstyleWeight * 0.2;
+  // Check if the opposite side has a special rubber
+  const hasSpecialRubberOnOppositeSide = 
+    (side === 'forehand' && (answers.BackhandRubberStyle === 'Long Pimples' || answers.BackhandRubberStyle === 'Anti')) ||
+    (side === 'backhand' && (answers.ForehandRubberStyle === 'Long Pimples' || answers.ForehandRubberStyle === 'Anti'));
+
+  // For rubbers: if opposite side has special rubber, use ONLY side-specific preferences
+  // Otherwise, use overall Playstyle
+  if (productType === 'rubber' && side && hasSpecialRubberOnOppositeSide) {
+    // Use side-specific playing style ONLY
+    const sideStyle = side === 'forehand' ? answers.Forehand : answers.Backhand;
+    
+    if (sideStyle.includes('Fast & aggressive')) {
+      score += (speed / 100) * playstyleWeight * 0.5;
+      score += (power / 100) * playstyleWeight * 0.5;
+      if (control > 88) {
+        score -= playstyleWeight * 0.2;
+      }
+    } else if (sideStyle.includes('Spin & topspin')) {
+      score += (spin / 100) * playstyleWeight * 0.6;
+      score += (control / 100) * playstyleWeight * 0.4;
+    } else if (sideStyle.includes('Calm & controlled')) {
+      score += (control / 100) * playstyleWeight;
     }
-  } else if (answers.Playstyle.includes('Defensive')) {
-    // Prefer high control
-    score += (control / 100) * playstyleWeight;
-  } else if (answers.Playstyle.includes('Allround')) {
-    // Balanced approach
-    score += ((speed + control) / 200) * playstyleWeight;
+  } else {
+    // Use overall Playstyle (original behavior)
+    if (answers.Playstyle.includes('Offensive')) {
+      // Heavily prefer high speed and power, penalize excessive control
+      score += (speed / 100) * playstyleWeight * 0.5;
+      score += (power / 100) * playstyleWeight * 0.5;
+      // Penalize overly control-focused rubbers for offensive play
+      if (control > 88) {
+        score -= playstyleWeight * 0.2;
+      }
+    } else if (answers.Playstyle.includes('Defensive')) {
+      // Prefer high control
+      score += (control / 100) * playstyleWeight;
+    } else if (answers.Playstyle.includes('Allround')) {
+      // Balanced approach
+      score += ((speed + control) / 200) * playstyleWeight;
+    }
   }
 
   // Power preference matching (25% weight)
@@ -172,15 +203,31 @@ function calculateScore(answers: QuizAnswers, product: any, productType: 'blade'
   const styleWeight = 15;
   maxScore += styleWeight;
   
-  if (answers.Forehand.includes('Fast & aggressive') || answers.Backhand.includes('Fast & aggressive')) {
-    score += (speed / 100) * styleWeight * 0.6;
-    score += (power / 100) * styleWeight * 0.4;
-  } else if (answers.Forehand.includes('Spin & topspin') || answers.Backhand.includes('Spin & topspin')) {
-    // Spin players need good spin AND control
-    score += (spin / 100) * styleWeight * 0.6;
-    score += (control / 100) * styleWeight * 0.4;
-  } else if (answers.Forehand.includes('Calm & controlled') || answers.Backhand.includes('Calm & controlled')) {
-    score += (control / 100) * styleWeight;
+  // For rubbers with a specified side, use ONLY that side's preferences
+  if (productType === 'rubber' && side) {
+    const sideStyle = side === 'forehand' ? answers.Forehand : answers.Backhand;
+    
+    if (sideStyle.includes('Fast & aggressive')) {
+      score += (speed / 100) * styleWeight * 0.6;
+      score += (power / 100) * styleWeight * 0.4;
+    } else if (sideStyle.includes('Spin & topspin')) {
+      score += (spin / 100) * styleWeight * 0.6;
+      score += (control / 100) * styleWeight * 0.4;
+    } else if (sideStyle.includes('Calm & controlled')) {
+      score += (control / 100) * styleWeight;
+    }
+  } else {
+    // For non-rubbers or when side is not specified, use both sides
+    if (answers.Forehand.includes('Fast & aggressive') || answers.Backhand.includes('Fast & aggressive')) {
+      score += (speed / 100) * styleWeight * 0.6;
+      score += (power / 100) * styleWeight * 0.4;
+    } else if (answers.Forehand.includes('Spin & topspin') || answers.Backhand.includes('Spin & topspin')) {
+      // Spin players need good spin AND control
+      score += (spin / 100) * styleWeight * 0.6;
+      score += (control / 100) * styleWeight * 0.4;
+    } else if (answers.Forehand.includes('Calm & controlled') || answers.Backhand.includes('Calm & controlled')) {
+      score += (control / 100) * styleWeight;
+    }
   }
 
   // Weight matching (20% weight) - only for advanced players
@@ -661,8 +708,8 @@ export function findBestCustomSetups(answers: QuizAnswers, topN: number = 2): Cu
         if (totalPrice <= budgetRange.max) {
           // Calculate combined score
           const bladeScore = calculateScore(answers, blade, 'blade');
-          const fhScore = calculateScore(answers, fhRubber, 'rubber');
-          const bhScore = calculateScore(answers, bhRubber, 'rubber');
+          const fhScore = calculateScore(answers, fhRubber, 'rubber', 'forehand');
+          const bhScore = calculateScore(answers, bhRubber, 'rubber', 'backhand');
           
           // Weight: blade 50%, forehand rubber 30%, backhand rubber 20%
           let combinedScore = (bladeScore * 0.5) + (fhScore * 0.3) + (bhScore * 0.2);
