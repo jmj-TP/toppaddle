@@ -852,16 +852,44 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     const bhProduct = !isPreAssembled ? findShopifyProduct(upsellRecommendation.backhandRubber.Rubber_Name) : null;
     const preAssembledProduct = isPreAssembled ? findShopifyProduct(upsellRecommendation.Racket_Name) : null;
 
+    // Calculate stats for comparison
+    const mainSetup = assemblyPreference?.includes('Ready-to-play') 
+      ? recommendation.preAssembled 
+      : recommendation.customSetup;
+    
+    const mainStats = mainSetup && ('Racket_Speed' in mainSetup ? {
+      speed: mainSetup.Racket_Speed,
+      spin: mainSetup.Racket_Spin,
+      control: mainSetup.Racket_Control,
+      power: Math.round((mainSetup.Racket_Speed + mainSetup.Racket_Spin) / 2)
+    } : {
+      speed: Math.round((mainSetup.blade.Blade_Speed + mainSetup.forehandRubber.Rubber_Speed + mainSetup.backhandRubber.Rubber_Speed) / 3),
+      spin: Math.round((mainSetup.blade.Blade_Spin + mainSetup.forehandRubber.Rubber_Spin + mainSetup.backhandRubber.Rubber_Spin) / 3),
+      control: Math.round((mainSetup.blade.Blade_Control + mainSetup.forehandRubber.Rubber_Control + mainSetup.backhandRubber.Rubber_Control) / 3),
+      power: Math.round((mainSetup.blade.Blade_Power + mainSetup.forehandRubber.Rubber_Speed + mainSetup.backhandRubber.Rubber_Speed) / 3)
+    });
+
+    const upsellStats = !isPreAssembled ? {
+      speed: Math.round((upsellRecommendation.blade.Blade_Speed + upsellRecommendation.forehandRubber.Rubber_Speed + upsellRecommendation.backhandRubber.Rubber_Speed) / 3),
+      spin: Math.round((upsellRecommendation.blade.Blade_Spin + upsellRecommendation.forehandRubber.Rubber_Spin + upsellRecommendation.backhandRubber.Rubber_Spin) / 3),
+      control: Math.round((upsellRecommendation.blade.Blade_Control + upsellRecommendation.forehandRubber.Rubber_Control + upsellRecommendation.backhandRubber.Rubber_Control) / 3),
+      power: Math.round((upsellRecommendation.blade.Blade_Power + upsellRecommendation.forehandRubber.Rubber_Speed + upsellRecommendation.backhandRubber.Rubber_Speed) / 3)
+    } : {
+      speed: upsellRecommendation.Racket_Speed,
+      spin: upsellRecommendation.Racket_Spin,
+      control: upsellRecommendation.Racket_Control,
+      power: Math.round((upsellRecommendation.Racket_Speed + upsellRecommendation.Racket_Spin) / 2)
+    };
+
     return (
       <div className="max-w-5xl mx-auto space-y-8">
         {/* Heading matching "Your Perfect Match" style */}
         <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <Badge variant="secondary" className="text-xs font-normal px-4 py-1.5 bg-accent/20 text-accent-foreground">
-            <Sparkles className="w-3 h-3 mr-1 inline" />
-            Flexible budget?
-          </Badge>
           <h2 className="font-headline text-4xl sm:text-5xl md:text-6xl font-bold text-foreground tracking-tight">
-            Upgrade Your Game
+            <Badge variant="secondary" className="text-xs font-normal px-4 py-1.5 bg-accent/20 text-accent-foreground mr-3">
+              <Sparkles className="w-3 h-3 mr-1 inline" />
+              Flexible budget?
+            </Badge>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             {upsell.explanation}
@@ -911,30 +939,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                   </div>
                 </div>
 
-                {/* 3 Products Grid */}
+                {/* 3 Products Grid - Blade in Middle */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Blade */}
-                  <div className="bg-background/50 border border-border rounded-xl p-4 space-y-3">
-                    {bladeProduct?.node.images.edges[0] && (
-                      <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-                        <img 
-                          src={bladeProduct.node.images.edges[0].node.url}
-                          alt={upsellRecommendation.blade.Blade_Name}
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                    )}
-                    <div className="space-y-1">
-                      <p className="text-xs text-muted-foreground">Blade</p>
-                      <p className="text-sm font-semibold text-foreground line-clamp-2">
-                        {upsellRecommendation.blade.Blade_Name}
-                      </p>
-                      <p className="text-lg font-bold text-accent">
-                        ${upsellRecommendation.blade.Blade_Price}
-                      </p>
-                    </div>
-                  </div>
-
                   {/* Forehand Rubber */}
                   <div className="bg-background/50 border border-border rounded-xl p-4 space-y-3">
                     {fhProduct?.node.images.edges[0] && (
@@ -954,8 +960,24 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                       <p className="text-sm text-muted-foreground">
                         {forehandThickness}
                       </p>
-                      <p className="text-lg font-bold text-accent">
-                        ${upsellRecommendation.forehandRubber.Rubber_Price}
+                    </div>
+                  </div>
+                  
+                  {/* Blade */}
+                  <div className="bg-background/50 border border-border rounded-xl p-4 space-y-3">
+                    {bladeProduct?.node.images.edges[0] && (
+                      <div className="aspect-square rounded-lg overflow-hidden bg-muted">
+                        <img 
+                          src={bladeProduct.node.images.edges[0].node.url}
+                          alt={upsellRecommendation.blade.Blade_Name}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    )}
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground">Blade</p>
+                      <p className="text-sm font-semibold text-foreground line-clamp-2">
+                        {upsellRecommendation.blade.Blade_Name}
                       </p>
                     </div>
                   </div>
@@ -979,12 +1001,49 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                       <p className="text-sm text-muted-foreground">
                         {backhandThickness}
                       </p>
-                      <p className="text-lg font-bold text-accent">
-                        ${upsellRecommendation.backhandRubber.Rubber_Price}
-                      </p>
                     </div>
                   </div>
                 </div>
+
+                {/* Stats Comparison */}
+                {mainStats && (
+                  <div className="mt-8 space-y-4">
+                    <h4 className="text-lg font-semibold text-center text-foreground">Performance Comparison</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {[
+                        { label: 'Speed', main: mainStats.speed, upsell: upsellStats.speed, icon: Gauge },
+                        { label: 'Spin', main: mainStats.spin, upsell: upsellStats.spin, icon: Target },
+                        { label: 'Control', main: mainStats.control, upsell: upsellStats.control, icon: Shield },
+                        { label: 'Power', main: mainStats.power, upsell: upsellStats.power, icon: Star }
+                      ].map(stat => {
+                        const diff = stat.upsell - stat.main;
+                        const Icon = stat.icon;
+                        return (
+                          <div key={stat.label} className="bg-muted/30 rounded-lg p-3 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Icon className="w-4 h-4 text-muted-foreground" />
+                              <span className="text-sm font-medium">{stat.label}</span>
+                            </div>
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-2xl font-bold text-accent">{stat.upsell}</span>
+                              {diff !== 0 && (
+                                <span className={`text-xs font-medium ${diff > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                  {diff > 0 ? '+' : ''}{diff}
+                                </span>
+                              )}
+                            </div>
+                            <div className="h-2 bg-background rounded-sm overflow-hidden">
+                              <div 
+                                className="h-full bg-accent"
+                                style={{ width: `${stat.upsell}%` }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               /* Pre-assembled Racket */
