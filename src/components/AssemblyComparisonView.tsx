@@ -46,14 +46,14 @@ export default function AssemblyComparisonView({
   const getRecommendationText = () => {
     if (isPreAssembledBetter) {
       if (scoreDifference > 5) {
-        return "The ready-to-play option offers excellent value and matches your style significantly better.";
+        return "The pre-assembled racket from the manufacturer offers excellent value and matches your style significantly better.";
       }
-      return "The ready-to-play option is more convenient and offers great value for your playing style.";
+      return "The pre-assembled racket is ready to play immediately and offers great value for your playing style.";
     } else {
       if (scoreDifference > 5) {
-        return "The custom setup provides a measurably better match for your specific playing style and preferences.";
+        return "The custom setup assembled by topPaddle provides a measurably better match for your specific playing style and preferences.";
       }
-      return "The custom setup allows for more precise tuning to your exact preferences and playing characteristics.";
+      return "The custom setup allows for more precise tuning to your exact preferences, professionally assembled by topPaddle.";
     }
   };
 
@@ -89,7 +89,7 @@ export default function AssemblyComparisonView({
             <p className="text-muted-foreground">{getRecommendationText()}</p>
             <div className="flex items-center gap-2 mt-3">
               <Badge className="bg-primary/20 text-primary hover:bg-primary/30">
-                {isPreAssembledBetter ? "Ready-to-Play" : "Custom Setup"} Recommended
+                {isPreAssembledBetter ? "Pre-Assembled" : "Custom Setup"} Recommended
               </Badge>
               <span className="text-sm text-muted-foreground">
                 {Math.abs(preAssembled.score - customSetup.score).toFixed(1)}% better match
@@ -124,10 +124,10 @@ export default function AssemblyComparisonView({
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-primary">
                   <Package className="w-5 h-5" />
-                  <h3 className="text-xl font-bold">Ready-to-Play</h3>
+                  <h3 className="text-xl font-bold">Pre-Assembled Racket</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Pre-assembled and ready to use
+                  From manufacturer - ready to play
                 </p>
               </div>
 
@@ -193,11 +193,11 @@ export default function AssemblyComparisonView({
                 <div className="space-y-2">
                   <div className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Arrives ready to play immediately</span>
+                    <span className="text-sm">Assembled by manufacturer</span>
                   </div>
                   <div className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Professional assembly guaranteed</span>
+                    <span className="text-sm">Arrives ready to play</span>
                   </div>
                   <div className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
@@ -213,7 +213,7 @@ export default function AssemblyComparisonView({
                 size="lg"
                 variant={isPreAssembledBetter ? "default" : "outline"}
               >
-                Choose Ready-to-Play
+                Choose Pre-Assembled
               </Button>
             </CardContent>
           </Card>
@@ -245,7 +245,7 @@ export default function AssemblyComparisonView({
                   <h3 className="text-xl font-bold">Custom Setup</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Tailored blade + rubbers combination
+                  Blade + rubbers - assembled by topPaddle
                 </p>
               </div>
 
@@ -333,7 +333,7 @@ export default function AssemblyComparisonView({
                   </div>
                   <div className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Individual component upgrades possible</span>
+                    <span className="text-sm">Professionally assembled by topPaddle</span>
                   </div>
                   <div className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
