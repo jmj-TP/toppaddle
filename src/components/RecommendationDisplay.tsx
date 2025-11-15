@@ -19,6 +19,7 @@ import { useComparisonStore, type ComparisonPaddle } from "@/stores/comparisonSt
 import { fetchShopifyProducts, type ShopifyProduct } from "@/lib/shopify";
 import { toast } from "sonner";
 import { selectSmartSpongeSize } from "@/utils/smartSpongeSelection";
+import AssemblyComparisonView from "./AssemblyComparisonView";
 
 interface RecommendationDisplayProps {
   recommendation: Recommendation;
@@ -32,6 +33,12 @@ interface RecommendationDisplayProps {
 
 export default function RecommendationDisplay({ recommendation, onRestart, assemblyPreference, budgetAmount, playerLevel, currentAnswers, onUpdatePreferences }: RecommendationDisplayProps) {
   const { preAssembled, customSetup, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation, handleType, handleTypeExplanation } = recommendation;
+  
+  // Track which option user wants to see when they selected "Not sure"
+  const [selectedOption, setSelectedOption] = useState<'preassembled' | 'custom' | null>(
+    assemblyPreference === 'Not sure' ? null : 
+    assemblyPreference?.includes('Ready-to-play') ? 'preassembled' : 'custom'
+  );
   
   const navigate = useNavigate();
   const addItem = useCartStore(state => state.addItem);
@@ -532,8 +539,10 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     }
   };
   
-  // Create array with just the main recommendation
-  const mainRecommendation = preAssembled || customSetup;
+  // Create array with just the main recommendation based on selectedOption
+  const mainRecommendation = selectedOption === 'preassembled' ? preAssembled : 
+                            selectedOption === 'custom' ? customSetup :
+                            preAssembled || customSetup;
   const allRecommendations = mainRecommendation
     ? [{ type: 'main' as const, score: mainRecommendation.score, data: mainRecommendation, rank: 1 }]
     : [];
@@ -1124,6 +1133,19 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       </div>
     );
   };
+
+  // Show comparison view if "Not sure" is selected and no option has been chosen yet
+  if (assemblyPreference === 'Not sure' && selectedOption === null) {
+    return (
+      <div className="w-full mx-auto space-y-16 py-12 px-4 sm:px-6 lg:px-8">
+        <AssemblyComparisonView 
+          recommendation={recommendation}
+          onSelectPreAssembled={() => setSelectedOption('preassembled')}
+          onSelectCustom={() => setSelectedOption('custom')}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full mx-auto space-y-16 py-12 px-4 sm:px-6 lg:px-8">
