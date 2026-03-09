@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+
 
 interface OrganizationSchema {
   type: 'Organization';
@@ -63,13 +63,36 @@ interface LocalBusinessSchema {
   };
 }
 
-type SchemaType = 
-  | OrganizationSchema 
-  | ProductSchema 
-  | ArticleSchema 
-  | FAQSchema 
+interface SoftwareApplicationSchema {
+  type: 'SoftwareApplication';
+  name: string;
+  description: string;
+  applicationCategory: string;
+  operatingSystem: string;
+  url: string;
+  aggregateRating?: {
+    ratingValue: number;
+    reviewCount: number;
+    bestRating?: number;
+  };
+}
+
+interface HowToSchema {
+  type: 'HowTo';
+  name: string;
+  description: string;
+  steps: Array<{ name: string; text: string }>;
+}
+
+type SchemaType =
+  | OrganizationSchema
+  | ProductSchema
+  | ArticleSchema
+  | FAQSchema
   | BreadcrumbSchema
-  | LocalBusinessSchema;
+  | LocalBusinessSchema
+  | SoftwareApplicationSchema
+  | HowToSchema;
 
 interface StructuredDataProps {
   data: SchemaType | SchemaType[];
@@ -77,8 +100,8 @@ interface StructuredDataProps {
 
 const StructuredData = ({ data }: StructuredDataProps) => {
   const generateSchema = (schemaData: SchemaType) => {
-    const baseUrl = 'https://dcabed67-45bf-49e1-a6f1-a63e629bf863.lovableproject.com';
-    
+    const baseUrl = 'https://www.toptabletennispaddle.com';
+
     switch (schemaData.type) {
       case 'Organization':
         return {
@@ -88,7 +111,7 @@ const StructuredData = ({ data }: StructuredDataProps) => {
           url: schemaData.url,
           logo: schemaData.logo,
         };
-      
+
       case 'Product':
         return {
           '@context': 'https://schema.org',
@@ -107,7 +130,7 @@ const StructuredData = ({ data }: StructuredDataProps) => {
             availability: schemaData.offers.availability,
           } : undefined,
         };
-      
+
       case 'Article':
         return {
           '@context': 'https://schema.org',
@@ -130,7 +153,7 @@ const StructuredData = ({ data }: StructuredDataProps) => {
           datePublished: schemaData.datePublished,
           dateModified: schemaData.dateModified || schemaData.datePublished,
         };
-      
+
       case 'FAQPage':
         return {
           '@context': 'https://schema.org',
@@ -144,7 +167,7 @@ const StructuredData = ({ data }: StructuredDataProps) => {
             },
           })),
         };
-      
+
       case 'BreadcrumbList':
         return {
           '@context': 'https://schema.org',
@@ -156,7 +179,7 @@ const StructuredData = ({ data }: StructuredDataProps) => {
             item: item.url,
           })),
         };
-      
+
       case 'LocalBusiness':
         return {
           '@context': 'https://schema.org',
@@ -177,7 +200,40 @@ const StructuredData = ({ data }: StructuredDataProps) => {
             longitude: schemaData.geo.longitude,
           } : undefined,
         };
-      
+
+      case 'SoftwareApplication':
+        return {
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          name: schemaData.name,
+          description: schemaData.description,
+          applicationCategory: schemaData.applicationCategory,
+          operatingSystem: schemaData.operatingSystem,
+          url: schemaData.url,
+          ...(schemaData.aggregateRating && {
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: schemaData.aggregateRating.ratingValue,
+              reviewCount: schemaData.aggregateRating.reviewCount,
+              bestRating: schemaData.aggregateRating.bestRating ?? 5,
+            },
+          }),
+        };
+
+      case 'HowTo':
+        return {
+          '@context': 'https://schema.org',
+          '@type': 'HowTo',
+          name: schemaData.name,
+          description: schemaData.description,
+          step: schemaData.steps.map((s, i) => ({
+            '@type': 'HowToStep',
+            position: i + 1,
+            name: s.name,
+            text: s.text,
+          })),
+        };
+
       default:
         return null;
     }
@@ -187,13 +243,15 @@ const StructuredData = ({ data }: StructuredDataProps) => {
   const jsonLd = schemas.map(generateSchema).filter(Boolean);
 
   return (
-    <Helmet>
+    <>
       {jsonLd.map((schema, index) => (
-        <script key={index} type="application/ld+json">
-          {JSON.stringify(schema)}
-        </script>
+        <script
+          key={index}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
       ))}
-    </Helmet>
+    </>
   );
 };
 

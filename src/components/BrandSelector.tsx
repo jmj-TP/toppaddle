@@ -7,10 +7,18 @@ interface BrandSelectorProps {
 }
 
 const BRANDS = [
-  { value: "ANDRO", label: "ANDRO" },
-  { value: "BUTTERFLY", label: "BUTTERFLY" },
-  { value: "JOOLA", label: "JOOLA" },
-  { value: "DHS", label: "DHS" }
+  { value: "ANDRO", label: "Andro" },
+  { value: "BUTTERFLY", label: "Butterfly" },
+  { value: "JOOLA", label: "Joola" },
+  { value: "DHS", label: "DHS" },
+  { value: "TIBHAR", label: "Tibhar" },
+  { value: "YASAKA", label: "Yasaka" },
+  { value: "XIOM", label: "Xiom" },
+  { value: "NITTAKU", label: "Nittaku" },
+  { value: "DONIC", label: "Donic" },
+  { value: "GEWO", label: "Gewo" },
+  { value: "STIGA", label: "Stiga" },
+  { value: "VICTAS", label: "Victas" }
 ];
 
 const BrandSelector = ({ selectedBrands, onBrandToggle }: BrandSelectorProps) => {
@@ -27,16 +35,15 @@ const BrandSelector = ({ selectedBrands, onBrandToggle }: BrandSelectorProps) =>
       <div className="grid grid-cols-2 gap-3">
         {BRANDS.map((brand) => {
           const isSelected = selectedBrands.includes(brand.value) || allSelected;
-          
+
           return (
             <Card
               key={brand.value}
               onClick={() => onBrandToggle(brand.value)}
-              className={`p-4 cursor-pointer transition-all duration-200 hover:scale-[1.02] ${
-                isSelected
+              className={`p-4 cursor-pointer transition-all duration-200 hover:scale-[1.02] ${isSelected
                   ? "bg-primary text-primary-foreground border-primary shadow-lg"
                   : "bg-card hover:bg-accent hover:text-accent-foreground"
-              }`}
+                }`}
             >
               <div className="flex items-center justify-between">
                 <span className="font-medium">{brand.label}</span>

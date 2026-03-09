@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { slugify } from "@/lib/googleSheets";
+import ReviewsCarousel from "@/components/ReviewsCarousel";
+import { useReviews } from "@/hooks/useReviews";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,17 +13,20 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Star, Target, Gauge, Shield, Info, ChevronDown, ChevronUp, ShoppingCart, Wrench, Sparkles } from "lucide-react";
-import type { Recommendation, CustomSetup, QuizAnswers } from "@/utils/ratingSystem";
+import { isFastStyle, isSpinStyle, isControlStyle, type Recommendation, type CustomSetup, type QuizAnswers, type Inventory } from "@/utils/ratingSystem";
 import { estimateBladeWeight, estimateRubberWeight } from "@/data/products";
+import { getProductImage } from "@/utils/addProductImages";
+
 import BrandSelector from "./BrandSelector";
+import { StatBar } from "./ui/StatBar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ShareButton from "./ShareButton";
 import { useCartStore } from "@/stores/cartStore";
 import { useComparisonStore, type ComparisonPaddle } from "@/stores/comparisonStore";
-import { fetchShopifyProducts, type ShopifyProduct } from "@/lib/shopify";
 import { toast } from "sonner";
 import { selectSmartSpongeSize } from "@/utils/smartSpongeSelection";
 import AssemblyComparisonView from "./AssemblyComparisonView";
+import LeadCaptureModal from "./LeadCaptureModal";
 
 interface RecommendationDisplayProps {
   recommendation: Recommendation;
@@ -29,155 +36,136 @@ interface RecommendationDisplayProps {
   playerLevel?: string;
   currentAnswers?: Partial<QuizAnswers>;
   onUpdatePreferences?: (budget: string, brands: string[]) => void;
+  inventory: Inventory;
 }
 
-export default function RecommendationDisplay({ recommendation, onRestart, assemblyPreference, budgetAmount, playerLevel, currentAnswers, onUpdatePreferences }: RecommendationDisplayProps) {
+/** Small wrapper that hooks into reviews for a specific combo */
+function RecommendationReviews({ blade, fhRubber, bhRubber }: { blade?: string; fhRubber?: string; bhRubber?: string }) {
+  const { matchingReviews, isLoading } = useReviews(blade, fhRubber, bhRubber);
+  return (
+    <ReviewsCarousel
+      reviews={matchingReviews}
+      isLoading={isLoading}
+      currentBlade={blade}
+      currentFhRubber={fhRubber}
+      currentBhRubber={bhRubber}
+    />
+  );
+}
+
+export default function RecommendationDisplay({ recommendation, onRestart, assemblyPreference, budgetAmount, playerLevel, currentAnswers, onUpdatePreferences, inventory }: RecommendationDisplayProps) {
   const { preAssembled, customSetup, totalScore, forehandThickness, forehandThicknessExplanation, backhandThickness, backhandThicknessExplanation, handleType, handleTypeExplanation } = recommendation;
-  
+
   // Track which option user wants to see when they selected "Not sure"
   const [selectedOption, setSelectedOption] = useState<'preassembled' | 'custom' | null>(
-    assemblyPreference === 'Not sure' ? null : 
-    assemblyPreference?.includes('Ready-to-play') ? 'preassembled' : 'custom'
+    assemblyPreference === 'Not sure' ? null :
+      assemblyPreference?.includes('Ready-to-play') ? 'preassembled' : 'custom'
   );
-  
-  const navigate = useNavigate();
+
+  const router = useRouter();
   const addItem = useCartStore(state => state.addItem);
   const addPaddle = useComparisonStore(state => state.addPaddle);
   const comparisonPaddles = useComparisonStore(state => state.paddles);
-  const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
-  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [flexibleBudgetUpsell, setFlexibleBudgetUpsell] = useState<any>(null);
-  const [showPreferenceEditor, setShowPreferenceEditor] = useState(false);
-  const [tempBudget, setTempBudget] = useState(currentAnswers?.Budget || "<100$");
-  const [tempBrands, setTempBrands] = useState<string[]>(currentAnswers?.Brand || []);
-  const [assembleCustom1, setAssembleCustom1] = useState(false);
-  const [assembleUpsell, setAssembleUpsell] = useState(false);
+
+  // Generate dynamic explanations based on stats and answers
+  const generateDynamicExplanation = (itemData: any, isPre: boolean, answers?: Partial<QuizAnswers>) => {
+    if (!answers || Object.keys(answers).length === 0) {
+      return isPre
+        ? "This ready-to-play racket matches your skill level and playing style perfectly. No assembly required — just unbox and start playing immediately."
+        : `This custom setup combines ${itemData?.blade?.Blade_Name} with premium rubbers tailored to your preferences. It offers the perfect balance of performance characteristics you're looking for.`;
+    }
+
+    const { Level, Playstyle, Forehand, Backhand, Power } = answers;
+
+    if (isPre) {
+      const racket = itemData;
+      return `As a ${Level} player looking for an ${Playstyle?.toLowerCase()} game, the ${racket.Racket_Name} is exactly what you need. It provides ${racket.Racket_Speed > 80 ? 'high speed' : 'excellent control'} (rated ${racket.Racket_Control}/100) right out of the box, allowing you to ${isSpinStyle(Forehand) ? 'generate massive spin' : 'execute your gameplan'} without worrying about custom assembly.`;
+    }
+
+    const setup = itemData as CustomSetup;
+    const bStiff = setup.blade.Blade_Stiffness || 50;
+    const bMat = setup.blade.Blade_Material || 'All-Wood';
+    const fhHard = setup.forehandRubber.Rubber_Hardness || 'Medium';
+    const fhThrow = setup.forehandRubber.Rubber_ThrowAngle || 'Medium';
+
+    let parts = [];
+
+    // Blade logic
+    if (Level === 'Beginner') {
+      parts.push(`For your development, the ${setup.blade.Blade_Name} blade provides the essential vibration feedback of an ${bMat} build.`);
+    } else {
+      if (bStiff > 70) parts.push(`The ${setup.blade.Blade_Name} blade provides the high stiffness and ${bMat} power needed for your aggressive game.`);
+      else if (bStiff < 60) parts.push(`The ${setup.blade.Blade_Name} blade offers the flexibility and dwell time critical for your control-oriented style.`);
+      else parts.push(`The ${setup.blade.Blade_Name} blade perfectly balances speed and control with its ${bMat} composition.`);
+    }
+
+    // Forehand logic
+    if (isFastStyle(Forehand)) {
+      parts.push(`Your fast forehand is supported by the ${fhHard} sponge on the ${setup.forehandRubber.Rubber_Name}, preventing the rubber from bottoming out during flat hits.`);
+    } else if (isSpinStyle(Forehand)) {
+      parts.push(`To maximize your topspin, the ${setup.forehandRubber.Rubber_Name} offers a ${fhThrow?.toLowerCase()} throw angle to lift the ball effortlessly.`);
+    } else {
+      parts.push(`The ${setup.forehandRubber.Rubber_Name} on your forehand gives you wide margins for error with its ${fhHard?.toLowerCase()} sponge.`);
+    }
+
+    // Power logic
+    if (Power?.includes('A lot of power')) {
+      parts.push(`Together, this combination maximizes your offensive output without sacrificing all your precision.`);
+    }
+
+    return parts.join(' ');
+  };
+
+  // Assembly / seal options for custom setup CTAs
+  const [assembleCustom1, setAssembleCustom1] = useState(true);
   const [sealCustom1, setSealCustom1] = useState(false);
+  const [assembleUpsell, setAssembleUpsell] = useState(true);
   const [sealUpsell, setSealUpsell] = useState(false);
 
-  // Load Shopify products and calculate flexible budget upsell
+  // Lead modal state
+  const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
+  const [leadEquipmentDetail, setLeadEquipmentDetail] = useState<any>(null);
+
+  // Preference editor state
+  const [showPreferenceEditor, setShowPreferenceEditor] = useState(false);
+  const [tempBudget, setTempBudget] = useState('');
+  const [tempBrands, setTempBrands] = useState<string[]>([]);
+
+  // No-op Shopify product lookup (Shopify removed; images come from Google Sheet)
+  const findShopifyProduct = (_name: string) => null;
+
+  // Calculate flexible budget upsell if we have complete answers
   useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const products = await fetchShopifyProducts();
-        setShopifyProducts(products);
-        
-        // Calculate flexible budget upsell if we have complete answers
-        if (currentAnswers && Object.keys(currentAnswers).length > 10) {
-          const { calculateFlexibleBudgetUpsell } = await import('@/utils/upsellCalculation');
-          const upsell = calculateFlexibleBudgetUpsell(
-            currentAnswers as QuizAnswers,
-            recommendation
-          );
-          setFlexibleBudgetUpsell(upsell);
-        }
-      } catch (error) {
-        console.error("Error loading Shopify products:", error);
-      } finally {
-        setIsLoadingProducts(false);
+    const calculateUpsell = async () => {
+      if (currentAnswers && Object.keys(currentAnswers).length > 10 && inventory) {
+        const { calculateFlexibleBudgetUpsell } = await import('@/utils/upsellCalculation');
+        const upsell = calculateFlexibleBudgetUpsell(
+          currentAnswers as QuizAnswers,
+          recommendation,
+          inventory
+        );
+        setFlexibleBudgetUpsell(upsell);
       }
     };
-    loadProducts();
+    calculateUpsell();
   }, [currentAnswers, recommendation]);
-
-  // Helper to find Shopify product by name
-  const findShopifyProduct = (productName: string) => {
-    return shopifyProducts.find(p => 
-      p.node.title.toLowerCase().includes(productName.toLowerCase()) ||
-      productName.toLowerCase().includes(p.node.title.toLowerCase())
-    );
-  };
-
-  // Helper to map grip type names to Shopify abbreviations
-  const mapGripTypeToShopify = (gripType: string): string => {
-    const mapping: Record<string, string> = {
-      'Flared': 'FL',
-      'Straight': 'ST',
-      'Anatomic': 'AN',
-      'Chinese Penhold': 'CP',
-      'Japanese Penhold': 'JP'
-    };
-    return mapping[gripType] || gripType;
-  };
-
-  // Helper to check if product has a specific option
-  const hasProductOption = (product: ShopifyProduct, optionName: string): boolean => {
-    return product.node.options.some(opt => opt.name === optionName);
-  };
-
-  // Helper to get available color for a rubber product
-  const getAvailableColor = (product: ShopifyProduct, preferredColor: string): string | null => {
-    const colorOption = product.node.options.find(opt => opt.name === "Color");
-    if (!colorOption || colorOption.values.length === 0) return null;
-    
-    // Check if preferred color is available
-    if (colorOption.values.some(v => v.toLowerCase() === preferredColor.toLowerCase())) {
-      return preferredColor;
-    }
-    
-    // Return first available color as fallback
-    return colorOption.values[0];
-  };
-
-  // Helper to find variant with specific options - matching Configurator logic
-  const findMatchingVariant = (
-    product: ShopifyProduct,
-    options: Array<{ name: string; value: string }>
-  ): string | null => {
-    const variants = product.node.variants.edges;
-    
-    // Try exact match
-    for (const variant of variants) {
-      const variantOptions = variant.node.selectedOptions;
-      const allMatch = options.every(requiredOption => 
-        variantOptions.some(variantOption => 
-          variantOption.name === requiredOption.name && 
-          variantOption.value === requiredOption.value
-        )
-      );
-      
-      if (allMatch && variant.node.availableForSale) {
-        return variant.node.id;
-      }
-    }
-    
-    // Try flexible match
-    for (const variant of variants) {
-      const variantOptions = variant.node.selectedOptions;
-      const allMatch = options.every(requiredOption => 
-        variantOptions.some(variantOption => {
-          if (variantOption.name !== requiredOption.name) return false;
-          const shopifyValue = variantOption.value.toLowerCase();
-          const requestedValue = requiredOption.value.toLowerCase();
-          return shopifyValue === requestedValue || 
-                 shopifyValue.startsWith(requestedValue + ' ') ||
-                 shopifyValue.startsWith(requestedValue + '(');
-        })
-      );
-      
-      if (allMatch && variant.node.availableForSale) {
-        return variant.node.id;
-      }
-    }
-    
-    return null;
-  };
 
   // Helper to validate and get closest available sponge thickness
   const getValidatedThickness = (idealThickness: string, rubber: any) => {
     const availableSizes = rubber.Rubber_Sponge_Sizes || [];
     if (availableSizes.length === 0) return idealThickness;
-    
+
     // Parse thickness
     const parseThickness = (t: string) => {
       const match = t.match(/[\d.]+/);
       return match ? parseFloat(match[0]) : 2.0;
     };
-    
+
     const target = parseThickness(idealThickness);
     let closest = availableSizes[0];
     let closestDiff = Math.abs(parseThickness(closest) - target);
-    
+
     for (const size of availableSizes) {
       const diff = Math.abs(parseThickness(size) - target);
       if (diff < closestDiff) {
@@ -185,31 +173,51 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         closest = size;
       }
     }
-    
+
     return closest;
+  };
+
+  // Handle lead capture instead of add to cart
+  const handleRequestQuotes = (item: { type: "main" | "pre" | "custom", data: any, score: number, rank: number }) => {
+    setLeadEquipmentDetail({
+      ...item,
+      options: {
+        assemble: item.rank === 1 ? assembleCustom1 : assembleUpsell,
+        seal: item.rank === 1 ? sealCustom1 : sealUpsell,
+        forehandThickness,
+        backhandThickness,
+        handleType
+      }
+    });
+    setIsLeadModalOpen(true);
+  };
+
+  const handleAddToCart = async (item: { type: "main" | "pre" | "custom", data: any, score: number, rank: number }) => {
+    // Kept for backward compatibility but bypassed in UI
+    console.log("Add to cart called for:", item);
   };
 
   // Navigate to configurator with pre-selected items
   const handleViewInConfigurator = (item: typeof allRecommendations[0]) => {
     const isPreAssembled = 'Racket_Name' in item.data;
-    
+
     if (isPreAssembled) {
       const racket = item.data as any;
-      navigate(`/configurator?preassembled=true&racket=${encodeURIComponent(racket.Racket_Name)}&handle=${encodeURIComponent(handleType)}`);
+      router.push(`/configurator?preassembled=true&racket=${encodeURIComponent(racket.Racket_Name)}&handle=${encodeURIComponent(handleType)}`);
     } else {
       const setup = item.data as CustomSetup;
-      
+
       // VALIDATE sponge thicknesses against available options
       const fhThickness = getValidatedThickness(
-        setup.forehandThickness || forehandThickness, 
+        setup.forehandThickness || forehandThickness,
         setup.forehandRubber
       );
       const bhThickness = getValidatedThickness(
-        setup.backhandThickness || backhandThickness, 
+        setup.backhandThickness || backhandThickness,
         setup.backhandRubber
       );
-      
-      navigate(`/configurator?blade=${encodeURIComponent(setup.blade.Blade_Name)}&fh=${encodeURIComponent(setup.forehandRubber.Rubber_Name)}&bh=${encodeURIComponent(setup.backhandRubber.Rubber_Name)}&handle=${encodeURIComponent(handleType)}&fhThickness=${encodeURIComponent(fhThickness)}&bhThickness=${encodeURIComponent(bhThickness)}`);
+
+      router.push(`/configurator?blade=${encodeURIComponent(setup.blade.Blade_Name)}&fh=${encodeURIComponent(setup.forehandRubber.Rubber_Name)}&bh=${encodeURIComponent(setup.backhandRubber.Rubber_Name)}&handle=${encodeURIComponent(handleType)}&fhThickness=${encodeURIComponent(fhThickness)}&bhThickness=${encodeURIComponent(bhThickness)}`);
     }
   };
 
@@ -217,13 +225,13 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   const handleAddToCompare = (item: typeof allRecommendations[0]) => {
     const isPreAssembled = 'Racket_Name' in item.data;
     let paddle: ComparisonPaddle;
-    
+
     if (isPreAssembled) {
       const racket = item.data as any;
       paddle = {
-        id: `pre-${racket.Racket_Name}`,
+        id: `pre-${racket.Racket_Name}-${Date.now()}`,
         name: racket.Racket_Name,
-        image: racket.Racket_Image || '',
+        image: getProductImage(racket, 'racket'),
         speed: racket.Racket_Speed,
         control: racket.Racket_Control,
         power: racket.Racket_Power,
@@ -238,26 +246,26 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       const fhWeight = estimateRubberWeight(setup.forehandRubber);
       const bhWeight = estimateRubberWeight(setup.backhandRubber);
       const totalWeight = bladeWeight + fhWeight + bhWeight;
-      
+
       // VALIDATE sponge thicknesses against available options
       const fhThickness = getValidatedThickness(
-        setup.forehandThickness || forehandThickness, 
+        setup.forehandThickness || forehandThickness,
         setup.forehandRubber
       );
       const bhThickness = getValidatedThickness(
-        setup.backhandThickness || backhandThickness, 
+        setup.backhandThickness || backhandThickness,
         setup.backhandRubber
       );
-      
+
       const combinedSpeed = Math.round((setup.blade.Blade_Speed + setup.forehandRubber.Rubber_Speed + setup.backhandRubber.Rubber_Speed) / 3);
       const combinedSpin = Math.round((setup.forehandRubber.Rubber_Spin + setup.backhandRubber.Rubber_Spin) / 2);
       const combinedControl = Math.round((setup.blade.Blade_Control + setup.forehandRubber.Rubber_Control + setup.backhandRubber.Rubber_Control) / 3);
       const combinedPower = Math.round((setup.blade.Blade_Power + setup.forehandRubber.Rubber_Speed + setup.backhandRubber.Rubber_Speed) / 3);
-      
+
       paddle = {
-        id: `custom-${setup.blade.Blade_Name}-${setup.forehandRubber.Rubber_Name}-${setup.backhandRubber.Rubber_Name}`,
+        id: `custom-${setup.blade.Blade_Name}-${Date.now()}`,
         name: `Custom Setup: ${setup.blade.Blade_Name}`,
-        image: setup.blade.Blade_Image || '',
+        image: getProductImage(setup.blade, 'blade'),
         speed: combinedSpeed,
         control: combinedControl,
         power: combinedPower,
@@ -266,8 +274,11 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         weight: totalWeight,
         level: setup.blade.Blade_Level as "Beginner" | "Intermediate" | "Advanced",
         blade: setup.blade.Blade_Name,
+        bladeImage: getProductImage(setup.blade, 'blade'),
         forehandRubber: setup.forehandRubber.Rubber_Name,
+        forehandImage: getProductImage(setup.forehandRubber, 'rubber'),
         backhandRubber: setup.backhandRubber.Rubber_Name,
+        backhandImage: getProductImage(setup.backhandRubber, 'rubber'),
         forehandSponge: fhThickness,
         backhandSponge: bhThickness,
         bladeStats: {
@@ -293,256 +304,24 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         }
       };
     }
-    
+
     if (comparisonPaddles.length >= 3) {
-      toast.error("Comparison is full", { 
-        description: "Please clear the comparison section to add more paddles" 
+      toast.error("Comparison is full", {
+        description: "Please clear the comparison section to add more paddles"
       });
       return;
     }
-    
+
     addPaddle(paddle);
     toast.success("Added to comparison", { description: paddle.name });
-    navigate('/compare');
+    router.push('/compare');
   };
 
-  // Add to cart with Shopify integration
-  const handleAddToCart = async (item: typeof allRecommendations[0]) => {
-    const isPreAssembled = 'Racket_Name' in item.data;
-    if (isLoadingProducts) {
-      toast.error("Still loading products", { description: "Please wait a moment..." });
-      return;
-    }
-    try {
-      if (isPreAssembled) {
-        const racket = item.data as any;
-        const shopifyProduct = findShopifyProduct(racket.Racket_Name);
-        
-        if (!shopifyProduct) {
-          toast.error("Product not found in store", { 
-            description: `${racket.Racket_Name} is not available in our store yet.` 
-          });
-          return;
-        }
 
-        const variantId = findMatchingVariant(shopifyProduct, [
-          { name: "Grip Type", value: mapGripTypeToShopify(handleType) }
-        ]);
-        const variant = variantId 
-          ? shopifyProducts.find(p => p.node.id === shopifyProduct.node.id)?.node.variants.edges.find(v => v.node.id === variantId)?.node
-          : shopifyProduct.node.variants.edges[0].node;
-        
-        addItem({
-          product: shopifyProduct,
-          variantId: variant.id,
-          variantTitle: variant.title,
-          price: variant.price,
-          quantity: 1,
-          selectedOptions: variant.selectedOptions
-        });
-
-        toast.success("Added to cart!", { description: racket.Racket_Name });
-      } else {
-        const setup = item.data as CustomSetup;
-        
-        // ========== PHASE 1: PRE-FLIGHT VALIDATION ==========
-        // Find all required products
-        const bladeProduct = findShopifyProduct(setup.blade.Blade_Name);
-        const fhProduct = findShopifyProduct(setup.forehandRubber.Rubber_Name);
-        const bhProduct = findShopifyProduct(setup.backhandRubber.Rubber_Name);
-        
-        // Check if all products exist
-        const missingProducts: string[] = [];
-        if (!bladeProduct) missingProducts.push(setup.blade.Blade_Name);
-        if (!fhProduct) missingProducts.push(setup.forehandRubber.Rubber_Name);
-        if (!bhProduct) missingProducts.push(setup.backhandRubber.Rubber_Name);
-        
-        if (missingProducts.length > 0) {
-          toast.error("Setup incomplete", { 
-            description: `Products not found: ${missingProducts.join(", ")}` 
-          });
-          return;
-        }
-        
-        // Find blade variant (only Grip Type)
-        const bladeVariantId = findMatchingVariant(bladeProduct!, [
-          { name: "Grip Type", value: mapGripTypeToShopify(handleType) }
-        ]);
-        
-        // ========== SMART SPONGE SELECTION ==========
-        // Get player level and styles from quiz answers
-        const playerLevel = currentAnswers?.Level || 'Intermediate';
-        const fhStyle = currentAnswers?.Forehand || 'Balanced & versatile';
-        const bhStyle = currentAnswers?.Backhand || 'Balanced & versatile';
-        
-        // Use smart sponge selection for forehand rubber
-        const fhSpongeSelection = selectSmartSpongeSize(fhProduct!, playerLevel, fhStyle, 'FH');
-        const fhThickness = fhSpongeSelection.size;
-        
-        // Use smart sponge selection for backhand rubber
-        const bhSpongeSelection = selectSmartSpongeSize(bhProduct!, playerLevel, bhStyle, 'BH');
-        const bhThickness = bhSpongeSelection.size;
-        
-        // Build forehand rubber options with color handling
-        const fhOptions: Array<{ name: string; value: string }> = [
-          { name: "Sponge Thickness", value: fhThickness }
-        ];
-        let fhColorUsed: string | null = null;
-        if (hasProductOption(fhProduct!, "Color")) {
-          fhColorUsed = getAvailableColor(fhProduct!, "Red");
-          if (fhColorUsed) {
-            fhOptions.push({ name: "Color", value: fhColorUsed });
-          }
-        }
-        const fhVariantId = findMatchingVariant(fhProduct!, fhOptions);
-        
-        // Build backhand rubber options with color handling
-        const bhOptions: Array<{ name: string; value: string }> = [
-          { name: "Sponge Thickness", value: bhThickness }
-        ];
-        let bhColorUsed: string | null = null;
-        if (hasProductOption(bhProduct!, "Color")) {
-          bhColorUsed = getAvailableColor(bhProduct!, "Black");
-          // If Black isn't available and forehand already took first color, try second color
-          if (!bhColorUsed && fhColorUsed) {
-            const colorOption = bhProduct!.node.options.find(opt => opt.name === "Color");
-            if (colorOption && colorOption.values.length > 1) {
-              bhColorUsed = colorOption.values.find(c => c !== fhColorUsed) || colorOption.values[0];
-            }
-          }
-          if (bhColorUsed) {
-            bhOptions.push({ name: "Color", value: bhColorUsed });
-          }
-        }
-        const bhVariantId = findMatchingVariant(bhProduct!, bhOptions);
-        
-        // Check if all variants exist with detailed error messages
-        const missingVariants: string[] = [];
-        if (!bladeVariantId) {
-          const availableGrips = bladeProduct!.node.options.find(opt => opt.name === "Grip Type")?.values || [];
-          missingVariants.push(`${setup.blade.Blade_Name} - Requested: ${mapGripTypeToShopify(handleType)} grip, Available: ${availableGrips.join(", ")}`);
-        }
-        if (!fhVariantId) {
-          const availableSizes = fhProduct!.node.options.find(opt => opt.name === "Sponge Thickness")?.values || [];
-          const availableColors = fhProduct!.node.options.find(opt => opt.name === "Color")?.values || [];
-          missingVariants.push(`${setup.forehandRubber.Rubber_Name} FH - Target: ${fhSpongeSelection.targetSize.toFixed(1)}mm, Selected: ${fhThickness}${fhColorUsed ? `, ${fhColorUsed}` : ''}, Available: ${availableSizes.join(", ")}${availableColors.length ? `, colors: ${availableColors.join(", ")}` : ''}`);
-        }
-        if (!bhVariantId) {
-          const availableSizes = bhProduct!.node.options.find(opt => opt.name === "Sponge Thickness")?.values || [];
-          const availableColors = bhProduct!.node.options.find(opt => opt.name === "Color")?.values || [];
-          missingVariants.push(`${setup.backhandRubber.Rubber_Name} BH - Target: ${bhSpongeSelection.targetSize.toFixed(1)}mm, Selected: ${bhThickness}${bhColorUsed ? `, ${bhColorUsed}` : ''}, Available: ${availableSizes.join(", ")}${availableColors.length ? `, colors: ${availableColors.join(", ")}` : ''}`);
-        }
-        
-        if (missingVariants.length > 0) {
-          toast.error("Configuration unavailable", { 
-            description: `Variants not found: ${missingVariants.join(", ")}` 
-          });
-          return;
-        }
-        
-        // Get variant objects
-        const bladeVariant = bladeProduct!.node.variants.edges.find(v => v.node.id === bladeVariantId)!.node;
-        const fhVariant = fhProduct!.node.variants.edges.find(v => v.node.id === fhVariantId)!.node;
-        const bhVariant = bhProduct!.node.variants.edges.find(v => v.node.id === bhVariantId)!.node;
-        
-        // ========== PHASE 2: EXECUTION (ADD ALL ITEMS) ==========
-        // Add blade
-        addItem({
-          product: bladeProduct!,
-          variantId: bladeVariant.id,
-          variantTitle: bladeVariant.title,
-          price: bladeVariant.price,
-          quantity: 1,
-          selectedOptions: bladeVariant.selectedOptions
-        });
-        
-        // Add forehand rubber
-        addItem({
-          product: fhProduct!,
-          variantId: fhVariant.id,
-          variantTitle: fhVariant.title,
-          price: fhVariant.price,
-          quantity: 1,
-          selectedOptions: fhVariant.selectedOptions
-        });
-        
-        // Add backhand rubber
-        addItem({
-          product: bhProduct!,
-          variantId: bhVariant.id,
-          variantTitle: bhVariant.title,
-          price: bhVariant.price,
-          quantity: 1,
-          selectedOptions: bhVariant.selectedOptions
-        });
-        
-        let itemCount = 3; // blade + 2 rubbers
-        
-        // Show sponge selection explanations in toast
-        const spongeDetails = `FH: ${fhThickness} (${fhSpongeSelection.explanation}), BH: ${bhThickness} (${bhSpongeSelection.explanation})`;
-        
-        // Add assembly service if requested
-        const isCustomSetup = !('Racket_Name' in item.data);
-        const shouldAssemble = isCustomSetup && assembleCustom1;
-        if (shouldAssemble) {
-          const assemblyProduct = shopifyProducts.find(p => 
-            p.node.title.toLowerCase().includes("racket assembly service") ||
-            p.node.title.toLowerCase().includes("assembly service")
-          );
-
-          if (assemblyProduct) {
-            const assemblyVariant = assemblyProduct.node.variants.edges[0].node;
-            addItem({
-              product: assemblyProduct,
-              variantId: assemblyVariant.id,
-              variantTitle: assemblyVariant.title,
-              price: assemblyVariant.price,
-              quantity: 1,
-              selectedOptions: assemblyVariant.selectedOptions
-            });
-            itemCount++;
-          }
-        }
-        
-        // Add seal service if requested
-        const shouldSeal = isCustomSetup && sealCustom1;
-        if (shouldSeal) {
-          const sealProduct = shopifyProducts.find(p => 
-            p.node.title.toLowerCase().includes("edge seal service") ||
-            p.node.title.toLowerCase().includes("seal service")
-          );
-
-          if (sealProduct) {
-            const sealVariant = sealProduct.node.variants.edges[0].node;
-            addItem({
-              product: sealProduct,
-              variantId: sealVariant.id,
-              variantTitle: sealVariant.title,
-              price: sealVariant.price,
-              quantity: 1,
-              selectedOptions: sealVariant.selectedOptions
-            });
-            itemCount++;
-          }
-        }
-
-        toast.success(`Added ${itemCount} items to cart!`, { 
-          description: `${spongeDetails}`,
-          duration: 5000
-        });
-      }
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      toast.error("Failed to add to cart", { 
-        description: "Please try again or contact support." 
-      });
-    }
-  };
-  
   // Create array with just the main recommendation based on selectedOption
-  const mainRecommendation = selectedOption === 'preassembled' ? preAssembled : 
-                            selectedOption === 'custom' ? customSetup :
-                            preAssembled || customSetup;
+  const mainRecommendation = selectedOption === 'preassembled' ? preAssembled :
+    selectedOption === 'custom' ? customSetup :
+      preAssembled || customSetup;
   const allRecommendations = mainRecommendation
     ? [{ type: 'main' as const, score: mainRecommendation.score, data: mainRecommendation, rank: 1 }]
     : [];
@@ -550,65 +329,31 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
   const getScoreColor = (score: number) => {
-    if (score >= 85) return "text-green-500 dark:text-green-400";
-    if (score >= 70) return "text-yellow-500 dark:text-yellow-400";
-    return "text-orange-500 dark:text-orange-400";
+    if (score >= 70) return "text-green-500 dark:text-green-400"; // Excellent match
+    if (score >= 45) return "text-yellow-500 dark:text-yellow-400"; // Decent/average match
+    return "text-orange-500 dark:text-orange-400"; // Poor match
   };
 
 
   const statDescriptions = {
     speed: "How fast the ball travels off your paddle",
-    spin: "Your ability to curve and control ball trajectory",
-    control: "Precision and accuracy of ball placement",
-    power: "Force and impact behind each shot"
+    spin: "Ability to generate rotation on the ball",
+    control: "Precision and consistency in placement",
+    power: "Force and impact of your shots"
   };
 
-  const StatSlider = ({ label, value, icon: Icon }: { label: string; value: number; icon: any }) => {
-    const [showTooltip, setShowTooltip] = useState(false);
-    
-    return (
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <TooltipProvider>
-            <Tooltip open={showTooltip} onOpenChange={setShowTooltip}>
-              <TooltipTrigger asChild>
-                <div 
-                  className="flex items-center gap-2 cursor-pointer"
-                  onClick={() => setShowTooltip(!showTooltip)}
-                >
-                  <Icon className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm font-medium text-foreground">{label}</span>
-                  <Info className="w-3.5 h-3.5 text-muted-foreground" />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-xs">
-                <p className="text-xs">{statDescriptions[label.toLowerCase() as keyof typeof statDescriptions]}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <span className="text-sm font-semibold text-foreground">{value}</span>
-        </div>
-        <div className="h-3 bg-muted/30 overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-orange-500 to-orange-600 transition-all duration-300"
-            style={{ width: `${value}%` }}
-          />
-        </div>
-      </div>
-    );
-  };
 
   // Premium hero card for best match
   const HeroCard = ({ item, rank }: { item: typeof allRecommendations[0]; rank?: number }) => {
     const isPreAssembled = 'Racket_Name' in item.data;
     const racket = isPreAssembled ? item.data as any : null;
     const setup = !isPreAssembled ? (item.data as CustomSetup) : null;
-    
+
     const name = racket ? racket.Racket_Name : setup?.blade.Blade_Name || '';
     const price = racket ? racket.Racket_Price : setup?.totalPrice || 0;
     const level = racket ? racket.Racket_Level : setup?.blade.Blade_Level || '';
     const score = item.score;
-    
+
     const stats = racket ? {
       speed: racket.Racket_Speed,
       spin: racket.Racket_Spin,
@@ -629,11 +374,10 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
             <Sparkles className="w-3 h-3 mr-1" />
             Perfect Match for You
           </Badge>
-          
+
           <h2 className="font-headline text-4xl md:text-5xl font-bold text-foreground tracking-tight">
             {name}
           </h2>
-          
           <div className="flex items-center justify-center gap-3 text-muted-foreground">
             <Badge variant="outline" className="text-xs font-normal">
               {level}
@@ -654,11 +398,12 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
             {isPreAssembled ? (
               <div className="flex justify-center">
                 <div className="text-center space-y-3">
-                  <div className="aspect-square w-64 rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm">
-                    <div className="text-center space-y-2 px-4">
-                      <div className="text-6xl">🏓</div>
-                      <p className="text-xs text-muted-foreground">Racket image</p>
-                    </div>
+                  <div className="product-img-wrap aspect-square w-64 rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm overflow-hidden">
+                    <img
+                      src={getProductImage(preAssembled, 'racket')}
+                      alt={preAssembled?.Racket_Name}
+                      className="product-img w-full h-full object-cover"
+                    />
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-foreground">{handleType} Handle</p>
@@ -669,42 +414,45 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               <div className="grid grid-cols-3 gap-6 items-start">
                 {/* Forehand Rubber */}
                 <div className="text-center space-y-3">
-                  <div className="aspect-square rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm">
-                    <div className="text-center space-y-2 px-4">
-                      <div className="text-5xl">🔴</div>
-                      <p className="text-xs text-muted-foreground">Forehand rubber</p>
-                    </div>
+                  <div className="product-img-wrap aspect-square rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm overflow-hidden">
+                    <img
+                      src={getProductImage(setup!.forehandRubber, 'rubber')}
+                      alt={setup!.forehandRubber.Rubber_Name}
+                      className="product-img w-full h-full object-cover"
+                    />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-foreground leading-tight">{setup!.forehandRubber.Rubber_Name}</p>
+                    <Link href={`/product/rubber/${slugify(setup!.forehandRubber.Rubber_Name)}`} className="text-sm font-medium text-foreground leading-tight hover:text-primary hover:underline transition-colors">{setup!.forehandRubber.Rubber_Name}</Link>
                     <p className="text-xs text-muted-foreground">Sponge: {setup!.forehandThickness || forehandThickness}</p>
                   </div>
                 </div>
 
                 {/* Blade */}
                 <div className="text-center space-y-3">
-                  <div className="aspect-square rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm">
-                    <div className="text-center space-y-2 px-4">
-                      <div className="text-5xl">🏓</div>
-                      <p className="text-xs text-muted-foreground">Blade</p>
-                    </div>
+                  <div className="product-img-wrap aspect-square rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm overflow-hidden">
+                    <img
+                      src={getProductImage(setup!.blade, 'blade')}
+                      alt={setup!.blade.Blade_Name}
+                      className="product-img w-full h-full object-cover"
+                    />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-foreground leading-tight">{setup!.blade.Blade_Name}</p>
+                    <Link href={`/product/blade/${slugify(setup!.blade.Blade_Name)}`} className="text-sm font-medium text-foreground leading-tight hover:text-primary hover:underline transition-colors">{setup!.blade.Blade_Name}</Link>
                     <p className="text-xs text-muted-foreground">Handle: {handleType}</p>
                   </div>
                 </div>
 
                 {/* Backhand Rubber */}
                 <div className="text-center space-y-3">
-                  <div className="aspect-square rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm">
-                    <div className="text-center space-y-2 px-4">
-                      <div className="text-5xl">⚫</div>
-                      <p className="text-xs text-muted-foreground">Backhand rubber</p>
-                    </div>
+                  <div className="product-img-wrap aspect-square rounded-2xl bg-muted/30 border border-border/50 flex items-center justify-center backdrop-blur-sm overflow-hidden">
+                    <img
+                      src={getProductImage(setup!.backhandRubber, 'rubber')}
+                      alt={setup!.backhandRubber.Rubber_Name}
+                      className="product-img w-full h-full object-cover"
+                    />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-foreground leading-tight">{setup!.backhandRubber.Rubber_Name}</p>
+                    <Link href={`/product/rubber/${slugify(setup!.backhandRubber.Rubber_Name)}`} className="text-sm font-medium text-foreground leading-tight hover:text-primary hover:underline transition-colors">{setup!.backhandRubber.Rubber_Name}</Link>
                     <p className="text-xs text-muted-foreground">Sponge: {setup!.backhandThickness || backhandThickness}</p>
                   </div>
                 </div>
@@ -723,11 +471,11 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         <div className="px-8 pb-8">
           <div className="max-w-2xl mx-auto space-y-6 bg-card/50 backdrop-blur-sm rounded-2xl p-6 border border-border/30">
             <h3 className="text-lg font-semibold text-center text-foreground">Performance</h3>
-            <div className="grid gap-6">
-              <StatSlider label="Speed" value={stats.speed} icon={Gauge} />
-              <StatSlider label="Spin" value={stats.spin} icon={Target} />
-              <StatSlider label="Control" value={stats.control} icon={Shield} />
-              <StatSlider label="Power" value={stats.power} icon={Star} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <StatBar label="Speed" value={stats.speed} icon={Gauge} tooltip={statDescriptions.speed} />
+              <StatBar label="Spin" value={stats.spin} icon={Target} tooltip={statDescriptions.spin} />
+              <StatBar label="Control" value={stats.control} icon={Shield} tooltip={statDescriptions.control} />
+              <StatBar label="Power" value={stats.power} icon={Star} tooltip={statDescriptions.power} />
             </div>
           </div>
         </div>
@@ -739,11 +487,23 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               <Info className="w-4 h-4" />
               Why this is perfect for you
             </h3>
+
+            {/* Show user's profile answers to give context */}
+            {currentAnswers && Object.keys(currentAnswers).length > 0 && (
+              <div className="mb-4 flex flex-wrap gap-2 text-xs">
+                {Object.entries(currentAnswers).map(([key, val]) => {
+                  if (!val || typeof val !== 'string' || key === 'Brand' || key === 'Budget' || key === 'WantsSpecialRubbers' || key === 'WantsSpecialHandle' || key === 'AssemblyPreference') return null;
+                  return (
+                    <Badge key={key} variant="secondary" className="font-normal border-primary/20 bg-primary/5 text-foreground/80">
+                      <span className="opacity-60 mr-1">{key}:</span> {val}
+                    </Badge>
+                  );
+                })}
+              </div>
+            )}
+
             <p className="text-sm text-muted-foreground leading-relaxed">
-              {isPreAssembled 
-                ? "This ready-to-play racket matches your skill level and playing style perfectly. No assembly required — just unbox and start playing immediately."
-                : `This custom setup combines ${setup?.blade.Blade_Name} with premium rubbers tailored to your preferences. It offers the perfect balance of performance characteristics you're looking for.`
-              }
+              {generateDynamicExplanation(isPreAssembled ? racket : setup, isPreAssembled, currentAnswers)}
             </p>
           </div>
         </div>
@@ -751,17 +511,16 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         {/* CTA Buttons */}
         <div className="px-8 pb-12">
           <div className="max-w-2xl mx-auto space-y-3">
-            <Button 
-              onClick={() => handleAddToCart(item)}
+            <Button
+              onClick={() => handleRequestQuotes(item)}
               size="lg"
-              className="w-full h-14 text-base font-medium rounded-full"
-              disabled={isLoadingProducts}
+              className="w-full h-14 text-base font-bold rounded-full shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              <ShoppingCart className="w-5 h-5 mr-2" />
-              Add to Cart
+              <Sparkles className="w-5 h-5 mr-2" />
+              Ask for an offer from the best shops
             </Button>
-            <div className="grid grid-cols-2 gap-3">
-              <Button 
+            <div className="grid grid-cols-3 gap-3">
+              <Button
                 onClick={() => handleViewInConfigurator(item)}
                 variant="outline"
                 size="lg"
@@ -769,7 +528,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               >
                 More Info
               </Button>
-              <Button 
+              <Button
                 onClick={() => handleAddToCompare(item)}
                 variant="outline"
                 size="lg"
@@ -777,72 +536,18 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               >
                 Compare
               </Button>
+              <ShareButton
+                racketName={name}
+                score={score}
+                price={price}
+                isCustom={!isPreAssembled}
+                forehandRubberName={!isPreAssembled ? setup?.forehandRubber.Rubber_Name : undefined}
+                backhandRubberName={!isPreAssembled ? setup?.backhandRubber.Rubber_Name : undefined}
+                className="h-12 text-sm font-medium rounded-full"
+              />
             </div>
           </div>
         </div>
-
-        {/* Assembly and Seal Options for Custom */}
-        {!isPreAssembled && setup && (
-          <div className="px-8 pb-12">
-            <div className="max-w-2xl mx-auto space-y-3">
-              {/* Assembly Service */}
-              <div className="bg-muted/30 rounded-2xl p-6 border border-border/30">
-                <div className="flex items-start gap-3">
-                  <Wrench className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-                  <div className="flex-1 space-y-3">
-                    <div>
-                      <p className="text-sm font-medium text-foreground mb-1">Free Professional Assembly</p>
-                      <p className="text-xs text-muted-foreground">
-                        We'll expertly glue your rubbers to your blade at no extra cost.
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="assemble-hero"
-                        checked={assembleCustom1}
-                        onCheckedChange={(checked) => setAssembleCustom1(!!checked)}
-                      />
-                      <Label 
-                        htmlFor="assemble-hero"
-                        className="text-sm font-medium cursor-pointer"
-                      >
-                        Assemble my racket (Free)
-                      </Label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Seal Service */}
-              <div className="bg-muted/30 rounded-2xl p-6 border border-border/30">
-                <div className="flex items-start gap-3">
-                  <Shield className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-                  <div className="flex-1 space-y-3">
-                    <div>
-                      <p className="text-sm font-medium text-foreground mb-1">Edge Tape Seal Service</p>
-                      <p className="text-xs text-muted-foreground">
-                        Protect your blade with professional edge tape application for extended durability.
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="seal-hero"
-                        checked={sealCustom1}
-                        onCheckedChange={(checked) => setSealCustom1(!!checked)}
-                      />
-                      <Label 
-                        htmlFor="seal-hero"
-                        className="text-sm font-medium cursor-pointer"
-                      >
-                        Add edge tape seal ($5.00)
-                      </Label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     );
   };
@@ -852,9 +557,9 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     const upsellRecommendation = assemblyPreference?.includes('Ready-to-play')
       ? upsell.recommendation.preAssembled
       : upsell.recommendation.customSetup;
-    
+
     if (!upsellRecommendation) return null;
-    
+
     const isPreAssembled = 'Racket_Name' in upsellRecommendation;
     const upsellItem = {
       type: "main" as const,
@@ -868,16 +573,12 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
     const level = isPreAssembled ? upsellRecommendation.Racket_Level : upsellRecommendation.blade.Blade_Level;
 
     // Get product images for custom setup
-    const bladeProduct = !isPreAssembled ? findShopifyProduct(upsellRecommendation.blade.Blade_Name) : null;
-    const fhProduct = !isPreAssembled ? findShopifyProduct(upsellRecommendation.forehandRubber.Rubber_Name) : null;
-    const bhProduct = !isPreAssembled ? findShopifyProduct(upsellRecommendation.backhandRubber.Rubber_Name) : null;
-    const preAssembledProduct = isPreAssembled ? findShopifyProduct(upsellRecommendation.Racket_Name) : null;
 
     // Calculate stats for comparison
-    const mainSetup = assemblyPreference?.includes('Ready-to-play') 
-      ? recommendation.preAssembled 
+    const mainSetup = assemblyPreference?.includes('Ready-to-play')
+      ? recommendation.preAssembled
       : recommendation.customSetup;
-    
+
     const mainStats = mainSetup && ('Racket_Speed' in mainSetup ? {
       speed: mainSetup.Racket_Speed,
       spin: mainSetup.Racket_Spin,
@@ -965,11 +666,11 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Forehand Rubber */}
                   <div className="bg-background/50 border border-border rounded-xl p-4 space-y-3">
-                    <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-                      <img 
-                        src={fhProduct?.node.images.edges[0]?.node.url || "/placeholder.svg"}
+                    <div className="product-img-wrap aspect-square rounded-lg overflow-hidden bg-muted">
+                      <img
+                        src={getProductImage(upsellRecommendation.forehandRubber, 'rubber')}
                         alt={upsellRecommendation.forehandRubber.Rubber_Name}
-                        className="w-full h-full object-contain"
+                        className="product-img w-full h-full object-contain"
                       />
                     </div>
                     <div className="space-y-1">
@@ -982,14 +683,14 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                       </p>
                     </div>
                   </div>
-                  
+
                   {/* Blade */}
                   <div className="bg-background/50 border border-border rounded-xl p-4 space-y-3">
-                    <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-                      <img 
-                        src={bladeProduct?.node.images.edges[0]?.node.url || "/placeholder.svg"}
+                    <div className="product-img-wrap aspect-square rounded-lg overflow-hidden bg-muted">
+                      <img
+                        src={getProductImage(upsellRecommendation.blade, 'blade')}
                         alt={upsellRecommendation.blade.Blade_Name}
-                        className="w-full h-full object-contain"
+                        className="product-img w-full h-full object-contain"
                       />
                     </div>
                     <div className="space-y-1">
@@ -1002,11 +703,11 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
                   {/* Backhand Rubber */}
                   <div className="bg-background/50 border border-border rounded-xl p-4 space-y-3">
-                    <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-                      <img 
-                        src={bhProduct?.node.images.edges[0]?.node.url || "/placeholder.svg"}
+                    <div className="product-img-wrap aspect-square rounded-lg overflow-hidden bg-muted">
+                      <img
+                        src={getProductImage(upsellRecommendation.backhandRubber, 'rubber')}
                         alt={upsellRecommendation.backhandRubber.Rubber_Name}
-                        className="w-full h-full object-contain"
+                        className="product-img w-full h-full object-contain"
                       />
                     </div>
                     <div className="space-y-1">
@@ -1023,37 +724,31 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
                 {/* Stats Comparison */}
                 {mainStats && (
-                  <div className="mt-8 space-y-4">
+                  <div className="mt-8 space-y-6">
                     <h4 className="text-lg font-semibold text-center text-foreground">Performance Comparison</h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {[
-                        { label: 'Speed', main: mainStats.speed, upsell: upsellStats.speed, icon: Gauge },
-                        { label: 'Spin', main: mainStats.spin, upsell: upsellStats.spin, icon: Target },
-                        { label: 'Control', main: mainStats.control, upsell: upsellStats.control, icon: Shield },
-                        { label: 'Power', main: mainStats.power, upsell: upsellStats.power, icon: Star }
+                        { label: 'Speed', main: mainStats.speed, upsell: upsellStats.speed, icon: Gauge, tooltip: statDescriptions.speed },
+                        { label: 'Spin', main: mainStats.spin, upsell: upsellStats.spin, icon: Target, tooltip: statDescriptions.spin },
+                        { label: 'Control', main: mainStats.control, upsell: upsellStats.control, icon: Shield, tooltip: statDescriptions.control },
+                        { label: 'Power', main: mainStats.power, upsell: upsellStats.power, icon: Star, tooltip: statDescriptions.power }
                       ].map(stat => {
                         const diff = stat.upsell - stat.main;
-                        const Icon = stat.icon;
                         return (
-                          <div key={stat.label} className="bg-muted/30 rounded-lg p-3 space-y-2">
-                            <div className="flex items-center gap-2">
-                              <Icon className="w-4 h-4 text-muted-foreground" />
-                              <span className="text-sm font-medium">{stat.label}</span>
-                            </div>
-                            <div className="flex items-baseline gap-2">
-                              <span className="text-2xl font-bold text-accent">{stat.upsell}</span>
-                              {diff !== 0 && (
-                                <span className={`text-xs font-medium ${diff > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                  {diff > 0 ? '+' : ''}{diff}
+                          <div key={stat.label} className="space-y-2">
+                            <StatBar
+                              label={stat.label}
+                              value={stat.upsell}
+                              icon={stat.icon}
+                              tooltip={stat.tooltip}
+                            />
+                            {diff !== 0 && (
+                              <div className="text-center">
+                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${diff > 0 ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                                  {diff > 0 ? '↑' : '↓'} {Math.abs(diff)} vs original
                                 </span>
-                              )}
-                            </div>
-                            <div className="h-3 bg-muted/30 overflow-hidden">
-                              <div 
-                                className="h-full bg-gradient-to-r from-orange-500 to-orange-600 transition-all duration-300"
-                                style={{ width: `${stat.upsell}%` }}
-                              />
-                            </div>
+                              </div>
+                            )}
                           </div>
                         );
                       })}
@@ -1065,15 +760,13 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
               /* Pre-assembled Racket */
               <div className="px-8 py-8">
                 <div className="max-w-2xl mx-auto text-center space-y-6">
-                  {preAssembledProduct?.node.images.edges[0] && (
-                    <div className="max-w-sm mx-auto aspect-square rounded-2xl overflow-hidden bg-muted">
-                      <img 
-                        src={preAssembledProduct.node.images.edges[0].node.url}
-                        alt={name}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                  )}
+                  <div className="max-w-sm mx-auto aspect-square rounded-2xl overflow-hidden bg-muted">
+                    <img
+                      src={getProductImage(upsellRecommendation, 'racket')}
+                      alt={name}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
                   <div className="space-y-2">
                     <h3 className="text-2xl font-bold text-foreground">
                       {name}
@@ -1098,33 +791,44 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
             {/* CTA Buttons */}
             <div className="px-8 pb-12">
               <div className="max-w-2xl mx-auto space-y-3">
-                <Button 
-                  onClick={() => handleAddToCart(upsellItem)}
+                <Button
+                  onClick={() => handleRequestQuotes(upsellItem)}
                   size="lg"
-                  className="w-full h-14 text-base font-medium rounded-full"
-                  disabled={isLoadingProducts}
+                  className="w-full h-14 text-base font-bold rounded-full shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
-                  <ShoppingCart className="w-5 h-5 mr-2" />
-                  Add to Cart
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Ask for an offer from the best shops
                 </Button>
-                <div className="grid grid-cols-2 gap-3">
-                  <Button 
+                <div className="grid grid-cols-3 gap-3">
+                  <Button
                     onClick={() => handleViewInConfigurator(upsellItem)}
                     variant="outline"
-                    size="lg"
-                    className="h-12 text-sm font-medium rounded-full"
+                    className="flex text-xs font-semibold h-11"
                   >
-                    More Info
+                    <Wrench className="mr-2 h-4 w-4" />
+                    Configure
                   </Button>
-                  <Button 
-                    onClick={() => handleAddToCompare(upsellItem)}
+                  <Button
+                    className="flex text-xs font-semibold h-11"
                     variant="outline"
-                    size="lg"
-                    className="h-12 text-sm font-medium rounded-full"
-                    disabled={comparisonPaddles.length >= 3}
+                    onClick={() => {
+                      if (window.confirm("This will clear your current configurator session. Do you want to proceed?")) {
+                        router.push(`/configurator`);
+                      }
+                    }}
                   >
-                    Compare
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    Open
                   </Button>
+                  <ShareButton
+                    racketName={name}
+                    score={upsellItem.score}
+                    price={price}
+                    isCustom={!isPreAssembled}
+                    forehandRubberName={!isPreAssembled ? (upsellRecommendation as any).forehandRubber?.Rubber_Name : undefined}
+                    backhandRubberName={!isPreAssembled ? (upsellRecommendation as any).backhandRubber?.Rubber_Name : undefined}
+                    className="flex text-xs font-semibold h-11"
+                  />
                 </div>
               </div>
             </div>
@@ -1138,7 +842,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
   if (assemblyPreference === 'Not sure' && selectedOption === null) {
     return (
       <div className="w-full mx-auto space-y-16 py-12 px-4 sm:px-6 lg:px-8">
-        <AssemblyComparisonView 
+        <AssemblyComparisonView
           recommendation={recommendation}
           onSelectPreAssembled={() => setSelectedOption('preassembled')}
           onSelectCustom={() => setSelectedOption('custom')}
@@ -1178,14 +882,14 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
       )}
 
       {/* Low Match Score Warning */}
-      {allRecommendations.length > 0 && allRecommendations[0].score < 60 && (
+      {allRecommendations.length > 0 && allRecommendations[0].score < 45 && (
         <div className="max-w-2xl mx-auto bg-destructive/5 border border-destructive/20 rounded-2xl p-6">
           <div className="flex items-start gap-3">
             <Info className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
             <div className="text-left space-y-1">
               <p className="text-sm font-medium text-foreground">Limited Matches Found</p>
               <p className="text-sm text-muted-foreground">
-                The recommendations below have a lower match score. Consider adjusting your budget or brand preferences for better results.
+                The recommendations below have a lower absolute match score. Consider adjusting your rigorous budget or brand filters for higher-tier results.
               </p>
             </div>
           </div>
@@ -1198,6 +902,22 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           <HeroCard item={allRecommendations[0]} rank={1} />
         </div>
       )}
+
+      {/* Reviews for this combo */}
+      {allRecommendations.length > 0 && (() => {
+        const item = allRecommendations[0];
+        const isPA = 'Racket_Name' in item.data;
+        const cs = !isPA ? item.data as any : null;
+        return (
+          <div className="max-w-5xl mx-auto">
+            <RecommendationReviews
+              blade={isPA ? undefined : cs?.blade?.Blade_Name}
+              fhRubber={isPA ? undefined : cs?.forehandRubber?.Rubber_Name}
+              bhRubber={isPA ? undefined : cs?.backhandRubber?.Rubber_Name}
+            />
+          </div>
+        );
+      })()}
 
       {/* Flexible Budget Upsell */}
       {flexibleBudgetUpsell && (
@@ -1218,8 +938,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
         <Collapsible open={showPreferenceEditor} onOpenChange={setShowPreferenceEditor}>
           <div className="bg-card border border-border/50 rounded-2xl overflow-hidden">
             <CollapsibleTrigger asChild>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="w-full flex items-center justify-between p-6 hover:bg-muted/50 transition-colors rounded-none"
               >
                 <div className="flex items-center gap-3">
@@ -1231,7 +951,7 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                 {showPreferenceEditor ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
               </Button>
             </CollapsibleTrigger>
-            
+
             <CollapsibleContent>
               <div className="p-6 pt-0 space-y-6 border-t border-border/30">
                 <div className="grid md:grid-cols-2 gap-6">
@@ -1258,13 +978,13 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   {/* Brand Selector */}
                   <div className="space-y-3">
                     <label className="text-sm font-semibold text-foreground">
                       Preferred Brands
                     </label>
-                    <BrandSelector 
+                    <BrandSelector
                       selectedBrands={tempBrands}
                       onBrandToggle={(brand) => {
                         setTempBrands(prev => {
@@ -1279,8 +999,8 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
                     />
                   </div>
                 </div>
-                
-                <Button 
+
+                <Button
                   onClick={() => {
                     if (onUpdatePreferences) {
                       onUpdatePreferences(tempBudget, tempBrands);
@@ -1300,15 +1020,15 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
 
       {/* Bottom Actions */}
       <div className="max-w-2xl mx-auto text-center space-y-6">
-        <Button 
+        <Button
           onClick={onRestart}
-          variant="outline" 
+          variant="outline"
           size="lg"
           className="h-12 px-8 rounded-full"
         >
           Retake Quiz
         </Button>
-        
+
         <p className="text-xs text-muted-foreground">
           *Prices are estimates and may vary by retailer and region
         </p>
@@ -1331,6 +1051,12 @@ export default function RecommendationDisplay({ recommendation, onRestart, assem
           </div>
         </div>
       )}
+      {/* Modal is outside the main flow */}
+      <LeadCaptureModal
+        isOpen={isLeadModalOpen}
+        onOpenChange={setIsLeadModalOpen}
+        equipmentDetails={leadEquipmentDetail}
+      />
     </div>
   );
 }

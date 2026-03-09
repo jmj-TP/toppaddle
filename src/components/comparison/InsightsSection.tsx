@@ -4,6 +4,13 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { type PerformanceView } from './RadarComparisonChart';
 
+// Must match COLORS in RadarComparisonChart.tsx and PADDLE_COLORS in CompareClient.tsx
+const PADDLE_COLORS = [
+  'hsl(210, 100%, 50%)', // Neon Blue
+  'hsl(25, 100%, 50%)',  // Neon Orange
+  'hsl(150, 80%, 40%)'   // Neon Green
+];
+
 interface InsightsSectionProps {
   paddles: ComparisonPaddle[];
   selectedPaddleId?: string | null;
@@ -55,7 +62,7 @@ export const InsightsSection = ({ paddles, selectedPaddleId, onPaddleSelect, per
     const powerDiff = ((stats1.power - stats2.power) / stats2.power) * 100;
     const spinDiff = ((stats1.spin - stats2.spin) / stats2.spin) * 100;
     const priceDiff = stats1.price - stats2.price;
-    
+
     // Only include weight comparison for overall view
     const weightDiff = performanceView === 'overall' ? paddle1.weight - paddle2.weight : null;
 
@@ -138,13 +145,32 @@ export const InsightsSection = ({ paddles, selectedPaddleId, onPaddleSelect, per
         {otherPaddles.map((otherPaddle) => {
           const insights = generateInsights(selectedPaddle, otherPaddle);
           const positiveInsights = insights.filter(i => i.isPositive);
-          
+
           return (
             <div key={`${selectedPaddle.id}-${otherPaddle.id}`} className="space-y-3">
               <div className="flex items-center justify-between gap-2">
-                <h3 className="font-semibold text-sm">
-                  Why is <span className="text-primary">{getDisplayName(selectedPaddle)}</span> better than{' '}
-                  <span className="text-muted-foreground">{getDisplayName(otherPaddle)}</span>?
+                <h3 className="font-semibold text-sm flex items-center gap-1 flex-wrap">
+                  Why is{
+                    ' '}
+                  <span className="inline-flex items-center gap-1">
+                    <span
+                      className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"
+                      style={{ background: PADDLE_COLORS[paddles.indexOf(selectedPaddle)] }}
+                    />
+                    <span style={{ color: PADDLE_COLORS[paddles.indexOf(selectedPaddle)] }}>
+                      {getDisplayName(selectedPaddle)}
+                    </span>
+                  </span>
+                  {' '}better than{' '}
+                  <span className="inline-flex items-center gap-1">
+                    <span
+                      className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"
+                      style={{ background: PADDLE_COLORS[paddles.indexOf(otherPaddle)] }}
+                    />
+                    <span style={{ color: PADDLE_COLORS[paddles.indexOf(otherPaddle)] }}>
+                      {getDisplayName(otherPaddle)}
+                    </span>
+                  </span>?
                 </h3>
                 <Button
                   variant="ghost"

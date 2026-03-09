@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { blogPosts } from "@/data/blogPosts";
+import { getAllPosts } from "@/lib/blog";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 const BlogPreview = () => {
-  const latestPosts = blogPosts.slice(0, 3);
+  const latestPosts = getAllPosts().slice(0, 3);
 
   return (
     <section className="py-20 bg-background">
@@ -25,11 +26,12 @@ const BlogPreview = () => {
               key={post.id}
               className="group overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-accent/50"
             >
-              <div className="overflow-hidden">
-                <img
+              <div className="relative h-48 overflow-hidden">
+                <Image
                   src={post.thumbnail}
                   alt={post.title}
-                  className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-110"
                 />
               </div>
               <CardHeader>
@@ -44,28 +46,29 @@ const BlogPreview = () => {
                 <p className="font-body text-sm text-muted-foreground line-clamp-3">
                   {post.excerpt}
                 </p>
-                <Link to={`/blog/${post.id}`}>
-                  <Button variant="ghost" className="group/btn p-0 font-body text-accent hover:text-accent">
+                <Button asChild variant="ghost" className="group/btn p-0 font-body text-accent hover:text-accent">
+                  <Link href={`/blog/${post.id}`}>
                     Read More
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
           ))}
         </div>
 
         <div className="mt-12 text-center">
-          <Link to="/blog">
-            <Button
-              variant="outline"
-              size="lg"
-              className="font-body border-2 hover:border-accent hover:text-accent"
-            >
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="font-body border-2 hover:border-accent hover:text-accent"
+          >
+            <Link href="/blog">
               View All Posts
               <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </div>
     </section>

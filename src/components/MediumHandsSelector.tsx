@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Info } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
@@ -38,14 +37,20 @@ export default function MediumHandsSelector({ onSelect }: MediumHandsSelectorPro
     <div className="space-y-4 w-full">
       {mediumHandOptions.map((handle, index) => (
         <div key={handle.name} className="relative">
-          <Button
+          <div
             onClick={() => handleSelection(handle.value)}
-            variant="outline"
-            className={`w-full p-6 h-auto text-left justify-start border-2 transition-all duration-300 hover:scale-[1.02] hover:shadow-md ${
-              selected === handle.value
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSelection(handle.value);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            className={`w-full p-6 flex flex-col items-start justify-center border-2 rounded-md cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${selected === handle.value
                 ? "border-primary bg-primary/5"
                 : "border-border hover:border-primary hover:bg-primary/5"
-            }`}
+              }`}
           >
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center space-x-4">
@@ -70,7 +75,7 @@ export default function MediumHandsSelector({ onSelect }: MediumHandsSelectorPro
                     <Info className="w-5 h-5" />
                   </button>
                 </PopoverTrigger>
-                <PopoverContent 
+                <PopoverContent
                   className="w-64 bg-popover border-2 border-primary/20 shadow-lg"
                   side="top"
                   align="center"
@@ -84,7 +89,7 @@ export default function MediumHandsSelector({ onSelect }: MediumHandsSelectorPro
                 </PopoverContent>
               </Popover>
             </div>
-          </Button>
+          </div>
         </div>
       ))}
     </div>

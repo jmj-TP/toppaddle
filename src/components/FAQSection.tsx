@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Accordion,
   AccordionContent,
@@ -37,10 +39,10 @@ const FAQSection = ({ faqs, title = "Frequently Asked Questions", description }:
             </p>
           )}
           <Accordion type="single" collapsible className="w-full space-y-4">
-            {faqs.map((faq, index) => (
+            {faqs.map((faq) => (
               <AccordionItem
-                key={index}
-                value={`item-${index}`}
+                key={faq.question}
+                value={faq.question}
                 className="border border-border rounded-lg px-6 bg-card"
               >
                 <AccordionTrigger className="font-headline text-lg font-semibold text-foreground hover:text-primary">

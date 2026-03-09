@@ -1,0 +1,129 @@
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\app\about\page.tsx
+  10:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\app\blog\[id]\page.tsx
+  15:23  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  21:23  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\app\blog\page.tsx
+  11:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\app\compare\CompareClient.tsx
+  35:68  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  90:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\app\compare\page.tsx
+  4:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\app\configurator\ConfiguratorClient.tsx
+   37:68  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  244:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  255:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  283:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  292:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\app\configurator\page.tsx
+  4:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\app\layout.tsx
+  19:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\app\privacy\page.tsx
+  5:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\app\terms\page.tsx
+  5:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\Footer.tsx
+  15:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\Header.tsx
+  33:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\HeroSection.tsx
+  75:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\LeadCaptureModal.tsx
+  21:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\RecommendationDisplay.tsx
+   51:68  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   60:66  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  171:66  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  197:79  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  211:81  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  221:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  246:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  362:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  607:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\TableTennisQuiz.tsx
+  146:56  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                           @typescript-eslint/no-explicit-any
+  186:6   warning  React Hook useEffect has missing dependencies: 'onQuizStatusChange', 'setStoredRecommendation', 'storedCompleteAnswers', and 'storedIsComplete'. Either include them or remove the dependency array. If 'onQuizStatusChange' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\comparison\RadarComparisonChart.tsx
+  216:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  293:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\configurator\ComponentStatsCard.tsx
+  19:82  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\configurator\SlotMachine.tsx
+  162:6   warning  React Hook useEffect has missing dependencies: 'isPreassembled', 'onBackhandChange', 'onBladeChange', 'onForehandChange', 'safeFilteredBackhandRubbers', 'safeFilteredBlades', 'safeFilteredForehandRubbers', 'selectedBackhand', 'selectedBlade', and 'selectedForehand'. Either include them or remove the dependency array. If 'onBladeChange' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+  168:6   warning  React Hook useEffect has a missing dependency: 'handleSpin'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                           react-hooks/exhaustive-deps
+  234:12  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  235:15  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  236:22  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  242:16  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  244:28  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  248:29  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  320:8   warning  React Hook useEffect has an unnecessary dependency: 'isSpinning'. Either exclude it or remove the dependency array. Outer scope values like 'isSpinning' aren't valid dependencies because mutating them doesn't re-render the component                                                                                                                                                                                                                react-hooks/exhaustive-deps
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\ui\badge.tsx
+  29:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\ui\button.tsx
+  49:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\ui\form.tsx
+  129:10  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\ui\navigation-menu.tsx
+  111:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\ui\sidebar.tsx
+  636:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\ui\sonner.tsx
+  27:19  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\components\ui\toggle.tsx
+  37:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\lib\shopify-checkout.ts
+  64:92  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\lib\shopify.ts
+  52:70  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  77:67  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\services\leadService.ts
+  7:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\stores\quizStore.ts
+   8:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  11:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\utils\addProductImages.ts
+  6:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\utils\ratingSystem.ts
+  49:12  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\jjsch\.gemini\antigravity\scratch\table_tennis_equipment\src\utils\upsellCalculation.ts
+  135:12  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  136:11  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 60 problems (40 errors, 20 warnings)
+

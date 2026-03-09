@@ -12,12 +12,11 @@ const BudgetSlider = ({ question, onAnswer }: BudgetSliderProps) => {
   const [budget, setBudget] = useState<number>(100);
 
   const handleConfirm = () => {
-    // If slider is at 360, treat as unlimited (999999)
-    const finalBudget = budget === 360 ? 999999 : budget;
-    onAnswer(finalBudget.toString());
+    const finalBudget = budget >= 360 ? "No limit" : `<${budget}$`;
+    onAnswer(finalBudget);
   };
 
-  const displayBudget = budget === 360 ? "$360+" : `$${budget}`;
+  const displayBudget = budget >= 360 ? "No limit" : `Under $${budget}`;
 
   return (
     <Card className="p-8 shadow-lg border-2 border-primary/20">
@@ -29,14 +28,14 @@ const BudgetSlider = ({ question, onAnswer }: BudgetSliderProps) => {
           Drag the slider to set your maximum budget
         </p>
       </div>
-      
+
       <div className="mb-8">
         <div className="flex justify-center mb-6">
           <div className="text-4xl font-bold text-primary">
             {displayBudget}
           </div>
         </div>
-        
+
         <Slider
           value={[budget]}
           onValueChange={(value) => setBudget(value[0])}
@@ -45,10 +44,10 @@ const BudgetSlider = ({ question, onAnswer }: BudgetSliderProps) => {
           step={5}
           className="w-full"
         />
-        
+
         <div className="flex justify-between mt-2 text-xs text-muted-foreground">
           <span>$30</span>
-          <span>$360+</span>
+          <span>No limit</span>
         </div>
       </div>
 

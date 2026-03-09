@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Facebook, Twitter, Instagram, Youtube } from "lucide-react";
 import logo from "@/assets/logo.png";
 
@@ -12,11 +12,11 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <img src={logo} alt="TopPaddle Logo" className="h-8 w-8" />
+              <img src={(logo as any).src || logo} alt="TopPaddle Logo" className="h-8 w-8" />
               <h3 className="font-headline text-xl font-bold">TopPaddle</h3>
             </div>
             <p className="font-body text-sm text-sidebar-foreground/70 leading-relaxed">
-              Over 20 years of experience in table tennis.
+              Extensive experience in table tennis.
             </p>
           </div>
 
@@ -26,8 +26,7 @@ const Footer = () => {
             <ul className="space-y-3">
               <li>
                 <Link
-                  to="/"
-                  onClick={() => window.scrollTo(0, 0)}
+                  href="/"
                   className="font-body text-sm text-sidebar-foreground/70 transition-colors hover:text-accent"
                 >
                   Quiz
@@ -35,8 +34,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/configurator"
-                  onClick={() => window.scrollTo(0, 0)}
+                  href="/configurator"
                   className="font-body text-sm text-sidebar-foreground/70 transition-colors hover:text-accent"
                 >
                   Configurator
@@ -44,8 +42,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/blog"
-                  onClick={() => window.scrollTo(0, 0)}
+                  href="/blog"
                   className="font-body text-sm text-sidebar-foreground/70 transition-colors hover:text-accent"
                 >
                   Blog
@@ -53,8 +50,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/about"
-                  onClick={() => window.scrollTo(0, 0)}
+                  href="/about"
                   className="font-body text-sm text-sidebar-foreground/70 transition-colors hover:text-accent"
                 >
                   About
@@ -69,8 +65,7 @@ const Footer = () => {
             <ul className="space-y-3">
               <li>
                 <Link
-                  to="/terms"
-                  onClick={() => window.scrollTo(0, 0)}
+                  href="/terms"
                   className="font-body text-sm text-sidebar-foreground/70 transition-colors hover:text-accent"
                 >
                   Terms & Disclaimer
@@ -78,8 +73,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/privacy"
-                  onClick={() => window.scrollTo(0, 0)}
+                  href="/privacy"
                   className="font-body text-sm text-sidebar-foreground/70 transition-colors hover:text-accent"
                 >
                   Privacy Policy

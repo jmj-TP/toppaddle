@@ -17,7 +17,11 @@ interface RadarComparisonChartProps {
   hideControls?: boolean;
 }
 
-const COLORS = ['hsl(var(--accent))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))'];
+const COLORS = [
+  'hsl(210, 100%, 50%)', // Neon Blue
+  'hsl(25, 100%, 50%)',  // Neon Orange
+  'hsl(150, 80%, 40%)'   // Neon Green (Visible on white)
+];
 
 type PerformanceView = 'overall' | 'forehand' | 'blade' | 'backhand';
 
@@ -28,9 +32,9 @@ const VIEW_LABELS = {
   backhand: 'Backhand Rubber Performance Overview',
 };
 
-export const RadarComparisonChart = ({ 
-  paddles, 
-  selectedPaddle, 
+export const RadarComparisonChart = ({
+  paddles,
+  selectedPaddle,
   onPaddleSelect,
   performanceView: externalPerformanceView,
   onPerformanceViewChange,
@@ -41,7 +45,7 @@ export const RadarComparisonChart = ({
   const [internalPerformanceView, setInternalPerformanceView] = useState<PerformanceView>('overall');
   const [internalIncludeWeight, setInternalIncludeWeight] = useState(true);
   const [internalIncludeValue, setInternalIncludeValue] = useState(true);
-  
+
   // Use external values if provided, otherwise use internal
   const performanceView = externalPerformanceView || internalPerformanceView;
   const includeWeight = externalIncludeWeight !== undefined ? externalIncludeWeight : internalIncludeWeight;
@@ -54,7 +58,7 @@ export const RadarComparisonChart = ({
     const currentIndex = views.indexOf(performanceView);
     const nextIndex = (currentIndex + 1) % views.length;
     const nextView = views[nextIndex];
-    
+
     if (onPerformanceViewChange) {
       onPerformanceViewChange(nextView);
     } else {
@@ -107,12 +111,12 @@ export const RadarComparisonChart = ({
     const power = stats.power || 0;
     const spin = stats.spin || 0;
     const totalStats = speed + control + power + spin;
-    
+
     if (price <= 0 || totalStats === 0) return 0;
-    
+
     // Stats per dollar
     const statsPerDollar = totalStats / price;
-    
+
     // Value = (statsPerDollar / 2) × 100, capped at 100
     // 2 stats per dollar ($0.5 per stat) = 100 value (maximum)
     // 1 stat per dollar ($1 per stat) = 50 value
@@ -184,7 +188,7 @@ export const RadarComparisonChart = ({
         const stats = getViewStats(paddle);
         const price = stats.price || paddle.price;
         if (!price) return null;
-        
+
         return statsToValueRadar(stats, price);
       },
     }] : []),
@@ -198,7 +202,7 @@ export const RadarComparisonChart = ({
   ];
 
   // Filter out stats where all paddles have null values
-  const availableStats = statDefinitions.filter(statDef => 
+  const availableStats = statDefinitions.filter(statDef =>
     paddles.some(paddle => statDef.getValue(paddle) !== null)
   );
 
@@ -282,87 +286,87 @@ export const RadarComparisonChart = ({
         <div className="w-full h-[350px] sm:h-[450px] lg:h-[500px]">
           <TooltipProvider delayDuration={100}>
             <ResponsiveContainer width="100%" height="100%">
-              <RadarChart 
+              <RadarChart
                 data={data}
                 margin={{ top: 20, right: 50, bottom: 20, left: 50 }}
                 className="mx-auto"
               >
-              <PolarGrid stroke="hsl(var(--border))" />
-              <PolarAngleAxis 
-                dataKey="stat" 
-                tick={(props: any) => {
-                  const { x, y, payload, cx, cy } = props;
-                  const statName = payload.value;
-                  const explanation = statExplanations[statName];
-                  
-                  // Calculate angle from center to point
-                  const angle = Math.atan2(y - cy, x - cx);
-                  const cos = Math.cos(angle);
-                  const sin = Math.sin(angle);
-                  
-                  // Extend label further from center
-                  const radius = 15;
-                  const labelX = x + cos * radius;
-                  const labelY = y + sin * radius;
-                  
-                  // Determine text anchor based on position
-                  let anchor = 'middle';
-                  if (cos > 0.5) anchor = 'start';
-                  else if (cos < -0.5) anchor = 'end';
-                  
-                  return (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <g>
-                          <text
-                            x={labelX}
-                            y={labelY}
-                            textAnchor={anchor}
-                            dominantBaseline="middle"
-                            fill="hsl(var(--foreground))"
-                            fontSize={12}
-                            fontWeight={500}
-                            className="cursor-help select-none"
-                          >
-                            {statName}
-                          </text>
-                        </g>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="max-w-xs">
-                        {explanation && (
-                          <div className="space-y-1">
-                            <p className="text-xs font-semibold">{statName}</p>
-                            <p className="text-xs text-muted-foreground">{explanation.detailed}</p>
-                          </div>
-                        )}
-                      </TooltipContent>
-                    </Tooltip>
-                  );
-                }}
-                tickLine={false}
-              />
-            {paddles.map((paddle, idx) => {
-              const displayName = getDisplayName(paddle);
-              return (
-                <Radar
-                  key={paddle.id}
-                  name={displayName}
-                  dataKey={displayName}
-                  stroke={COLORS[idx]}
-                  fill={COLORS[idx]}
-                  fillOpacity={selectedPaddle ? (selectedPaddle === paddle.id ? 0.6 : 0.1) : 0.3}
-                  strokeWidth={selectedPaddle === paddle.id ? 3 : 2}
+                <PolarGrid stroke="hsl(var(--border))" />
+                <PolarAngleAxis
+                  dataKey="stat"
+                  tick={(props: any) => {
+                    const { x, y, payload, cx, cy } = props;
+                    const statName = payload.value;
+                    const explanation = statExplanations[statName];
+
+                    // Calculate angle from center to point
+                    const angle = Math.atan2(y - cy, x - cx);
+                    const cos = Math.cos(angle);
+                    const sin = Math.sin(angle);
+
+                    // Extend label further from center
+                    const radius = 15;
+                    const labelX = x + cos * radius;
+                    const labelY = y + sin * radius;
+
+                    // Determine text anchor based on position
+                    let anchor = 'middle';
+                    if (cos > 0.5) anchor = 'start';
+                    else if (cos < -0.5) anchor = 'end';
+
+                    return (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <g>
+                            <text
+                              x={labelX}
+                              y={labelY}
+                              textAnchor={anchor}
+                              dominantBaseline="middle"
+                              fill="hsl(var(--foreground))"
+                              fontSize={12}
+                              fontWeight={500}
+                              className="cursor-help select-none"
+                            >
+                              {statName}
+                            </text>
+                          </g>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-xs">
+                          {explanation && (
+                            <div className="space-y-1">
+                              <p className="text-xs font-semibold">{statName}</p>
+                              <p className="text-xs text-muted-foreground">{explanation.detailed}</p>
+                            </div>
+                          )}
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  }}
+                  tickLine={false}
                 />
-              );
-            })}
-            <Legend 
-              onClick={handleLegendClick}
-              wrapperStyle={{ 
-                display: 'none'
-              }}
-            />
-          </RadarChart>
-        </ResponsiveContainer>
+                {paddles.map((paddle, idx) => {
+                  const displayName = getDisplayName(paddle);
+                  return (
+                    <Radar
+                      key={paddle.id}
+                      name={displayName}
+                      dataKey={displayName}
+                      stroke={COLORS[idx]}
+                      fill={COLORS[idx]}
+                      fillOpacity={selectedPaddle ? (selectedPaddle === paddle.id ? 0.6 : 0.1) : 0.3}
+                      strokeWidth={selectedPaddle === paddle.id ? 3 : 2}
+                    />
+                  );
+                })}
+                <Legend
+                  onClick={handleLegendClick}
+                  wrapperStyle={{
+                    display: 'none'
+                  }}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
           </TooltipProvider>
         </div>
         <div className="flex flex-wrap justify-center gap-4 pt-4">
@@ -374,8 +378,8 @@ export const RadarComparisonChart = ({
                 onClick={() => handleLegendClick({ value: displayName })}
                 className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
               >
-                <div 
-                  className="w-3 h-3 rounded-sm" 
+                <div
+                  className="w-3 h-3 rounded-sm"
                   style={{ backgroundColor: COLORS[idx] }}
                 />
                 <span className="text-sm font-medium text-foreground">

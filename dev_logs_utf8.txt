@@ -1,0 +1,35 @@
+﻿node.exe : ΓÜá Invalid 
+next.config.mjs options 
+detected: 
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo          : N 
+   otSpecified: (ΓÜá Invalid n  
+  ex...ions detected: :String   
+ ) [], RemoteException
+    + FullyQualifiedErrorId : N 
+   ativeCommandError
+ 
+ΓÜá     Unrecognized key(s) in 
+object: 'swcMinify'
+ΓÜá See more info here: https://
+nextjs.org/docs/messages/invalid
+-next-config
+Γû▓ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://172.20.10.2:3001
+
+Γ£ô Starting...
+Γ¿» Unable to acquire lock at C:
+\Users\jjsch\.gemini\antigravity
+\scratch\table_tennis_equipment\
+.next\dev\lock, is another 
+instance of next dev running?
+  Suggestion: If you intended to restart next dev, terminate the other process, and then try again.
+[?25h

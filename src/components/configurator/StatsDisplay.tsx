@@ -5,11 +5,10 @@ import { useState, useEffect } from "react";
 import type { Blade, Rubber, PreAssembledRacket } from "@/data/products";
 import { RadarComparisonChart } from "@/components/comparison/RadarComparisonChart";
 import { StatSlider } from "@/components/configurator/StatSlider";
-import { getRecommendation, findBestCustomSetups } from "@/utils/ratingSystem";
-import type { QuizAnswers } from "@/utils/ratingSystem";
+import { StatBar } from "@/components/ui/StatBar";
+import { getRecommendation, findBestCustomSetups, type Inventory, type QuizAnswers } from "@/utils/ratingSystem";
 import { useQuizStore } from "@/stores/quizStore";
 import { toast } from "sonner";
-import { blades, rubbers } from "@/data/products";
 import {
   Tooltip,
   TooltipContent,
@@ -54,7 +53,7 @@ interface StatsDisplayProps {
   racket: PreAssembledRacket | null;
   onRandomReroll: () => void;
   onPreferencesChange?: (preferences: UserPreferences) => void;
-  onAddToCart?: () => void;
+  onRequestQuotes?: () => void;
   onAddToCompare?: () => void;
   isPreassembled: boolean;
   assembleForMe: boolean;
@@ -64,6 +63,7 @@ interface StatsDisplayProps {
   onBladeChange?: (blade: Blade) => void;
   onForehandChange?: (rubber: Rubber) => void;
   onBackhandChange?: (rubber: Rubber) => void;
+  inventory: Inventory;
 }
 
 const StatsDisplay = ({
@@ -75,7 +75,7 @@ const StatsDisplay = ({
   racket,
   onRandomReroll,
   onPreferencesChange,
-  onAddToCart,
+  onRequestQuotes: onAddToCart,
   onAddToCompare,
   isPreassembled,
   assembleForMe,
@@ -85,6 +85,7 @@ const StatsDisplay = ({
   onBladeChange,
   onForehandChange,
   onBackhandChange,
+  inventory,
 }: StatsDisplayProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -95,28 +96,28 @@ const StatsDisplay = ({
   const [editControl, setEditControl] = useState(stats.control);
   const [editPower, setEditPower] = useState(stats.power);
   const [editWeight, setEditWeight] = useState<number>(200);
-  
+
   const [radarView, setRadarView] = useState<'overall' | 'forehand' | 'blade' | 'backhand'>('overall');
   const [showValue, setShowValue] = useState(true);
   const [showWeight, setShowWeight] = useState(true);
-  
+
   const quizStore = useQuizStore();
-  
+
   const [editForehandSpeed, setEditForehandSpeed] = useState(forehand?.Rubber_Speed || 50);
   const [editForehandSpin, setEditForehandSpin] = useState(forehand?.Rubber_Spin || 50);
   const [editForehandControl, setEditForehandControl] = useState(forehand?.Rubber_Control || 50);
   const [editForehandPower, setEditForehandPower] = useState(forehand?.Rubber_Power || 50);
-  
+
   const [editBladeSpeed, setEditBladeSpeed] = useState(blade?.Blade_Speed || 50);
   const [editBladeSpin, setEditBladeSpin] = useState(blade?.Blade_Spin || 50);
   const [editBladeControl, setEditBladeControl] = useState(blade?.Blade_Control || 50);
   const [editBladePower, setEditBladePower] = useState(blade?.Blade_Power || 50);
-  
+
   const [editBackhandSpeed, setEditBackhandSpeed] = useState(backhand?.Rubber_Speed || 50);
   const [editBackhandSpin, setEditBackhandSpin] = useState(backhand?.Rubber_Spin || 50);
   const [editBackhandControl, setEditBackhandControl] = useState(backhand?.Rubber_Control || 50);
   const [editBackhandPower, setEditBackhandPower] = useState(backhand?.Rubber_Power || 50);
-  
+
   useEffect(() => {
     setEditLevel(level);
     setEditSpeed(stats.speed);
@@ -136,7 +137,7 @@ const StatsDisplay = ({
     setEditBackhandControl(backhand?.Rubber_Control || 50);
     setEditBackhandPower(backhand?.Rubber_Power || 50);
   }, [stats, level, blade, forehand, backhand]);
-  
+
   const handleEditPreferences = () => {
     setIsEditMode(true);
   };
@@ -156,7 +157,7 @@ const StatsDisplay = ({
       const avgPower = showAdvanced
         ? (editForehandPower + editBladePower + editBackhandPower) / 3
         : editPower;
-      
+
       // Determine playstyle based on dominant stats
       let playstyle = 'Allround';
       if (avgSpeed > avgControl && avgSpeed > 60) {
@@ -164,31 +165,31 @@ const StatsDisplay = ({
       } else if (avgControl > avgSpeed && avgControl > 60) {
         playstyle = 'Defensive';
       }
-      
+
       // Determine forehand style based on forehand stats
       let forehandStyle = 'Spin & topspin';
       const fhSpeed = showAdvanced ? editForehandSpeed : editSpeed;
       const fhControl = showAdvanced ? editForehandControl : editControl;
       const fhSpin = showAdvanced ? editForehandSpin : editSpin;
-      
+
       if (fhSpeed > Math.max(fhControl, fhSpin) && fhSpeed > 65) {
         forehandStyle = 'Fast & aggressive';
       } else if (fhControl > Math.max(fhSpeed, fhSpin) && fhControl > 65) {
         forehandStyle = 'Calm & controlled';
       }
-      
+
       // Determine backhand style based on backhand stats
       let backhandStyle = 'Spin & topspin';
       const bhSpeed = showAdvanced ? editBackhandSpeed : editSpeed;
       const bhControl = showAdvanced ? editBackhandControl : editControl;
       const bhSpin = showAdvanced ? editBackhandSpin : editSpin;
-      
+
       if (bhSpeed > Math.max(bhControl, bhSpin) && bhSpeed > 65) {
         backhandStyle = 'Fast & aggressive';
       } else if (bhControl > Math.max(bhSpeed, bhSpin) && bhControl > 65) {
         backhandStyle = 'Calm & controlled';
       }
-      
+
       // Determine power preference
       let powerPref = 'Balanced';
       if (avgPower > 70 || avgSpeed > 75) {
@@ -196,7 +197,7 @@ const StatsDisplay = ({
       } else if (avgControl > 70) {
         powerPref = 'Control is more important';
       }
-      
+
       const quizAnswers: QuizAnswers = {
         Level: editLevel,
         Playstyle: playstyle,
@@ -213,22 +214,22 @@ const StatsDisplay = ({
         WeightPreference: editWeight < 170 ? 'Lightweight' : editWeight > 200 ? 'Heavy' : 'Medium',
         AssemblyPreference: 'Custom setup'
       };
-      
+
       // Run the matching algorithm
-      const customSetups = findBestCustomSetups(quizAnswers, 1);
-      
+      const customSetups = findBestCustomSetups(quizAnswers, inventory, 1);
+
       if (customSetups.length > 0) {
         const bestSetup = customSetups[0];
         onBladeChange(bestSetup.blade);
         onForehandChange(bestSetup.forehandRubber);
         onBackhandChange(bestSetup.backhandRubber);
-        
+
         toast.success("Your setup was optimized to match your preferences.");
       } else {
         toast.error("Could not find matching setup with these preferences");
       }
     }
-    
+
     if (onPreferencesChange) {
       const preferences: UserPreferences = {
         budget: editBudget,
@@ -239,7 +240,7 @@ const StatsDisplay = ({
         power: editPower,
         weight: editWeight,
       };
-      
+
       if (showAdvanced) {
         preferences.forehandSpeed = editForehandSpeed;
         preferences.forehandSpin = editForehandSpin;
@@ -254,10 +255,10 @@ const StatsDisplay = ({
         preferences.backhandControl = editBackhandControl;
         preferences.backhandPower = editBackhandPower;
       }
-      
+
       onPreferencesChange(preferences);
     }
-    
+
     setIsEditMode(false);
     setShowAdvanced(false);
   };
@@ -274,7 +275,7 @@ const StatsDisplay = ({
     const currentIndex = views.indexOf(radarView);
     setRadarView(views[(currentIndex + 1) % views.length]);
   };
-  
+
   const getRadarData = () => {
     if (radarView === 'overall') {
       return [{
@@ -334,7 +335,7 @@ const StatsDisplay = ({
     }
     return [];
   };
-  
+
   const getRadarSubhead = () => {
     switch (radarView) {
       case 'overall': return 'Overall';
@@ -343,7 +344,7 @@ const StatsDisplay = ({
       case 'backhand': return 'BH Rubber';
     }
   };
-  
+
   const tooltips = {
     speed: "How fast the ball travels off your paddle",
     spin: "Ability to generate rotation on the ball",
@@ -352,39 +353,7 @@ const StatsDisplay = ({
     value: "Price-to-performance ratio",
     weight: "Total weight in grams"
   };
-  
-  const StatBar = ({ label, value, Icon, tooltip }: { label: string; value: number; Icon: any; tooltip?: string }) => {
-    const [showTooltip, setShowTooltip] = useState(false);
-    
-    return (
-      <TooltipProvider>
-        <div className="py-[1.5vh] px-[2vw] bg-card border border-border/50 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-[1vw] mb-[1vh]">
-            <Icon className="w-[4vw] h-[4vw] lg:w-[1.2vw] lg:h-[1.2vw] text-muted-foreground flex-shrink-0" />
-            <Tooltip open={showTooltip} onOpenChange={setShowTooltip}>
-              <TooltipTrigger asChild onClick={() => setShowTooltip(!showTooltip)}>
-                <span className="text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] font-medium text-[hsl(var(--primary))] cursor-pointer">
-                  {label}
-                </span>
-              </TooltipTrigger>
-              {tooltip && (
-                <TooltipContent className="max-w-[250px]">
-                  <p>{tooltip}</p>
-                </TooltipContent>
-              )}
-            </Tooltip>
-            <span className="text-[clamp(0.875rem,3.5vw,0.9rem)] lg:text-[clamp(0.875rem,0.9vw,0.95rem)] font-semibold text-accent ml-auto">{value}</span>
-          </div>
-          <div className="h-[0.8vh] bg-muted/50 rounded-sm overflow-hidden">
-            <div 
-              className="h-full bg-accent transition-all duration-500"
-              style={{ width: `${value}%` }}
-            />
-          </div>
-        </div>
-      </TooltipProvider>
-    );
-  };
+
 
   return (
     <div className="w-full max-w-[90vw] lg:max-w-[1200px] mx-auto space-y-[3vh] pb-[20vh] overflow-x-hidden">
@@ -394,8 +363,8 @@ const StatsDisplay = ({
           <>
             <div className="flex items-center gap-[2vw]">
               <span className="text-[3.5vw] lg:text-[0.9vw] font-medium text-muted-foreground">Budget</span>
-              <Select 
-                value={editBudget.toString()} 
+              <Select
+                value={editBudget.toString()}
                 onValueChange={(value) => setEditBudget(parseFloat(value))}
               >
                 <SelectTrigger className="w-[25vw] lg:w-[10vw] h-[5vh] lg:h-[4vh] rounded-xl text-[3.5vw] lg:text-[0.9vw]">
@@ -454,16 +423,16 @@ const StatsDisplay = ({
           <StatSlider label="Spin" value={editSpin} icon={Target} onChange={setEditSpin} />
           <StatSlider label="Control" value={editControl} icon={Shield} onChange={setEditControl} />
           <StatSlider label="Power" value={editPower} icon={Star} onChange={setEditPower} />
-          
-          <StatSlider 
-            label="Weight" 
-            value={editWeight} 
-            icon={Scale} 
+
+          <StatSlider
+            label="Weight"
+            value={editWeight}
+            icon={Scale}
             onChange={setEditWeight}
             description="Preferred total weight in grams. Lighter for speed, heavier for power."
             showValue={true}
           />
-          
+
           <div className="flex gap-[2vw] pt-[2vh]">
             <Button
               onClick={handleSavePreferences}
@@ -483,7 +452,7 @@ const StatsDisplay = ({
               </Button>
             )}
           </div>
-          
+
           {showAdvanced && !racket && (
             <div className="mt-[2vh] space-y-[2vh] pt-[2vh] border-t border-border">
               <div className="space-y-[1vh]">
@@ -495,7 +464,7 @@ const StatsDisplay = ({
                 <StatSlider label="Control" value={editForehandControl} icon={Shield} onChange={setEditForehandControl} />
                 <StatSlider label="Power" value={editForehandPower} icon={Star} onChange={setEditForehandPower} />
               </div>
-              
+
               <div className="space-y-[1vh]">
                 <h4 className="text-[3.5vw] lg:text-[0.95vw] font-semibold text-foreground mb-[1.5vh]">
                   🏓 Blade
@@ -505,7 +474,7 @@ const StatsDisplay = ({
                 <StatSlider label="Control" value={editBladeControl} icon={Shield} onChange={setEditBladeControl} />
                 <StatSlider label="Power" value={editBladePower} icon={Star} onChange={setEditBladePower} />
               </div>
-              
+
               <div className="space-y-[1vh]">
                 <h4 className="text-[3.5vw] lg:text-[0.95vw] font-semibold text-foreground mb-[1.5vh]">
                   ⚫ Backhand Rubber
@@ -515,7 +484,7 @@ const StatsDisplay = ({
                 <StatSlider label="Control" value={editBackhandControl} icon={Shield} onChange={setEditBackhandControl} />
                 <StatSlider label="Power" value={editBackhandPower} icon={Star} onChange={setEditBackhandPower} />
               </div>
-              
+
               {/* Bottom buttons for Advanced section */}
               <div className="flex gap-[2vw] pt-[2vh]">
                 <Button
@@ -538,13 +507,13 @@ const StatsDisplay = ({
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-[clamp(0.5rem,2vw,1rem)] lg:gap-[clamp(0.5rem,1.5vw,1rem)]">
-            <StatBar label="Speed" value={stats.speed} Icon={Gauge} tooltip={tooltips.speed} />
-            <StatBar label="Spin" value={stats.spin} Icon={Target} tooltip={tooltips.spin} />
-            <StatBar label="Control" value={stats.control} Icon={Shield} tooltip={tooltips.control} />
-            <StatBar label="Power" value={stats.power} Icon={Star} tooltip={tooltips.power} />
+          <div className="grid grid-cols-2 gap-4">
+            <StatBar label="Speed" value={stats.speed} icon={Gauge} tooltip={tooltips.speed} />
+            <StatBar label="Spin" value={stats.spin} icon={Target} tooltip={tooltips.spin} />
+            <StatBar label="Control" value={stats.control} icon={Shield} tooltip={tooltips.control} />
+            <StatBar label="Power" value={stats.power} icon={Star} tooltip={tooltips.power} />
           </div>
-          
+
           <div className="flex justify-center pt-[2vh]">
             <Button
               onClick={handleEditPreferences}
@@ -556,7 +525,7 @@ const StatsDisplay = ({
               Change Preferences
             </Button>
           </div>
-            
+
           {/* Radar Chart */}
           <div className="mt-[4vh] pt-[3vh] border-t border-border">
             <div className="flex flex-col sm:flex-row items-center justify-between mb-[2vh] gap-[1vh]">
@@ -619,8 +588,8 @@ const StatsDisplay = ({
               </div>
             </div>
             <div className="transition-all duration-250 motion-reduce:transition-none">
-              <RadarComparisonChart 
-                paddles={getRadarData()} 
+              <RadarComparisonChart
+                paddles={getRadarData()}
                 includeValue={radarView === 'overall' && showValue}
                 includeWeight={radarView === 'overall' && showWeight}
                 hideControls={true}

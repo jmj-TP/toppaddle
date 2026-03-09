@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 interface Option {
   value: string;
   label: string;
+  description?: string;
 }
 
 interface Question {
@@ -26,24 +27,36 @@ const QuestionCard = ({ question, onAnswer }: QuestionCardProps) => {
           {question.question}
         </h2>
       </div>
-      
+
       <div className="space-y-4">
         {question.options.map((option, index) => (
-          <Button
+          <div
             key={index}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onAnswer(option.value);
+              }
+            }}
             onClick={() => onAnswer(option.value)}
-            variant="outline"
-            className="w-full p-6 h-auto text-left justify-start border-2 border-border hover:border-primary hover:bg-primary/5 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
+            className="cursor-pointer group relative overflow-hidden flex-1 p-6 h-auto text-left justify-start border-2 rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg border-border hover:border-primary/50 hover:bg-primary/5"
           >
-            <div className="flex items-center space-x-4">
-              <div className="w-8 h-8 rounded-full bg-accent/20 text-accent font-bold flex items-center justify-center text-sm">
-                {index + 1}
+            <div className="flex flex-col items-center justify-center h-full space-y-4">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center transition-colors duration-300 bg-muted text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary">
+                <span className="text-xl font-bold">{index + 1}</span>
               </div>
-              <span className="text-foreground font-medium">
+              <span className="text-foreground font-medium text-center">
                 {option.label}
               </span>
+              {option.description && (
+                <span className="text-xs text-muted-foreground text-center mt-2 px-2">
+                  {option.description}
+                </span>
+              )}
             </div>
-          </Button>
+          </div>
         ))}
       </div>
     </Card>

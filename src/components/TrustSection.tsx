@@ -10,7 +10,7 @@ const TrustSection = () => {
             Expert Guidance You Can Trust
           </h2>
           <p className="font-body text-lg text-muted-foreground mb-12">
-            With over 20 years of table tennis experience and countless hours helping players find their perfect equipment, 
+            With extensive table tennis experience and countless hours helping players find their perfect equipment,
             we're passionate about matching you with gear that truly enhances your game.
           </p>
 
@@ -20,7 +20,7 @@ const TrustSection = () => {
                 <div className="inline-flex p-3 rounded-full bg-accent/10 mb-4">
                   <Award className="h-8 w-8 text-accent" />
                 </div>
-                <h3 className="font-headline text-2xl font-bold text-foreground mb-2">20+ Years</h3>
+                <h3 className="font-headline text-2xl font-bold text-foreground mb-2">Expert</h3>
                 <p className="font-body text-sm text-muted-foreground">Experience in Table Tennis</p>
               </CardContent>
             </Card>

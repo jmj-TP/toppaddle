@@ -1,47 +1,37 @@
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, LogIn, User } from "lucide-react";
+'use client';
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import DarkModeToggle from "./DarkModeToggle";
-import { CartDrawer } from "./CartDrawer";
-import { useAuthStore } from "@/stores/authStore";
 import { Button } from "./ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
 import logo from "@/assets/logo.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
-  const { isAuthenticated, user, logout } = useAuthStore();
+  const pathname = usePathname();
 
   const navigation = [
     { name: "Home", href: "/" },
+    { name: "Guides", href: "/blog" },
+    { name: "Reviews", href: "/products" },
     { name: "Quiz", href: "/quiz" },
-    { name: "Configurator", href: "/configurator" },
+    { name: "Build a Racket", href: "/configurator" },
     { name: "Compare", href: "/compare" },
-    { name: "Blog", href: "/blog" },
     { name: "About", href: "/about" },
-    { name: "Terms", href: "/terms" },
   ];
 
-  if (isAuthenticated) {
-    navigation.splice(1, 0, { name: "Dashboard", href: "/dashboard" });
-  }
-
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => pathname === path;
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-sidebar-background/95 backdrop-blur-md shadow-md">
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center space-x-2">
-            <img src={logo} alt="TopPaddle Logo" className="h-8 w-8" />
-            <span className="font-headline text-xl font-bold text-sidebar-foreground">
+          <Link href="/" className="flex items-center space-x-2">
+            <img src={(logo as any).src || logo} alt="TopPaddle Logo" className="h-8 w-8" />
+            <span className="font-headline text-xl font-bold text-foreground">
               TopPaddle
             </span>
           </Link>
@@ -51,49 +41,23 @@ const Header = () => {
             {navigation.map((item) => (
               <Link
                 key={item.name}
-                to={item.href}
-                onClick={() => window.scrollTo(0, 0)}
-                className={`font-body text-sm font-medium transition-colors hover:text-accent ${
-                  isActive(item.href)
-                    ? "text-accent"
-                    : "text-sidebar-foreground"
-                }`}
+                href={item.href}
+                className={`font-body text-sm font-medium transition-colors hover:text-primary ${isActive(item.href)
+                  ? "text-primary bg-primary/10 px-3 py-1.5 rounded-md"
+                  : "text-foreground"
+                  }`}
               >
                 {item.name}
               </Link>
             ))}
-            <CartDrawer />
             <DarkModeToggle />
-            {isAuthenticated ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <User className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard">Dashboard</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button asChild variant="default" size="sm">
-                <Link to="/auth/login">
-                  <LogIn className="h-4 w-4 mr-2" />
-                  Login
-                </Link>
-              </Button>
-            )}
           </div>
 
-          {/* Mobile menu button and cart */}
+          {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-2">
-            <CartDrawer />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="rounded-md p-2 text-sidebar-foreground hover:bg-sidebar-background/90"
+              className="rounded-md p-2 text-foreground hover:bg-muted"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -107,16 +71,15 @@ const Header = () => {
               {navigation.map((item) => (
                 <Link
                   key={item.name}
-                  to={item.href}
+                  href={item.href}
                   onClick={() => {
                     setIsMenuOpen(false);
                     window.scrollTo(0, 0);
                   }}
-                  className={`font-body px-4 py-2 text-sm font-medium transition-colors hover:text-accent ${
-                    isActive(item.href)
-                      ? "text-accent"
-                      : "text-sidebar-foreground"
-                  }`}
+                  className={`font-body px-4 py-2 text-sm font-medium transition-colors hover:text-primary ${isActive(item.href)
+                    ? "text-primary bg-primary/10 rounded-md"
+                    : "text-foreground"
+                    }`}
                 >
                   {item.name}
                 </Link>

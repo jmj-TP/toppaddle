@@ -13,10 +13,10 @@ interface AssemblyComparisonViewProps {
   onSelectCustom: () => void;
 }
 
-export default function AssemblyComparisonView({ 
-  recommendation, 
-  onSelectPreAssembled, 
-  onSelectCustom 
+export default function AssemblyComparisonView({
+  recommendation,
+  onSelectPreAssembled,
+  onSelectCustom
 }: AssemblyComparisonViewProps) {
   const { preAssembled, customSetup } = recommendation;
   const [showTooltip, setShowTooltip] = useState<string | null>(null);
@@ -26,7 +26,7 @@ export default function AssemblyComparisonView({
   // Calculate prices
   const preAssembledPrice = preAssembled.Racket_Price;
   const customPrice = customSetup.totalPrice;
-  
+
   // Calculate performance scores (average of stats)
   const preAssembledPerf = Math.round((preAssembled.Racket_Speed + preAssembled.Racket_Control + preAssembled.Racket_Spin) / 3);
   const customPerf = Math.round((
@@ -34,14 +34,14 @@ export default function AssemblyComparisonView({
     (customSetup.blade.Blade_Control + customSetup.forehandRubber.Rubber_Control + customSetup.backhandRubber.Rubber_Control) / 3 +
     (customSetup.blade.Blade_Spin + customSetup.forehandRubber.Rubber_Spin + customSetup.backhandRubber.Rubber_Spin) / 3
   ) / 3);
-  
+
   // Determine which is better based on score and value
   const preAssembledValueScore = (preAssembled.score / preAssembledPrice) * 100;
   const customValueScore = (customSetup.score / customPrice) * 100;
-  
+
   const isPreAssembledBetter = preAssembledValueScore > customValueScore;
   const scoreDifference = Math.abs(preAssembled.score - customSetup.score);
-  
+
   // Generate recommendation text
   const getRecommendationText = () => {
     if (isPreAssembledBetter) {
@@ -107,9 +107,8 @@ export default function AssemblyComparisonView({
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl ${
-            isPreAssembledBetter ? 'ring-2 ring-primary shadow-lg' : ''
-          }`}>
+          <Card className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl ${isPreAssembledBetter ? 'ring-2 ring-primary shadow-lg' : ''
+            }`}>
             {isPreAssembledBetter && (
               <div className="absolute top-4 right-4">
                 <Badge className="bg-primary text-primary-foreground">
@@ -118,7 +117,7 @@ export default function AssemblyComparisonView({
                 </Badge>
               </div>
             )}
-            
+
             <CardContent className="p-6 space-y-6">
               {/* Header */}
               <div className="space-y-2">
@@ -132,11 +131,11 @@ export default function AssemblyComparisonView({
               </div>
 
               {/* Image */}
-              <div className="aspect-square rounded-lg bg-muted/30 overflow-hidden">
+              <div className="product-img-wrap aspect-square rounded-lg bg-muted/30 overflow-hidden">
                 <img
                   src={preAssembled.Racket_Image || "/placeholder.svg"}
                   alt={preAssembled.Racket_Name}
-                  className="w-full h-full object-contain"
+                  className="product-img w-full h-full object-contain"
                 />
               </div>
 
@@ -155,7 +154,7 @@ export default function AssemblyComparisonView({
                 </div>
                 <div className="h-3 bg-muted/30 rounded-full overflow-hidden">
                   <motion.div
-                    className="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full"
+                    className="h-full bg-gradient-to-r from-accent to-accent/80 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${preAssembled.score}%` }}
                     transition={{ duration: 1, delay: 0.5 }}
@@ -207,7 +206,7 @@ export default function AssemblyComparisonView({
               </div>
 
               {/* Button */}
-              <Button 
+              <Button
                 onClick={onSelectPreAssembled}
                 className="w-full"
                 size="lg"
@@ -225,9 +224,8 @@ export default function AssemblyComparisonView({
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl ${
-            !isPreAssembledBetter ? 'ring-2 ring-primary shadow-lg' : ''
-          }`}>
+          <Card className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl ${!isPreAssembledBetter ? 'ring-2 ring-primary shadow-lg' : ''
+            }`}>
             {!isPreAssembledBetter && (
               <div className="absolute top-4 right-4">
                 <Badge className="bg-primary text-primary-foreground">
@@ -236,7 +234,7 @@ export default function AssemblyComparisonView({
                 </Badge>
               </div>
             )}
-            
+
             <CardContent className="p-6 space-y-6">
               {/* Header */}
               <div className="space-y-2">
@@ -251,25 +249,25 @@ export default function AssemblyComparisonView({
 
               {/* Images Grid */}
               <div className="grid grid-cols-3 gap-2">
-                <div className="aspect-square rounded-lg bg-muted/30 overflow-hidden">
+                <div className="product-img-wrap aspect-square rounded-lg bg-muted/30 overflow-hidden">
                   <img
                     src={customSetup.blade.Blade_Image || "/placeholder.svg"}
                     alt={customSetup.blade.Blade_Name}
-                    className="w-full h-full object-contain"
+                    className="product-img w-full h-full object-contain"
                   />
                 </div>
-                <div className="aspect-square rounded-lg bg-muted/30 overflow-hidden">
+                <div className="product-img-wrap aspect-square rounded-lg bg-muted/30 overflow-hidden">
                   <img
                     src={customSetup.forehandRubber.Rubber_Image || "/placeholder.svg"}
                     alt={customSetup.forehandRubber.Rubber_Name}
-                    className="w-full h-full object-contain"
+                    className="product-img w-full h-full object-contain"
                   />
                 </div>
-                <div className="aspect-square rounded-lg bg-muted/30 overflow-hidden">
+                <div className="product-img-wrap aspect-square rounded-lg bg-muted/30 overflow-hidden">
                   <img
                     src={customSetup.backhandRubber.Rubber_Image || "/placeholder.svg"}
                     alt={customSetup.backhandRubber.Rubber_Name}
-                    className="w-full h-full object-contain"
+                    className="product-img w-full h-full object-contain"
                   />
                 </div>
               </div>
@@ -291,7 +289,7 @@ export default function AssemblyComparisonView({
                 </div>
                 <div className="h-3 bg-muted/30 rounded-full overflow-hidden">
                   <motion.div
-                    className="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full"
+                    className="h-full bg-gradient-to-r from-accent to-accent/80 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${customSetup.score}%` }}
                     transition={{ duration: 1, delay: 0.5 }}
@@ -343,7 +341,7 @@ export default function AssemblyComparisonView({
               </div>
 
               {/* Button */}
-              <Button 
+              <Button
                 onClick={onSelectCustom}
                 className="w-full"
                 size="lg"

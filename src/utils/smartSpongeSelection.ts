@@ -1,4 +1,4 @@
-import type { ShopifyProduct } from "@/lib/shopify";
+import type { Rubber } from "@/data/products";
 
 /**
  * Smart Sponge Selection System
@@ -26,7 +26,7 @@ function parseThickness(thickness: string): number {
   if (thickness.toLowerCase().includes('ox')) return 0;
   if (thickness.toLowerCase().includes('max')) return 2.5;
   if (thickness.toLowerCase().includes('ultra')) return 2.5;
-  
+
   // Extract first number from string (e.g., "2.1mm" -> 2.1, "2.1" -> 2.1)
   const match = thickness.match(/[\d.]+/);
   if (!match) return 2.0;
@@ -182,60 +182,36 @@ function generateExplanation(
 
 /**
  * Select optimal sponge size for a rubber based on player profile
- * 
- * @param rubberProduct - The Shopify product for the rubber
+ *
+ * @param rubber - The local Rubber data object
  * @param level - Player skill level (Beginner, Intermediate, Advanced)
  * @param style - Playing style for this side (e.g., "Fast & aggressive")
  * @param side - Which side this is for (FH or BH)
- * @returns SpongeSelection with size, variant ID, and explanation
+ * @returns SpongeSelection with size and explanation
  */
 export function selectSmartSpongeSize(
-  rubberProduct: ShopifyProduct,
+  rubber: Rubber,
   level: string,
   style: string,
   side: 'FH' | 'BH'
 ): SpongeSelection {
-  // Get all available variants with sponge thickness option
-  const variants = rubberProduct.node.variants.edges;
-  
-  // Find the sponge thickness option
-  const spongeOption = rubberProduct.node.options.find(
-    opt => opt.name === "Sponge Thickness"
-  );
+  const availableSizeStrings = rubber.Rubber_Sponge_Sizes || [];
 
-  if (!spongeOption || !spongeOption.values || spongeOption.values.length === 0) {
-    throw new Error(`No sponge thickness options available for ${rubberProduct.node.title}`);
+  if (availableSizeStrings.length === 0) {
+    throw new Error(`No sponge thickness options available for ${rubber.Rubber_Name}`);
   }
 
-  // Parse and sort available thicknesses
-  const availableSizes = spongeOption.values
+  const availableSizes = availableSizeStrings
     .map(value => ({
       original: value,
       value: parseThickness(value)
     }))
     .sort((a, b) => a.value - b.value);
 
-  // Step 1: Get base target size for player level
   const baseTarget = getBaseTargetSize(level, style);
-
-  // Step 2: Apply style adjustment
   const adjustedTarget = applyStyleAdjustment(baseTarget, style);
-
-  // Step 3: Find closest available size
   const selectedSize = findClosestAvailableSize(adjustedTarget, availableSizes);
 
-  // Step 4: Find the matching variant
-  const matchingVariant = variants.find(variant =>
-    variant.node.selectedOptions.some(
-      opt => opt.name === "Sponge Thickness" && opt.value === selectedSize.original
-    )
-  );
-
-  if (!matchingVariant) {
-    throw new Error(`No variant found for sponge thickness ${selectedSize.original}`);
-  }
-
-  // Step 5: Generate explanation
   const explanation = generateExplanation(
     level,
     style,
@@ -246,7 +222,7 @@ export function selectSmartSpongeSize(
 
   return {
     size: selectedSize.original,
-    variantId: matchingVariant.node.id,
+    variantId: selectedSize.original,
     explanation,
     targetSize: adjustedTarget,
     actualSize: selectedSize.value

@@ -39,11 +39,13 @@ export const VerdictSection = ({ paddles, considerPrice }: VerdictSectionProps) 
           </h2>
         </div>
         <div className="flex items-center gap-4">
-          <img
-            src={winner.image}
-            alt={winner.name}
-            className="w-20 h-20 object-contain rounded-lg bg-muted"
-          />
+          <div className="product-img-wrap w-20 h-20 rounded-lg bg-muted flex items-center justify-center overflow-hidden flex-shrink-0">
+            <img
+              src={winner.image}
+              alt={winner.name}
+              className="product-img w-full h-full object-contain"
+            />
+          </div>
           <div>
             <h3 className="font-bold text-lg">{winner.name}</h3>
             <div className="flex gap-2 mt-1">
@@ -65,11 +67,13 @@ export const VerdictSection = ({ paddles, considerPrice }: VerdictSectionProps) 
             <h2 className="text-lg font-semibold">Best Value</h2>
           </div>
           <div className="flex items-center gap-4">
-            <img
-              src={bestValue.image}
-              alt={bestValue.name}
-              className="w-16 h-16 object-contain rounded-lg bg-muted"
-            />
+            <div className="product-img-wrap w-16 h-16 rounded-lg bg-muted flex items-center justify-center overflow-hidden flex-shrink-0">
+              <img
+                src={bestValue.image}
+                alt={bestValue.name}
+                className="product-img w-full h-full object-contain"
+              />
+            </div>
             <div>
               <h3 className="font-semibold">{bestValue.name}</h3>
               <p className="text-sm text-muted-foreground">

@@ -1,0 +1,40 @@
+﻿
+> vite_react_shadcn_ts@0.0.0 build
+> next build
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 5.7s
+  Running TypeScript ...
+  Collecting page data using 15 workers ...
+  Generating static pages using 15 workers (0/17) ...
+  Generating static pages using 15 workers (4/17) 
+  Generating static pages using 15 workers (8/17) 
+  Generating static pages using 15 workers (12/17) 
+Γ£ô Generating static pages using 15 workers (17/17) in 720.6ms
+  Finalizing page optimization ...
+
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ Γùï /about
+Γö£ Γùï /blog
+Γö£ ΓùÅ /blog/[id]
+Γöé Γö£ /blog/guide-to-table-tennis-rubbers
+Γöé Γö£ /blog/beginners-guide-choosing-racket
+Γöé Γö£ /blog/how-to-glue-table-tennis-rubbers
+Γöé Γöö /blog/guide-to-table-tennis-balls
+Γö£ Γùï /compare
+Γö£ Γùï /configurator
+Γö£ Γùï /privacy
+Γö£ Γùï /quiz
+Γö£ Γùï /quiz/start
+Γö£ Γùï /robots.txt
+Γö£ Γùï /sitemap.xml
+Γöö Γùï /terms
+
+
+Γùï  (Static)  prerendered as static content
+ΓùÅ  (SSG)     prerendered as static HTML (uses generateStaticParams)
+

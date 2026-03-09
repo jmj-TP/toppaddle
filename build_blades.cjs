@@ -1,0 +1,179 @@
+const fs = require('fs');
+
+const csvData = `Blade Name,Composition (Veneers),Speed (1-100),Control (1-100),Stiffness (1-100),Dwell Time,Specialist SEO Description
+Butterfly Viscaria,5W + 2 Arylate/Carbon (Outer),92,75,78,Medium,"The gold standard for modern offensive play. Viscaria's Koto outer ply and ALC fiber provide the crisp, powerful, and consistent benchmark used by countless professionals."
+Butterfly Timo Boll ALC,5W + 2 Arylate/Carbon (Outer),93,74,80,Medium-Low,"Based on the Viscaria construction but with a slightly sharper, stiffer feel. It is optimized for close-to-the-table counter-looping and precise, powerful attacks."
+DHS Hurricane Long 5,5W + 2 Arylate/Carbon (Inner),95,76,70,High,"The ultimate ""Innerforce"" ALC blade. Limba outer plies over a carbon core offer massive dwell time and safety for slow loops, unlocking devastating power on full-force strokes."
+Stiga Clipper Wood,7-Ply Wood (Limba-Ayous),86,82,75,Medium-High,"The legendary all-wood powerhouse. Known for its thick composition and solid feel, it provides incredible control for blocking and driving, making it the perfect choice for traditional power players."
+Nittaku Acoustic,5-Ply Wood (Limba),78,90,60,Very High,"Built using acoustic instrument manufacturing techniques. The special gluing process gives it unique ""feedback"" and flexibility, offering unparalleled control and spin for technical, loop-focused players."
+Butterfly Innerforce Layer ALC,5W + 2 Arylate/Carbon (Inner),89,80,68,High,"Butterfly's answer to the Inner-carbon demand. This blade acts like a controllable 5-ply wood on soft contact but activates the ALC core for powerful, safe looping on strong attacks."
+Stiga Carbonado 145,5W + 2 TeXtreme Carbon (Outer),94,72,85,Medium-Low,"A high-tech beast using unique TeXtreme flat-weave carbon. The 145 angle provides a wider sweet spot and a flatter, more direct trajectory for aggressive smashers and drivers."
+Xiom Stradivarius,5W + 2 Aramid/Carbon (Outer),91,76,76,Medium,"A high-value alternative to the Viscaria class. The Aramid Carbon (a slightly softer ALC variant) over Koto provides a crisp, responsive feel for dynamic all-round offensive play."
+Butterfly Primorac Carbon,3W + 2 Tamca 5000 (Outer),98,60,95,Low,"A pure speed legend. Thick Cypress outer plies combined with T5000 carbon make this one of the stiffest and fastest blades ever made, perfect for flat hitters and blockers."
+Donier Balsa 14.5,3W + 2 Fiberglass + Balsa Core,84,85,70,High,"The lightweight touch specialist. A thick Balsa core offers a unique low-gear control for short-game precision, while the fiberglass layers give surprising power on put-away shots."
+Nittaku Violin,5-Ply Wood (White Ash),75,94,55,Extreme,"The ultimate control blade. White Ash outer plies and special instrument gluing give the highest dwell time among all-wood blades, making it the spin-master's dream."
+Butterfly Mazunov,5-Ply Wood (Planchonello),88,78,82,Medium,"An anomaly—a heavy, stiff, 5-ply wood that rivals many carbon blades in speed. Its unique Planchonello outer plies create a massive ""catapult effect"" for traditional, mid-distance power loops."
+Stiga Infinity VPS V,5-Ply Wood (Limba - VPS),83,86,65,High,"Custom-treated ""Diamond Touch"" Limba plies. This VPS technology hardens the outer surface, giving the control of a 5-ply wood with a crispness that supports the modern, poly-ball loop game."
+Joola Rossi Emotion,5W + 2 Carbon (Inner),87,84,62,High,"A hidden gem in the Inner-carbon category. Its extremely soft Hinoki outer plies provide luxurious touch, while the inner carbon layers give strong, dynamic speed when needed."
+Butterfly Timo Boll ZLC,5W + 2 Zylon/Carbon (Outer),96,68,90,Low,"Zylon/Carbon weave is lighter, stiffer, and more explosive than ALC. This blade offers massive speed and a direct, flat trajectory, rewarding advanced players with precise timing."
+DHS Hurricane Long 3,7-Ply Wood (Limba-Ayous),87,81,72,High,"A refined, slightly softer version of the classic Stiga Clipper Wood. This 7-ply all-wood construction offers a perfect balance of control, solid feel, and traditional loop power."
+Nittaku Tenaly Acoustic,5-Ply Wood (Limba),78,90,60,Very High,"The ultimate ergonomic tool. It uses the award-winning Acoustic construction but with a patented curved handle that automatically aligns the blade angle for a natural, stress-free grip."
+Butterfly Petr Korbel,5-Ply Wood (Limba),76,91,58,High,"The benchmark 5-ply Limba looping blade. Thousands of players have developed their game with this blade, which excels at producing massive spin and consistent rallies."
+Stiga Rosewood NCT V,5-Ply Wood (Rosewood),89,77,85,Medium-Low,"Stiga's fastest all-wood blade. Extremely hard Rosewood outer plies combined with NCT technology make this blade stiff and responsive, supporting aggressive driving and smashing."
+Victas Koki Niwa Wood,7-Ply Wood (Limba-Limba),90,75,80,Medium,"Designed for the counter-attack specialist. This unique 7-ply construction uses softer outer plies over a hard core, giving the solid feel needed to absorb and redirect opponent power."
+Butterfly Mizutani Jun ZLC,5W + 2 Zylon/Carbon (Outer),95,70,88,Low,"A direct competitor to the TB ZLC. It utilizes the same explosive ZLC material but is configured for a slightly higher throw angle, making it deadlier for high-speed, mid-distance looping rallies."
+DHS Power G7,7-Ply Wood (Limba-Ayous),85,83,70,High,"A legendary high-value 7-ply wood. It offers a versatile, ""classic"" 7-ply feel, giving strong power for drives and blocks without sacrificing the dwell time needed for strong loops."
+Donic Ovtcharov True Carbon,5W + 2 Arylate/Carbon (Outer),92,74,79,Medium,"A direct, high-quality alternative to the Viscaria and TB ALC. Donic uses the identical Koto-ALC construction method, offering the same iconic crisp, versatile, professional offensive power."
+Butterfly Gergely,3W + 2 Tamca 5000 (Outer),97,62,93,Low,"A speed beast derived from the Primorac Carbon but with a larger, more traditional handle shape. Its T5000/Cypress build is optimized for flat hitting, smashing, and uncompromising offensive pressure."
+Stiga Ebenholz NCT V,5-Ply Wood (Ebony),91,75,88,Low,"Stiga's fastest and stiffest all-wood blade, using extremely hard Ebony outer plies. This creates a massive ""rebound effect,"" perfect for players who demand maximum speed and a direct, powerful trajectory."
+Nittaku Ludeack Power,7-Ply Wood (Limba-Ayous),88,79,78,Medium,"A refined, stiffer version of the Nittaku Ludeack. This 7-ply wood is built for the post-poly ball era, giving the extra speed needed for power drives and consistent, strong counter-looping."
+Butterfly Innerforce Layer ZLC,5W + 2 Zylon/Carbon (Inner),93,75,75,Medium-High,"The ultimate Inner-fiber blend. It features the soft feel and dwell time of a 5-ply wood on soft contact, but activating the powerful, stiff ZLC core unlocks massive, dynamic power on strong loops."
+DHS Hurricane Hao III,5W + 1 Glass-Carbon (Mono-Core),89,80,65,High,"A unique ""glass-carbon"" mono-core blade. Its thick central carbon layer is designed specifically for the Penhold RPB grip, giving immense power for loop-drives while maintaining incredible touch."
+Joola Aruna Off,5W + 2 Carbon (Inner),89,82,66,High,"A classic Inner-carbon blade. Limba outer plies over a soft carbon core offer massive dwell time and safety for loops, while the inner carbon core provides linear, dynamic power on command."
+Butterfly Timo Boll Spirit,5W + 2 Arylate/Carbon (Outer),91,76,75,Medium,"The predecessor to the TB ALC and a legend in its own right. This blade uses the exact Koto-ALC construction that set the benchmark for versatile, controlled-looping offensive power."
+Andro Treiber Z,5W + 2 Zylon-Fiber (Outer),93,78,82,Medium,"A rare multi-talent. The outer Z-fiber provides a massive sweet spot and a ""crispy"" feel that excels at both aggressive counter-loops and solid, constant blocks."
+Gewo Aruna Carbon 2,5W + 2 Carbon (Outer),94,73,84,Medium-Low,"Built for the explosive style of Quadri Aruna. This blade uses high-energy carbon layers to maximize ball acceleration, making it a weapon for players who dominate with raw power."
+Victas Koki Niwa ZC,5W + 2 Z-Carbon (Outer),96,72,88,Low,"A high-speed masterpiece. The Z-Carbon placement offers extreme stability and a direct trajectory, specifically designed for Koki Niwa's signature close-to-the-table ""artistic"" counters."
+Donic Ovtcharov Senso V1,7-Ply Wood (Walnut Outer),89,78,80,Medium,"A walnut-outer 7-ply beast. Donic’s Senso technology (hollow handle) shifts the balance toward the head, providing unbelievable power for smashes while maintaining wood-like feedback."
+Yasaka Rakza 7 Carbon,5W + 2 Carbon (Inner),88,84,65,High,"The ultimate synergy blade. By placing carbon on the core, Yasaka created a blade that behaves like a 5-ply wood on touch shots but provides a carbon ""kick"" during high-impact loops."
+Andro Gauzy HL5,5W + 2 KVL Carbon (Outer),91,79,74,Medium-High,"Designed by Simon Gauzy. It prioritizes creativity and feeling over ""brute"" speed. The KVL carbon stabilizes the blade, reducing vibration without killing the natural dwell time of the wood."
+Gewo Force ARC Off,5W + 2 Aramid-Carbon (Outer),92,75,79,Medium,A direct rival to the ALC class. The Aramid Carbon weave creates a balanced hardness that is optimized for speed-oriented topspin players who want to dominate the first three balls.
+Tibhar Shang Kun Hybrid ZC,5W + 2 ZC (Inner),94,77,72,High,"The inner Zylon-Carbon construction offers a unique ""hold-and-release"" feel. It is one of the most powerful inner-fiber blades on the market, perfect for massive mid-distance looping."
+Victas Swat Power,7-Ply Wood (All-Wood),88,81,76,Medium-High,"One of the most popular 7-ply blades in Japan. It is stiffer than a Clipper but maintains a ""soft"" impact feel, making it incredible for the high-tension rubber era."
+Stiga Inspira Hybrid Carbon,5W + 2 Hybrid Carbon (Outer),95,74,86,Medium-Low,"Stiga’s modern speed king. The hybrid carbon provides a wider sweet spot than traditional ALC, making it extremely reliable during high-speed, off-center exchanges."
+Andro Kanter FO,3W + 2 Carbon (Balsa Core),90,82,70,Medium,"A 6mm Balsa core creates a ""weightless"" feel. It offers massive speed in the ""top gear"" but remains surprisingly easy to control during short-game pushes and blocks."
+Gewo In-Force ARC Off-,5W + 2 Aramid-Carbon (Inner),87,85,62,Very High,The tamer brother of the Force ARC. The inner placement provides a flexible feel that is ideal for spin-oriented attackers who use hybrid or sticky rubbers.
+Yasaka Ma Lin Soft Carbon,5W + 2 Carbon (Inner),82,88,55,Extreme,"The benchmark for ""control carbon."" It adds just enough stability to a 5-ply wood to increase the sweet spot without sacrificing the legendary Ma Lin ""touch."""
+Tibhar Bernadette Szocs Signature,7-Ply Wood (All-Wood),85,84,70,High,"A high-feeling 7-ply wood. It is designed for consistency and placement, offering a solid ""thud"" on contact that builds confidence in high-pressure rallies."
+Victas ZX-Gear Out,5W + 2 Z-Carbon (Outer),94,74,83,Medium,"Utilizing Zexion fiber, this blade offers a unique elasticity. It feels less ""dead"" than traditional carbon blades, providing more energy return on mid-power loops."
+Donic Waldner Senso Carbon,5W + 2 Carbon (Inner),84,89,58,Very High,"The ""Maestro's"" choice. The inner carbon plies combined with the Senso handle offer the most sensitive ball feedback in the carbon category."
+Andro Ligna F.R. OFF,5-Ply Wood (Violin-Style),79,92,60,High,"Cold-pressed wood manufacturing. This blade offers a distinct ""acoustic"" resonance that technical players use to gauge the exact spin on the ball."
+Gewo Sensus Carbo Speed,5W + 2 Carbon (Outer),96,68,92,Low,"An uncompromising speed machine. Hard wood veneers over a stiff carbon layer prioritize flat hitting and aggressive ""kill"" shots."
+Yasaka Falck Carbon,5W + 2 Carbon (Outer),93,76,80,Medium,Developed for Mattias Falck. It provides the stability needed for short-pips attacking while offering enough flex for his heavy topspin forehand.
+Tibhar Fortino Pro,5W + 2 Dyneema Carbon (Inner),95,73,75,Medium-High,"Utilizing Dyneema (the world’s strongest fiber), this blade offers a unique ""vibration-free"" power that feels incredibly stable during high-speed exchanges."
+Victas Liam Pitchford,5W + 2 Z-Carbon (Outer),95,71,87,Low,"A power-hitting tool. It is optimized for the modern, high-intensity backhand flick and aggressive counter-looping style favored by Pitchford."
+Donic Burn OFF,5-Ply Wood (Thermally Treated),87,80,78,Medium,"The wood is ""burned"" at high temperatures to remove moisture and increase stiffness. This creates a fast, lightweight, all-wood blade with a unique crisp sound."
+Andro Gauzy SL OFF,7-Ply Wood (Ebony Outer),90,77,88,Low,"The Ebony outer plies make this one of the hardest all-wood blades available. It is designed for direct, linear power without the ""artificial"" feel of carbon."
+Gewo Zoom Pro,5-Ply Wood (Limba-Ayous),76,93,55,High,"The classic ""learning"" blade. It provides the perfect feedback loop for developing players to master their stroke mechanics before moving to carbon."
+Stiga Cybershape Carbon,5W + 2 Carbon (CCF Inner),93,78,72,High,"The hexagonal shape isn't just a gimmick—it increases the sweet spot in the hitting area. The inner carbon provides a massive ""hold"" for high-arc loops."
+Yasaka Alnade,5W + 2 PA Carbon (Outer),91,77,77,Medium,"A hidden gem. It uses PA Carbon (similar to ALC) but with a slightly softer touch, making it a very accessible ""pro-level"" offensive blade."
+Tibhar Samsonov Force Pro,7-Ply Wood (Limba-Ayous),87,82,74,Medium-High,"Vladimir Samsonov’s choice for years. It is a slightly faster version of the Clipper, offering a solid and dependable feel for allround-offensive players."
+Victas Dyna Five,5-Ply Wood (All-Wood),74,95,50,Extreme,"Pure control. This blade is designed for players who win through variation and placement rather than speed. Perfect for technical ""touch"" players."
+Donic Crest OFF,9-Ply (7W + 2 Carbon/Carbon),94,75,85,Medium,"A complex 9-ply construction. The thin veneers provide a ""luxury"" feeling with a huge sweet spot and linear power delivery."
+Andro TP Ligna ALL,5-Ply Wood (Violin-Style),70,98,45,Extreme,The ultimate precision tool. Each blade is weighed and tested to ensure the highest level of ball-feeling and control for tactical allrounders.
+Andro Timber 7 OFF,7-Ply Wood (Ayous),85,83,74,Medium-High,"The pure-wood alternative to carbon. It offers a solid, vibration-free contact that is perfect for players transitioning from beginner setups to competitive league play."
+Gewo Balsa Carbon 575,5W + 2 Carbon (Balsa Core),89,84,68,High,"A masterpiece of weight-to-power ratio. The 5.75mm balsa core makes it incredibly light, while the carbon layers ensure the stability needed for modern offensive topspin."
+Yasaka Ma Lin Extra Off,5-Ply Wood (Walnut Outer),83,87,72,Medium-High,"One of the most successful blades in history. The hard walnut outer plies provide a crisp ""crack"" on impact, making it the king of mid-distance looping and blocking."
+Donic Waldner Exclusive,5-Ply Wood (Limba),72,95,48,Extreme,"The ultimate development tool. Designed for precision over power, it forces the player to develop correct technique while providing massive safety on every stroke."
+Victas Swat,7-Ply Wood (Limba-Ayous),84,86,70,High,"Japan’s best-selling 7-ply wood. It has a ""soft"" 7-ply feel that provides a massive sweet spot and incredible consistency for the controlled-offensive player."
+Tibhar Samsonov Alpha,5-Ply Wood (Hybrid),78,91,55,Very High,"A slightly smaller head shape makes this blade incredibly maneuverable. It is a legendary ""touch"" blade for players who win with placement and heavy spin."
+Stiga Allround Classic C,5W + 2 Carbon (Inner),79,92,60,High,"The modern update to the world’s most famous blade. The carbon adds just enough stability for the poly-ball without losing the legendary Stiga ""feeling."""
+Andro Inizio,5-Ply Wood (Allround),70,97,45,Extreme,A high-quality entry-level competitive blade. It offers the linear feedback necessary for learning how to read incoming spin and execute controlled counters.
+Joola Rossi Allround,5-Ply Wood (Limba),74,94,50,High,"Named after the legend Mr. Rossi. This blade is optimized for a balanced game, offering a ""safety first"" approach for tactical players."
+Gewo Zoom Pro Off-,5-Ply Wood (Limba-Ayous),81,88,62,High,"Often called the ""Korbel Killer."" It offers a very similar feel to high-end Butterfly wood blades but with a slightly more modern, crisp finish."
+Yasaka Sweden Extra,5-Ply Wood (All-Wood),75,96,52,Very High,"Produced in the famous factory in Huskvarna. This blade is the gold standard for ""feeling,"" used by pros and amateurs alike to master the short game."
+Donic Persson Powerplay,7-Ply Wood (Foil Layer),87,80,78,Medium,"A unique construction using two thin dampening foils. This gives it 7-ply speed with a 5-ply feel, perfect for aggressive driving and smashing."
+Tibhar Stratus Power Wood,5-Ply Wood (Limba),84,85,65,Medium-High,"A modern offensive wood blade that mimics the feel of the Korbel but with a slightly larger sweet spot and more ""kick"" for mid-distance play."
+Sanwei Target 7,5W + 2 Carbon (Outer),91,76,82,Low,"The best ""budget Viscaria"" clone. For under $50, you get a high-quality Koto-ALC construction that provides professional-grade speed and stiffness."
+Palio TCT,5W + 2 Titanium + 2 Carbon,95,70,90,Low,A technical anomaly. The titanium/carbon weave creates an incredibly stiff surface that is perfect for long-pips players or flat-hitting attackers.
+Xiom Offensive S,5-Ply Wood (Limba),82,86,64,High,"A classic offensive blade with a refined finish. It offers a very linear speed progression, making it a predictable and reliable partner for topspin rallies."
+Andro Timber 5 ALL/S,5-Ply Wood (Koto Outer),75,94,58,High,"The Koto outer ply gives this allround blade a ""pro"" feel. It’s perfect for the technical player who wants carbon-like precision in an all-wood build."
+Gewo Neofaxx Off,5-Ply Wood (All-Wood),84,82,66,Medium-High,"Specifically designed for the ""Neofaxx"" rubber series. It’s a balanced offensive blade that excels at high-arc looping and safe opening attacks."
+Donic Appelgren Allplay,5-Ply Wood (All-Wood),68,98,40,Extreme,"The ultimate ""control"" blade. If you can't control the ball with this, it’s not the equipment’s fault. It is a defensive and tactical masterpiece."
+Victas Award Offensive,5-Ply Wood (All-Wood),81,87,60,High,"A high-quality Japanese-designed blade that focuses on ""easy-to-play"" metrics. It has a soft touch that makes blocking feel effortless."
+Yasaka Silver All Wood,5-Ply Wood (Hardwood Outer),79,91,70,Medium,"The outer plies are specially treated to be harder than standard wood, providing a ""high-tech"" all-wood feel for a modern, spin-based game."
+DHS Power G3,5-Ply Wood (All-Wood),83,85,62,High,"The 5-ply version of the Power G series. It offers a huge amount of ""flex,"" which translates to massive spin production on slow loops."
+Friendship 729 Z-1,5-Ply Wood (Ayous),82,86,60,High,An incredible budget find. It is often compared to the Stiga Offensive Classic but with a slightly thicker core for better stability in the poly-ball era.
+Yinhe (Galaxy) T-11+,5W + 2 Carbon (Balsa Core),94,72,85,Low,"One of the fastest budget blades in existence. At around 70g, it is a lightning-fast weapon for players who want maximum speed without the weight."
+Tibhar Drinkhall Allround,5-Ply Wood (All-Wood),74,94,52,High,"Designed by Paul Drinkhall. This blade focuses on the ""all-around offensive"" style—winning through placement, variations, and consistent pressure."
+Andro Gauzy ALL,5-Ply Wood (Limba),72,96,50,Very High,"Simon Gauzy’s ""entry"" signature blade. It emphasizes the ""art"" of table tennis—touch, spin, and ball-feeling—making it a joy to play with."
+Gewo Play Off,5-Ply Wood (All-Wood),80,86,60,Medium-High,"A no-nonsense offensive blade. It is built to be a reliable ""workhorse"" for club players who need a balanced tool for all aspects of the game."
+Stiga Azalea Allround,5-Ply Wood (All-Wood),76,93,55,High,"Inspired by the Japanese culture, this blade offers a ""soft"" feel and a beautiful finish. It is slightly faster than the Allround Classic, fitting the modern game better."
+Donic Burn All+,5-Ply Wood (Thermal),78,92,65,Medium-High,"The thermally treated wood gives it a ""seasoned"" feel, providing a consistent bounce and a crisp sound that is rare at this price point."
+Sanwei Fextra 7,7-Ply Wood (Limba-Ayous),87,81,76,Medium-High,"Widely regarded as the best budget 7-ply wood on the market. It mimics the Stiga Clipper’s power profile but with a slightly more modern, flexible feel."
+`;
+
+// Simple CSV parser
+const lines = csvData.split('\\n').filter(Boolean);
+const headers = lines[0].split(',');
+const records = [];
+
+for (let i = 1; i < lines.length; i++) {
+  const line = lines[i];
+  if (!line) continue;
+
+  // Handle quotes inside CSV
+  let cols = [];
+  let curr = '';
+  let inQuotes = false;
+
+  for (let j = 0; j < line.length; j++) {
+    const char = line[j];
+    if (char === '"') {
+      if (inQuotes && line[j + 1] === '"') {
+        curr += '"';
+        j++; // skip escaped quote
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === ',' && !inQuotes) {
+      cols.push(curr);
+      curr = '';
+    } else {
+      curr += char;
+    }
+  }
+  cols.push(curr);
+  records.push(cols);
+}
+
+function mapMaterial(composition) {
+  if (composition.includes("(Outer)")) return "Outer-Carbon";
+  if (composition.includes("(Inner)")) return "Inner-Carbon";
+  if (composition.includes("Mono-Core")) return "Inner-Carbon";
+  if (composition.includes("Balsa Core")) return "Inner-Carbon";
+  if (composition.includes("Carbon/Carbon")) return "Outer-Carbon";
+  if (composition.includes("Titanium")) return "Outer-Carbon";
+  if (composition.includes("CCF Inner")) return "Inner-Carbon";
+  if (composition.includes("All-Wood") || composition.includes("Wood")) return "All-Wood";
+
+  return "All-Wood";
+}
+
+let output = 'export const blades: Blade[] = [\\n';
+
+records.forEach(r => {
+  const name = r[0];
+  const composition = r[1];
+  const speed = parseInt(r[2]);
+  const control = parseInt(r[3]);
+  const stiffness = parseInt(r[4]);
+  const desc = r[6];
+
+  const power = speed;
+  const spin = Math.min(99, Math.round(control * 1.05 + (speed * 0.1)));
+  const level = speed > 88 ? "Advanced" : speed > 78 ? "Intermediate" : "Beginner";
+  const style = speed > 85 ? '"Offensive"' : speed < 75 ? '"Allround"' : '"All-Round"';
+  const price = speed > 90 ? 150 : 80;
+
+  output += \`  {
+    Blade_Name: \${JSON.stringify(name)},
+    Blade_Speed: \${speed},
+    Blade_Spin: \${spin},
+    Blade_Control: \${control},
+    Blade_Power: \${power},
+    Blade_Grip: ["FL", "ST"],
+    Blade_Price: \${price},
+    Blade_Level: "\${level}",
+    Blade_Style: \${style},
+    Blade_Weight: 85,
+    Blade_Stiffness: \${stiffness},
+    Blade_Material: "\${mapMaterial(composition)}",
+    Blade_Description: \${JSON.stringify(desc)},
+  },
+\`;
+});
+output += '];\\n';
+
+fs.writeFileSync('blades_output.ts', output);
+console.log("SUCCESS! Wrote " + records.length + " blades!");

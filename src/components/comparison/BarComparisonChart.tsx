@@ -9,7 +9,11 @@ interface BarComparisonChartProps {
   performanceView?: PerformanceView;
 }
 
-const COLORS = ['hsl(var(--accent))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))'];
+const COLORS = [
+  'hsl(210, 100%, 50%)', // Neon Blue
+  'hsl(25, 100%, 50%)',  // Neon Orange
+  'hsl(150, 80%, 40%)'   // Neon Green
+];
 
 export const BarComparisonChart = ({ paddles, stat, label, performanceView = 'overall' }: BarComparisonChartProps) => {
   // Get stats based on view
@@ -72,7 +76,7 @@ export const BarComparisonChart = ({ paddles, stat, label, performanceView = 'ov
   if (paddlesWithStats.length === 0) return null;
 
   const maxValue = Math.max(...paddlesWithStats.map(p => p.statValue));
-  
+
   return (
     <div className="space-y-3">
       <h3 className="text-sm font-semibold text-foreground">{label}</h3>

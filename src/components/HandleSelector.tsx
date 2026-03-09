@@ -44,16 +44,22 @@ export default function HandleSelector({ onSelect }: HandleSelectorProps) {
     <div className="space-y-4 w-full">
       {handleOptions.map((handle, index) => (
         <div key={handle.name} className="relative">
-          <Button
+          <div
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSelection(handle.value);
+              }
+            }}
             onClick={() => handleSelection(handle.value)}
-            variant="outline"
-            className={`w-full p-6 h-auto text-left justify-start border-2 transition-all duration-300 hover:scale-[1.02] hover:shadow-md ${
-              selected === handle.value
+            className={`cursor-pointer w-full p-6 h-auto text-left flex border-2 rounded-md transition-all duration-300 hover:scale-[1.02] hover:shadow-md ${selected === handle.value
                 ? "border-primary bg-primary/5"
                 : "border-border hover:border-primary hover:bg-primary/5"
-            }`}
+              }`}
           >
-            <div className="flex items-center justify-between w-full">
+            <div className="flex flex-1 items-center justify-between w-full">
               <div className="flex items-center space-x-4">
                 <div className="w-8 h-8 rounded-full bg-accent/20 text-accent font-bold flex items-center justify-center text-sm flex-shrink-0">
                   {index + 1}
@@ -76,7 +82,7 @@ export default function HandleSelector({ onSelect }: HandleSelectorProps) {
                     <Info className="w-5 h-5" />
                   </button>
                 </PopoverTrigger>
-                <PopoverContent 
+                <PopoverContent
                   className="w-64 bg-popover border-2 border-primary/20 shadow-lg"
                   side="top"
                   align="center"
@@ -90,7 +96,7 @@ export default function HandleSelector({ onSelect }: HandleSelectorProps) {
                 </PopoverContent>
               </Popover>
             </div>
-          </Button>
+          </div>
         </div>
       ))}
     </div>

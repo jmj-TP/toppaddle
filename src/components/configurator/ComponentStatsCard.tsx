@@ -20,9 +20,9 @@ const ComponentStatsCard = ({ component, type }: ComponentStatsCardProps) => {
     <div className="flex items-center gap-2 mb-2">
       <Icon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
       <span className="text-xs font-medium min-w-[50px]">{label}:</span>
-      <div className="flex-1 bg-muted dark:bg-secondary/30 rounded-sm h-2">
-        <div 
-          className="bg-primary dark:bg-accent h-2 transition-all duration-500"
+      <div className="flex-1 bg-muted dark:bg-secondary/30 rounded-full h-2">
+        <div
+          className="bg-primary dark:bg-accent h-2 transition-all duration-500 rounded-full"
           style={{ width: `${value}%` }}
         />
       </div>
@@ -30,19 +30,19 @@ const ComponentStatsCard = ({ component, type }: ComponentStatsCardProps) => {
     </div>
   );
 
-  const stats = type === "blade" 
+  const stats = type === "blade"
     ? {
-        speed: (component as Blade).Blade_Speed,
-        spin: (component as Blade).Blade_Spin,
-        control: (component as Blade).Blade_Control,
-        power: (component as Blade).Blade_Power,
-      }
+      speed: (component as Blade).Blade_Speed,
+      spin: (component as Blade).Blade_Spin,
+      control: (component as Blade).Blade_Control,
+      power: (component as Blade).Blade_Power,
+    }
     : {
-        speed: (component as Rubber).Rubber_Speed,
-        spin: (component as Rubber).Rubber_Spin,
-        control: (component as Rubber).Rubber_Control,
-        power: (component as Rubber).Rubber_Power,
-      };
+      speed: (component as Rubber).Rubber_Speed,
+      spin: (component as Rubber).Rubber_Spin,
+      control: (component as Rubber).Rubber_Control,
+      power: (component as Rubber).Rubber_Power,
+    };
 
   return (
     <Card className="p-3 mt-2 bg-card backdrop-blur-sm border-2 border-border">

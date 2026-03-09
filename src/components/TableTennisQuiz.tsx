@@ -8,8 +8,10 @@ import RecommendationDisplay from "./RecommendationDisplay";
 import HandleSelector from "./HandleSelector";
 import MediumHandsSelector from "./MediumHandsSelector";
 import BrandSelector from "./BrandSelector";
-import { getRecommendation, type QuizAnswers } from "@/utils/ratingSystem";
+import { getRecommendation, type QuizAnswers, type Inventory } from "@/utils/ratingSystem";
 import { useQuizStore } from "@/stores/quizStore";
+import { getInventoryAction } from "@/app/actions/inventory";
+import BudgetSlider from "./BudgetSlider";
 
 const questions = [
   {
@@ -50,7 +52,7 @@ const questions = [
       { value: "Fast & aggressive", label: "Fast & Aggressive" },
       { value: "Spin & topspin", label: "I use a lot of Spin" },
       { value: "Calm & controlled", label: "Calm & Controlled" },
-      
+
     ],
     key: "Backhand" as keyof QuizAnswers
   },
@@ -113,13 +115,7 @@ const questions = [
   {
     id: 11,
     question: "What is your total budget?",
-    options: [
-      { value: "<50$", label: "Under $50" },
-      { value: "<100$", label: "Under $100" },
-      { value: "<120$", label: "Under $120" },
-      { value: "<140$", label: "Under $140" },
-      { value: "more", label: "More Options" }
-    ],
+    options: [],
     key: "Budget" as keyof QuizAnswers
   }
 ];
@@ -129,7 +125,7 @@ interface TableTennisQuizProps {
 }
 
 const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
-  const { 
+  const {
     answers: storedAnswers,
     completeAnswers: storedCompleteAnswers,
     recommendation: storedRecommendation,
@@ -138,13 +134,12 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     setRecommendation: setStoredRecommendation,
     resetQuiz
   } = useQuizStore();
-  
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Partial<QuizAnswers>>(storedAnswers);
   const [completeAnswers, setCompleteAnswers] = useState<QuizAnswers | null>(storedCompleteAnswers);
   const [isComplete, setIsComplete] = useState(storedIsComplete);
   const [recommendation, setRecommendation] = useState<any>(storedRecommendation);
-  const [showPremiumBudget, setShowPremiumBudget] = useState(false);
   const [showForehandSpecial, setShowForehandSpecial] = useState(false);
   const [showBackhandSpecial, setShowBackhandSpecial] = useState(false);
   const [showHandleSelector, setShowHandleSelector] = useState(false);
@@ -153,29 +148,18 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
   const [showBrandSelector, setShowBrandSelector] = useState(false);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [questionHistory, setQuestionHistory] = useState<number[]>([]);
+  const [inventory, setInventory] = useState<Inventory | null>(null);
+
+  useEffect(() => {
+    getInventoryAction().then(setInventory).catch(err => console.error("Failed to fetch inventory:", err));
+  }, []);
 
   // On mount, check if quiz is already complete and recalculate recommendation with latest scoring
   useEffect(() => {
-    if (storedIsComplete && storedCompleteAnswers) {
+    if (storedIsComplete && storedCompleteAnswers && inventory) {
       // Always recalculate to get latest scores with current algorithm
-      const freshRecommendation = getRecommendation(storedCompleteAnswers);
-      
-      // Force minimum 80% on all recommendations
-      if (freshRecommendation) {
-        if (freshRecommendation.preAssembled) {
-          freshRecommendation.preAssembled.score = Math.max(80, freshRecommendation.preAssembled.score);
-        }
-        if (freshRecommendation.preAssembled2) {
-          freshRecommendation.preAssembled2.score = Math.max(80, freshRecommendation.preAssembled2.score);
-        }
-        if (freshRecommendation.customSetup) {
-          freshRecommendation.customSetup.score = Math.max(80, freshRecommendation.customSetup.score);
-        }
-        if (freshRecommendation.customSetup2) {
-          freshRecommendation.customSetup2.score = Math.max(80, freshRecommendation.customSetup2.score);
-        }
-      }
-      
+      const freshRecommendation = getRecommendation(storedCompleteAnswers, inventory);
+
       setIsComplete(true);
       setRecommendation(freshRecommendation);
       setCompleteAnswers(storedCompleteAnswers);
@@ -183,22 +167,8 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       setStoredRecommendation(freshRecommendation, storedCompleteAnswers);
       onQuizStatusChange(true);
     }
-  }, []);
+  }, [inventory]);
 
-  // More budget options follow-up question
-  const moreBudgetQuestion = {
-    id: 11.5,
-    question: "Please select your exact budget range:",
-    options: [
-      { value: "<160$", label: "Under $160" },
-      { value: "<180$", label: "Under $180" },
-      { value: "<200$", label: "Under $200" },
-      { value: "<250$", label: "Under $250" },
-      { value: "<300$", label: "Under $300" },
-      { value: "No limit", label: "No Limit" }
-    ],
-    key: "Budget" as keyof QuizAnswers
-  };
 
   // Forehand special rubber follow-up question
   const forehandSpecialQuestion = {
@@ -244,16 +214,81 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     isMediumHandsSelector: true
   };
 
+  // Vibration question (shown only if not Beginner)
+  const vibrationQuestion = {
+    id: 1.1,
+    question: "How much vibration do you want to feel in your handle?",
+    options: [
+      { value: "High Feedback", label: "High Feedback (Feel every hit)" },
+      { value: "Muted/Solid", label: "Muted/Solid (Stable, stiff feel)" }
+    ],
+    key: "Vibration" as keyof QuizAnswers
+  };
+
+  // Distance question (shown only if not Beginner)
+  const distanceQuestion = {
+    id: 1.2,
+    question: "Where do you stand during the majority of a rally?",
+    options: [
+      { value: "At the table", label: "At the table (Quick blocks, short swings)" },
+      { value: "Mid-distance", label: "Mid-distance (Full looping exchanges)" }
+    ],
+    key: "Distance" as keyof QuizAnswers
+  };
+
+  // Advanced Forehand question (shown to Intermediate/Advanced only)
+  const advancedForehandQuestion = {
+    id: 3.5,
+    question: <>How do you usually play with your <span className="underline">forehand</span>?</>,
+    options: [
+      { value: "Power Loop / Smash", label: "Power Loop / Smash", description: "Taking the ball close to the table or mid-distance with maximum speed to finish the point." },
+      { value: "Heavy Topspin Opening", label: "Heavy Topspin", description: "Brushing the ball to create massive rotation, opening up angles and forcing errors." },
+      { value: "Controlled Drive / Block", label: "Controlled Drive / Block", description: "Using steady, safer strokes to move the opponent and maintain the rally." },
+      { value: "Defensive Chop / Push", label: "Defensive Chop / Push", description: "Prioritizing heavy backspin and safety to neutralize attacks on the forehand side." },
+      { value: "Both sides the same / not sure", label: "Both sides the same / not sure", description: "I'm not sure or my forehand and backhand are similar." }
+    ],
+    key: "Forehand" as keyof QuizAnswers
+  };
+
+  // Advanced Backhand question (shown to Intermediate/Advanced only)
+  const advancedBackhandQuestion = {
+    id: 4.5,
+    question: <>How do you usually play with your <span className="underline">backhand</span>?</>,
+    options: [
+      { value: "Offensive Drive/Punch", label: "Offensive Drive/Punch", description: "Close to the table, taking the ball on the rise with a flat trajectory to overpower the opponent." },
+      { value: "Topspin Opening", label: "Topspin Opening", description: "Using significant wrist snap to create high rotation, usually against backspin or to start a loop-to-loop rally." },
+      { value: "Directional Block", label: "Directional Block", description: "Using the opponent's power against them; focusing on placement and 'absorbing' the pace rather than generating it." },
+      { value: "Classic Push / Chop", label: "Classic Push / Chop", description: "Prioritizing heavy backspin and safety; keeping the ball low and short to prevent the opponent from attacking." }
+    ],
+    key: "Backhand" as keyof QuizAnswers
+  };
+
+  // Miss tendency question (shown to all)
+  const missTendencyQuestion = {
+    id: 4.1,
+    question: "When you miss an aggressive topspin shot, where does the ball usually go?",
+    options: [
+      { value: "Into the net", label: "Mostly into the net" },
+      { value: "Off the end of the table", label: "Mostly off the end of the table" },
+      { value: "Not sure", label: "Not sure / Mixed" }
+    ],
+    key: "MissTendency" as keyof QuizAnswers
+  };
+
 
   const handleAnswer = (answer: string) => {
-    const question = 
-      currentQuestion === 11.5 ? moreBudgetQuestion : 
-      currentQuestion === 7.5 ? forehandSpecialQuestion :
-      currentQuestion === 7.6 ? backhandSpecialQuestion :
-      currentQuestion === 6.5 ? handleSelectorQuestion :
-      currentQuestion === 6.6 ? mediumHandsQuestion :
-      questions[currentQuestion];
-    
+    const question =
+      currentQuestion === 3.5 ? advancedForehandQuestion :
+        currentQuestion === 4.5 ? advancedBackhandQuestion :
+          currentQuestion === 7.5 ? forehandSpecialQuestion :
+            currentQuestion === 7.6 ? backhandSpecialQuestion :
+              currentQuestion === 6.5 ? handleSelectorQuestion :
+                currentQuestion === 6.6 ? mediumHandsQuestion :
+                  currentQuestion === 1.1 ? vibrationQuestion :
+                    currentQuestion === 1.2 ? distanceQuestion :
+                      currentQuestion === 4.1 ? missTendencyQuestion :
+                        questions[currentQuestion];
+
     const newAnswers = { ...answers, [question.key]: answer };
     setAnswers(newAnswers);
     setStoredAnswers(newAnswers);
@@ -261,15 +296,79 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     // Add current question to history before moving forward
     setQuestionHistory([...questionHistory, currentQuestion]);
 
-    // Check if forehand is "Both sides the same / not sure" (question 3)
+    // After Playstyle (index 1), route to Vibration if not Beginner
+    if (currentQuestion === 1) {
+      if (answers.Level === "Beginner" || newAnswers.Level === "Beginner") {
+        // Skip Vibration and Distance for Beginners, default them
+        const updatedAnswers = {
+          ...newAnswers,
+          Vibration: "High Feedback",
+          Distance: "At the table"
+        };
+        setAnswers(updatedAnswers);
+        setCurrentQuestion(2); // Go to Forehand
+      } else {
+        setCurrentQuestion(1.1); // Go to Vibration
+      }
+      return;
+    }
+
+    // After Vibration, go to Distance
+    if (currentQuestion === 1.1) {
+      setCurrentQuestion(1.2);
+      return;
+    }
+
+    // After Distance, go to Advanced Forehand (Since Distance is only shown to non-beginners)
+    if (currentQuestion === 1.2) {
+      setCurrentQuestion(3.5);
+      return;
+    }
+
+    // Check if beginner forehand is "Both sides the same / not sure"
     if (currentQuestion === 2 && answer === "Both sides the same / not sure") {
-      // Set backhand to same answer and skip question 4
+      // Set backhand to same answer and skip Beginner Backhand
       const updatedAnswers = {
         ...newAnswers,
         Backhand: answer
       };
       setAnswers(updatedAnswers);
-      setCurrentQuestion(4); // Skip to question 5 (power question)
+      setCurrentQuestion(4.1); // Skip to MissTendency question
+      return;
+    }
+
+    // After Beginner Forehand, go to Beginner Backhand (index 3)
+    if (currentQuestion === 2) {
+      setCurrentQuestion(3);
+      return;
+    }
+
+    // Check if advanced forehand is "Both sides the same / not sure"
+    if (currentQuestion === 3.5 && answer === "Both sides the same / not sure") {
+      const updatedAnswers = {
+        ...newAnswers,
+        Backhand: answer
+      };
+      setAnswers(updatedAnswers);
+      setCurrentQuestion(4.1); // Skip to MissTendency question
+      return;
+    }
+
+    // After Advanced Forehand, go to Advanced Backhand
+    if (currentQuestion === 3.5) {
+      setCurrentQuestion(4.5);
+      return;
+    }
+
+    // After Backhand (Beginner or Advanced), go to MissTendency (4.1)
+    if (currentQuestion === 3 || currentQuestion === 4.5) {
+      setCurrentQuestion(4.1);
+      return;
+    }
+
+    // After MissTendency, go to Power (index 4)
+    if (currentQuestion === 4.1) {
+      setCurrentQuestion(4);
       return;
     }
 
@@ -295,7 +394,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     // Handle selector follow-up - route based on hand size
     if (currentQuestion === 6.5) {
       setShowHandleSelector(false);
-      
+
       if (answer === "Small Hands Special") {
         // Really small hands - set grip and move to special rubbers
         const updatedAnswers = { ...newAnswers, Grip: "Small Hands Special" };
@@ -404,20 +503,12 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       return;
     }
 
-    // Check if user selected "more" on budget question (now question 10)
-    if (currentQuestion === 10 && answer === "more") {
-      setShowPremiumBudget(true);
-      setCurrentQuestion(11.5);
-      return;
-    }
-
-    // Handle more budget options follow-up - this completes the quiz
-    if (currentQuestion === 11.5) {
-      setShowPremiumBudget(false);
-      // Generate recommendation when quiz is complete
+    // The budget question (Question 10) completes the quiz
+    if (currentQuestion === 10) {
+      if (!inventory) return;
       const completeQuizAnswers = newAnswers as QuizAnswers;
       setCompleteAnswers(completeQuizAnswers);
-      const rec = getRecommendation(completeQuizAnswers);
+      const rec = getRecommendation(completeQuizAnswers, inventory);
       setRecommendation(rec);
       setIsComplete(true);
       setStoredRecommendation(rec, completeQuizAnswers);
@@ -427,10 +518,11 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
+      if (!inventory) return;
       // Generate recommendation when quiz is complete
       const completeQuizAnswers = newAnswers as QuizAnswers;
       setCompleteAnswers(completeQuizAnswers);
-      const rec = getRecommendation(completeQuizAnswers);
+      const rec = getRecommendation(completeQuizAnswers, inventory);
       setRecommendation(rec);
       setIsComplete(true);
       setStoredRecommendation(rec, completeQuizAnswers);
@@ -439,15 +531,13 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
 
   const handleBack = () => {
     if (questionHistory.length === 0) return;
-    
+
     const newHistory = [...questionHistory];
     const previousQuestion = newHistory.pop()!;
     setQuestionHistory(newHistory);
-    
+
     // Reset conditional states based on where we're going back
-    if (currentQuestion === 11.5) {
-      setShowPremiumBudget(false);
-    } else if (currentQuestion === 10 && previousQuestion === 9) {
+    if (currentQuestion === 10 && previousQuestion === 9) {
       // Going back to brand selector from budget question
       setShowBrandSelector(true);
       // Restore selected brands from answers
@@ -466,20 +556,20 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     } else if (currentQuestion === 6.6) {
       setShowMediumHandsSelector(false);
     }
-    
+
     setCurrentQuestion(previousQuestion);
   };
 
   const handleBrandToggle = (brand: string) => {
     const allBrands = ["ANDRO", "BUTTERFLY", "JOOLA", "DHS"];
-    
+
     setSelectedBrands(prev => {
       // If empty array (all brands selected), clicking a brand should deselect it
       if (prev.length === 0) {
         // Return all brands except the clicked one
         return allBrands.filter(b => b !== brand);
       }
-      
+
       // If brand is in the array, remove it
       if (prev.includes(brand)) {
         const newBrands = prev.filter(b => b !== brand);
@@ -508,7 +598,6 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
     setCompleteAnswers(null);
     setIsComplete(false);
     setRecommendation(null);
-    setShowPremiumBudget(false);
     setShowForehandSpecial(false);
     setShowBackhandSpecial(false);
     setShowHandleSelector(false);
@@ -523,15 +612,19 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
 
   // Calculate actual number of questions answered (including current)
   const questionsAnswered = questionHistory.length + 1;
-  
+
   // Calculate total expected questions based on current answers
   let totalQuestions = 11; // Base questions: all 11 main questions
-  
+
   // Subtract questions that will be skipped based on current answers
+  if (answers.Level === "Beginner") {
+    totalQuestions -= 3; // Skip Vibration (1.1), Distance (1.2), and Brand (9)
+  }
+
   if (answers.Forehand === "Both sides the same / not sure") {
     totalQuestions -= 1; // Skip backhand question
   }
-  
+
   if ("WantsSpecialHandle" in answers) {
     if (answers.WantsSpecialHandle === "Yes") {
       totalQuestions += 1; // Add handle selector question
@@ -541,54 +634,48 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
       }
     }
   }
-  
+
   if ("WantsSpecialRubbers" in answers) {
     if (answers.WantsSpecialRubbers === "Yes") {
       totalQuestions += 2; // Add forehand and backhand rubber style questions
     }
   }
-  
-  if (answers.Level === "Beginner") {
-    totalQuestions -= 1; // Skip brand question
-  }
-  
+
   if (answers.Level !== "Advanced" && answers.Level !== undefined) {
     totalQuestions -= 1; // Skip weight question
   }
-  
-  if (answers.Budget === "more") {
-    totalQuestions += 1; // Add premium budget question
-  }
-  
+
   // Ensure we never show more answered than total
   const safeAnswered = Math.min(questionsAnswered, totalQuestions);
   const progress = (safeAnswered / totalQuestions) * 100;
 
   const handleUpdatePreferences = (newBudget: string, newBrands: string[]) => {
+    if (!inventory) return;
     const updatedAnswers = {
       ...completeAnswers,
       Budget: newBudget,
       Brand: newBrands
     } as QuizAnswers;
-    
+
     setCompleteAnswers(updatedAnswers);
     setAnswers(updatedAnswers);
-    
+
     // Regenerate recommendations with new values
-    const newRecommendation = getRecommendation(updatedAnswers);
+    const newRecommendation = getRecommendation(updatedAnswers, inventory);
     setRecommendation(newRecommendation);
   };
 
   // Quiz completion screen with recommendations
   if (isComplete && recommendation) {
     return (
-      <RecommendationDisplay 
-        recommendation={recommendation} 
-        onRestart={handleRestart} 
+      <RecommendationDisplay
+        recommendation={recommendation}
+        onRestart={handleRestart}
         assemblyPreference={answers.AssemblyPreference}
         playerLevel={answers.Level}
         currentAnswers={completeAnswers || undefined}
         onUpdatePreferences={handleUpdatePreferences}
+        inventory={inventory}
       />
     );
   }
@@ -619,7 +706,7 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
             Back
           </Button>
         )}
-        
+
         {currentQuestion === 6.5 ? (
           <Card className="p-8 backdrop-blur-sm bg-card/50 border-2">
             <h2 className="text-2xl font-bold text-foreground mb-6">What is your hand size?</h2>
@@ -633,11 +720,11 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
         ) : showBrandSelector && currentQuestion === 9 ? (
           <Card className="p-8 backdrop-blur-sm bg-card/50 border-2">
             <h2 className="text-2xl font-bold text-foreground mb-6">Which brands do you prefer?</h2>
-            <BrandSelector 
+            <BrandSelector
               selectedBrands={selectedBrands}
               onBrandToggle={handleBrandToggle}
             />
-            <Button 
+            <Button
               onClick={handleBrandContinue}
               className="w-full mt-6"
               size="lg"
@@ -645,13 +732,22 @@ const TableTennisQuiz = ({ onQuizStatusChange }: TableTennisQuizProps) => {
               Continue
             </Button>
           </Card>
+        ) : currentQuestion === 10 ? (
+          <BudgetSlider
+            question="What is your total budget?"
+            onAnswer={handleAnswer}
+          />
         ) : (
           <QuestionCard
             question={
-              currentQuestion === 11.5 ? moreBudgetQuestion : 
-              currentQuestion === 7.5 ? forehandSpecialQuestion :
-              currentQuestion === 7.6 ? backhandSpecialQuestion :
-              questions[currentQuestion]
+              currentQuestion === 3.5 ? advancedForehandQuestion :
+                currentQuestion === 4.5 ? advancedBackhandQuestion :
+                  currentQuestion === 7.5 ? forehandSpecialQuestion :
+                    currentQuestion === 7.6 ? backhandSpecialQuestion :
+                      currentQuestion === 1.1 ? vibrationQuestion :
+                        currentQuestion === 1.2 ? distanceQuestion :
+                          currentQuestion === 4.1 ? missTendencyQuestion :
+                            questions[currentQuestion]
             }
             onAnswer={handleAnswer}
           />

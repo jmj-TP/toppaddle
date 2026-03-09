@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Package } from "lucide-react";
+import Image from "next/image";
 
 interface ProductCardProps {
   name: string;
@@ -18,10 +19,12 @@ export const ProductCard = ({ name, level, price, image, onClick }: ProductCardP
     >
       <div className="relative aspect-square bg-muted/30 overflow-hidden">
         {image ? (
-          <img
+          <Image
             src={image}
             alt={name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            fill
+            unoptimized
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
